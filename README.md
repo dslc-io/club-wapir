@@ -1,17 +1,17 @@
-# R4DS {{{book_name}}} Book Club
+# R4DS Web APIs with R Book Club
 
-Welcome to the R4DS {{{book_name}}} Book Club!
+Welcome to the R4DS Web APIs with R Book Club!
 
-We are working together to read [_{{{book_name}}}_]({{{book_url}}}) by {{{book_authors}}} (copyright {{{book_copyright}}}).
-{{#print}}If you would like a print version, please consider purchasing it using our [Amazon Affiliates link]({{{print_url}}}). All profits from purchases through that link go toward maintaining the R4DS Online Learning Community.{{/print}}
-Join the [#book_club-{{{book_abbr}}}](https://rfordatascience.slack.com/archives/{{{book_channel_id}}}) channel on the [R4DS Slack](https://r4ds.io/join) to participate.
-As we read, we are producing [notes about the book](https://r4ds.io/{{{book_abbr}}}).
+We are working together to read [_Web APIs with R_](https://jonthegeek.github.io/wapir/) by Jon Harmon (copyright 2024).
+
+Join the [#book_club-wapir](https://rfordatascience.slack.com/archives/C05MYSD1PEV) channel on the [R4DS Slack](https://r4ds.io/join) to participate.
+As we read, we are producing [notes about the book](https://r4ds.io/wapir).
 
 ## Meeting Schedule
 
-If you would like to present, please see the sign-up sheet for your cohort (linked below, and pinned in the [#book_club-{{{book_abbr}}}](https://rfordatascience.slack.com/archives/{{{book_channel_id}}}) channel on Slack)!
+If you would like to present, please see the sign-up sheet for your cohort (linked below, and pinned in the [#book_club-wapir](https://rfordatascience.slack.com/archives/C05MYSD1PEV) channel on Slack)!
 
-- [Cohort 1]({{{cohort01_signup_url}}}) (started {{{cohort01_start_date}}}, facilitated by {{{cohort01_facilitator_handle}}}): [{{{cohort01_day}}}, {{{cohort01_time_cst}}} CST/CDT]({{{cohort01_timeanddate_url}}}) | [meeting videos]({{{cohort01_youtube}}})
+- [Cohort 1](https://delete.me) (started 2023-08-17, facilitated by jonthegeek): [Thursdays, 7:00 AM CST/CDT](https://delete.me) | [meeting videos](https://delete.me)
 
 <hr>
 
@@ -24,7 +24,7 @@ To present, follow these instructions:
 Do these steps once:
 
 1. [Setup Git and GitHub to work with RStudio](https://github.com/r4ds/bookclub-setup) (click through for detailed, step-by-step instructions; I recommend checking this out even if you're pretty sure you're all set).
-2. `usethis::create_from_github("r4ds/bookclub-{{{book_abbr}}}")` (cleanly creates your own copy of this repository).
+2. `usethis::create_from_github("r4ds/bookclub-wapir")` (cleanly creates your own copy of this repository).
 
 Do these steps each time you present another chapter:
 
@@ -40,9 +40,9 @@ Do these steps each time you present another chapter:
 10. When your PR has been accepted ("merged"), `usethis::pr_finish()` to close out your branch and prepare your local repository for future work.
 11. Now that your local copy is up-to-date with the main repo, you need to update your remote fork. Run `gert::git_push("origin")` or click the `Push` button on the `Git` tab of Rstudio.
 
-When your PR is checked into the main branch, the bookdown site will rebuild, adding your slides to [this site](https://r4ds.io/{{{book_abbr}}}).
+When your PR is checked into the main branch, the bookdown site will rebuild, adding your slides to [this site](https://r4ds.io/wapir).
 
 
 ## Code of Conduct
 
-Please note that the bookclub-{{{book_abbr}}} project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+Please note that the bookclub-wapir project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
