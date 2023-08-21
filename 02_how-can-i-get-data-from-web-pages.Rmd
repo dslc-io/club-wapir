@@ -19,7 +19,8 @@
 ## Can I legally scrape this data? {-}
 
 -   Personal use or nonprofit education = usually ok
--   Check legal disclaimers
+-   Be careful about personally identifiable information (PII)
+-   Check legal disclaimers (but may be over-protective)
 -   US:
     -   Can't copyright facts,
     -   *CAN* copyright collections of facts in some cases (creative)
@@ -35,12 +36,14 @@
 -   Search for name(s) of package(s) 
 -   Search for specific pages
 -   Check root of site (`/`) and your particular subfolder 
+-   These aren't (necessarily) legally binding
 
 ## Do I need to scrape this data? {-}
 
 -   Try {[datapasta](https://cran.r-project.org/package=datapasta)} 📦
     -   RStudio Addins
 -   If it's one time & over-complicated, consider other copy/paste strategies
+-   Only scrape what you need
 -   Look for an API!
 
 ## How can I scrape tables of data? {-}
@@ -81,7 +84,7 @@
 
 ## What are CSS selectors? {-}
 
--   ADD CONTENTS
+-   (I continue to go back and forth about Xpath vs CSS Selectors. Xpath can traverse back up the tree, which I feel might be vital for some advanced examples; but then again maybe CSS `:has()` will be enough)
 
 ## SUBSECTION {-}
 
