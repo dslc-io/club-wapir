@@ -10,7 +10,9 @@ Depends:
 Imports: 
     bookdown,
     dplyr,
-    httr2,
+    httr2 (>= 0.2.3.9000),
     rmarkdown,
     tibblify
+Remotes:
+    r-lib/httr2
 Encoding: UTF-8
