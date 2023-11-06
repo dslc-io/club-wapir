@@ -26,9 +26,9 @@
 -   HTTP = HyperText Transfer Protocol ("way to move web pages")
 -   HTTP(S) = most of internet communication
 -   Request methods (in ~order of use):
-    -   GET (fetch something)
-    -   POST (push something)
-    -   DELETE, PUT, PATCH (change existing things)
+    -   GET (fetch existing thing)
+    -   POST (push new thing)
+    -   DELETE, PUT, PATCH (change existing thing)
     -   CONNECT, OPTIONS, HEAD, TRACE (I didn't know these existed)
 -   Request = URL + headers + method + body
 
@@ -63,6 +63,7 @@ https://jonthegeek.github.io/wapir/apis.html is an HTTP request:
     -   Body defines everything
         -   JSON with wildcards telling server what to fill in
     -   Basically GET + 1 endpoint
+    -   Will probably get its own chapter
 
 ## Other API Frameworks {-}
 

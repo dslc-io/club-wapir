@@ -2,10 +2,9 @@
 
 **Learning objectives:**
 
--   Describe how httr2 calls are structured.
+-   Describe how {httr2} calls are structured.
+-   Create and modify an {httr2} request.
 -   Access an HTTP API with {httr2}.
--   Create and modify an httr2 request.
--   Write a function to fetch data from an HTTP API.
 
 ## What is httr2? {-}
 
@@ -19,7 +18,7 @@
 candidates <- httr2::request("https://api.open.fec.gov/v1") |> 
   httr2::req_headers("X-Api-Key" = "DEMO_KEY") |> 
   httr2::req_url_path_append("candidates") |> 
-  httr2::req_url_query(office = c("H", "S"), .multi = "explode") |> 
+  httr2::req_url_query(office = c("H", "S"), election_year = 2024, .multi = "explode") |> 
   httr2::req_perform() |> 
   httr2::resp_body_json()
 candidates$results[[1]]
@@ -27,11 +26,11 @@ candidates$results[[1]]
 
 ## URL Pieces {-}
 
-https://api.open.fec.gov/v1/candidates?office=H&office=S
+https://api.open.fec.gov/v1/candidates?office=H&office=S&election_year=2024
 
 -   base URL = `https://api.open.fec.gov/v1/`
 -   path = `/v1/candidates`
--   query = `?office=H&office=S`
+-   query = `?office=H&office=S&election_year=2024`
 
 ## Request: URL {-}
 
@@ -42,7 +41,7 @@ https://api.open.fec.gov/v1/candidates?office=H&office=S
 ```{r 03-req-url-build}
 req <- httr2::request("https://api.open.fec.gov/v1") |> 
   httr2::req_url_path_append("candidates") |> 
-  httr2::req_url_query(office = c("H", "S"), .multi = "explode")
+  httr2::req_url_query(office = c("H", "S"), election_year = 2024, .multi = "explode")
 req$url
 ```
 
