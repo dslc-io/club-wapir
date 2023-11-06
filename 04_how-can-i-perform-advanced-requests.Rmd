@@ -1,0 +1,34 @@
+# How can I perform multiple requests?
+
+**Learning objectives:**
+
+- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+
+## SLIDE 1 {-}
+
+- ADD SLIDES AS SECTIONS (`##`).
+- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+
+## Random functions to include {-}
+
+-   `req_error()`
+-   `req_progress()`
+-   `req_cache()`
+-   `req_retry()`
+-   `req_throttle()`
+-   `req_timeout()`
+-   `req_options()` todo: figure out what's here and not available via httr2.
+
+## Meeting Videos {-}
+
+### Cohort 1 {-}
+
+`r knitr::include_url("https://www.youtube.com/embed/URL")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+LOG
+```
+</details>

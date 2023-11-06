@@ -1,12 +1,12 @@
-# What is an API and how can I access one?
+# How do computers communicate?
 
 **Learning objectives:**
 
 -   Explain what an API is.
--   Recognize how things communicate on the internet.
--   Compare and contrast web API frameworks.
--   Access an HTTP API with {httr2}.
--   Access a WebSocket API with {websocket}.
+-   Identify the pieces of an HTTP request. 
+-   Describe how accessing a web page through a browser involves an HTTP request.
+-   Compare and contrast HTTP-based API frameworks.
+-   Recognize other web API protocols.
 
 ## APIs {-}
 
@@ -19,70 +19,64 @@
 
 -   🕸️ Focus = ***web*** APIs
     -   For rest of book, "API" means "web API"
+    -   Web API = API on the internet
 
 ## HTTP {-}
 
+-   HTTP = HyperText Transfer Protocol ("way to move web pages")
 -   HTTP(S) = most of internet communication
 -   Request methods (in ~order of use):
     -   GET (fetch something)
     -   POST (push something)
-    -   DELETE, PUT, PATCH (change things)
+    -   DELETE, PUT, PATCH (change existing things)
     -   CONNECT, OPTIONS, HEAD, TRACE (I didn't know these existed)
 -   Request = URL + headers + method + body
 
-## API Frameworks {-}
+## Browsers and HTTP Requests {-}
+
+https://jonthegeek.github.io/wapir/apis.html is an HTTP request:
+
+-   `https://` = "use HTTP(s) protocol"
+-   `jonthegeek.github.io/wapir/apis.html` = URL
+-   Cookies, etc sent as invisible headers
+-   `GET` = protocol
+-   Empty body
+
+## HTTP API Frameworks: Historic {-}
 
 -   RPC = Remote Procedure Call
     -   Endpoints = actions
     -   XML-RPC & JSON-RPC popular early
     -   Often just GET ("GET /deleteItem/1234")
 -   SOAP = Simple Objects Access Protocol (briefly huge, mostly dead)
+    -   Evolved from XML-RPC
+    -   Technically not limited to HTTP
+
+## HTTP API Frameworks: Modern {-}
+
 -   REST = REpresentational State Transfer
     -   Most common by far
     -   Stateless (call defines the object)
     -   Technically endpoints = nouns
-    
-## API Frameworks (cont) {-}
-
+    -   What we'll focus on in most of book
 -   GraphQL = Graph Query Language
     -   Body defines everything
+        -   JSON with wildcards telling server what to fill in
     -   Basically GET + 1 endpoint
--   gRPC = (Google? General?) RPC
+
+## Other API Frameworks {-}
+
+-   websocket
+    -   Alternative to HTTP
+    -   `ws://` or `wss://`
+    -   2-way communication
+    -   {websocket} package
+-   gRPC = Google RPC
     -   Becoming very popular
     -   Good for real-time, 2-way communication
     -   Uses HTTP/2 (more socket-like)
 
-## httr2 {-}
-
--   Pipe-based API calls
--   Working with dev (will be released ~soon as 1.0.0)
--   `request |> perform |> resp (parse)`
-
-## httr2 demo {-}
-
-```{r 04-httr2-demo}
-httr2::request("https://api.open.fec.gov/v1") |> 
-  httr2::req_headers("X-Api-Key" = "DEMO_KEY") |> 
-  httr2::req_url_path_append("candidates") |> 
-  httr2::req_url_query(office = c("H", "S"), .multi = "explode") |> 
-  httr2::req_perform() |> 
-  httr2::resp_body_json() |> 
-  _$results |> 
-  tibblify::tibblify(unspecified = "list") |> 
-  dplyr::glimpse()
-```
-
-## httr2 more to come {-}
-
--   Deeper dive in (new) chapter 5
--   Auth in chapter 6
-
-## WebSocket {-}
-
--   Alternative to HTTP
--   `ws://` or `wss://`
--   2-way communication
--   EMBED A DEMO HERE
+Deeper dive coming in Chapter 9!
 
 ## Meeting Videos {-}
 
