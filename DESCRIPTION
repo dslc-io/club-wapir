@@ -10,6 +10,7 @@ Depends:
 Imports: 
     bookdown,
     dplyr,
+    httpuv,
     httr2 (>= 0.2.3.9000),
     rmarkdown,
     tibblify

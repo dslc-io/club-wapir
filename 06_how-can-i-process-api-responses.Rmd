@@ -1,4 +1,4 @@
-# How can I process JSON data?
+# How can I process API responses?
 
 **Learning objectives:**
 
