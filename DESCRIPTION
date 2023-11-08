@@ -14,7 +14,8 @@ Imports:
     httpuv,
     httr2 (>= 0.2.3.9000),
     rmarkdown,
-    tibblify
+    tibblify,
+    webfakes
 Remotes:
     r-lib/httr2
 Encoding: UTF-8
