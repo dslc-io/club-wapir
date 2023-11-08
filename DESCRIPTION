@@ -9,11 +9,14 @@ Depends:
     R (>= 3.1.0)
 Imports: 
     bookdown,
+    callr,
+    cli,
     dplyr,
     httpuv,
     httr2 (>= 0.2.3.9000),
     rmarkdown,
-    tibblify
+    tibblify,
+    webfakes
 Remotes:
     r-lib/httr2
 Encoding: UTF-8
