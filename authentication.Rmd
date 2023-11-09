@@ -1,13 +1,187 @@
-# How do I prove that I’m me?
+# How do I tell the API who I am?
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+-   Compare and contrast authentication schemes.
+-   Describe the dangers associated with "leaking" credentials.
+-   Find authentication information in API docs.
+-   Authenticate a request with a username and password.
+-   Authenticate a request with an API key.
+-   Authenticate a request with the "OAuth dance."
+-   Re-authenticate OAuth requests.
 
-## SLIDE 1 {-}
+## But first: Practice safe git {-}
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+-   Run `usethis::git_vaccinate()`
+-   Usually ignore project-level `.Renviron`
+
+## Credential dangers {-}
+
+-   How much account control does it have?
+    -   Can it lock you out?
+    -   Can it reveal sensitive data?
+-   How long does it last?
+    -   Shorter = safer
+    -   Can you revoke it?
+-   How likely is it to leak?
+    -   When do you send it?
+    -   Where do you send it?
+    -   How often do you send it?
+
+## Authentication schemes overview {-}
+
+-   **HTTP Basic Authentication:** username + password sent with request
+-   **API Keys/Bearer Tokens:** password-like thing sent with request
+    -   Dirty secret: This is what more complex schemes are, eventually
+    -   `httr2::req_auth_bearer_token()`
+    -   Sometimes: `httr2::req_headers()`
+-   **OAuth:** Multi-step process to generate a key
+    -   Goal: Make the key as short-lived as possible
+    -   Not everyone implements the same way (ie often wrong)
+    -   `httr2::req_oauth_*()`
+
+## Dangers of leaking credentials {-}
+
+-   🔴 Username + password
+    -   Access entire account
+    -   Often difficult to turn off/recover
+-   🟠 API key
+    -   Can access everything you can access
+    -   Often short-lived
+    -   You can often revoke this
+-   🟡 OAuth exists to minimize these dangers
+
+## What does this API want? {-}
+
+-   Find "OpenAPI" or "Swagger" links (or "API json", "API yaml", etc)
+    -   Search for "secrutitySchemes"
+    -   Often easier-to-understand details than docs!
+-   Might need to do something to "register"
+    -   "Request an API key"
+    -   "Register your App" (or "Client") (see OAuth)
+
+## HTTP Basic Authentication {-} 
+
+-   `httr2::req_auth_basic(req, username, password = NULL)`
+-   Leave password blank: Prompt interactive semi-securely
+-   Avoid using this if you can!
+    -   I can't remember any API that only offers this
+
+## API Keys & Bearer Tokens {-}
+
+-   `httr2::req_auth_bearer_token(req, token)` (specific header)
+    -   Pass `token` as `Sys.get("API_TOKEN_NAME")`
+    -   Save token with `usethis::edit_r_environ()`
+-   Catch-all: `httr2::req_headers(.req, ..., .redact = NULL)`
+    -   `...` = `token_parameter = Sys.get("API_TOKEN_NAME")`
+    -   `.redact = "token_parameter"` to hide in print
+
+## OAuth: Terminology {-}
+
+-   **User:** You, or someone using your code
+-   **Client:** The thing asking for permission to act as the user
+    -   Your code, but also
+    -   A reusable thing that represents your code
+    -   **Client ID:** Codename
+    -   **Client secret:** Client "password", but often not very secret
+-   **Authorization server (auth):** Thing granting permission (usually the API owner)
+    -   Often multiple servers (auth vs auth2 on next slide)
+-   **Resource server (API):** Thing user is using (the API)
+
+## The OAuth "dance" {-}
+
+-   User to client: Hit this API for me!
+-   Client (ID) to auth: Can I act as this user and do these things?
+-   Auth to user: Is this ok?
+-   User to auth: Yes
+-   Auth to client's home address: Use this to get a key
+-   Client (ID + secret) to auth2: Turn this into a key (I'm really me!)
+-   Auth2 to client: Here's your key (and I'll log what it can do)
+-   Client to API: Here's my key
+-   API to auth: Can this key do this?
+-   Auth to API: (checks logged scopes) Yes!
+-   API to client: Ok, here's the info!
+
+TODO: Image of OAuth dance
+
+## OAuth credential dangers {-}
+
+-   🟢 Client id: Like knowing a package name.
+-   🟡 Client secret:
+    -   Can pretend to be your client, but user still needs to say ok
+    -   Can your **client** do anything special?
+        -   Installed (e.g. Slack app)?
+        -   API usage limits?
+-   🟡 Authorization code: Unlikely to be an issue
+    -   Only sent to provided redirect_uri
+    -   Extremely short lived (often minutes or less)
+
+## OAuth credential dangers (cont) {-}
+
+-   🟡 Refresh token: A longer-lived authorization code
+    -   Can be used to get a new access token
+    -   Usually revoked if you auth from scratch
+    -   Also need client secret to refresh
+-   🟠 Access token: The thing we're protecting
+    -   Can do whatever it's authorized to do
+    -   Usually easy to revoke
+-   🔴 Username + password: We don't want to know these
+
+## httr2::oauth_client() {-}
+
+-   Almost definitely only need these (from API provider):
+    -   `id` = Client ID
+    -   `token_url` = URL where clients exchange authorization codes for tokens
+    -   `secret` = Client secret
+    -   Often `auth = "header"`
+    -   If this client has multiple uses: `name` = unique for this use case
+-   Construct once & reuse
+
+## OAuth client demo {-}
+
+```{r auth-oauth-youtube-client, eval = FALSE}
+library(httr2)
+yt_client <- oauth_client(
+  Sys.getenv("YOUTUBE_CLIENT_ID"), 
+  "https://oauth2.googleapis.com/token",
+  secret = Sys.getenv("YOUTUBE_CLIENT_SECRET")
+)
+```
+
+## httr2::req_oauth_auth_code() {-}
+
+-   `auth_url` = URL to get an authorization code (from API)
+-   `scope` = Usually comma-separated string of permissions
+-   `pkce` = Good if supported, often have to turn off
+-   `redirect_uri` = Where to send response
+    -   Often need specific local port "http://localhost:4242" or "http://127.0.0.1:4242"
+    -   Must be configured as part of client configuration (at API)
+-   `cache_disk` = Set this `TRUE` if you can
+    -   `cache_key` if you'll use this client for multiple tokens
+
+## Oauth request demo {-}
+
+```{r auth-oauth-youtube-call, eval = FALSE}
+playlists <- request("https://youtube.googleapis.com/youtube/v3") |> 
+  req_url_path_append("playlists") |> 
+  req_url_query(part = "snippet", mine = TRUE, maxResults = 50) |> 
+  req_oauth_auth_code(
+    yt_client, 
+    "https://accounts.google.com/o/oauth2/v2/auth",
+    scope = "https://www.googleapis.com/auth/youtube",
+    redirect_uri = "http://127.0.0.1:8888"
+  ) |> 
+  req_perform()
+```
+
+## Automating OAuth {-}
+
+-   *If you can,* use httr2 cache: easiest, but
+    -   auto-deletes when 30 days old
+    -   fills logs w/ "Caching httr2 token in ..." messages
+-   `httr2::req_oauth_bearer_jwt()` if you have JSON web token (service account)
+-   `httr2::req_oauth_refresh()` if you have a refresh token
+    -   `httr2::oauth_flow_auth_code()` once to get refresh
 
 ## Meeting Videos {-}
 
