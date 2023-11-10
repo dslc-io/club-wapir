@@ -14,9 +14,13 @@ Imports:
     dplyr,
     httpuv,
     httr2 (>= 0.2.3.9000),
+    jsonlite,
     rmarkdown,
+    tibble,
     tibblify,
-    webfakes
+    tidyr,
+    webfakes,
+    xml2
 Remotes:
     r-lib/httr2
 Encoding: UTF-8
