@@ -16,6 +16,7 @@ Imports:
     httr2 (>= 0.2.3.9000),
     jsonlite,
     rmarkdown,
+    stringr,
     tibble,
     tibblify,
     tidyr,

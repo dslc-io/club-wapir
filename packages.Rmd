@@ -7,7 +7,9 @@
 -   Use {anyapi} to search for packages.
 
 ```{r pkgs-setup, message=FALSE, warning=FALSE}
-library(tidyverse)
+library(dplyr)
+library(stringr)
+library(tidyr)
 library(tools)
 library(httr2)
 ```
