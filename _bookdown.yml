@@ -12,6 +12,7 @@ rmd_files: [
   "authentication.Rmd",
   "responses.Rmd",
   "perform.Rmd",
+  "find-apis.Rmd",
   "packages.Rmd",
   "accessing-other.Rmd",
   "rvest.Rmd",

@@ -12,15 +12,18 @@ Imports:
     callr,
     cli,
     dplyr,
+    ghql,
     httpuv,
     httr2 (>= 0.2.3.9000),
     jsonlite,
+    protolite,
     rmarkdown,
     stringr,
     tibble,
     tibblify,
     tidyr,
     webfakes,
+    websocket,
     xml2
 Remotes:
     r-lib/httr2
