@@ -2,12 +2,166 @@
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+-   Fetch data from GraphQL APIs.
+-   Fetch data from websocket APIs.
+-   Recognize gRPC APIs (maybe fetch with httr2? Does that work?)
 
-## SLIDE 1 {-}
+```{r req-other-setup}
+library(ghql)
+library(jsonlite)
+library(dplyr)
+library(httr2)
+library(websocket)
+library(RProtoBuf)
+```
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+## GraphQL {-}
+
+-   Current landscape feels like "I use GraphQL in other languages, and want it to technically be possible to do so from R."
+-   Queries: [ghql](https://docs.ropensci.org/ghql/index.html)
+    -   Demo on next slide
+-   Server side: [gqlr](http://schloerke.com/gqlr/index.html) (more in later chapter)
+
+## GraphQL setup {-}
+
+```{r req-other-graphql-setup, eval = FALSE}
+ghql_con <- GraphqlClient$new(
+  url = "https://api.github.com/graphql",
+  headers = list(Authorization = paste0("Bearer ", Sys.getenv("GITHUB_PAT")))
+)
+ghql_con$load_schema()
+qry <- Query$new()
+```
+
+## GraphQL query {-}
+
+```{r req-other-graphql-query, eval = FALSE}
+qry$query('mydata', '{
+  repositoryOwner(login:"jonthegeek") {
+    repositories(first: 5, orderBy: {field:PUSHED_AT,direction:DESC}, isFork:false) {
+      edges {
+        node {
+          name
+          stargazers {
+            totalCount
+          }
+        }
+      }
+    }
+  }
+}')
+```
+
+## GraphQL response {-}
+
+```{r req-other-graphql-response, eval = FALSE}
+x <- ghql_con$exec(qry$queries$mydata) # We created a query named "mydata"
+jsonlite::fromJSON(x)
+#> $data
+#> $data$repositoryOwner
+#> $data$repositoryOwner$repositories
+#> $data$repositoryOwner$repositories$edges
+#>                   node.name node.totalCount
+#> 1                     wapir              17
+#> 2                    zoomer               3
+#> 3                rstats.fyi               0
+#> 4                 tidyslack               0
+#> 5 jonthegeek.r-universe.dev               0
+```
+
+## websocket review {-}
+
+-   Alternative to HTTP
+-   `ws://` or `wss://`
+-   2-way communication
+-   {websocket} package
+
+## Aside: shiny & websockets {-}
+
+-   You might see websocket-related errors in Shiny
+-   Shiny UI & server communicate via a websocket connection
+-   More directly managed via {httpuv} & TypeScript code
+-   Beyond the scope of this book
+
+## websocket demo: setup {-}
+
+```{r req-other-websocket-setup, eval = FALSE}
+ws <- WebSocket$new("ws://echo.websocket.events/", autoConnect = FALSE)
+ws$onMessage(\(event) {
+  now <- format(Sys.time(), digits = 0)
+  cat("Client got msg:", event$data, "at", now, "\n")
+})
+```
+
+## websocket demo {-}
+
+```{r req-other-websocket-demo, eval = FALSE}
+ws$connect()
+#> Client got msg: echo.websocket.events sponsored by Lob.com at 2023-11-15 2023-11-15 08:28:04
+# (can do other things in console now)
+1
+#> [1] 1
+ws$send("hello")
+#> Client got msg: hello at 2023-11-15 08:28:10
+ws$close()
+```
+
+## websocket: toward usefulness {-}
+
+```{r req-other-websocket-setup2, eval = FALSE}
+ws_counter <- 1
+ws2 <- WebSocket$new("ws://echo.websocket.events/", autoConnect = FALSE)
+ws2$onMessage(\(event) {
+  ws_counter <<- ws_counter + 1 # Add 1 to global ws_counter var 
+  cat(ws_counter, "\n")
+})
+ws_counter
+#> 1
+ws2$connect()
+#> 2
+ws2$send("update")
+#> 3
+ws2$send("update again")
+#> 4
+ws2$close()
+```
+
+## websocket usecases {-}
+
+-   News/Message feeds
+    -   Display new content as it comes in
+-   Messaging
+    -   Send and receive ~simultaneously without new connections
+-   Multi-player games
+-   Collaborative editing
+-   Real-time dashboards
+
+## gRPC review {-}
+
+-   Google Remote Procedure Call
+-   Becoming very popular
+-   Good for real-time, 2-way communication
+-   Uses HTTP/2 (more socket-like)
+
+## gRPC: What is it really? {-}
+
+-   HTTP/2 (upgraded HTTP)
+    -   Can access via {httr2}
+-   "Protocol buffers" datatype
+    -   Implemented in {RProtoBuf} package
+
+## gRPC demo {-}
+
+From [RProtoBuf paper](https://www.jstatsoft.org/article/view/v071i02)
+
+```{r req-other-grpc}
+resp <- request("https://demo.ocpu.io/MASS/data/Animals/pb") |> 
+  req_perform()
+output <- resp_body_raw(resp) |> 
+  unserialize_pb() # This is the important part
+identical(output, MASS::Animals)
+head(output)
+```
 
 ## Meeting Videos {-}
 

@@ -22,7 +22,8 @@ library(httr2)
 
 ## Searching CRAN packages {-}
 
-```{r pkgs-cran}
+```{r pkgs-cran, eval = FALSE}
+# TODO: Re-enable this when CRAN isn't down.
 api_pkgs <- tools::CRAN_package_db() |> 
   as_tibble() |> 
   filter(str_detect(tolower(Description), "\\bapi\\b")) |> 
