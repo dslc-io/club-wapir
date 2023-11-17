@@ -9,6 +9,14 @@
 - ADD SLIDES AS SECTIONS (`##`).
 - TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
 
+## random notes {-}
+
+Include ideas from these [plumber](https://www.rplumber.io/) articles:
+
+-   [Runtime](https://www.rplumber.io/articles/execution-model.html)
+
+[JumpingRivers had a blog about this!](https://www.jumpingrivers.com/blog/api-as-a-package-testing/)
+
 ## Meeting Videos {-}
 
 ### Cohort 1 {-}
