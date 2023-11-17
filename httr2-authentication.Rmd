@@ -39,6 +39,7 @@
     -   Goal: Make the key as short-lived as possible
     -   Not everyone implements the same way (ie often wrong)
     -   `httr2::req_oauth_*()`
+-   **Other:** [Certificates](https://fosstodon.org/deck/@jaredlander/111422477967658857), other?
 
 ## Dangers of leaking credentials {-}
 

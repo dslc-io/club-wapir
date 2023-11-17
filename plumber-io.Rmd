@@ -9,6 +9,14 @@
 - ADD SLIDES AS SECTIONS (`##`).
 - TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
 
+## random notes {-}
+
+Include ideas from these [plumber](https://www.rplumber.io/) articles:
+
+-   [Routing & Input](https://www.rplumber.io/articles/routing-and-input.html)
+    -   Specifically input bits. Also Dynammic Routes
+-   [Rendering Output](https://www.rplumber.io/articles/rendering-output.html)
+
 ## Meeting Videos {-}
 
 ### Cohort 1 {-}

@@ -9,6 +9,12 @@
 - ADD SLIDES AS SECTIONS (`##`).
 - TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
 
+## random notes {-}
+
+Include ideas from these [plumber](https://www.rplumber.io/) articles:
+
+-   [Security](https://www.rplumber.io/articles/security.html)
+
 ## Meeting Videos {-}
 
 ### Cohort 1 {-}
