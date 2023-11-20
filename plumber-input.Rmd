@@ -1,0 +1,149 @@
+# How can I get inputs from API users?
+
+**Learning objectives:**
+
+-   Decide whether API inputs should be passed in the path, query, body, header, or cookie.
+-   Process API arguments directly from the request object.
+-   Process API arguments specified in the path.
+-   Process API arguments passed in the query string.
+-   Process API arguments passed in the request body.
+-   Process API arguments sent as a header.
+-   Process API arguments stored in a cookie.
+
+## Path vs Other {-}
+
+-   **Path** for main noun (the thing you're acting on)
+-   **Query/body** for arguments
+-   **Cookies/header** for metadata
+
+## Types of inputs {-}
+
+**How will your API be used?** 
+
+-   Directly in browser (Are you sure?)
+    -   `GET`
+    -   **Query** for things user decides
+    -   **Cookies** for state, etc
+-   Mostly programmatic (including from Shiny, etc)
+    -   `POST`, `PUT`, `PATCH`, `DELETE`
+    -   **Body** for things related to this specific request
+    -   **Header** for things that aren't function arguments
+    -   Possibly **cookies** for state still
+
+## API function arguments {-}
+
+-   *Can* expect named arguments, BUT
+-   Better: Accept `req` (request object)
+-   Specify priority (or only accept certain ones)
+    -   Good documentation MUCH better than flexibility!
+    -   By default: `argsQuery` > `argsPath` > `argsBody`
+
+```{r plumberio-req-args, eval = FALSE}
+function(req) {
+  x <- req$argsPath$x %||% req$argsBody$x %||% req$argsQuery$x %||% 
+    req$cookies$x %||% req$HTTP_X
+}
+```
+
+## Parameter types {-}
+
+-   Optionally specify type (~class) in API definition
+    -   `@param x:int` (more details later)
+-   Enclose in `[]` to allow length > 1 (array)
+    -   `@param x:[int]`
+
+## Parameter types table {-}
+
+|type     |R class  |in         |
+|:-------:|:-------:|:---------:|
+|"boolean"|logical  |query, path|
+|"number" |numeric  |query, path|
+|"integer"|integer  |query, path|
+|"string" |character|query, path|
+|"object" |list     |body       |
+|"file"   |raw      |body       |
+
+
+## Path parameters {-}
+
+```{r plumberio-path, eval = FALSE}
+#* @get /users/<id>
+function(id) {...} # better: use req$argsPath$id
+```
+
+Optional: only route certain types
+
+```{r plumberio-path2, eval = FALSE}
+#* @get /users/<id:int>
+function(id) {...} # better: use req$argsPath$id
+```
+
+{plumber} casts typed *path* input
+
+## Query parameters {-}
+
+`https://example.com/api/repeat?letter=x&number=1`
+
+```{r plumberio-query, eval = FALSE}
+#* @get repeat
+#* @param letter:string The letter.
+#* @param number:integer The number of times to repeat it.
+```
+
+{plumber} does *not* cast *query* input!
+
+## Request bodies {-}
+
+-   `req$body` ≈ `req$bodyArgs`
+    -   `body` sometimes has raw `value` + `parsed`, other details
+-   Parsers can prepare body
+    -   Specify as `#* @parser PARSER` (`json`, `csv`, `rds`, etc)
+    -   Args in list: `#* @parser json list(simplifyVector = FALSE)`
+
+```{r plumberio-body-parser, eval = FALSE}
+#* @param df:object The input data.frame. Must contain columns "first_name" 
+#*        and "city".
+#* @parser feather list(col_select = c("first_name", "city"))
+```
+
+## Stabilizing input {-}
+
+TODO: {stbl} package introduction once it's stable.
+
+## HTTP headers {-}
+
+Headers are processed and included in `req` object:
+
+-   `-` replaced with `_`
+-   UPPERCASE
+-   `HTTP_` prefix
+
+`X-custom-header` → `req$HTTP_X_CUSTOM_HEADER`
+
+## Inputs in Cookies {-}
+
+-   `req$cookies` = named list of (unencrypted) cookies
+-   `req$session` = named list from encrypted cookies
+    -   Much more info when we *save* cookies
+
+## random notes {-}
+
+Include ideas from these [plumber](https://www.rplumber.io/) articles:
+
+-   [Routing & Input](https://www.rplumber.io/articles/routing-and-input.html)
+    -   Specifically input bits. Also Dynammic Routes
+-   [Rendering Output](https://www.rplumber.io/articles/rendering-output.html)
+
+## Meeting Videos {-}
+
+### Cohort 1 {-}
+
+`r knitr::include_url("https://www.youtube.com/embed/URL")`
+
+<details>
+<summary> Meeting chat log </summary>
+
+```
+LOG
+```
+</details>

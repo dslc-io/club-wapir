@@ -1,20 +1,20 @@
-# How can I better control plumber input and output?
+# How can I control API output?
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
-
-## SLIDE 1 {-}
-
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+-   Describe the expected return from an endpoint.
+-   Return text from an endpoint.
+-   Return an image from an endpoint.
+-   Return larger data from an endpoint.
+-   Return something else from an endpoint.
+-   Handle API errors.
+-   Set unencrypted cookies.
+-   Set encrypted cookies.
 
 ## random notes {-}
 
 Include ideas from these [plumber](https://www.rplumber.io/) articles:
 
--   [Routing & Input](https://www.rplumber.io/articles/routing-and-input.html)
-    -   Specifically input bits. Also Dynammic Routes
 -   [Rendering Output](https://www.rplumber.io/articles/rendering-output.html)
 
 ## Meeting Videos {-}

@@ -32,13 +32,13 @@ nrow(api_pkgs)
 head(api_pkgs)
 ```
 
-## Searching the R Universe
+## Searching the R Universe {-}
 
 -   Web interface at https://r-universe.dev/
 -   API in {universe} package? (broken as of 2023-11-13)
 -   API at `https://r-universe.dev/stats/powersearch`
 
-## Searching the R Universe API
+## Searching the R Universe API {-}
 
 ```{r pkgs-r-universe}
 resp <- request("https://r-universe.dev") |> 
