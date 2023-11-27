@@ -3,7 +3,7 @@
 **Learning objectives:**
 
 -   Describe how {plumber} handles errors by default.
--   Log API errors separately from client error responses.
+-   Send different error messages to the server than to the client.
 -   Describe the possible responses from an endpoint.
 -   Return useful error responses from an endpoint.
 
@@ -23,110 +23,91 @@ function(){
 -   Error sent to client
 -   Error also printed in terminal
 
-## Responses in plumber block {-}
+## Custom error handling: basics {-}
 
-```{r plumber-output-response-annotation, eval = FALSE}
-#* @response 200 The number of things in the whatever.
-#* @response 400 Bad request. This usually occurs because of a missing or 
-#*   malformed parameter.
-#* @response 401 Unauthorized. A valid API token was not provided.
+```{r plumber-errors-set-simple, eval = FALSE}
+my_error_handler <- function(req, res, err) {
+  res$status <- 500 # Or something else, see below.
+  
+  # Do something server-side (logs)
+  print(err)
+  
+  # Return an error JSON object.
+  list(error = "An error occurred. Please contact your administrator.")
+}
+
+pr("plumber.R") |> 
+  pr_set_error(my_error_handler) |> 
+  pr_run()
 ```
 
--   `@response` `Status Code` `Description`
--   Can *only* give description (not object details)
--   *Be careful!* Not validated
--   More in API errors section
+## Logging strategies {-}
 
-## Serializers {-}
+-   `print()` for function output
+-   `cat()` for messages
+-   `cli::cli_inform()` for formatted messages
+-   `{log4r}` package for neater logs
+-   See [DevOps for Data Science: Logging and Monitoring](https://do4ds.com/chapters/sec1/1-4-monitor-log.html) for more
 
--   Vocab: "Serialize" = "translate into a format for storage or transmission"
--   Default = `json` via `jsonlite::toJSON()`
--   `#* @serializer NAME list(ARGS)`
-    -   eg, `#* @serializer json list(na = "string")`
--   Impacts behavior *AND* Swagger docs
+## Error responses {-}
 
-## Structured text {-}
-
-|`@serializer`|processed with|content type|
-|-------------|--------------|------------|
-|`json` (default)|`jsonlite::toJSON()`|`application/json`|
-|`unboxedJSON`|<code>jsonlite::toJSON(<br>&nbsp;&nbsp;auto_unbox = TRUE)</code>|`application/json`|
-|`geojson`|`geojsonsf::sfc_geojson()` or `geojsonsf::sf_geojson()`|`application/json`|
-|`yaml`|`yaml::as_yaml()`|`text/x-yaml`|
-|`csv`|`readr::format_csv`|`text/csv`|
-|`tsv`|`readr::format_tsv`|`text/tab-separated-values`|
-
-## Larger data {-}
-
-|`@serializer`|processed with|content type|
-|-------------|--------------|------------|
-|rds|`base::serialize()`|`application/rds`|
-|feather|`arrow::write_feather()`|`application/vnd.apache.arrow.file`|
-|parquet|`arrow::write_parquet()`|`application/parquet`|
-
-## HTML & XML {-}
-
-|`@serializer`|processed with|content type|
-|-------------|--------------|------------|
-|`html`|(unprocessed)|`text/html; charset=UTF-8`|
-|`htmlwidget`|`htmlwidgets::saveWidget()`|`text/html; charset=UTF-8`|
-
-Use `html` for `xml`-structured data, too
-
-## Plain text {-}
-
-|`@serializer`|processed with|content type|
-|-------------|--------------|------------|
-|`text`|`as.character()`|`text/plain`|
-|`format`|`format()`|`text/plain`|
-|`print`|`print()`|`text/plain`|
-|`cat`|`cat()`|`text/plain`|
-
-## Devices (images & PDFs) {-}
-
-|`@serializer`|processed with|content type|
-|-------------|--------------|------------|
-|`jpeg`|`jpeg()`|`image/jpeg`|
-|`png`|`png()`|`image/png`|
-|`svg`|`svg()`|`image/svg+xml`|
-|`tiff`|`tiff()`|`image/tiff`|
-|`bmp`|`bmp()`|`image/bmp`|
-|`pdf`|`pdf()`|`application/pdf`|
-
-Can define new image serializers with `serializer_device()`
-
-## Other things {-}
-
-|`@serializer`|processed with|content type|
-|-------------|--------------|------------|
-|contentType|(user-specified)|(user-specified)|
-|octet|(as is, must be `raw`)|`application/octet-stream`|
-
-
-```{r plumber-output-serializer-contentType, eval = FALSE}
-#* @serializer contentType list(type = "application/protobuf", serialize_fn = protolite::serialize_pb)
-```
-
--   `octet` is `contentType` with a `serialize_fn` that checks `is.raw()`
-
-## API errors {-}
-
-***API errors are responses***
+***API errors are still responses***
 
 -   Status code specifies broad error category (see next slide)
+    -   `400` to `499` = Client errors (user did something wrong)
+    -   `500` to `599` = Server errors (something is broken)
+    -   Reminder: By default, {plumber} uses `500`
 -   Best practice: Error format same as successful response
     -   Be careful about this, don't make silent errors easy!
 -   Need `plumber::pr_handle()` family for advanced options
 
-## HTTP error status codes
+## HTTP error status codes {-}
 
+|code|title                |usage|
+|:---|:--------------------|:----|
+|400 |Bad Request          |Missing or bad argument, etc|
+|401 |Unauthorized         |No or invalid authentication|
+|403 |Forbidden            |Known user can't do that|
+|404 |Not Found            |`path` arg doesn't exist|
+|502 |Bad Gateway          |Your api hits another api, got error|
+|504 |Gateway Timeout      |Your api hits another api, timed out|
+|500 |Internal Server Error|Catch-all for other errors|
 
+See [MDN HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) for more options and further details
 
-|code|title|uses|
-|400|Bad Request||
+## Error descriptions in plumber block {-}
 
+```{r plumber-output-response-annotation, eval = FALSE}
+#* @response 400 Bad request. This usually occurs because of a missing or 
+#*   malformed parameter.
+#* @response 401 Unauthorized. A valid API token was not provided.
+#* @response 403 Forbidden. This user cannot access that file.
+```
+
+-   `@response` `Status Code` `Description`
+-   Can *only* give description (not object details)
+-   This is a *promise,* but isn't *validated* by {plumber}
+
+## Recommended error_handler {-}
+
+```{r plumber-errors-error-handler, eval = FALSE}
+# TODO: Finish working this out!
+error_handler <- function(req, res, err) {
+  res$status <- attr(err, "status_code") %||% 500L
+  
+  # TODO: Better understanding of log4r or another option.
+  do_the_log_thing(err)
+
+  # Skip serialization to always return JSON  
+  res$headers <- list("Content-type" = "application/json")
+  res$body <- jsonlite::toJSON(unclass(err))
+  return(res) 
+}
+```
 
 ## Programmatic responses {-}
+
+TODO: Adapt/finish this slide. And probably add one more about the internal error handling in plumber.R.
 
 -   Can specify full OpenAPI Response Object programmatically
 -   Impacts auto-generated Swagger documentation
@@ -143,11 +124,6 @@ pr_get(
   )
 )
 ```
-
-
-## Setting unencrypted cookies {-}
-
-## Setting encrypted cookies {-}
 
 
 ## Meeting Videos {-}
