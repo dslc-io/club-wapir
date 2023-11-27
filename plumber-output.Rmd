@@ -2,20 +2,82 @@
 
 **Learning objectives:**
 
--   Describe the expected return from an endpoint.
+-   Return data from an endpoint.
 -   Return text from an endpoint.
 -   Return an image from an endpoint.
--   Return larger data from an endpoint.
 -   Return something else from an endpoint.
--   Handle API errors.
--   Set unencrypted cookies.
--   Set encrypted cookies.
 
-## random notes {-}
+## Serializers {-}
 
-Include ideas from these [plumber](https://www.rplumber.io/) articles:
+-   Vocab: "Serialize" = "translate into a format for storage or transmission"
+-   Default = `json` via `jsonlite::toJSON()`
+-   `#* @serializer NAME list(ARGS)`
+    -   eg, `#* @serializer json list(na = "string")`
+-   Impacts behavior *AND* Swagger docs
 
--   [Rendering Output](https://www.rplumber.io/articles/rendering-output.html)
+## Structured text {-}
+
+|`@serializer`|processed with|content type|
+|-------------|--------------|------------|
+|`json` (default)|`jsonlite::toJSON()`|`application/json`|
+|`unboxedJSON`|<code>jsonlite::toJSON(<br>&nbsp;&nbsp;auto_unbox = TRUE)</code>|`application/json`|
+|`geojson`|`geojsonsf::sfc_geojson()` or `geojsonsf::sf_geojson()`|`application/json`|
+|`yaml`|`yaml::as_yaml()`|`text/x-yaml`|
+|`csv`|`readr::format_csv`|`text/csv`|
+|`tsv`|`readr::format_tsv`|`text/tab-separated-values`|
+
+## Larger data {-}
+
+|`@serializer`|processed with|content type|
+|-------------|--------------|------------|
+|rds|`base::serialize()`|`application/rds`|
+|feather|`arrow::write_feather()`|`application/vnd.apache.arrow.file`|
+|parquet|`arrow::write_parquet()`|`application/parquet`|
+
+## HTML & XML {-}
+
+|`@serializer`|processed with|content type|
+|-------------|--------------|------------|
+|`html`|(unprocessed)|`text/html; charset=UTF-8`|
+|`htmlwidget`|`htmlwidgets::saveWidget()`|`text/html; charset=UTF-8`|
+
+Use `html` for `xml`-structured data, too
+
+## Plain text {-}
+
+|`@serializer`|processed with|content type|
+|-------------|--------------|------------|
+|`text`|`as.character()`|`text/plain`|
+|`format`|`format()`|`text/plain`|
+|`print`|`print()`|`text/plain`|
+|`cat`|`cat()`|`text/plain`|
+
+## Devices (images & PDFs) {-}
+
+|`@serializer`|processed with|content type|
+|-------------|--------------|------------|
+|`jpeg`|`jpeg()`|`image/jpeg`|
+|`png`|`png()`|`image/png`|
+|`svg`|`svg()`|`image/svg+xml`|
+|`tiff`|`tiff()`|`image/tiff`|
+|`bmp`|`bmp()`|`image/bmp`|
+|`pdf`|`pdf()`|`application/pdf`|
+
+Can define new image serializers with `serializer_device()`
+
+## Other things {-}
+
+|`@serializer`|processed with|content type|
+|-------------|--------------|------------|
+|contentType|(user-specified)|(user-specified)|
+|octet|(as is, must be `raw`)|`application/octet-stream`|
+
+
+```{r plumber-output-serializer-contentType, eval = FALSE}
+#* @serializer contentType list(type = "application/protobuf", serialize_fn = protolite::serialize_pb)
+```
+
+-   `octet` is `contentType` with a `serialize_fn` that checks `is.raw()`
 
 ## Meeting Videos {-}
 

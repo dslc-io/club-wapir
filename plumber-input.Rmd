@@ -14,7 +14,7 @@
 
 -   **Path** for main noun (the thing you're acting on)
 -   **Query/body** for arguments
--   **Cookies/header** for metadata
+-   **Cookies/header** for metadata, auth, etc
 
 ## Types of inputs {-}
 
@@ -63,6 +63,8 @@ function(req) {
 |"object" |list     |body       |
 |"file"   |raw      |body       |
 
+-   All of these have other aliases (eg `int` for `integer`)
+-   Stick with these for smooth experience
 
 ## Path parameters {-}
 
@@ -126,13 +128,10 @@ Headers are processed and included in `req` object:
 -   `req$session` = named list from encrypted cookies
     -   Much more info when we *save* cookies
 
-## random notes {-}
+## Remember filters {-}
 
-Include ideas from these [plumber](https://www.rplumber.io/) articles:
+TODO: Add slide about dealing with things that aren't specific to a given function via filters (eg, for auth).
 
--   [Routing & Input](https://www.rplumber.io/articles/routing-and-input.html)
-    -   Specifically input bits. Also Dynammic Routes
--   [Rendering Output](https://www.rplumber.io/articles/rendering-output.html)
 
 ## Meeting Videos {-}
 
