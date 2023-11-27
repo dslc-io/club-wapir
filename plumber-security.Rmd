@@ -2,7 +2,11 @@
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+-   THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+-   Also talk about "state" in here, and differentiate from security.
+-   Probably also change the title.
+-   Set unencrypted cookies.
+-   Set encrypted cookies.
 
 ## SLIDE 1 {-}
 

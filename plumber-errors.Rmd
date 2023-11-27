@@ -1,11 +1,41 @@
-# How can I control API output?
+# How can I handle API errors?
 
 **Learning objectives:**
 
--   Return data from an endpoint.
--   Return text from an endpoint.
--   Return an image from an endpoint.
--   Return something else from an endpoint.
+-   Describe how {plumber} handles errors by default.
+-   Log API errors separately from client error responses.
+-   Describe the possible responses from an endpoint.
+-   Return useful error responses from an endpoint.
+
+## Plumber's default error handling {-}
+
+```{r plumber-errors-default, eval = FALSE}
+#* @get /simple
+function(){
+  stop("I'm an error!")
+}
+
+#> {"error":["500 - Internal server error"],"message":["Error in (function () : 
+#> I'm an error!\n"]}
+```
+
+-   HTTP status code 500 for all errors
+-   Error sent to client
+-   Error also printed in terminal
+
+## Responses in plumber block {-}
+
+```{r plumber-output-response-annotation, eval = FALSE}
+#* @response 200 The number of things in the whatever.
+#* @response 400 Bad request. This usually occurs because of a missing or 
+#*   malformed parameter.
+#* @response 401 Unauthorized. A valid API token was not provided.
+```
+
+-   `@response` `Status Code` `Description`
+-   Can *only* give description (not object details)
+-   *Be careful!* Not validated
+-   More in API errors section
 
 ## Serializers {-}
 
@@ -78,6 +108,47 @@ Can define new image serializers with `serializer_device()`
 ```
 
 -   `octet` is `contentType` with a `serialize_fn` that checks `is.raw()`
+
+## API errors {-}
+
+***API errors are responses***
+
+-   Status code specifies broad error category (see next slide)
+-   Best practice: Error format same as successful response
+    -   Be careful about this, don't make silent errors easy!
+-   Need `plumber::pr_handle()` family for advanced options
+
+## HTTP error status codes
+
+
+
+|code|title|uses|
+|400|Bad Request||
+
+
+## Programmatic responses {-}
+
+-   Can specify full OpenAPI Response Object programmatically
+-   Impacts auto-generated Swagger documentation
+-   Not well documented (outside of this book)
+
+```{r plumber-output-response-programmatic, eval = FALSE}
+pr_get(
+  "/pathToEndpoint", function(res, req) { ... },
+  responses = list(
+    "403" = list(
+      description = "Forbidden",
+      content = list("application/json" = list())
+    )
+  )
+)
+```
+
+
+## Setting unencrypted cookies {-}
+
+## Setting encrypted cookies {-}
+
 
 ## Meeting Videos {-}
 

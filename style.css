@@ -17,6 +17,9 @@
 .book.font-size-4 .book-body .page-inner section {
   font-size: 3em !important;
 }
+.book .book-body .page-wrapper .page-inner section.normal pre>code {
+  font-size: .7em !important;
+}
 
 h2 {
   margin-top: 0px !important;
