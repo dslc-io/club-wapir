@@ -1,23 +1,91 @@
-# How can I secure my APIs?
+# How can I authenticate API users?
 
 **Learning objectives:**
 
--   THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
--   Also talk about "state" in here, and differentiate from security.
--   Probably also change the title.
--   Set unencrypted cookies.
--   Set encrypted cookies.
+-   Implement API keys for a plumber API.
+-   Implement OAuth2 authentication for a plumber API.
+-   Use cookies to save and restore API user state.
+-   Set and read encrypted cookies for API users.
+-   (Something about things like Posit Connect?)
 
-## SLIDE 1 {-}
+## Review of authentication schemes
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+(FROM `httr2-authentication.Rmd` once that's edited)
 
-## random notes {-}
+## API key considerations {-}
 
-Include ideas from these [plumber](https://www.rplumber.io/) articles:
+-   Accept in URL query?
+    -   May be easier for user (eg, purely in-browser)
+    -   Less secure than header
+-   Cookies? {-}
+    -   If you set cookie, you need to read it (see later slide)
+    -   Probably also accept header
 
--   [Security](https://www.rplumber.io/articles/security.html)
+## API keys with plumber: Process Keys {-}
+
+```{r plumber-security-api-key-filter-authorize, eval = FALSE}
+#* Authorize user
+#* @filter authorize_api_key
+function(req) {
+  api_key <- req$HTTP_AUTHORIZATION %||%            # Header
+    req$session$api_key %||% req$cookies$api_key    # Cookies
+  # Code to validate and process the API key.
+  req$authorized <- TRUE # Or FALSE, set in auth section
+  plumber::forward()
+}
+```
+
+-   `#* @preempt authorize_api_key` if endpoint doesn't use auth
+
+## API keys with plumber: Error {-}
+
+```{r plumber-security-api-key-filter-error, eval = FALSE}
+#* Error: Unauthorized
+#* @filter stop_unauthorized
+function(req) {
+  if (req$authorized) {
+    plumber::forward()
+  }
+  res$status <- 401L
+  # TODO: do_the_log_thing() per plumber-errors.Rmd
+  res$serializer <- plumber::serializer_json
+  res$body <- list(
+    error = "Unauthorized",
+    message = "Obtain an API key at https://your_key_process.html"
+  )
+}
+```
+
+-   `#* @preempt stop_unauthorized` if endpoint doesn't *require* auth
+    -   *In addition to `authorize_api_key`* if not used at all
+
+## OAuth2 with plumber {-}
+
+-   Endpoint for user to initiate Oauth2 dance
+    -   Will launch browser for interaction with OAuth2 provider
+-   Endpoint for provider to send code
+-   Use state params to keep track of user
+-   End result is a bearer token (+ possibly other pieces)
+
+TODO: Actually implement this and make sure it works how you think!
+
+## Using cookies for user state {-}
+
+-   Client controls cookies, so don't store anything you "own"
+    -   Eg, store a key, not a user ID
+    -   Safer: Store preferences
+    -   General rule: things you'd accept as user input
+-   `res$setCookie()` for unencrypted data
+
+## Encrypted cookies {-}
+
+-   `pr_cookie(pr, key, name)` in router
+    -   Tells plumber to read/write that cookie.
+    -   Encrypts with `key`
+    -   By default `name = "plumber"`
+        -   All stored in `req$session$plumber` 
+-   Can include lists (ends up as json)
+-   TODO: Add details about env vars and/or keyring (probably same as httr2 slides)
 
 ## Meeting Videos {-}
 
