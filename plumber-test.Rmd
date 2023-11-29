@@ -2,12 +2,114 @@
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+-   Minimize API-specific code in your functions.
+-   Wrap an API into an R package.
+-   Test functions with {testthat}.
+-   Test API-specific functions with `req` arguments.
+-   Test {plumber} routers.
 
-## SLIDE 1 {-}
+Partially inpsired by [API as a Package series from Jumping Rivers](https://www.jumpingrivers.com/blog/api-as-a-package-testing/)
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+## Pure Functions {-}
+
+-   No hidden inputs
+-   No side effects
+-   Given inputs, always return same output.
+
+*Abstract pure functions out of endpoint functions for easier testing.*
+
+## Example: EXAMPLE NAME {-}
+
+TODO: Create a simple API. First show as one function, then abstract out pure functions.
+
+## plumber APIs as packages {-}
+
+-   [R Packages](https://r-pkgs.org/) book for intro to R packages
+-   Functions in `R/`
+-   APIs in `inst/plumber/API_NAME/`
+    -   Recommended: Use `entrypoint.R` to build router programmatically
+-   Launch with `plumber::plumb_api("yourpkg", "API_NAME")`
+
+## Brief Intro to testthat {-}
+
+Much more in [R Packages](https://r-pkgs.org/)!
+
+-   `usethis::use_testthat()` in package
+-   Tests in `tests/testthat/test-filename.R`
+-   `test_that("What you expected", { code to test that })`
+-   Pure functions are relatively easy to test!
+
+## Example: EXAMPLE FROM ABOVE IN A PACKAGE {-}
+
+TODO: Fill this in, describing where the bits from above go inside a package.
+
+## req helper {-}
+
+```{r plumber-test-as-mock-req, eval = FALSE}
+# tests/testthat/helper-req.R
+as_mock_req <- function(...,
+                        body = list(), 
+                        path = list(), 
+                        query = list(),
+                        cookies = list()) {
+  list2env(c(
+    list(...), 
+    argsBody = body, argsPath = path, argsQuery = query,  cookies = cookies
+  ))
+}
+```
+
+## Testing API-specific functions {-}
+
+TODO: FILL THIS IN WITH SPECIFICS
+
+```{r plumber-test-api-function, eval = FALSE}
+test_that("THE THING WORKS", {
+  req <- as_mock_req(body = list(whatever = 1))
+  expect_equal(function_to_test(req), expected_result)
+})
+```
+
+## local_api() {-}
+
+```{r plumber-test-pr-run-bg, eval = FALSE}
+# tests/testthat/helper-plumber.R
+pr_run_bg <- function(pr, port) {
+  callr::r_bg(
+    plumber::pr_run,
+    list(pr = pr, port = port),
+    package = "plumber"
+  )
+}
+local_api <- function(pr, port, env = parent.frame()) {
+  bg_api <- pr_run_bg(pr, port)
+  # Sys.sleep(2) # TODO: Test whether this is necessary!
+  withr::defer(bg_api$kill(), envir = env)
+}
+req_local_api <- function(endpoint, port) {
+  httr2::request(glue::glue("http://127.0.0.1:{port}")) |> 
+    httr2::req_url_path_append(endpoint)
+}
+```
+
+## Testing plumber routers {-}
+
+Use these for auth, errors, etc
+
+```{r plumber-test-router, eval = FALSE}
+# test/testthat/test-router.R
+test_that("My router does an expected thing", {
+  api <- plumber::plumb_api("mypackage", "target_api")
+  port <- httpuv::randomPort()
+  local_api(api, port)
+  # TODO: Update this with auth failure.
+  req <- req_local_api("predict/x", port)
+  expect_error(
+    httr2::req_perform(req),
+    class = "mypkg_error_auth"
+  )
+})
+```
 
 ## random notes {-}
 
