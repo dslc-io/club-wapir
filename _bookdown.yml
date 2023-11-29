@@ -24,6 +24,5 @@ rmd_files: [
   "plumber-security.Rmd",
   "plumber-test.Rmd",
   "deploy.Rmd",
-  "lambdr.Rmd",
   "creating-more.Rmd"
 ]
