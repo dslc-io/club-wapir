@@ -112,6 +112,8 @@ function(id) {...} # better: use req$argsPath$id
 
 TODO: {stbl} package introduction once it's stable.
 
+TODO: Also talk about [DoS avoidance](https://www.rplumber.io/articles/security.html#dos) (input limits) + [Sanitation](https://www.rplumber.io/articles/security.html#sanitization) 
+
 ## HTTP headers {-}
 
 Headers are processed and included in `req` object:

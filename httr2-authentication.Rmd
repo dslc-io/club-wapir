@@ -9,6 +9,7 @@
 -   Authenticate a request with an API key.
 -   Authenticate a request with the "OAuth dance."
 -   Re-authenticate OAuth requests.
+-   TODO: LOs about other schemes, cookies?
 
 ## But first: Practice safe git {-}
 
@@ -39,7 +40,9 @@
     -   Goal: Make the key as short-lived as possible
     -   Not everyone implements the same way (ie often wrong)
     -   `httr2::req_oauth_*()`
--   **Other:** [Certificates](https://fosstodon.org/deck/@jaredlander/111422477967658857), other?
+-   **Other:**
+    -   Cookies
+    -   [Certificates](https://fosstodon.org/deck/@jaredlander/111422477967658857)
 
 ## Dangers of leaking credentials {-}
 
