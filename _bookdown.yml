@@ -23,7 +23,6 @@ rmd_files: [
   "plumber-errors.Rmd",
   "plumber-security.Rmd",
   "plumber-test.Rmd",
-  "deploy.Rmd",
-  "lambdr.Rmd",
+  "plumber-deploy.Rmd",
   "creating-more.Rmd"
 ]

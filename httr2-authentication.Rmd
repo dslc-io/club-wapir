@@ -9,7 +9,8 @@
 -   Authenticate a request with an API key.
 -   Authenticate a request with the "OAuth dance."
 -   Re-authenticate OAuth requests.
--   TODO: LOs about other schemes, cookies?
+-   Authenticate with browser cookies.
+-   TODO: LOs about other schemes?
 
 ## But first: Practice safe git {-}
 
@@ -186,6 +187,19 @@ playlists <- request("https://youtube.googleapis.com/youtube/v3") |>
 -   `httr2::req_oauth_bearer_jwt()` if you have JSON web token (service account)
 -   `httr2::req_oauth_refresh()` if you have a refresh token
     -   `httr2::oauth_flow_auth_code()` once to get refresh
+
+## Browser cookies {-}
+
+*This will feel hacky because it is hacky.*
+
+-   Install [EditThisCookie](https://www.editthiscookie.com/) browser extension
+-   Use API in browser
+-   Open EditThisCookie extension
+-   Options > "Choose the preferred export format for cookies" > Netscape HTTP Cookie File
+-   Open EditThisCookie extension
+-   Export
+-   Paste into a file at `path`
+-   `httr2::req_cookie_preserve(req, path)`
 
 ## Meeting Videos {-}
 
