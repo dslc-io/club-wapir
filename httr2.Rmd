@@ -14,14 +14,15 @@
 
 ## httr2 demo {-}
 
-```{r 03-httr2-demo}
+```{r 03-httr2-demo, eval = FALSE}
 candidates <- httr2::request("https://api.open.fec.gov/v1") |> 
   httr2::req_headers("X-Api-Key" = "DEMO_KEY") |> 
   httr2::req_url_path_append("candidates") |> 
   httr2::req_url_query(office = c("H", "S"), election_year = 2024, .multi = "explode") |> 
   httr2::req_perform() |> 
   httr2::resp_body_json()
-candidates$results[[1]]
+candidates$results[[1]]$candidate_id
+#> [1] "H4OR05312"
 ```
 
 ## URL Pieces {-}
@@ -82,11 +83,9 @@ httr2::request("https://api.open.fec.gov/v1/candidates?office=H&office=S") |>
 
 Exact order might change, but:
 
--   Chapter 4 = Pagination, streaming, error-handling, etc
--   Chapter 5 = Authentication
--   Chapter 6 = Parsing responses
--   Chapter 7 = Deeper exploration of automation
--   Chapter 8 = Packaging REST APIs
+-   Chapter 4 = Authentication
+-   Chapter 5 = Parsing responses
+-   Chapter 6 = Pagination (and other strategies for big responses)
 
 ## Meeting Videos {-}
 
