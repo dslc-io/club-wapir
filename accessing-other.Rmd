@@ -4,7 +4,7 @@
 
 -   Fetch data from GraphQL APIs.
 -   Fetch data from websocket APIs.
--   Recognize gRPC APIs (maybe fetch with httr2? Does that work?)
+-   Fetch data from gRPC APIs.
 
 ```{r req-other-setup}
 library(ghql)
