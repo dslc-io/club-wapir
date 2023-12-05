@@ -2,6 +2,7 @@
 
 **Learning objectives:**
 
+-   Deploy a {plumber} API to Posit Cloud.
 -   Deploy a {plumber} API to Posit Connect.
 -   Deploy a {plumber} API to DigitalOcean with {plumberDeploy}.
 -   Run a {plumber} API in a Docker container.
