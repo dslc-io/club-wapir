@@ -1,3 +1,7 @@
+---
+engine: knitr
+---
+
 # How do I tell the API who I am?
 
 **Learning objectives:**

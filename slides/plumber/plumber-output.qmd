@@ -1,3 +1,7 @@
+---
+engine: knitr
+---
+
 # How can I control API output?
 
 **Learning objectives:**

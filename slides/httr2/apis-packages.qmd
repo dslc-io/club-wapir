@@ -1,3 +1,7 @@
+---
+engine: knitr
+---
+
 # How can I find API-wrapping packages?
 
 **Learning objectives:**

@@ -1,3 +1,7 @@
+---
+engine: knitr
+---
+
 # How can I get a lot of data from an API?
 
 ```{r 04-setup, include = FALSE}

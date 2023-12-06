@@ -1,0 +1,78 @@
+---
+title: "Web APIs with R"
+subtitle: "Project Club, 2023-12-09"
+engine: knitr
+---
+
+## Objectives
+
+-   Convince you that **you care about APIs**
+-   Explain why I'm **writing my book "backwards"**
+-   Recruit you to **"Cohort 0"** of my book club
+-   Give you a **sneak peek** at a **new book club site format**
+
+# Why you care about APIs
+
+## What is an API?
+
+See [How do computers communicate?](httr2/apis.html){target="_blank"}
+
+(chapter 2 of my book)
+
+## Discussion: API Examples
+
+### What do you want to do with APIs?
+
+# "Backwards Design"
+
+[Understanding by Design](https://amzn.to/3GxZ1lw) (Grant Wiggins and Jay McTighe, 1998)
+
+1.  ID what learners need to know.
+2.  Create an assessment to measure that learning.
+3.  Plan the lessons to succeed at assessment.
+
+## My plan
+
+1.  ✅ Rough draft slides
+2.  ⬜ Discuss material with learners (ID needs)
+3.  ❓ Create an assessment?
+4.  🔄️ Revise slides
+5.  📝 Write chapter
+
+::: notes
+1.  I spent November making rough slides of everything.
+2.  Doing this today! (also see next slide)
+3.  Not sure about this yet, but may write exercises next
+4.  Ideal universe = repeat process, might skip to draft
+5.  No solid completion date yet
+:::
+
+# Want to learn about WAPIR?
+
+-   Weekly like normal?
+-   [r4ds.io/bookclubber/?bookname=Web APIs with R](https://r4ds.io/bookclubber/?bookname=Web%20APIs%20with%20R)
+
+::: notes
+-   I prefer 1 chapter/week, interested
+-   To be clear: Book will NOT exist before book club meeting
+-   (Highlights might not be up-to-date)
+:::
+
+# New Club Site Format
+
+-   Old: [R Packages](https://r4ds.io/rpkgs)
+-   New: [This site](https://r4ds.io/wapir)
+    -   Lots to do style-wise!
+    -   Auto-open decks in new tab?
+    -   Numbered chapters?
+    -   I'll apply it if things aren't broken
+
+::: notes
+-   Need to convince myself that parity is good enough!
+-   Refining auto-build and review process.
+-   In theory I can copy existing RMDs.
+    -   Likely some will fail due to dependencies on one another.
+-   Trying to balance reducing confusion vs reducing complexity of rarely edited index.
+-   Need to experiment with caching, other build options
+    -   Don't want to over-cache and teach outdated code!
+:::

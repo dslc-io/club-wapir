@@ -1,3 +1,7 @@
+---
+engine: knitr
+---
+
 # How do I deploy my plumber API?
 
 **Learning objectives:**

@@ -1,3 +1,7 @@
+---
+engine: knitr
+---
+
 # How can I access APIs from R?
 
 **Learning objectives:**
