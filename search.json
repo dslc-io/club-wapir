@@ -746,7 +746,7 @@
     "href": "index.html",
     "title": "Welcome",
     "section": "",
-    "text": "This is a companion for the book Web APIs with R by Jon Harmon (in progress, aiming for publication in 2024).\nEach chapter title to the left is a link to a slide deck. - These slides are being developed as I write the book. - The decks open in a new tab. - Join the R4DS Learning Community to participate.\nWe follow the R4DS Learning Community Code of Conduct."
+    "text": "This is a companion for the book Web APIs with R by Jon Harmon (in progress, aiming for publication in 2024).\nEach chapter title to the left is a link to a slide deck.\n\nThese slides are being developed as I write the book.\nEach deck will open in its own tab.\nJoin the R4DS Learning Community to participate.\n\nWe follow the R4DS Learning Community Code of Conduct."
   },
   {
     "objectID": "slides/httr2/apis.html#learning-objectives",
