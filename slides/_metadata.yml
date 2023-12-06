@@ -1,7 +1,7 @@
 format:
   revealjs:
     theme: [dark, custom.scss]
-    footer: r4ds.io/wapir | Jon Harmon | wapir.io
+    footer: <a href="/" target="wapir-club_index">r4ds.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a>
     multiplex: true
     link-external-newwindow: true
     transition: slide
