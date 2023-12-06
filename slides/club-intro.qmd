@@ -1,0 +1,16 @@
+# Club Meetings
+
+## Format
+
+-   Jon leads a discussion of a chapter
+    -   **IMPORTANT:** You ask questions!
+    -   Recordings will be on [R4DS YouTube](https://r4ds.io/youtube)
+-   Jon revises slides
+-   (repeat?)
+-   Jon writes chapter
+
+## Pace
+
+-   1 chapter/session
+-   Weekly? Monthly?
+-   Meet ***every*** session except holidays, etc

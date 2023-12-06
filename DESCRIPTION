@@ -1,8 +1,10 @@
+Type: Book
 Package: bookclub-wapir
 Title: Web APIs with R Book Club
 Version: 0.0.1
 Authors@R: 
     person("R4DS Online Learning Community", , , "rfordatasci@gmail.com", role = c("aut", "cre", "cph"))
+Description: This is only here for GHA dependencies.
 URL: https://r4ds.github.io/bookclub-wapir,
     https://github.com/r4ds/bookclub-wapir
 Depends:
@@ -14,8 +16,9 @@ Imports:
     dplyr,
     ghql,
     httpuv,
-    httr2 (>= 0.2.3.9000),
+    httr2 (>= 1.0.0),
     jsonlite,
+    lubridate,
     protolite,
     rmarkdown,
     stringr,
@@ -25,6 +28,4 @@ Imports:
     webfakes,
     websocket,
     xml2
-Remotes:
-    r-lib/httr2
 Encoding: UTF-8

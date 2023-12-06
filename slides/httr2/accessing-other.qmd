@@ -1,3 +1,7 @@
+---
+engine: knitr
+---
+
 # How else can I communicate with APIs from R?
 
 **Learning objectives:**

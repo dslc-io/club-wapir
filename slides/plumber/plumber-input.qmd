@@ -1,3 +1,7 @@
+---
+engine: knitr
+---
+
 # How can I get inputs from API users?
 
 **Learning objectives:**

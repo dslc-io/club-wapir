@@ -1,3 +1,7 @@
+---
+engine: knitr
+---
+
 # How can I test my plumber API?
 
 **Learning objectives:**

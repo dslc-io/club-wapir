@@ -1,3 +1,7 @@
+---
+engine: knitr
+---
+
 # How can I handle API errors?
 
 **Learning objectives:**
