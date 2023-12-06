@@ -7,8 +7,9 @@ date-format: "YYYY-MM-DD HH:mm"
 This is a companion for the book [_Web APIs with R_](https://wapir.io/) by Jon Harmon (in progress, aiming for publication in 2024).
 
 Each chapter title to the left is a link to a slide deck.
-    -   These slides are being developed *as I write the book.*
-    -   The decks open in a new tab.
-    -   [Join the R4DS Learning Community](https://r4ds.io/join) to participate.
+
+-   These slides are being developed *as I write the book.*
+-   Each deck will open in its own tab.
+-   [Join the R4DS Learning Community](https://r4ds.io/join) to participate.
     
 We follow the [R4DS Learning Community Code of Conduct](https://r4ds.io/conduct).
