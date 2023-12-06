@@ -6,7 +6,7 @@ Welcome to the R4DS Web APIs with R Book Club!
 *I'm actively writing this book, and gathering feedback as I go.*
 *I'm using this repository to test out some ideas.*
 
-We are working together to read [_Web APIs with R_](https://jonthegeek.github.io/wapir/) by Jon Harmon (copyright 2024).
+We are working together to read [_Web APIs with R_](https://wapir.io/) by Jon Harmon (copyright 2024).
 
 Join the [#book_club-wapir](https://rfordatascience.slack.com/archives/C05MYSD1PEV) channel on the [R4DS Slack](https://r4ds.io/join) to participate.
 As we read, we are producing [notes about the book](https://r4ds.io/wapir).

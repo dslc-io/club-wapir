@@ -24,27 +24,45 @@ website:
 
       - section: "How can I get web data into R?"
         contents:
-          - slides/httr2/apis.qmd
-          - slides/httr2/httr2.qmd
-          - slides/httr2/httr2-authentication.qmd
-          - slides/httr2/httr2-responses.qmd
-          - slides/httr2/httr2-perform.qmd
-          - slides/httr2/apis-find.qmd
-          - slides/httr2/apis-packages.qmd
-          - slides/httr2/accessing-other.qmd
-          - slides/httr2/rvest.qmd
-          - slides/httr2/accessing-more.qmd
+          - file: slides/httr2/apis.qmd
+            target: _blank
+          - file: slides/httr2/httr2.qmd
+            target: _blank
+          - file: slides/httr2/httr2-authentication.qmd
+            target: _blank
+          - file: slides/httr2/httr2-responses.qmd
+            target: _blank
+          - file: slides/httr2/httr2-perform.qmd
+            target: _blank
+          - file: slides/httr2/apis-find.qmd
+            target: _blank
+          - file: slides/httr2/apis-packages.qmd
+            target: _blank
+          - file: slides/httr2/accessing-other.qmd
+            target: _blank
+          - file: slides/httr2/rvest.qmd
+            target: _blank
+          - file: slides/httr2/accessing-more.qmd
+            target: _blank
 
       - section: "How can I create my own APIs with R?"
         contents:
-          - slides/plumber/plumber-intro.qmd
-          - slides/plumber/plumber-input.qmd
-          - slides/plumber/plumber-output.qmd
-          - slides/plumber/plumber-errors.qmd
-          - slides/plumber/plumber-security.qmd
-          - slides/plumber/plumber-test.qmd
-          - slides/plumber/plumber-deploy.qmd
-          - slides/plumber/creating-more.qmd
+          - file: slides/plumber/plumber-intro.qmd
+            target: _blank
+          - file: slides/plumber/plumber-input.qmd
+            target: _blank
+          - file: slides/plumber/plumber-output.qmd
+            target: _blank
+          - file: slides/plumber/plumber-errors.qmd
+            target: _blank
+          - file: slides/plumber/plumber-security.qmd
+            target: _blank
+          - file: slides/plumber/plumber-test.qmd
+            target: _blank
+          - file: slides/plumber/plumber-deploy.qmd
+            target: _blank
+          - file: slides/plumber/creating-more.qmd
+            target: _blank
 
 format:
   html:
