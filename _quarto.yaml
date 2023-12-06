@@ -18,51 +18,51 @@ website:
     contents:
       - index.qmd
       - file: slides/club-intro.qmd
-        target: _blank
+        target: wapir-club_club_intro
       - file: slides/intro.qmd
-        target: _blank
+        target: wapir-club_intro
 
       - section: "How can I get web data into R?"
         contents:
           - file: slides/httr2/apis.qmd
-            target: _blank
+            target: wapir-club_apis
           - file: slides/httr2/httr2.qmd
-            target: _blank
+            target: wapir-club_httr2
           - file: slides/httr2/httr2-authentication.qmd
-            target: _blank
+            target: wapir-club_httr2-authentication
           - file: slides/httr2/httr2-responses.qmd
-            target: _blank
+            target: wapir-club_httr2-responses
           - file: slides/httr2/httr2-perform.qmd
-            target: _blank
+            target: wapir-club_httr2-perform
           - file: slides/httr2/apis-find.qmd
-            target: _blank
+            target: wapir-club_apis-find
           - file: slides/httr2/apis-packages.qmd
-            target: _blank
+            target: wapir-club_apis-packages
           - file: slides/httr2/accessing-other.qmd
-            target: _blank
+            target: wapir-club_accessing-other
           - file: slides/httr2/rvest.qmd
-            target: _blank
+            target: wapir-club_rvest
           - file: slides/httr2/accessing-more.qmd
-            target: _blank
+            target: wapir-club_accessing-more
 
       - section: "How can I create my own APIs with R?"
         contents:
           - file: slides/plumber/plumber-intro.qmd
-            target: _blank
+            target: wapir-club_plumber-intro
           - file: slides/plumber/plumber-input.qmd
-            target: _blank
+            target: wapir-club_plumber-input
           - file: slides/plumber/plumber-output.qmd
-            target: _blank
+            target: wapir-club_plumber-output
           - file: slides/plumber/plumber-errors.qmd
-            target: _blank
+            target: wapir-club_plumber-errors
           - file: slides/plumber/plumber-security.qmd
-            target: _blank
+            target: wapir-club_plumber-security
           - file: slides/plumber/plumber-test.qmd
-            target: _blank
+            target: wapir-club_plumber-test
           - file: slides/plumber/plumber-deploy.qmd
-            target: _blank
+            target: wapir-club_plumber-deploy
           - file: slides/plumber/creating-more.qmd
-            target: _blank
+            target: wapir-club_creating-more
 
 format:
   html:
