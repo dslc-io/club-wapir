@@ -334,48 +334,147 @@
 <section id="objectives" class="slide level2">
 <h2>Objectives</h2>
 <ul>
-<li>Convince you that <strong>you care about APIs</strong></li>
-<li>Explain why I’m <strong>writing my book “backwards”</strong></li>
-<li>Recruit you to <strong>“Cohort 0”</strong> of my book club</li>
-<li>Give you a <strong>sneak peek</strong> at a <strong>new book club site format</strong></li>
+<li>Convince you that <strong>you care about APIs.</strong></li>
+<li>Explain why I’m <strong>writing my book “backward”.</strong></li>
+<li>Recruit you to <strong>“Cohort 0”</strong> of my book club.</li>
+<li>Give you a <strong>sneak peek</strong> at a <strong>new book club site format.</strong></li>
 </ul>
+<aside class="notes">
+<ul>
+<li>Stick around til the end for that last one!</li>
+<li>🤣 Who knew learning objectives could be click-baity?</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section>
-<section id="why-you-care-about-apis" class="title-slide slide level1 center">
-<h1>Why you care about APIs</h1>
+<section id="why-should-you-care-about-apis" class="title-slide slide level1 center">
+<h1>Why should you care about APIs?</h1>
 
 </section>
 <section id="what-is-an-api" class="slide level2">
 <h2>What is an API?</h2>
-<p>See <a href="httr2/apis.html" target="_blank">How do computers communicate?</a></p>
-<p>(chapter 2 of my book)</p>
+<p>See <a href="httr2/apis.html" target="wapir-club_apis">How do computers communicate?</a></p>
+<aside class="notes">
+<ul>
+<li>First “real” chapter of my book.</li>
+<li>We’ll go through part of that then come back here.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="discussion-api-examples" class="slide level2">
 <h2>Discussion: API Examples</h2>
 <h3 id="what-do-you-want-to-do-with-apis">What do you want to do with APIs?</h3>
+<aside class="notes">
+<ul>
+<li>Please speak up or type ideas in the chat!</li>
+<li>More examples if people need prompting:
+<ul>
+<li>“Login with” google, apple, facebook, etc.</li>
+<li>Slack API used for various R4DS management tasks.</li>
+<li>Sunrise/sunset (etc) from lat/long/date</li>
+<li><code>all_apis &lt;- apisguru::list_apis()</code></li>
+<li><code>all_apis |&gt; dplyr::slice_sample(n = 5)</code></li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
-<section id="backwards-design" class="title-slide slide level1 center">
-<h1>“Backwards Design”</h1>
+<section id="why-are-you-writing-your-book-backward" class="title-slide slide level1 center">
+<h1>Why are you writing your book “backward”?</h1>
+
+</section>
+<section id="forwardbackward-design" class="slide level2">
+<h2>Forward/Backward Design</h2>
 <p><a href="https://amzn.to/3GxZ1lw">Understanding by Design</a> (Grant Wiggins and Jay McTighe, 1998)</p>
+<div class="columns">
+<div class="column fragment" style="width:50%;">
+<p><strong>Forward:</strong></p>
 <ol type="1">
-<li>ID what learners need to know.</li>
-<li>Create an assessment to measure that learning.</li>
-<li>Plan the lessons to succeed at assessment.</li>
+<li class="fragment">Plan lessons about material</li>
+<li class="fragment">Create assessment to measure learning</li>
+<li class="fragment">ID what learners know</li>
 </ol>
+</div><div class="column fragment" style="width:50%;">
+<p><strong>Backward:</strong></p>
+<ol type="1">
+<li class="fragment">ID what learners <strong>need to</strong> know</li>
+<li class="fragment">Create assessment to measure learning</li>
+<li class="fragment">Plan lessons <strong>to help learners succeed at assessment</strong></li>
+</ol>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>“Forward” is “normal” way of teaching.
+<ul>
+<li>Eg, teachers choosing a book to read then deciding what to put on the test.</li>
+</ul></li>
+<li>“Learner-centered” design.</li>
+<li>“What learners need to know” == learning objectives</li>
+<li>To avoid: “Teaching the test.”
+<ul>
+<li>There’s still nuance to making sure you’re preparing students to answer <em>any</em> question within LOs.</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="my-plan" class="slide level2">
 <h2>My plan</h2>
+<div>
 <ol type="1">
-<li>✅ Rough draft slides</li>
-<li>⬜ Discuss material with learners (ID needs)</li>
-<li>❓ Create an assessment?</li>
-<li>🔄️ Revise slides</li>
-<li>📝 Write chapter</li>
+<li class="fragment">✅ Rough draft slides</li>
+<li class="fragment">⬜ Discuss material with learners (ID needs)</li>
+<li class="fragment">❓ Create an assessment?</li>
+<li class="fragment">🔄️ Revise slides</li>
+<li class="fragment">📝 Write chapter</li>
 </ol>
+</div>
 <aside class="notes">
 <ol type="1">
-<li>I spent November making rough slides of everything.</li>
+<li>I spent November making rough slides of almost everything.
+<ul>
+<li>Tool to give structure to meetings</li>
+</ul></li>
 <li>Doing this today! (also see next slide)</li>
 <li>Not sure about this yet, but may write exercises next</li>
 <li>Ideal universe = repeat process, might skip to draft</li>
@@ -395,15 +494,17 @@
 </section></section>
 <section id="want-to-learn-about-wapir" class="title-slide slide level1 center">
 <h1>Want to learn about WAPIR?</h1>
+<div>
 <ul>
-<li>Weekly like normal?</li>
-<li><a href="https://r4ds.io/bookclubber/?bookname=Web%20APIs%20with%20R">r4ds.io/bookclubber/?bookname=Web APIs with R</a></li>
+<li class="fragment"><a href="https://r4ds.io/bookclubber/?bookname=Web%20APIs%20with%20R">r4ds.io/bookclubber/?bookname=Web APIs with R</a></li>
+<li class="fragment">Weekly like normal?</li>
 </ul>
+</div>
 <aside class="notes">
 <ul>
-<li>I prefer 1 chapter/week, interested</li>
 <li>To be clear: Book will NOT exist before book club meeting</li>
-<li>(Highlights might not be up-to-date)</li>
+<li>(Bookclubber shading might not be up-to-date)</li>
+<li>I prefer 1 chapter/week, interested to hear your thoughts</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -421,24 +522,23 @@
 <section id="new-club-site-format" class="title-slide slide level1 center">
 <h1>New Club Site Format</h1>
 <ul>
-<li>Old: <a href="https://r4ds.io/rpkgs">R Packages</a></li>
-<li>New: <a href="https://r4ds.io/wapir">This site</a>
+<li>Old: <a href="https://r4ds.io/rpkgs" target="rpkgs-club_index">R Packages</a></li>
+<li>New: <a href="https://r4ds.io/wapir" target="wapir-club_index">This site</a>
 <ul>
 <li>Lots to do style-wise!</li>
-<li>Auto-open decks in new tab?</li>
 <li>Numbered chapters?</li>
-<li>I’ll apply it if things aren’t broken</li>
+<li>Will update other clubs if this isn’t broken</li>
 </ul></li>
 </ul>
 <aside class="notes">
 <ul>
 <li>Need to convince myself that parity is good enough!</li>
-<li>Refining auto-build and review process.</li>
-<li>In theory I can copy existing RMDs.
+<li>In theory we can use existing RMDs as-is.
 <ul>
 <li>Likely some will fail due to dependencies on one another.</li>
+<li>New slide decks are more independent.</li>
 </ul></li>
-<li>Trying to balance reducing confusion vs reducing complexity of rarely edited index.</li>
+<li>Trying to make sure it’s easy to edit slides.</li>
 <li>Need to experiment with caching, other build options
 <ul>
 <li>Don’t want to over-cache and teach outdated code!</li>
@@ -470,8 +570,6 @@
   <script src="../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
   <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
   <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="../site_libs/revealjs/plugin/multiplex/socket.io.js"></script>
-  <script src="../site_libs/revealjs/plugin/multiplex/multiplex.js"></script>
   <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
@@ -494,7 +592,6 @@
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
-'multiplex': {"secret":null,"id":"2855aee0439cbede","url":"https://reveal-multiplex.glitch.me/"},
 'smaller': false,
  
         // Display controls in the bottom right corner
@@ -668,7 +765,7 @@
         plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
 
           RevealMath,
-          
+          RevealNotes,
           RevealSearch,
           RevealZoom
         ]

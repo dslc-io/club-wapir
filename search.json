@@ -4,28 +4,35 @@
     "href": "slides/project.html#objectives",
     "title": "Web APIs with R",
     "section": "Objectives",
-    "text": "Objectives\n\nConvince you that you care about APIs\nExplain why I’m writing my book “backwards”\nRecruit you to “Cohort 0” of my book club\nGive you a sneak peek at a new book club site format"
+    "text": "Objectives\n\nConvince you that you care about APIs.\nExplain why I’m writing my book “backward”.\nRecruit you to “Cohort 0” of my book club.\nGive you a sneak peek at a new book club site format.\n\n\n\nStick around til the end for that last one!\n🤣 Who knew learning objectives could be click-baity?"
   },
   {
     "objectID": "slides/project.html#what-is-an-api",
     "href": "slides/project.html#what-is-an-api",
     "title": "Web APIs with R",
     "section": "What is an API?",
-    "text": "What is an API?\nSee How do computers communicate?\n(chapter 2 of my book)"
+    "text": "What is an API?\nSee How do computers communicate?\n\n\nFirst “real” chapter of my book.\nWe’ll go through part of that then come back here."
   },
   {
     "objectID": "slides/project.html#discussion-api-examples",
     "href": "slides/project.html#discussion-api-examples",
     "title": "Web APIs with R",
     "section": "Discussion: API Examples",
-    "text": "Discussion: API Examples\nWhat do you want to do with APIs?"
+    "text": "Discussion: API Examples\nWhat do you want to do with APIs?\n\n\nPlease speak up or type ideas in the chat!\nMore examples if people need prompting:\n\n“Login with” google, apple, facebook, etc.\nSlack API used for various R4DS management tasks.\nSunrise/sunset (etc) from lat/long/date\nall_apis &lt;- apisguru::list_apis()\nall_apis |&gt; dplyr::slice_sample(n = 5)"
+  },
+  {
+    "objectID": "slides/project.html#forwardbackward-design",
+    "href": "slides/project.html#forwardbackward-design",
+    "title": "Web APIs with R",
+    "section": "Forward/Backward Design",
+    "text": "Forward/Backward Design\nUnderstanding by Design (Grant Wiggins and Jay McTighe, 1998)\n\n\nForward:\n\nPlan lessons about material\nCreate assessment to measure learning\nID what learners know\n\n\nBackward:\n\nID what learners need to know\nCreate assessment to measure learning\nPlan lessons to help learners succeed at assessment\n\n\n\n\n\n“Forward” is “normal” way of teaching.\n\nEg, teachers choosing a book to read then deciding what to put on the test.\n\n“Learner-centered” design.\n“What learners need to know” == learning objectives\nTo avoid: “Teaching the test.”\n\nThere’s still nuance to making sure you’re preparing students to answer any question within LOs."
   },
   {
     "objectID": "slides/project.html#my-plan",
     "href": "slides/project.html#my-plan",
     "title": "Web APIs with R",
     "section": "My plan",
-    "text": "My plan\n\n✅ Rough draft slides\n⬜ Discuss material with learners (ID needs)\n❓ Create an assessment?\n🔄️ Revise slides\n📝 Write chapter\n\n\n\nI spent November making rough slides of everything.\nDoing this today! (also see next slide)\nNot sure about this yet, but may write exercises next\nIdeal universe = repeat process, might skip to draft\nNo solid completion date yet"
+    "text": "My plan\n\n\n✅ Rough draft slides\n⬜ Discuss material with learners (ID needs)\n❓ Create an assessment?\n🔄️ Revise slides\n📝 Write chapter\n\n\n\n\nI spent November making rough slides of almost everything.\n\nTool to give structure to meetings\n\nDoing this today! (also see next slide)\nNot sure about this yet, but may write exercises next\nIdeal universe = repeat process, might skip to draft\nNo solid completion date yet"
   },
   {
     "objectID": "slides/plumber/plumber-errors.html#plumbers-default-error-handling",
