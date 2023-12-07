@@ -6,41 +6,86 @@ engine: knitr
 
 ## Objectives
 
--   Convince you that **you care about APIs**
--   Explain why I'm **writing my book "backwards"**
--   Recruit you to **"Cohort 0"** of my book club
--   Give you a **sneak peek** at a **new book club site format**
+-   Convince you that **you care about APIs.**
+-   Explain why I'm **writing my book "backward".**
+-   Recruit you to **"Cohort 0"** of my book club.
+-   Give you a **sneak peek** at a **new book club site format.**
 
-# Why you care about APIs
+::: notes
+-   Stick around til the end for that last one!
+-   🤣 Who knew learning objectives could be click-baity?
+:::
+
+# Why should you care about APIs?
 
 ## What is an API?
 
-See [How do computers communicate?](httr2/apis.html){target="_blank"}
+See [How do computers communicate?](httr2/apis.html){target="wapir-club_apis"}
 
-(chapter 2 of my book)
+::: notes
+-   First "real" chapter of my book.
+-   We'll go through part of that then come back here.
+:::
 
 ## Discussion: API Examples
 
 ### What do you want to do with APIs?
 
-# "Backwards Design"
+::: notes
+-   Please speak up or type ideas in the chat!
+-   More examples if people need prompting:
+    -   "Login with" google, apple, facebook, etc.
+    -   Slack API used for various R4DS management tasks.
+    -   Sunrise/sunset (etc) from lat/long/date
+    -   `all_apis <- apisguru::list_apis()`
+    -   `all_apis |> dplyr::slice_sample(n = 5)`
+:::
+
+# Why are you writing your book "backward"?
+
+## Forward/Backward Design
 
 [Understanding by Design](https://amzn.to/3GxZ1lw) (Grant Wiggins and Jay McTighe, 1998)
 
-1.  ID what learners need to know.
-2.  Create an assessment to measure that learning.
-3.  Plan the lessons to succeed at assessment.
+:::: {.columns}
+::: {.column .fragment .incremental width="50%"}
+**Forward:**
+
+1.  Plan lessons about material
+2.  Create assessment to measure learning
+3.  ID what learners know
+:::
+::: {.column .fragment .incremental width="50%"}
+**Backward:**
+
+1.  ID what learners **need to** know
+2.  Create assessment to measure learning
+3.  Plan lessons **to help learners succeed at assessment**
+:::
+::::
+
+::: notes
+-   "Forward" is "normal" way of teaching.
+    -   Eg, teachers choosing a book to read then deciding what to put on the test.
+-   "Learner-centered" design.
+-   "What learners need to know" == learning objectives
+-   To avoid: "Teaching the test."
+    -   There's still nuance to making sure you're preparing students to answer *any* question within LOs.
+:::
 
 ## My plan
 
+::: {.incremental}
 1.  ✅ Rough draft slides
 2.  ⬜ Discuss material with learners (ID needs)
 3.  ❓ Create an assessment?
 4.  🔄️ Revise slides
 5.  📝 Write chapter
+:::
 
 ::: notes
-1.  I spent November making rough slides of everything.
+1.  I spent November making rough slides of almost everything.
+    -   Tool to give structure to meetings
 2.  Doing this today! (also see next slide)
 3.  Not sure about this yet, but may write exercises next
 4.  Ideal universe = repeat process, might skip to draft
@@ -49,30 +94,31 @@ See [How do computers communicate?](httr2/apis.html){target="_blank"}
 
 # Want to learn about WAPIR?
 
--   Weekly like normal?
+::: {.incremental}
 -   [r4ds.io/bookclubber/?bookname=Web APIs with R](https://r4ds.io/bookclubber/?bookname=Web%20APIs%20with%20R)
+-   Weekly like normal?
+:::
 
 ::: notes
--   I prefer 1 chapter/week, interested
 -   To be clear: Book will NOT exist before book club meeting
--   (Highlights might not be up-to-date)
+-   (Bookclubber shading might not be up-to-date)
+-   I prefer 1 chapter/week, interested to hear your thoughts
 :::
 
 # New Club Site Format
 
--   Old: [R Packages](https://r4ds.io/rpkgs)
--   New: [This site](https://r4ds.io/wapir)
+-   Old: [R Packages](https://r4ds.io/rpkgs){target="rpkgs-club_index"}
+-   New: [This site](https://r4ds.io/wapir){target="wapir-club_index"}
     -   Lots to do style-wise!
-    -   Auto-open decks in new tab?
     -   Numbered chapters?
-    -   I'll apply it if things aren't broken
+    -   Will update other clubs if this isn't broken
 
 ::: notes
 -   Need to convince myself that parity is good enough!
--   Refining auto-build and review process.
--   In theory I can copy existing RMDs.
+-   In theory we can use existing RMDs as-is.
     -   Likely some will fail due to dependencies on one another.
--   Trying to balance reducing confusion vs reducing complexity of rarely edited index.
+    -   New slide decks are more independent.
+-   Trying to make sure it's easy to edit slides.
 -   Need to experiment with caching, other build options
     -   Don't want to over-cache and teach outdated code!
 :::
