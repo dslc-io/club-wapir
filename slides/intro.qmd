@@ -1,21 +1,94 @@
 ---
+title: "Introduction"
 engine: knitr
 ---
 
-# Introduction
+# ️✅ Learning objectives
 
-**Learning objectives:**
+-   Decide whether this book is for you.
+-   Identify the major topics that this book will cover.
+-   Identify prerequisites of this book.
+-   Describe what this book will *not* cover.
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+::: notes
+-   Anything else you'd want to see in an intro?
+:::
 
-## SLIDE 1 {-}
+# Who should read this book?
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+-   Data Analysts
+    -   Part 1: Enrich datasets via APIs
+-   Machine Learning Engineers
+    -   Part 2: Share predictions via APIs
+-   Researchers
+    -   Part 2: Share data via APIs
+-   Shiny App Designers
+    -   Part 1: Work with external APIs
+    -   Part 2: Divide & conquer
 
-## Meeting Videos {-}
+::: notes
+-   People who analyze data, not necessarily that job title.
+-   Researchers or anybody else with data to share.
+-   Does anybody fit into something other than those use cases?
+:::
 
-### Cohort 1 {-}
+# What will I learn?
+
+-   How can I get web data into R?
+    -   How do computers communicate? (2)
+    -   {httr2} 📦: How can I access APIs from R? (3-6)
+    -   How can I find APIs & API 📦? (7-8)
+    -   How else can I communicate with APIs from R? (9)
+    -   {rvest} 📦: How can I get data from web pages? (10)
+-   How can I create my own APIs with R?
+    -   {plumber} 📦: How can I create my own APIs? (12-17)
+    -   How do I deploy my plumber API? (18)
+
+::: notes
+-   Catch-all chapter at end of each section about learning more.
+-   Considering part 3 with ~recipes. Useful? Integrate?
+-   Any missing topics?
+-   Which topics do you care about? Show of hands per bullet.
+:::
+
+## Prerequisites
+
+-   Very few hard prerequisites
+    -   Will point to resources when helpful
+-   I assume familiarity with R
+    -   [R for Data Science](https://r4ds.hadley.nz/)
+-   Helpful:
+    -   [Advanced R](https://adv-r.hadley.nz/) to construct more robust APIs
+    -   [R Packages](https://r-pkgs.org/) for deeper dive into 📦
+
+::: notes
+-   How many have read R4DS?
+-   How many have read Advanced R?
+-   How many have read R Packages?
+-   How many have written a function?
+-   How many have written a package?
+-   Discuss level I can assume.
+:::
+
+## What won't I learn?
+
+-   How can I access APIs from other programming languages?
+-   How should I design a complex API?
+    -   Covered a tiny bit
+    -   Many other books, such as [Designing APIs with Swagger and OpenAPI](https://www.manning.com/books/designing-apis-with-swagger-and-openapi)
+-   How can I administer an enterprise API?
+    -   [DevOps for Data Science](https://do4ds.com/) for tips
+    -   Work with professionals for full-scale deployments
+
+::: notes
+-   Anything else people would expect?
+-   Should I put Adv R here, too?
+-   Should I put R Packages here, too?
+:::
+
+# Meeting Videos
+
+## Cohort 1
 
 `r knitr::include_url("https://www.youtube.com/embed/URL")`
 

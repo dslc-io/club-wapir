@@ -1,16 +1,26 @@
-# Club Meetings
+---
+title: "Club Meetings"
+engine: knitr
+---
 
-## Format
+## ️✅ Process
 
--   Jon leads a discussion of a chapter
-    -   **IMPORTANT:** You ask questions!
-    -   Recordings will be on [R4DS YouTube](https://r4ds.io/youtube)
--   Jon revises slides
--   (repeat?)
--   Jon writes chapter
+**Meetings = weekly**
 
-## Pace
+-   🧑‍🏫 Jon leads a *discussion* of a chapter
+    -   🙋‍♀️ **IMPORTANT:** You ask questions!
+    -   ️✅ Goal: Revise/finalize learning objectives
+    -   📺 Recordings on [R4DS YouTube](https://r4ds.io/youtube)
+-   🔄️ Jon revises slides
+-   ❓Jon writes "test yourself" questions
+    -   🧵 Discuss in channel?
+-   (revisions, maybe future cohorts)
+-   📝 Jon writes chapter
 
--   1 chapter/session
--   Weekly? Monthly?
--   Meet ***every*** session except holidays, etc
+::: notes
+-   Meet *every* week... unless I need a break to catch up.
+-   Review revised slides? Maybe spend 2 weeks per chapter?
+-   Would formal survey of some sort help?
+-   Not 100% certain about question structure yet (whether "homeworky" or "think about it").
+-   Hoping to write as we go, but definitely won't keep up.
+:::
