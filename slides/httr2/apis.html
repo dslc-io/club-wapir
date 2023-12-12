@@ -330,59 +330,21 @@
 </div>
 
 </section>
-<section id="learning-objectives" class="slide level2">
-<h2>Learning objectives</h2>
+<section id="learning-objectives" class="title-slide slide level1 center">
+<h1>️✅ Learning objectives</h1>
 <ul>
 <li>Explain <strong>what an API is.</strong></li>
 <li>Recognize <strong>examples of web APIs.</strong></li>
 <li>Identify the <strong>pieces of an HTTP request.</strong></li>
 <li>Describe how <strong>accessing a web page through a browser</strong> involves an <strong>HTTP request.</strong></li>
 <li>Compare and contrast <strong>HTTP-based API frameworks.</strong></li>
-<li>Recognize <strong>other web API protocols.</strong></li>
-</ul>
-</section>
-<section id="api-application-programming-interface" class="slide level2">
-<h2>API = “application programming interface”</h2>
-<ul>
-<li>“application” = function, website… any computerized thing</li>
-<li>“programming” = can be used in code</li>
-<li>“interface” = way to interact with (talk to) something</li>
-</ul>
-<p><strong>🤖 APIs allow computers to talk to one another</strong></p>
-</section>
-<section id="web-apis" class="slide level2">
-<h2>Web APIs</h2>
-<blockquote>
-<p>“httr2 is a ground-up rewrite of httr that provides a pipeable <strong><em>API</em></strong> with an explicit request object that solves more problems felt by packages that wrap <strong><em>APIs</em></strong>” (httr2 docs, emphasis added)</p>
-</blockquote>
-<ul>
-<li>💻 Technically any function’s list of arguments is an API</li>
-<li>🕸️ This book = <strong><em>web</em></strong> APIs
-<ul>
-<li>Web API = API on the internet</li>
-<li>For rest of book, “API” means “web API”</li>
-</ul></li>
-</ul>
-</section>
-<section id="web-api-examples" class="slide level2">
-<h2>Web API Examples</h2>
-<ul>
-<li><a href="https://apis.guru/">APIs.guru</a> = API directory
-<ul>
-<li>2,529 APIs as of 2023-12-06</li>
-</ul></li>
-<li>Cloud services
-<ul>
-<li>📦 <a href="https://cran.r-project.org/package=paws">{paws}</a></li>
-<li>📦 <a href="https://cran.r-project.org/package=googleAnalyticsR">{googleAnalyticsR}</a>, etc</li>
-<li>📦 <a href="https://github.com/Azure/AzureR">{AzureR}</a> family</li>
-</ul></li>
-<li>Government agencies (<a href="https://api.open.fec.gov/developers/">OpenFEC</a>)</li>
-<li><em>Much</em> more to come in <strong>“How can I find APIs?”</strong> (Chapter 7?)</li>
+<li>Recognize <strong>other web API frameworks.</strong></li>
 </ul>
 <aside class="notes">
 <ul>
-<li>Go back to project tab after this</li>
+<li>Do those make sense?</li>
+<li>Show of hands, who cares about these?</li>
+<li>Anything else you’d want to see?</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -396,6 +358,104 @@
           display:block!important;
       }</style></aside>
 </section>
+
+<section>
+<section id="what-is-an-api" class="title-slide slide level1 center">
+<h1>What is an API?</h1>
+
+</section>
+<section id="api-application-programming-interface" class="slide level2">
+<h2>API = “application programming interface”</h2>
+<ul>
+<li>“application” = function, website… any computerized thing</li>
+<li>“programming” = can be used in code</li>
+<li>“interface” = way to interact with something</li>
+</ul>
+<p><strong>🤖 APIs allow computers to talk to one another</strong></p>
+<aside class="notes">
+<ul>
+<li>Right level?</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="web-apis" class="slide level2">
+<h2>Web APIs</h2>
+<ul>
+<li>💻 Technically any function’s list of arguments is an API</li>
+</ul>
+<blockquote>
+<p>“httr2 is a ground-up rewrite of httr that provides a pipeable <strong><em>API</em></strong> with an explicit request object that solves more problems felt by packages that wrap <strong><em>APIs</em></strong>” (httr2 docs, emphasis added)</p>
+</blockquote>
+<ul>
+<li>🕸️ This book = <strong><em>web</em></strong> APIs
+<ul>
+<li>Web API = API on the internet</li>
+<li>For rest of book, “API” means “web API”</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>httr2 quote helpful/interesting?</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="web-api-examples" class="slide level2">
+<h2>Web API Examples</h2>
+<ul>
+<li>Cloud services (<a href="https://cran.r-project.org/package=paws">{paws}</a>)</li>
+<li>Government agencies (<a href="https://api.open.fec.gov/developers/">OpenFEC</a>)</li>
+<li>Random data (<a href="https://sunrisesunset.io/api/">sunrisesunset.io</a>)</li>
+<li>Services (<a href="https://openai.com/product">OpenAI</a>)</li>
+<li><a href="https://apis.guru/">APIs.guru</a> = API directory
+<ul>
+<li>2,529 APIs as of 2023-12-06</li>
+</ul></li>
+<li><em>Much</em> more to come in <a href="apis-find.html" target="wapir-club_apis-find">“How can I find APIs?”</a></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Number of examples good?</li>
+<li>Variety of examples good?</li>
+<li>Deep enough, or more-full usage examples?</li>
+<li>What would you expect in book (vs slides)?</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="what-is-an-http-request" class="title-slide slide level1 center">
+<h1>What is an HTTP request?</h1>
+
+</section>
 <section id="http" class="slide level2">
 <h2>HTTP</h2>
 <ul>
@@ -408,32 +468,114 @@
 </ul></li>
 <li>HTTP(S) = most of internet communication</li>
 </ul>
+<aside class="notes">
+<ul>
+<li>If anyone asks: 1.1 = most, 2.0 = 2-way</li>
+<li>Compare to HTML (HyperText Markup Language)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="http-requests" class="slide level2">
 <h2>HTTP Requests</h2>
 <ul>
 <li>Request methods (in approximate order of use):
 <ul>
-<li>GET (fetch existing thing)</li>
-<li>POST (push new thing)</li>
-<li>DELETE (delete existing thing)</li>
-<li>PATCH (change existing thing)</li>
-<li>PUT (replace existing thing)</li>
-<li>CONNECT, OPTIONS, HEAD, TRACE (very rare)</li>
+<li><code>GET</code> (fetch existing thing)</li>
+<li><code>POST</code> (push new thing)</li>
+<li><code>DELETE</code> (delete existing thing)</li>
+<li><code>PATCH</code> (change existing thing)</li>
+<li><code>PUT</code> (replace existing thing)</li>
+<li><code>CONNECT</code>, <code>OPTIONS</code>, <code>HEAD</code>, <code>TRACE</code> (very rare)</li>
 </ul></li>
 <li>Request = URL + headers + method + body</li>
 </ul>
+<aside class="notes">
+<ul>
+<li>Methods aren’t strict
+<ul>
+<li>API owner can do weird things.</li>
+<li>GET or POST often used for ~everything</li>
+<li>Stuff expected &amp; returned can be weird</li>
+</ul></li>
+<li>CONNECT = “start 2-way communication” (eg ask server to be a bridge)</li>
+<li>OPTIONS should tell you method options</li>
+<li>HEAD returns headers that you’d get with GET
+<ul>
+<li>Eg, use it to check if DL would be big.</li>
+</ul></li>
+<li>TRACE returns the request as the final server received it, with header info about route.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="browsers-and-http-requests" class="slide level2">
 <h2>Browsers and HTTP Requests</h2>
 <p>https://wapir.io/apis.html is an HTTP request:</p>
 <ul>
 <li><code>https://</code> = “use HTTP(s) protocol”</li>
-<li><code>wapir.io/apis.html</code> = URL</li>
-<li>Cookies, etc sent as invisible headers</li>
-<li><code>GET</code> = protocol</li>
-<li>Empty body</li>
+<li><strong>URL:</strong> <code>wapir.io/apis.html</code> = URL</li>
+<li><strong>headers:</strong> Cookies (plus some info about your browser)</li>
+<li><strong>method:</strong> <code>GET</code></li>
+<li><strong>body:</strong> Empty</li>
 </ul>
+<aside class="notes">
+<ul>
+<li>Request = URL + headers + method + body</li>
+<li>You (kinda) use APIs all the time!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="what-are-api-frameworks" class="title-slide slide level1 center">
+<h1>What are API frameworks?</h1>
+<ul>
+<li>Systems for defining APIs</li>
+<li>More like philosophies than rules</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>(don’t linger here)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="http-api-frameworks-historic" class="slide level2">
 <h2>HTTP API Frameworks: Historic</h2>
@@ -442,7 +584,7 @@
 <ul>
 <li>Endpoints = actions</li>
 <li>XML-RPC &amp; JSON-RPC popular early</li>
-<li>Often just GET (“GET /deleteItem/1234”)</li>
+<li>Often just <code>GET</code> (<code>GET /deleteItem/1234</code>)</li>
 </ul></li>
 <li>SOAP = Simple Objects Access Protocol (briefly huge, mostly dead)
 <ul>
@@ -450,6 +592,21 @@
 <li>Technically not limited to HTTP</li>
 </ul></li>
 </ul>
+<aside class="notes">
+<ul>
+<li>RPCs are making a come back (we’ll see in a couple slides)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="http-api-frameworks-modern" class="slide level2">
 <h2>HTTP API Frameworks: Modern</h2>
@@ -467,33 +624,67 @@
 <ul>
 <li>JSON with wildcards telling server what to fill in</li>
 </ul></li>
-<li>Basically GET + 1 endpoint</li>
-<li>Will probably get its own chapter</li>
+<li>Basically <code>GET</code> + 1 endpoint</li>
+<li>More details in <a href="accessing-other.html" target="wapir-club_accessing-other">“How else can I communicate with APIs from R?”</a></li>
 </ul></li>
 </ul>
+<aside class="notes">
+<ul>
+<li>REST APIs often called “RESTful” APIs.</li>
+<li>GraphQL should be bigger than it is for data science</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="other-api-frameworks" class="slide level2">
 <h2>Other API Frameworks</h2>
 <ul>
 <li>websocket
 <ul>
-<li>Alternative to HTTP</li>
-<li><code>ws://</code> or <code>wss://</code></li>
+<li><code>ws://</code> or <code>wss://</code> vs <code>http://</code> or <code>https://</code></li>
 <li>2-way communication</li>
 <li>{websocket} package</li>
 </ul></li>
 <li>gRPC = Google RPC
 <ul>
-<li>Becoming very popular</li>
 <li>Good for real-time, 2-way communication</li>
 <li>Uses HTTP/2 (more socket-like)</li>
 </ul></li>
 </ul>
-<p>Deeper dive coming in later chapter (9?)!</p>
+<p>Deeper dive coming in <a href="accessing-other.html" target="wapir-club_accessing-other">“How else can I communicate with APIs from R?”</a>!</p>
+<aside class="notes">
+<ul>
+<li>Shiny is websocket between server (R) and ui (JS)</li>
+<li>gRPC best for tightly coupled microservices</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="meeting-videos" class="title-slide slide level1 center">
+<h1>Meeting Videos</h1>
+
 </section>
-<section id="meeting-videos" class="slide level2">
-<h2>Meeting Videos</h2>
-<h3 id="cohort-1">Cohort 1</h3>
+<section id="cohort-1" class="slide level2">
+<h2>Cohort 1</h2>
 <iframe src="https://www.youtube.com/embed/URL" width="100%" height="400px" data-external="1">
 </iframe>
 <details>
@@ -506,7 +697,7 @@ Meeting chat log
 <div class="footer footer-default">
 <p><a href="../../" target="wapir-club_index">r4ds.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
 </div>
-</section>
+</section></section>
     </div>
   </div>
 

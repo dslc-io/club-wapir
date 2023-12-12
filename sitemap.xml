@@ -1,91 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/project.html</loc>
-    <lastmod>2023-12-07T15:08:03.517Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/plumber-errors.html</loc>
-    <lastmod>2023-12-07T15:08:01.917Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/plumber-security.html</loc>
-    <lastmod>2023-12-07T15:07:59.697Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/plumber-input.html</loc>
-    <lastmod>2023-12-07T15:07:57.609Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/plumber-test.html</loc>
-    <lastmod>2023-12-07T15:07:55.573Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/httr2-perform.html</loc>
-    <lastmod>2023-12-07T15:07:53.137Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/httr2-authentication.html</loc>
-    <lastmod>2023-12-07T15:07:51.161Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/httr2-responses.html</loc>
-    <lastmod>2023-12-07T15:07:48.981Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/accessing-other.html</loc>
-    <lastmod>2023-12-07T15:07:46.633Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/accessing-more.html</loc>
-    <lastmod>2023-12-07T15:07:44.257Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/club-intro.html</loc>
-    <lastmod>2023-12-07T15:07:42.501Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/index.html</loc>
-    <lastmod>2023-12-07T15:07:42.153Z</lastmod>
-  </url>
-  <url>
     <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/apis.html</loc>
-    <lastmod>2023-12-07T15:07:43.477Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/apis-packages.html</loc>
-    <lastmod>2023-12-07T15:07:45.417Z</lastmod>
+    <lastmod>2023-12-12T19:23:45.124Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/httr2.html</loc>
-    <lastmod>2023-12-07T15:07:47.781Z</lastmod>
+    <lastmod>2023-12-12T19:23:43.492Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/rvest.html</loc>
-    <lastmod>2023-12-07T15:07:49.797Z</lastmod>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/accessing-other.html</loc>
+    <lastmod>2023-12-12T19:23:40.932Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/apis-find.html</loc>
-    <lastmod>2023-12-07T15:07:51.897Z</lastmod>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/httr2-responses.html</loc>
+    <lastmod>2023-12-12T19:23:38.980Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/plumber-intro.html</loc>
-    <lastmod>2023-12-07T15:07:54.397Z</lastmod>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/apis-packages.html</loc>
+    <lastmod>2023-12-12T19:23:36.572Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/creating-more.html</loc>
-    <lastmod>2023-12-07T15:07:56.301Z</lastmod>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/project.html</loc>
+    <lastmod>2023-12-12T19:23:34.660Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/plumber-deploy.html</loc>
-    <lastmod>2023-12-07T15:07:58.533Z</lastmod>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/plumber-input.html</loc>
+    <lastmod>2023-12-12T19:23:33.060Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/plumber-test.html</loc>
+    <lastmod>2023-12-12T19:23:30.452Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/plumber-output.html</loc>
-    <lastmod>2023-12-07T15:08:00.705Z</lastmod>
+    <lastmod>2023-12-12T19:23:28.080Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/plumber-deploy.html</loc>
+    <lastmod>2023-12-12T19:23:25.792Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/r4ds/bookclub-wapir/slides/intro.html</loc>
-    <lastmod>2023-12-07T15:08:02.661Z</lastmod>
+    <lastmod>2023-12-12T19:23:24.092Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/r4ds/bookclub-wapir/index.html</loc>
+    <lastmod>2023-12-12T19:23:23.128Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/creating-more.html</loc>
+    <lastmod>2023-12-12T19:23:24.860Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/plumber-intro.html</loc>
+    <lastmod>2023-12-12T19:23:27.060Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/plumber-errors.html</loc>
+    <lastmod>2023-12-12T19:23:29.300Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/plumber/plumber-security.html</loc>
+    <lastmod>2023-12-12T19:23:31.636Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/club-intro.html</loc>
+    <lastmod>2023-12-12T19:23:33.816Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/rvest.html</loc>
+    <lastmod>2023-12-12T19:23:35.456Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/httr2-perform.html</loc>
+    <lastmod>2023-12-12T19:23:37.772Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/accessing-more.html</loc>
+    <lastmod>2023-12-12T19:23:39.696Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/httr2-authentication.html</loc>
+    <lastmod>2023-12-12T19:23:42.300Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/r4ds/bookclub-wapir/slides/httr2/apis-find.html</loc>
+    <lastmod>2023-12-12T19:23:44.200Z</lastmod>
   </url>
 </urlset>

@@ -10,7 +10,7 @@
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.3.450">
 
-  <title>Web APIs with R Book Club – intro</title>
+  <title>Web APIs with R Book Club - Introduction</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -323,25 +323,193 @@
   <div class="reveal">
     <div class="slides">
 
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Introduction</h1>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section id="learning-objectives" class="title-slide slide level1 center">
+<h1>️✅ Learning objectives</h1>
+<ul>
+<li>Decide whether this book is for you.</li>
+<li>Identify the major topics that this book will cover.</li>
+<li>Identify prerequisites of this book.</li>
+<li>Describe what this book will <em>not</em> cover.</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Anything else you’d want to see in an intro?</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+
+<section id="who-should-read-this-book" class="title-slide slide level1 center">
+<h1>Who should read this book?</h1>
+<ul>
+<li>Data Analysts
+<ul>
+<li>Part 1: Enrich datasets via APIs</li>
+</ul></li>
+<li>Machine Learning Engineers
+<ul>
+<li>Part 2: Share predictions via APIs</li>
+</ul></li>
+<li>Researchers
+<ul>
+<li>Part 2: Share data via APIs</li>
+</ul></li>
+<li>Shiny App Designers
+<ul>
+<li>Part 1: Work with external APIs</li>
+<li>Part 2: Divide &amp; conquer</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>People who analyze data, not necessarily that job title.</li>
+<li>Researchers or anybody else with data to share.</li>
+<li>Does anybody fit into something other than those use cases?</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 
 <section>
-<section id="introduction" class="title-slide slide level1 center">
-<h1>Introduction</h1>
-<p><strong>Learning objectives:</strong></p>
+<section id="what-will-i-learn" class="title-slide slide level1 center">
+<h1>What will I learn?</h1>
 <ul>
-<li>THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY</li>
-</ul>
-</section>
-<section id="slide-1" class="slide level2 unnumbered">
-<h2>SLIDE 1</h2>
+<li>How can I get web data into R?
 <ul>
-<li>ADD SLIDES AS SECTIONS (<code>##</code>).</li>
-<li>TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.</li>
+<li>How do computers communicate? (2)</li>
+<li>{httr2} 📦: How can I access APIs from R? (3-6)</li>
+<li>How can I find APIs &amp; API 📦? (7-8)</li>
+<li>How else can I communicate with APIs from R? (9)</li>
+<li>{rvest} 📦: How can I get data from web pages? (10)</li>
+</ul></li>
+<li>How can I create my own APIs with R?
+<ul>
+<li>{plumber} 📦: How can I create my own APIs? (12-17)</li>
+<li>How do I deploy my plumber API? (18)</li>
+</ul></li>
 </ul>
+<aside class="notes">
+<ul>
+<li>Catch-all chapter at end of each section about learning more.</li>
+<li>Considering part 3 with ~recipes. Useful? Integrate?</li>
+<li>Any missing topics?</li>
+<li>Which topics do you care about? Show of hands per bullet.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="meeting-videos" class="slide level2 unnumbered">
-<h2>Meeting Videos</h2>
-<h3 class="unnumbered" id="cohort-1">Cohort 1</h3>
+<section id="prerequisites" class="slide level2">
+<h2>Prerequisites</h2>
+<ul>
+<li>Very few hard prerequisites
+<ul>
+<li>Will point to resources when helpful</li>
+</ul></li>
+<li>I assume familiarity with R
+<ul>
+<li><a href="https://r4ds.hadley.nz/">R for Data Science</a></li>
+</ul></li>
+<li>Helpful:
+<ul>
+<li><a href="https://adv-r.hadley.nz/">Advanced R</a> to construct more robust APIs</li>
+<li><a href="https://r-pkgs.org/">R Packages</a> for deeper dive into 📦</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>How many have read R4DS?</li>
+<li>How many have read Advanced R?</li>
+<li>How many have read R Packages?</li>
+<li>How many have written a function?</li>
+<li>How many have written a package?</li>
+<li>Discuss level I can assume.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="what-wont-i-learn" class="slide level2">
+<h2>What won’t I learn?</h2>
+<ul>
+<li>How can I access APIs from other programming languages?</li>
+<li>How should I design a complex API?
+<ul>
+<li>Covered a tiny bit</li>
+<li>Many other books, such as <a href="https://www.manning.com/books/designing-apis-with-swagger-and-openapi">Designing APIs with Swagger and OpenAPI</a></li>
+</ul></li>
+<li>How can I administer an enterprise API?
+<ul>
+<li><a href="https://do4ds.com/">DevOps for Data Science</a> for tips</li>
+<li>Work with professionals for full-scale deployments</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Anything else people would expect?</li>
+<li>Should I put Adv R here, too?</li>
+<li>Should I put R Packages here, too?</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="meeting-videos" class="title-slide slide level1 center">
+<h1>Meeting Videos</h1>
+
+</section>
+<section id="cohort-1" class="slide level2">
+<h2>Cohort 1</h2>
 <iframe src="https://www.youtube.com/embed/URL" width="100%" height="400px" data-external="1">
 </iframe>
 <details>
