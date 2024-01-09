@@ -13,7 +13,7 @@ As we read, we are producing [notes about the book](https://r4ds.io/wapir).
 
 ## Meeting Schedule
 
-If you would like to present, please see the sign-up sheet for your cohort (linked below, and pinned in the [#book_club-wapir](https://rfordatascience.slack.com/archives/C05MYSD1PEV) channel on Slack)!
+- Cohort 1 (starts 2024-01-17): [Wednesdays, 13:00 CST/CDT](https://www.timeanddate.com/worldclock/converter.html?iso=20240117T190000&p1=24&p2=1440) | meeting videos (coming soon!)
 
 <hr>
 
