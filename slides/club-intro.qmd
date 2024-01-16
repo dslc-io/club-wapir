@@ -18,7 +18,9 @@ engine: knitr
 -   📝 Jon writes chapter
 
 ::: notes
+-   Talked about this writing process in project club, r4ds.io/youtube
 -   Meet *every* week... unless I need a break to catch up.
+-   Discussion even more important than in a normal club
 -   Review revised slides? Maybe spend 2 weeks per chapter?
 -   Would formal survey of some sort help?
 -   Not 100% certain about question structure yet (whether "homeworky" or "think about it").
