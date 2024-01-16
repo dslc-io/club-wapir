@@ -34,21 +34,56 @@ engine: knitr
 
 # What will I learn?
 
--   How can I get web data into R?
-    -   How do computers communicate? (2)
-    -   {httr2} 📦: How can I access APIs from R? (3-6)
-    -   How can I find APIs & API 📦? (7-8)
-    -   How else can I communicate with APIs from R? (9)
-    -   {rvest} 📦: How can I get data from web pages? (10)
--   How can I create my own APIs with R?
-    -   {plumber} 📦: How can I create my own APIs? (12-17)
-    -   How do I deploy my plumber API? (18)
+-   Part 1: How can I get web data into R? ({httr2})
+-   Part 2: How can I create my own APIs with R? ({plumber})
+-   Part 3: Use Cases? Recipes?
 
 ::: notes
 -   Catch-all chapter at end of each section about learning more.
--   Considering part 3 with ~recipes. Useful? Integrate?
+-   Survey: https://forms.gle/9qdYTrDL5cZmG26y6
+-   Please fill out the survey, which will get details about which chapters sound interesting to you.
+-   Are there any topics there that you *don't* care about?
+-   Considering part 3 with things that span chapters (eg, subdividing a Shiny app into APIs). Interesting? Examples?
 -   Any missing topics?
--   Which topics do you care about? Show of hands per bullet.
+:::
+
+## Which chapters sound interesting?
+
+:::: {.columns style="font-size: 0.7em;"}
+::: {.column .fragment .incremental width="50%"}
+**Part 1: How can I get web data into R?**
+
+-   How do computers communicate?
+-   How can I access APIs from R?
+-   How do I tell the API who I am?
+-   How can I process API responses?
+-   How can I get a lot of data from an API?
+-   How can I find APIs?
+-   How can I find API-wrapping packages?
+-   How else can I communicate with APIs from R?
+-   How can I get data from web pages?
+-   How can I learn more about accessing web APIs?
+:::
+::: {.column .fragment .incremental width="50%"}
+**Part 2: How can I create my own APIs with R?**
+
+-   How can I create an API?
+-   How can I get inputs from API users?
+-   How can I control API output?
+-   How can I handle API errors?
+-   How can I authenticate API users?
+-   How can I test my plumber API?
+-   How do I deploy my plumber API?
+    -   AWS? GCS? Azure? DigitalOcean? Posit Cloud? Posit Connect? Other?
+-   How can I learn more about creating APIs?
+-   ***Part 3: Use Cases** (eg Subdividing a Shiny app)*
+-   What else?      
+:::
+::::
+
+::: notes
+-   I want to quickly gauge interest, but more details in the survey.
+-   Any missing topics?
 :::
 
 ## Prerequisites
@@ -62,18 +97,24 @@ engine: knitr
     -   [R Packages](https://r-pkgs.org/) for deeper dive into 📦
 
 ::: notes
+-   (I repeat these questions in the survey)
 -   How many have read R4DS?
 -   How many have read Advanced R?
 -   How many have read R Packages?
 -   How many have written a function?
 -   How many have written a package?
+-   How many have published a package on CRAN?
+-   Accessed an API from R with httr?
+-   Accessed an API from R with httr2?
+-   Accessed an API from R some other way?
 -   Discuss level I can assume.
 :::
 
 ## What won't I learn?
 
+-   How can I access APIs with {[httr](https://httr.r-lib.org/)} or {[curl](https://jeroen.r-universe.dev/curl)}?
 -   How can I access APIs from other programming languages?
--   How should I design a complex API?
+-   How *should* I design a complex API?
     -   Covered a tiny bit
     -   Many other books, such as [Designing APIs with Swagger and OpenAPI](https://www.manning.com/books/designing-apis-with-swagger-and-openapi)
 -   How can I administer an enterprise API?
@@ -82,8 +123,14 @@ engine: knitr
 
 ::: notes
 -   Anything else people would expect?
--   Should I put Adv R here, too?
--   Should I put R Packages here, too?
+:::
+
+# What do you think?
+
+Please complete this [survey](https://forms.gle/9qdYTrDL5cZmG26y6)!
+
+::: notes
+-   https://forms.gle/9qdYTrDL5cZmG26y6
 :::
 
 # Meeting Videos
