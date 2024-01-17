@@ -74,7 +74,7 @@ engine: knitr
 -   How can I authenticate API users?
 -   How can I test my plumber API?
 -   How do I deploy my plumber API?
-    -   AWS? GCS? Azure? DigitalOcean? Posit Cloud? Posit Connect? Other?
+    -   AWS? GCP? Azure? DigitalOcean? Posit Cloud? Posit Connect? Other?
 -   How can I learn more about creating APIs?
 -   ***Part 3: Use Cases** (eg Subdividing a Shiny app)*
 -   What else?      
