@@ -1,0 +1,102 @@
+---
+engine: knitr
+title: How can I do other things with APIs?
+---
+
+# ️✅ Learning objectives
+
+TODO: This is a new chapter focused on methods, body, etc.
+Figure out which LOs go here, exactly.
+
+::: nonincremental
+-   POST
+-   Etc
+:::
+
+```{r}
+#| label: httr2-methods-packages-used
+#| eval: true
+library(httr2)
+```
+
+# First LO.
+
+## What are the pieces of an HTTP request?
+
+HTTP request = URL + headers + ***method*** + body
+
+::: notes
+-   Re-orient ourselves with the pieces of an HTTP request.
+-   Focus on method.
+:::
+
+## What are HTTP request methods?
+
+-   Paths are ***nouns***
+-   Methods are ***verbs***
+    -   `GET` (fetch existing thing)
+    -   `POST` (push new thing)
+    -   `DELETE` (delete existing thing)
+    -   `PATCH` (change existing thing)
+    -   `PUT` (replace existing thing)
+    -   `CONNECT`, `OPTIONS`, `HEAD`, `TRACE` (very rare)
+
+::: notes
+-   By convention for REST APIs
+    -   We'll dig into different API frameworks in a later chapter.
+-   Path examples: candidates, calendar-dates, filings, electioneering (ads)
+-   We've been doing GET by default
+-   CONNECT = "start 2-way communication" (eg ask server to be a bridge)
+-   OPTIONS should tell you method options
+-   HEAD returns headers that you'd get with GET
+    -   Eg, use it to check if DL would be big.
+-   TRACE returns the request as the final server received it, with header info about route.
+-   Methods aren't strict
+    -   API owner can do weird things.
+    -   GET or POST often used for ~everything
+:::
+
+## `req_method()`
+
+-   `GET` = default without body
+-   `POST` = default with body
+-   `req_method()` to specify (rarely needed)
+
+## `req_template()`
+
+::: fragment
+Build request with variables
+
+```{r}
+#| code-line-numbers: "1|1-2"
+req_candidates2 <- req_fec |> 
+  req_template("GET /{endpoint}", endpoint = "candidates")
+```
+:::
+
+::: fragment
+```{r}
+identical(req_candidates$url, req_candidates2$url)
+```
+:::
+
+::: fragment
+A more useful example:
+```{r}
+req_fec |> 
+  req_template("GET /candidate/{candidate_id}/", candidate_id = "P40014052")
+```
+:::
+
+::: notes
+Sometimes APIs are pretty much described in this syntax, lets you copy-paste.
+:::
+
+## What are the pieces of an HTTP request?
+
+HTTP request = URL + headers + method + ***body***
+
+::: notes
+-   Re-orient ourselves with the pieces of an HTTP request.
+-   Focus on body
+:::

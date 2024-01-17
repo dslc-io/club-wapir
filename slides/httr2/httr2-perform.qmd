@@ -8,6 +8,8 @@ engine: knitr
 library(httr2)
 ```
 
+Cover req_throttle() & req_timeout() in here!
+
 **Learning objectives:**
 
 -   Control the behavior of large requests.

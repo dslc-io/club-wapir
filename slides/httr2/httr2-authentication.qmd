@@ -4,6 +4,8 @@ engine: knitr
 
 # How do I tell the API who I am?
 
+Cover req_user_agent() & req_proxy() in here somewhere! And req_headers()!
+
 **Learning objectives:**
 
 -   Compare and contrast authentication schemes.
@@ -15,6 +17,82 @@ engine: knitr
 -   Re-authenticate OAuth requests.
 -   Authenticate with browser cookies.
 -   TODO: LOs about other schemes?
+
+## What are HTTP request headers?
+
+::: fragment
+Metadata about the request
+
+-   Authentication
+-   Cookies
+-   Cache rules
+-   Expected response
+-   Etc
+:::
+
+::: fragment
+Names are case-insensitive!
+:::
+
+::: fragment
+Much more in Chapter 3: "How do I tell the API who I am?"
+:::
+
+## `req_headers()`
+
+TODO: Leftovers from `httr2.qmd`. Make it fit in this chapter!
+
+::: fragment
+```{r}
+#| code-line-numbers: "1|1-2"
+req_fec_auth <- req_fec |> 
+  req_headers("X-Api-Key" = "DEMO_KEY", .redact = "X-Api-Key")
+```
+:::
+::: fragment
+```{r}
+req_dry_run(req_fec_auth)
+```
+:::
+::: fragment
+Be careful!
+```{r}
+req_fec_auth$headers
+```
+:::
+
+::: notes
+-   `.redact` arg tells it to hide the value of that argument when it prints to the console.
+-   `req_dry_run()` prints useful info without actually running `req_perform()`
+    -   Normal print of req_fec_auth also works outside of slide context
+-   Be careful: It's still in the object, just hidden
+:::
+
+## `req_url()`
+
+-   *Replace* entire URL
+-   eg: Same authentication, different `base_url` 
+
+::: fragment
+```{r}
+#| code-line-numbers: "1|1-2"
+req_fec_dev_auth <- req_fec_auth |> 
+  req_url("https://dev.fec.fake/v1")
+```
+:::
+
+::: fragment
+```{r}
+req_dry_run(req_fec_dev_auth)
+```
+
+:::
+
+::: notes
+-   At first I lumped this in same bucket as req_url_path()
+-   YouTube API: metadata vs upload
+:::
+
 
 ## But first: Practice safe git {-}
 

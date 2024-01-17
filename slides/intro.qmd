@@ -5,55 +5,77 @@ engine: knitr
 
 # ️✅ Learning objectives
 
+-   Explain what an API is.
 -   Decide whether this book is for you.
--   Identify the major topics that this book will cover.
--   Identify prerequisites of this book.
--   Describe what this book will *not* cover.
 
 ::: notes
+-   We'll talk a bit more about using LOs later in this chapter.
+-   We'll pick up other information, but these are the key skills.
 -   Anything else you'd want to see in an intro?
 :::
 
-# Who should read this book?
+# What is an API?
 
--   Data Analysts
-    -   Part 1: Enrich datasets via APIs
--   Machine Learning Engineers
-    -   Part 2: Share predictions via APIs
--   Researchers
-    -   Part 2: Share data via APIs
--   Shiny App Designers
-    -   Part 1: Work with external APIs
-    -   Part 2: Divide & conquer
+## API = "application programming interface"
+
+-   "application" = function, website... any computerized thing
+-   "programming" = can be used in code
+-   "interface" = way to interact with something
+
+**🤖 APIs allow computers to talk to one another**
 
 ::: notes
--   People who analyze data, not necessarily that job title.
--   Researchers or anybody else with data to share.
--   Does anybody fit into something other than those use cases?
+-   Right level?
+:::
+
+## What are web APIs?
+
+-   💻 Technically any function's list of arguments is an API
+
+> "httr2 is a ground-up rewrite of httr that provides a pipeable ***API*** with an explicit request object that solves more problems felt by packages that wrap ***APIs***" (httr2 docs, emphasis added)
+
+-   🕸️ This book = ***web*** APIs
+    -   Web API = API on the internet
+    -   For rest of book, "API" means "web API"
+
+::: notes
+-   httr2 quote helpful/interesting?
+:::
+
+## What are some API examples?
+
+-   Cloud services ([{paws}](https://cran.r-project.org/package=paws))
+-   Government agencies ([OpenFEC](https://api.open.fec.gov/developers/))
+-   Random data ([sunrisesunset.io](https://sunrisesunset.io/api/))
+-   Services ([OpenAI](https://openai.com/product))
+-   [APIs.guru](https://apis.guru/) = API directory
+    -   2,529 APIs as of 2024-01-22
+
+::: notes
+-   Number of examples good?
+-   Variety of examples good?
+-   Deep enough, or more-full usage examples?
+-   What would you expect in book (vs slides)?
 :::
 
 # What will I learn?
 
 -   Part 1: How can I get web data into R? ({httr2})
 -   Part 2: How can I create my own APIs with R? ({plumber})
--   Part 3: Use Cases? Recipes?
 
 ::: notes
 -   Catch-all chapter at end of each section about learning more.
 -   Survey: https://forms.gle/9qdYTrDL5cZmG26y6
 -   Please fill out the survey, which will get details about which chapters sound interesting to you.
--   Are there any topics there that you *don't* care about?
--   Considering part 3 with things that span chapters (eg, subdividing a Shiny app into APIs). Interesting? Examples?
 -   Any missing topics?
 :::
 
-## Which chapters sound interesting?
+## What does each chapter cover?
 
 :::: {.columns style="font-size: 0.7em;"}
 ::: {.column .fragment .incremental width="50%"}
 **Part 1: How can I get web data into R?**
 
--   How do computers communicate?
 -   How can I access APIs from R?
 -   How do I tell the API who I am?
 -   How can I process API responses?
@@ -74,16 +96,55 @@ engine: knitr
 -   How can I authenticate API users?
 -   How can I test my plumber API?
 -   How do I deploy my plumber API?
-    -   AWS? GCP? Azure? DigitalOcean? Posit Cloud? Posit Connect? Other?
 -   How can I learn more about creating APIs?
--   ***Part 3: Use Cases** (eg Subdividing a Shiny app)*
--   What else?      
 :::
 ::::
 
 ::: notes
 -   I want to quickly gauge interest, but more details in the survey.
+-   Will have an over-arching case study woven into most chapters (but as independent pieces to allow jumping around)
 -   Any missing topics?
+:::
+
+## What won't I learn?
+
+-   How can I access APIs with {[httr](https://httr.r-lib.org/)} or {[curl](https://jeroen.r-universe.dev/curl)}?
+-   How can I access APIs from other programming languages?
+-   How *should* I design a complex API?
+    -   Many other books, such as [Designing APIs with Swagger and OpenAPI](https://www.manning.com/books/designing-apis-with-swagger-and-openapi)
+-   How can I administer an enterprise API?
+    -   [DevOps for Data Science](https://do4ds.com/) for tips
+    -   Work with professionals for full-scale deployments
+
+::: notes
+-   Anything else people would expect?
+:::
+
+## Who should read this book?
+
+:::: {.columns}
+::: {.column .fragment .incremental width="50%"}
+-   Data Analysts/Scientists
+    -   Part 1: Enrich datasets
+-   Machine Learning Engineers
+    -   Part 1: Feature engineering
+    -   Part 2: Share predictions
+
+:::
+::: {.column .fragment .incremental width="50%"}
+-   Data Producers (Researchers, etc)
+    -   Part 2: Share data
+-   Shiny App Designers
+    -   Part 1: Load/process data
+    -   Part 2: Divide & conquer
+
+:::
+::::
+
+::: notes
+-   People who analyze data, not necessarily that job title.
+-   Researchers or anybody else with data to share.
+-   Does anybody fit into something other than those use cases?
 :::
 
 ## Prerequisites
@@ -110,20 +171,15 @@ engine: knitr
 -   Discuss level I can assume.
 :::
 
-## What won't I learn?
+## How are chapters structured?
 
--   How can I access APIs with {[httr](https://httr.r-lib.org/)} or {[curl](https://jeroen.r-universe.dev/curl)}?
--   How can I access APIs from other programming languages?
--   How *should* I design a complex API?
-    -   Covered a tiny bit
-    -   Many other books, such as [Designing APIs with Swagger and OpenAPI](https://www.manning.com/books/designing-apis-with-swagger-and-openapi)
--   How can I administer an enterprise API?
-    -   [DevOps for Data Science](https://do4ds.com/) for tips
-    -   Work with professionals for full-scale deployments
-
-::: notes
--   Anything else people would expect?
-:::
+-   Learning Objectives ≈ skills
+    -   "After you read this chapter, you will be able to..."
+    -   There will be a separate index of these
+-   Test-Yourself Questions to check understanding
+-   Check online version for API updates
+-   (TODO: Anything to note about code vs text?)
+-   (TODO: Probably an over-arching case study of an election data Shiny app?)
 
 # What do you think?
 
@@ -132,17 +188,3 @@ Please complete this [survey](https://forms.gle/9qdYTrDL5cZmG26y6)!
 ::: notes
 -   https://forms.gle/9qdYTrDL5cZmG26y6
 :::
-
-# Meeting Videos
-
-## Cohort 1
-
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
-
-<details>
-<summary> Meeting chat log </summary>
-
-```
-LOG
-```
-</details>
