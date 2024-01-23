@@ -9,8 +9,8 @@ website:
     tools:
       - icon: github
         href: https://github.com/r4ds/bookclub-wapir
-      # - icon: youtube
-      #   href: https://r4ds.io/youtube
+      - icon: youtube
+        href: https://www.youtube.com/playlist?list=PL3x6DOfs2NGg-zPCeSCSp7tkkQBZNLDzv
       - icon: mastodon
         href: https://fosstodon.org/@jonthegeek
       - icon: linkedin
@@ -24,8 +24,6 @@ website:
 
       - section: "How can I get web data into R?"
         contents:
-          - file: slides/httr2/apis.qmd
-            target: wapir-club_apis
           - file: slides/httr2/httr2.qmd
             target: wapir-club_httr2
           - file: slides/httr2/httr2-authentication.qmd
@@ -34,6 +32,8 @@ website:
             target: wapir-club_httr2-responses
           - file: slides/httr2/httr2-perform.qmd
             target: wapir-club_httr2-perform
+          - file: slides/httr2/httr2-methods.qmd
+            target: wapir-club_httr2-methods
           - file: slides/httr2/apis-find.qmd
             target: wapir-club_apis-find
           - file: slides/httr2/apis-packages.qmd

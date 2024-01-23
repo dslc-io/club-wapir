@@ -4,6 +4,10 @@ format:
     footer: <a href="/" target="wapir-club_index">r4ds.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a>
     link-external-newwindow: true
     transition: slide
+    incremental: true
 execute:
   eval: false
   echo: true
+knitr:
+  opts_chunk:
+    comment: "#>"

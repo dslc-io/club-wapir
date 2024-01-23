@@ -11,7 +11,7 @@ engine: knitr
 -   Deploy a {plumber} API to DigitalOcean with {plumberDeploy}.
 -   Run a {plumber} API in a Docker container.
 -   Manage a Dockerized {plumber} API with Kubernetes (K8s).
--   Deploy a K8s {plumber} API to GCS.
+-   Deploy a K8s {plumber} API to GCP.
 -   Deploy a K8s {plumber} API to AWS.
 
 ## Posit Cloud {-}

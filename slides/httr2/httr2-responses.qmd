@@ -10,6 +10,8 @@ library(jsonlite)
 library(xml2)
 ```
 
+Add req_error() in here somewhere!
+
 **Learning objectives:**
 
 -   Recognize the types of API responses.
