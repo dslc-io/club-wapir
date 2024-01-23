@@ -392,29 +392,30 @@
 <section>
 <section id="how-can-i-process-api-responses" class="title-slide slide level1 center">
 <h1>How can I process API responses?</h1>
+<p>Add req_error() in here somewhere!</p>
 <p><strong>Learning objectives:</strong></p>
 <ul>
-<li>Recognize the types of API responses.</li>
-<li>Recognize JSON data structures.</li>
-<li>Recognize XML data structures.</li>
-<li>Parse text responses.</li>
-<li>Parse nested lists with the {tidyverse}.</li>
-<li>Parse nested lists with {tibblify}.</li>
-<li>Use API docs to anticipate API responses.</li>
-<li>Parse binary responses such as images and videos.</li>
+<li class="fragment">Recognize the types of API responses.</li>
+<li class="fragment">Recognize JSON data structures.</li>
+<li class="fragment">Recognize XML data structures.</li>
+<li class="fragment">Parse text responses.</li>
+<li class="fragment">Parse nested lists with the {tidyverse}.</li>
+<li class="fragment">Parse nested lists with {tibblify}.</li>
+<li class="fragment">Use API docs to anticipate API responses.</li>
+<li class="fragment">Parse binary responses such as images and videos.</li>
 </ul>
 </section>
 <section id="content-type" class="slide level2 unnumbered">
 <h2>Content-Type</h2>
 <ul>
-<li><code>Content-Type</code> = “MIME type”
+<li class="fragment"><code>Content-Type</code> = “MIME type”
 <ul>
-<li>“Multipurpose Internet Mail Extensions”</li>
+<li class="fragment">“Multipurpose Internet Mail Extensions”</li>
 </ul></li>
-<li><code>type/subtype;parameter=value</code></li>
-<li><code>httr2::resp_content_type()</code> gets <code>type/subtype</code></li>
-<li><code>httr2::resp_encoding()</code> gets <code>charset</code> parameter</li>
-<li>More at <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types">MDN MIME types</a></li>
+<li class="fragment"><code>type/subtype;parameter=value</code></li>
+<li class="fragment"><code>httr2::resp_content_type()</code> gets <code>type/subtype</code></li>
+<li class="fragment"><code>httr2::resp_encoding()</code> gets <code>charset</code> parameter</li>
+<li class="fragment">More at <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types">MDN MIME types</a></li>
 </ul>
 </section>
 <section id="common-text-content-types" class="slide level2 unnumbered">
@@ -454,23 +455,23 @@
 <section id="json" class="slide level2 unnumbered">
 <h2>JSON</h2>
 <ul>
-<li><code>application/json</code> or <code>*/json</code></li>
-<li>4 scalars (length-1 vectors)
+<li class="fragment"><code>application/json</code> or <code>*/json</code></li>
+<li class="fragment">4 scalars (length-1 vectors)
 <ul>
-<li><code>null</code> ≈ <code>NA</code></li>
-<li><code>string</code> ≈ <code>character(1)</code>, always <code>"</code> (not <code>'</code>)</li>
-<li><code>number</code> ≈ <code>numeric(1)</code>, no <code>Inf</code>/<code>-Inf</code>/<code>NaN</code></li>
-<li><code>boolean</code> ≈ <code>logical(1)</code>, <code>true</code> = <code>TRUE</code>, <code>false</code> = <code>FALSE</code></li>
+<li class="fragment"><code>null</code> ≈ <code>NA</code></li>
+<li class="fragment"><code>string</code> ≈ <code>character(1)</code>, always <code>"</code> (not <code>'</code>)</li>
+<li class="fragment"><code>number</code> ≈ <code>numeric(1)</code>, no <code>Inf</code>/<code>-Inf</code>/<code>NaN</code></li>
+<li class="fragment"><code>boolean</code> ≈ <code>logical(1)</code>, <code>true</code> = <code>TRUE</code>, <code>false</code> = <code>FALSE</code></li>
 </ul></li>
-<li><code>array</code> ≈ unnamed <code>list()</code>
+<li class="fragment"><code>array</code> ≈ unnamed <code>list()</code>
 <ul>
-<li><code>[]</code>: <code>[null, "a", 1, true]</code> ≈ <code>list(NULL, "a", 1, TRUE)</code></li>
+<li class="fragment"><code>[]</code>: <code>[null, "a", 1, true]</code> ≈ <code>list(NULL, "a", 1, TRUE)</code></li>
 </ul></li>
-<li><code>object</code> ≈ named <code>list()</code>
+<li class="fragment"><code>object</code> ≈ named <code>list()</code>
 <ul>
-<li><code>{}</code>: <code>{"a": 1, "b": [1, 2]}</code> ≈ <code>list(a = 1, b = list(1, 2))</code></li>
+<li class="fragment"><code>{}</code>: <code>{"a": 1, "b": [1, 2]}</code> ≈ <code>list(a = 1, b = list(1, 2))</code></li>
 </ul></li>
-<li><code>httr2::resp_body_json()</code> uses <code>jsonlite::fromJSON()</code></li>
+<li class="fragment"><code>httr2::resp_body_json()</code> uses <code>jsonlite::fromJSON()</code></li>
 </ul>
 </section>
 <section id="json-example" class="slide level2 unnumbered">
@@ -488,10 +489,10 @@
 <h2>XML</h2>
 <p>e<strong>X</strong>tensible <strong>M</strong>arkup <strong>L</strong>anguage</p>
 <ul>
-<li><code>application/xml</code>, <code>text/xml</code>, or <code>*/xml</code>)</li>
-<li>Tags as <code>&lt;tagname attribute="a"&gt;contents&lt;/tagname&gt;</code></li>
-<li>Everything nestable</li>
-<li><code>httr2::resp_body_xml()</code> uses <code>xml2::read_xml()</code></li>
+<li class="fragment"><code>application/xml</code>, <code>text/xml</code>, or <code>*/xml</code>)</li>
+<li class="fragment">Tags as <code>&lt;tagname attribute="a"&gt;contents&lt;/tagname&gt;</code></li>
+<li class="fragment">Everything nestable</li>
+<li class="fragment"><code>httr2::resp_body_xml()</code> uses <code>xml2::read_xml()</code></li>
 </ul>
 </section>
 <section id="xml-example" class="slide level2 unnumbered">
@@ -510,10 +511,10 @@
 <section id="nested-lists-tidyverse" class="slide level2 unnumbered">
 <h2>Nested lists: tidyverse</h2>
 <ul>
-<li><code>tibble::enframe()</code> to tibble-ify the <code>list()</code></li>
-<li><code>tidyr::unnest_wider()</code> and/or <code>tidyr::unnest_longer()</code>
+<li class="fragment"><code>tibble::enframe()</code> to tibble-ify the <code>list()</code></li>
+<li class="fragment"><code>tidyr::unnest_wider()</code> and/or <code>tidyr::unnest_longer()</code>
 <ul>
-<li>Sometimes <code>tidyr::unnest()</code> but it can hide layers</li>
+<li class="fragment">Sometimes <code>tidyr::unnest()</code> but it can hide layers</li>
 </ul></li>
 </ul>
 <div class="cell">
@@ -539,24 +540,24 @@
 <section id="response-objects-in-api-docs" class="slide level2 unnumbered">
 <h2>Response objects in API docs</h2>
 <ul>
-<li>Look for <code>200</code> in docs for this path</li>
-<li>Find “OpenAPI” or “Swagger” links (or “API json”, “API yaml”, etc)
+<li class="fragment">Look for <code>200</code> in docs for this path</li>
+<li class="fragment">Find “OpenAPI” or “Swagger” links (or “API json”, “API yaml”, etc)
 <ul>
-<li>Eg: <a href="https://raw.githubusercontent.com/Asana/openapi/master/defs/asana_oas.yaml">Asana</a></li>
-<li>Search for the path, then method, then 200 (eg: <code>/tasks:</code>)</li>
-<li>Often a <code>$ref</code> to something like <code>#/components/schemas/TaskCompact</code></li>
-<li>Ctrl-F around that doc!</li>
+<li class="fragment">Eg: <a href="https://raw.githubusercontent.com/Asana/openapi/master/defs/asana_oas.yaml">Asana</a></li>
+<li class="fragment">Search for the path, then method, then 200 (eg: <code>/tasks:</code>)</li>
+<li class="fragment">Often a <code>$ref</code> to something like <code>#/components/schemas/TaskCompact</code></li>
+<li class="fragment">Ctrl-F around that doc!</li>
 </ul></li>
-<li>{<a href="https://anyapi.api2r.org/">anyapi</a>} will soon build a tibblify spec from API spec</li>
+<li class="fragment">{<a href="https://anyapi.api2r.org/">anyapi</a>} will soon build a tibblify spec from API spec</li>
 </ul>
 </section>
 <section id="binary-objects" class="slide level2 unnumbered">
 <h2>Binary objects</h2>
 <ul>
-<li><code>image/*</code> (<code>png</code>, <code>jpeg</code>, <code>svg+xml</code>)</li>
-<li><code>audio/*</code> (<code>webm</code>, <code>ogg</code>, <code>wav</code>)</li>
-<li><code>video/*</code> (<code>webm</code>, <code>ogg</code>, <code>mp4</code>)</li>
-<li><code>application/octet-stream</code> (catch-all)</li>
+<li class="fragment"><code>image/*</code> (<code>png</code>, <code>jpeg</code>, <code>svg+xml</code>)</li>
+<li class="fragment"><code>audio/*</code> (<code>webm</code>, <code>ogg</code>, <code>wav</code>)</li>
+<li class="fragment"><code>video/*</code> (<code>webm</code>, <code>ogg</code>, <code>mp4</code>)</li>
+<li class="fragment"><code>application/octet-stream</code> (catch-all)</li>
 </ul>
 <p><code>resp_body_raw(resp) |&gt; writeBin(filename)</code></p>
 </section>

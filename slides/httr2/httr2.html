@@ -10,7 +10,7 @@
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.3.450">
 
-  <title>Web APIs with R Book Club – httr2</title>
+  <title>Web APIs with R Book Club - How can I access APIs from R?</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -388,123 +388,564 @@
   <div class="reveal">
     <div class="slides">
 
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">How can I access APIs from R?</h1>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section id="learning-objectives" class="title-slide slide level1 center">
+<h1>️✅ Learning objectives</h1>
+<div>
+<ul>
+<li>Fetch data from an API with {httr2}.</li>
+<li>Build a {httr2} request piece-by-piece.</li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(httr2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<aside class="notes">
+<p>“After we finish this chapter, we’ll be able to…” (objectives)</p>
+<ul>
+<li>Not every possible API, but we’ll get the basics.</li>
+<li>I’m having trouble deciding on order of this chapter
+<ul>
+<li>Let me know if you get lost.</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 
 <section>
-<section id="how-can-i-access-apis-from-r" class="title-slide slide level1 center">
-<h1>How can I access APIs from R?</h1>
-<p><strong>Learning objectives:</strong></p>
+<section id="what-is-httr2" class="title-slide slide level1 center">
+<h1>What is {httr2}?</h1>
+
+<img data-src="../../images/httr2-logo.png" class="r-stretch"><aside class="notes">
 <ul>
-<li>Describe how {httr2} calls are structured.</li>
-<li>Create and modify an {httr2} request.</li>
-<li>Access an HTTP API with {httr2}.</li>
+<li>We’ll dig into what the letters mean in a couple slides.</li>
+<li>I learned how to pronounce httr2 from this logo</li>
 </ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="what-is-httr2" class="slide level2 unnumbered">
-<h2>What is httr2?</h2>
-<ul>
-<li>Pipe-based API calls</li>
-<li><em>Here we’re working with dev (will be released ~soon as 1.0.0)</em></li>
-<li><code>request |&gt; perform |&gt; resp (parse)</code></li>
-</ul>
-</section>
-<section id="httr2-demo" class="slide level2 unnumbered">
-<h2>httr2 demo</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>candidates <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-2"><a href="#cb1-2"></a>  httr2<span class="sc">::</span><span class="fu">req_headers</span>(<span class="st">"X-Api-Key"</span> <span class="ot">=</span> <span class="st">"DEMO_KEY"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-3"><a href="#cb1-3"></a>  httr2<span class="sc">::</span><span class="fu">req_url_path_append</span>(<span class="st">"candidates"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-4"><a href="#cb1-4"></a>  httr2<span class="sc">::</span><span class="fu">req_url_query</span>(<span class="at">office =</span> <span class="fu">c</span>(<span class="st">"H"</span>, <span class="st">"S"</span>), <span class="at">election_year =</span> <span class="dv">2024</span>, <span class="at">.multi =</span> <span class="st">"explode"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-5"><a href="#cb1-5"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb1-6"><a href="#cb1-6"></a>  httr2<span class="sc">::</span><span class="fu">resp_body_json</span>()</span>
-<span id="cb1-7"><a href="#cb1-7"></a>candidates<span class="sc">$</span>results[[<span class="dv">1</span>]]<span class="sc">$</span>candidate_id</span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt; [1] "H4OR05312"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="what-do-httr2-calls-look-like" class="slide level2">
+<h2>What do {httr2} calls look like?</h2>
+<div class="fragment">
+<p>Pipe-based API calls</p>
 </div>
-</section>
-<section id="url-pieces" class="slide level2 unnumbered">
-<h2>URL Pieces</h2>
-<p>https://api.open.fec.gov/v1/candidates?office=H&amp;office=S&amp;election_year=2024</p>
-<ul>
-<li>base URL = <code>https://api.open.fec.gov/v1/</code></li>
-<li>path = <code>/v1/candidates</code></li>
-<li>query = <code>?office=H&amp;office=S&amp;election_year=2024</code></li>
-</ul>
-</section>
-<section id="request-url" class="slide level2 unnumbered">
-<h2>Request: URL</h2>
-<ul>
-<li><code>request()</code> set base URL</li>
-<li><code>req_url_path_append()</code> add parts separated by <code>/</code></li>
-<li><code>req_url_query()</code> add query parts</li>
-</ul>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>req <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-2"><a href="#cb2-2"></a>  httr2<span class="sc">::</span><span class="fu">req_url_path_append</span>(<span class="st">"candidates"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-3"><a href="#cb2-3"></a>  httr2<span class="sc">::</span><span class="fu">req_url_query</span>(<span class="at">office =</span> <span class="fu">c</span>(<span class="st">"H"</span>, <span class="st">"S"</span>), <span class="at">election_year =</span> <span class="dv">2024</span>, <span class="at">.multi =</span> <span class="st">"explode"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4"></a>req<span class="sc">$</span>url</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2" data-code-line-numbers="1-10|2|3-5|6|7-9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>candidates <span class="ot">&lt;-</span> </span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"candidates"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="fu">req_url_query</span>(<span class="at">api_key =</span> <span class="st">"DEMO_KEY"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-5"><a href="#cb2-5"></a>  <span class="fu">req_url_query</span>(<span class="at">election_year =</span> <span class="dv">2024</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-6"><a href="#cb2-6"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-7"><a href="#cb2-7"></a>  <span class="fu">resp_body_json</span>()</span>
+<span id="cb2-8"><a href="#cb2-8"></a>candidates<span class="sc">$</span>results[[<span class="dv">1</span>]]<span class="sc">$</span>candidate_id</span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="co">#&gt; [1] "P40014052"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="request-url-other-functions" class="slide level2 unnumbered">
-<h2>Request: URL (other functions)</h2>
+</div>
+<aside class="notes">
 <ul>
-<li><code>req_url()</code> <em>replace</em> entire URL (don’t use this)</li>
-<li><code>req_url_path()</code> <em>replace</em> part after <code>/</code> (don’t use this)</li>
-<li><code>req_template()</code> build request with variables</li>
+<li>httr2 is a rewrite of httr specifically to use the concept of the pipe.
+<ul>
+<li>I’ll add a brief intro to the pipe in the Introduction chapter under prereqs!</li>
+<li>I use |&gt; base R pipe here. Pronounce it “and then”.</li>
+</ul></li>
+<li>httr2 calls usually involve a request, which you perform, and then you parse the response.</li>
+<li>We’re hitting the free, open api from the Federal Elections Commission.
+<ul>
+<li>I’m thinking about building a Shiny app related to this API, and using it as a case study throughout the book, but I also need to find stable APIs with more options</li>
+</ul></li>
+<li>(step through)</li>
+<li>Here we build the request piece-wise
+<ul>
+<li>We’ll get into details of the functions in a few slides</li>
+</ul></li>
+<li>Then we perform the request. This actually hits the server.</li>
+<li>Then we parse what we get back with a resp_body function.</li>
+<li>This returns a larger object in a format called JSON, will talk about it more in a later chapter</li>
 </ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="why-httr" class="slide level2">
+<h2>Why “httr”?</h2>
+<div class="fragment">
+<p>HTTP = HyperText Transfer Protocol</p>
+<ul>
+<li class="fragment">“HyperText” = web content</li>
+<li class="fragment">“Transfer” = exchange</li>
+<li class="fragment">“Protocol” = rules</li>
+<li class="fragment">“rules for exchanging web content”</li>
+<li class="fragment">HTTP(S) = most of internet communication</li>
+</ul>
+</div>
+<aside class="notes">
+<ul>
+<li>You may have seen http or https at the start of URLs (web addresses)</li>
+<li>“web content” =
+<ul>
+<li>originally text and links (HTML = HyperText Markup Language)</li>
+<li>now data, images, videos, etc.</li>
+</ul></li>
+<li>“exchange” or “move”</li>
+<li>“S” means “secure”</li>
+<li>If anyone asks: 1.1 = most, 2.0 = 2-way</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="why-httr2" class="slide level2">
+<h2>Why “httr2”?</h2>
+<div class="fragment">
+<p>“HTTP in R, take 2”</p>
+</div>
+<div class="fragment">
+<p><img data-src="../../images/httr-reverse-depends.png" style="width:75.0%"></p>
+</div>
+<aside class="notes">
+<ul>
+<li>Complete rewrite. Why? Guesses?</li>
+<li>Things that depend on httr as of January 22, 2024 (Monday)</li>
+<li>Couldn’t fundamentally change, or these package would all break</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="how-do-i-use-httr2" class="slide level2">
+<h2>How do I use {httr2}?</h2>
+<div class="fragment">
+<p><code>req_*()</code> functions return <code>httr2_request</code> objects</p>
+</div>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>req <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a href="#cb3-2"></a>  httr2<span class="sc">::</span><span class="fu">req_template</span>(<span class="st">"GET /{endpoint}"</span>, <span class="at">endpoint =</span> <span class="st">"candidates"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3"></a>req<span class="sc">$</span>url</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3" data-code-line-numbers="1|1-2|2-3|3-5|3,6-7|2,8|1-8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>req_fec <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a>req_fec_auth <span class="ot">&lt;-</span> <span class="fu">req_url_query</span>(req_fec, <span class="at">api_key =</span> <span class="st">"DEMO_KEY"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3"></a>req_candidates <span class="ot">&lt;-</span> <span class="fu">req_url_path_append</span>(req_fec_auth, <span class="st">"candidates"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4"></a>candidates_2024 <span class="ot">&lt;-</span> <span class="fu">req_url_query</span>(req_candidates, <span class="at">election_year =</span> <span class="dv">2024</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-5"><a href="#cb3-5"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> <span class="fu">resp_body_json</span>()</span>
+<span id="cb3-6"><a href="#cb3-6"></a>candidates_2022 <span class="ot">&lt;-</span> <span class="fu">req_url_query</span>(req_candidates, <span class="at">election_year =</span> <span class="dv">2022</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-7"><a href="#cb3-7"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> <span class="fu">resp_body_json</span>()</span>
+<span id="cb3-8"><a href="#cb3-8"></a>req_calendar <span class="ot">&lt;-</span> <span class="fu">req_url_path_append</span>(req_fec_auth, <span class="st">"calendar-dates"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</div>
+<aside class="notes">
+<ul>
+<li>Imagine you’re working with an API, like the FEC API
+<ul>
+<li>What you’ll very often do.</li>
+</ul></li>
+<li>We’ll go through function specifics in a moment, just soak in the utility of separate objects</li>
+<li>This is super important, so let’s pause to sink this in</li>
+<li>I’m going to drink some water while you make sure you have that.</li>
+<li>If you want to use this API, sign up for your own key at https://api.open.fec.gov/developers/</li>
+<li>OpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="how-do-i-fetch-data-with-httr2" class="title-slide slide level1 center">
+<h1>How do I fetch data with {httr2}?</h1>
+<aside class="notes">
+<p>We’ll dig into functions to fetch data from an API.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="request-headers" class="slide level2 unnumbered">
-<h2>Request: Headers</h2>
-<p>We’ll see more of this in chapter 5 (authentication)!</p>
+<section id="how-can-i-quickly-translate-api-docs" class="slide level2">
+<h2>How can I quickly translate API docs?</h2>
+<ul>
+<li class="fragment">Docs often have “Try it out” option
+<ul>
+<li class="fragment"><a href="https://api.open.fec.gov/developers/">https://api.open.fec.gov/developers/</a></li>
+</ul></li>
+<li class="fragment">Copy the “Curl” block</li>
+</ul>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>httr2<span class="sc">::</span><span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1/candidates?office=H&amp;office=S"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a href="#cb4-2"></a>  httr2<span class="sc">::</span><span class="fu">req_headers</span>(<span class="st">"X-Api-Key"</span> <span class="ot">=</span> <span class="st">"DEMO_KEY"</span>, <span class="at">.redact =</span> <span class="st">"X-Api-Key"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-3"><a href="#cb4-3"></a>  httr2<span class="sc">::</span><span class="fu">req_dry_run</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">curl_translate</span>(</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  <span class="st">"curl -X 'GET' \</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="st">  'https://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&amp;office=H'"</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="request-method" class="slide level2 unnumbered">
-<h2>Request: Method</h2>
+</div>
+<div class="fragment">
+<pre><code>request("https://api.open.fec.gov/v1/candidates/") |&gt; 
+  req_method("GET") |&gt; 
+  req_url_query(
+    api_key = "DEMO_KEY",
+    office = "H"
+  ) |&gt; 
+  req_perform()</code></pre>
+</div>
+<aside class="notes">
 <ul>
-<li><code>GET</code> without body</li>
-<li><code>POST</code> with body</li>
-<li><code>req_method()</code> to specify (rarely needed)</li>
+<li>If you want to use this API, sign up for your own key at that same URL.</li>
+<li>I edited the given curl to fit</li>
+<li>This code will usually get you started</li>
+<li>Now let’s clean it up and understand it!</li>
 </ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="request-proxy" class="slide level2 unnumbered">
-<h2>Request: Proxy</h2>
+<section id="request-req_path_append" class="slide level2">
+<h2><code>request()</code> &amp; <code>req_path_append()</code></h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" data-code-line-numbers="1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1/candidates/"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">req_method</span>(<span class="st">"GET"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">req_url_query</span>(</span>
+<span id="cb6-4"><a href="#cb6-4"></a>    <span class="at">api_key =</span> <span class="st">"DEMO_KEY"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5"></a>    <span class="at">office =</span> <span class="st">"H"</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-7"><a href="#cb6-7"></a>  <span class="fu">req_perform</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<p>Cleaner: “main” request object + specific path</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" data-code-line-numbers="1|2-3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>req_fec <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2"></a>req_candidates <span class="ot">&lt;-</span> req_fec <span class="sc">|&gt;</span> </span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"candidates"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>req_candidates<span class="sc">$</span>url</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "https://api.open.fec.gov/v1/candidates"</code></pre>
+</div>
+</div>
+</div>
+<aside class="notes">
 <ul>
-<li><code>req_proxy()</code> to specify proxy</li>
-<li>Can be useful to see response as if you’re somewhere else</li>
-</ul>
-</section>
-<section id="more-httr2-to-come" class="slide level2 unnumbered">
-<h2>More httr2 to come!</h2>
-<p>Exact order might change, but:</p>
+<li>httr2 “thinks” in pieces</li>
+<li>You don’t have to think about the <code>/</code></li>
+<li>We have to be careful about the “v1” in our request, though!
 <ul>
-<li>Chapter 4 = Authentication</li>
-<li>Chapter 5 = Parsing responses</li>
-<li>Chapter 6 = Pagination (and other strategies for big responses)</li>
+<li>More on next slide.</li>
+</ul></li>
 </ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="meeting-videos" class="slide level2 unnumbered">
-<h2>Meeting Videos</h2>
-<h3 class="unnumbered" id="cohort-1">Cohort 1</h3>
-<iframe src="https://www.youtube.com/embed/URL" width="100%" height="400px" data-external="1">
-</iframe>
-<details>
-<summary>
-Meeting chat log
-</summary>
-<pre><code>LOG</code></pre>
-</details>
+<section id="dont-use-req_url_path" class="slide level2">
+<h2>Don’t use <code>req_url_path()</code>!</h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>req_path_bad <span class="ot">&lt;-</span> req_fec <span class="sc">|&gt;</span> </span>
+<span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">req_url_path</span>(<span class="st">"candidates"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3"></a>req_path_bad<span class="sc">$</span>url</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "https://api.open.fec.gov/candidates"</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>req_candidates<span class="sc">$</span>url</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "https://api.open.fec.gov/v1/candidates"</code></pre>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>You probably never want <code>req_url_path()</code></li>
+<li>Notably the help docs don’t show an example for this one</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="req_method-more-later" class="slide level2">
+<h2><code>req_method()</code>: more later!</h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1/candidates/"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-2"><a href="#cb14-2"></a>  <span class="fu">req_method</span>(<span class="st">"GET"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-3"><a href="#cb14-3"></a>  <span class="fu">req_url_query</span>(</span>
+<span id="cb14-4"><a href="#cb14-4"></a>    <span class="at">api_key =</span> <span class="st">"DEMO_KEY"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5"></a>    <span class="at">office =</span> <span class="st">"H"</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb14-7"><a href="#cb14-7"></a>  <span class="fu">req_perform</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>“GET” is default for what we’re doing, so we can leave this part out.</li>
+<li>We don’t have to think about it until what’s now Chapter 6!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="req_url_query" class="slide level2">
+<h2><code>req_url_query()</code></h2>
+<div class="fragment" style="font-size:0.9em;">
+<p>https://api.open.fec.gov/v1/candidates/<strong><em>?api_key=DEMO_KEY&amp;office=H</em></strong></p>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" data-code-line-numbers="1|1-5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>req_house <span class="ot">&lt;-</span> req_candidates <span class="sc">|&gt;</span> </span>
+<span id="cb15-2"><a href="#cb15-2"></a>  <span class="fu">req_url_query</span>(</span>
+<span id="cb15-3"><a href="#cb15-3"></a>    <span class="at">api_key =</span> <span class="st">"DEMO_KEY"</span>,</span>
+<span id="cb15-4"><a href="#cb15-4"></a>    <span class="at">office =</span> <span class="st">"H"</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<ul>
+<li class="fragment">Can add query parameters piecewise, <strong>even before path</strong>!</li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16" data-code-line-numbers="1|1-2|3-4|5-6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>req_fec_auth <span class="ot">&lt;-</span> req_fec <span class="sc">|&gt;</span> </span>
+<span id="cb16-2"><a href="#cb16-2"></a>  <span class="fu">req_url_query</span>(<span class="at">api_key =</span> <span class="st">"DEMO_KEY"</span>)</span>
+<span id="cb16-3"><a href="#cb16-3"></a>req_candidates_auth <span class="ot">&lt;-</span> req_fec_auth <span class="sc">|&gt;</span> </span>
+<span id="cb16-4"><a href="#cb16-4"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"candidates"</span>)</span>
+<span id="cb16-5"><a href="#cb16-5"></a>req_house2 <span class="ot">&lt;-</span> req_candidates_auth <span class="sc">|&gt;</span> </span>
+<span id="cb16-6"><a href="#cb16-6"></a>  <span class="fu">req_url_query</span>(<span class="at">office =</span> <span class="st">"H"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">identical</span>(req_house<span class="sc">$</span>url, req_house2<span class="sc">$</span>url)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] TRUE</code></pre>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>This is the URL that was in the Curl call</li>
+<li>“Query” = stuff after “?”</li>
+<li>Arguments for the endpoint</li>
+<li>Doesn’t automatically set order, so watch out for that.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="req_url_query.multi" class="slide level2">
+<h2><code>req_url_query(.multi)</code></h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">req_url_query</span>(req_candidates, <span class="at">office =</span> <span class="fu">c</span>(<span class="st">"H"</span>, <span class="st">"S"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>#&gt; Error in `req_url_query()`:
+#&gt; ! All vector elements of `...` must be length 1.
+#&gt; ℹ Use `.multi` to choose a strategy for handling vectors.</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><code>.multi = "explode"</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu">req_url_query</span>(req_candidates, <span class="at">office =</span> <span class="fu">c</span>(<span class="st">"H"</span>, <span class="st">"S"</span>), <span class="at">.multi =</span> <span class="st">"explode"</span>)<span class="sc">$</span>url</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "https://api.open.fec.gov/v1/candidates?office=H&amp;office=S"</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><code>.multi = "pipe"</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">req_url_query</span>(req_candidates, <span class="at">office =</span> <span class="fu">c</span>(<span class="st">"H"</span>, <span class="st">"S"</span>), <span class="at">.multi =</span> <span class="st">"pipe"</span>)<span class="sc">$</span>url</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "https://api.open.fec.gov/v1/candidates?office=H|S"</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><code>.multi = "comma"</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">req_url_query</span>(req_candidates, <span class="at">office =</span> <span class="fu">c</span>(<span class="st">"H"</span>, <span class="st">"S"</span>), <span class="at">.multi =</span> <span class="st">"comma"</span>)<span class="sc">$</span>url</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "https://api.open.fec.gov/v1/candidates?office=H,S"</code></pre>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>APIs often can’t handle multiple params with same name</li>
+<li>default = “error”</li>
+<li><code>.</code> in <code>.multi</code> so it doesn’t collide with a parameter named “multi”</li>
+<li>“explode” to separate them as separate copies of that parameter,</li>
+<li>“pipe” or “comma” to list them out in same parameter</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section id="more-httr2-to-come" class="title-slide slide level1 center">
+<h1>More httr2 to come!</h1>
+<ul>
+<li class="fragment">Chapter 3 “How do I tell the API who I am?</li>
+<li class="fragment">Chapter 4 = “How can I process API responses?”</li>
+<li class="fragment">Chapter 5 = “How can I get a lot of data from an API?”</li>
+<li class="fragment">Chapter 6 = “How can I do other things with APIs?”</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>3 = Authentication &amp; other headers</li>
+<li>4 = Parsing responses</li>
+<li>5 = Pagination (and other strategies for big responses)</li>
+<li>6 = Methods (notably POST)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+
+<section id="what-do-you-think" class="title-slide slide level1 center">
+<h1>What do you think?</h1>
+<p>Please complete this <a href="https://forms.gle/Wk9YWAHybRigfg7e8">survey</a>!</p>
+<aside class="notes">
+<ul>
+<li>https://forms.gle/Wk9YWAHybRigfg7e8</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 
 <div class="footer footer-default">
 <p><a href="../../" target="wapir-club_index">r4ds.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 

@@ -10,7 +10,7 @@
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.3.450">
 
-  <title>Web APIs with R Book Club – httr2-authentication</title>
+  <title>Web APIs with R Book Club - How can I do other things with APIs?</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -388,71 +388,39 @@
   <div class="reveal">
     <div class="slides">
 
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">How can I do other things with APIs?</h1>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section id="learning-objectives" class="title-slide slide level1 center">
+<h1>️✅ Learning objectives</h1>
+<p>TODO: This is a new chapter focused on methods, body, etc. Figure out which LOs go here, exactly.</p>
+<div>
+<ul>
+<li>POST</li>
+<li>Etc</li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(httr2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
 
 <section>
-<section id="how-do-i-tell-the-api-who-i-am" class="title-slide slide level1 center">
-<h1>How do I tell the API who I am?</h1>
-<p>Cover req_user_agent() &amp; req_proxy() in here somewhere! And req_headers()!</p>
-<p><strong>Learning objectives:</strong></p>
-<ul>
-<li class="fragment">Compare and contrast authentication schemes.</li>
-<li class="fragment">Describe the dangers associated with “leaking” credentials.</li>
-<li class="fragment">Find authentication information in API docs.</li>
-<li class="fragment">Authenticate a request with a username and password.</li>
-<li class="fragment">Authenticate a request with an API key.</li>
-<li class="fragment">Authenticate a request with the “OAuth dance.”</li>
-<li class="fragment">Re-authenticate OAuth requests.</li>
-<li class="fragment">Authenticate with browser cookies.</li>
-<li class="fragment">TODO: LOs about other schemes?</li>
-</ul>
+<section id="first-lo." class="title-slide slide level1 center">
+<h1>First LO.</h1>
+
 </section>
-<section id="what-are-http-request-headers" class="slide level2">
-<h2>What are HTTP request headers?</h2>
-<div class="fragment">
-<p>Metadata about the request</p>
-<ul>
-<li class="fragment">Authentication</li>
-<li class="fragment">Cookies</li>
-<li class="fragment">Cache rules</li>
-<li class="fragment">Expected response</li>
-<li class="fragment">Etc</li>
-</ul>
-</div>
-<div class="fragment">
-<p>Names are case-insensitive!</p>
-</div>
-<div class="fragment">
-<p>Much more in Chapter 3: “How do I tell the API who I am?”</p>
-</div>
-</section>
-<section id="req_headers" class="slide level2">
-<h2><code>req_headers()</code></h2>
-<p>TODO: Leftovers from <code>httr2.qmd</code>. Make it fit in this chapter!</p>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" data-code-line-numbers="1|1-2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>req_fec_auth <span class="ot">&lt;-</span> req_fec <span class="sc">|&gt;</span> </span>
-<span id="cb1-2"><a href="#cb1-2"></a>  <span class="fu">req_headers</span>(<span class="st">"X-Api-Key"</span> <span class="ot">=</span> <span class="st">"DEMO_KEY"</span>, <span class="at">.redact =</span> <span class="st">"X-Api-Key"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">req_dry_run</span>(req_fec_auth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<p>Be careful!</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>req_fec_auth<span class="sc">$</span>headers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
+<section id="what-are-the-pieces-of-an-http-request" class="slide level2">
+<h2>What are the pieces of an HTTP request?</h2>
+<p>HTTP request = URL + headers + <strong><em>method</em></strong> + body</p>
 <aside class="notes">
 <ul>
-<li><code>.redact</code> arg tells it to hide the value of that argument when it prints to the console.</li>
-<li><code>req_dry_run()</code> prints useful info without actually running <code>req_perform()</code>
-<ul>
-<li>Normal print of req_fec_auth also works outside of slide context</li>
-</ul></li>
-<li>Be careful: It’s still in the object, just hidden</li>
+<li>Re-orient ourselves with the pieces of an HTTP request.</li>
+<li>Focus on method.</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -466,27 +434,40 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="req_url" class="slide level2">
-<h2><code>req_url()</code></h2>
+<section id="what-are-http-request-methods" class="slide level2">
+<h2>What are HTTP request methods?</h2>
 <ul>
-<li class="fragment"><em>Replace</em> entire URL</li>
-<li class="fragment">eg: Same authentication, different <code>base_url</code></li>
+<li class="fragment">Paths are <strong><em>nouns</em></strong></li>
+<li class="fragment">Methods are <strong><em>verbs</em></strong>
+<ul>
+<li class="fragment"><code>GET</code> (fetch existing thing)</li>
+<li class="fragment"><code>POST</code> (push new thing)</li>
+<li class="fragment"><code>DELETE</code> (delete existing thing)</li>
+<li class="fragment"><code>PATCH</code> (change existing thing)</li>
+<li class="fragment"><code>PUT</code> (replace existing thing)</li>
+<li class="fragment"><code>CONNECT</code>, <code>OPTIONS</code>, <code>HEAD</code>, <code>TRACE</code> (very rare)</li>
+</ul></li>
 </ul>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="1|1-2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>req_fec_dev_auth <span class="ot">&lt;-</span> req_fec_auth <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">req_url</span>(<span class="st">"https://dev.fec.fake/v1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">req_dry_run</span>(req_fec_dev_auth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
 <aside class="notes">
 <ul>
-<li>At first I lumped this in same bucket as req_url_path()</li>
-<li>YouTube API: metadata vs upload</li>
+<li>By convention for REST APIs
+<ul>
+<li>We’ll dig into different API frameworks in a later chapter.</li>
+</ul></li>
+<li>Path examples: candidates, calendar-dates, filings, electioneering (ads)</li>
+<li>We’ve been doing GET by default</li>
+<li>CONNECT = “start 2-way communication” (eg ask server to be a bridge)</li>
+<li>OPTIONS should tell you method options</li>
+<li>HEAD returns headers that you’d get with GET
+<ul>
+<li>Eg, use it to check if DL would be big.</li>
+</ul></li>
+<li>TRACE returns the request as the final server received it, with header info about route.</li>
+<li>Methods aren’t strict
+<ul>
+<li>API owner can do weird things.</li>
+<li>GET or POST often used for ~everything</li>
+</ul></li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -500,284 +481,68 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="but-first-practice-safe-git" class="slide level2 unnumbered">
-<h2>But first: Practice safe git</h2>
+<section id="req_method" class="slide level2">
+<h2><code>req_method()</code></h2>
 <ul>
-<li class="fragment">Run <code>usethis::git_vaccinate()</code></li>
-<li class="fragment">Usually ignore project-level <code>.Renviron</code></li>
+<li class="fragment"><code>GET</code> = default without body</li>
+<li class="fragment"><code>POST</code> = default with body</li>
+<li class="fragment"><code>req_method()</code> to specify (rarely needed)</li>
 </ul>
 </section>
-<section id="credential-dangers" class="slide level2 unnumbered">
-<h2>Credential dangers</h2>
-<ul>
-<li class="fragment">How much account control does it have?
-<ul>
-<li class="fragment">Can it lock you out?</li>
-<li class="fragment">Can it reveal sensitive data?</li>
-</ul></li>
-<li class="fragment">How long does it last?
-<ul>
-<li class="fragment">Shorter = safer</li>
-<li class="fragment">Can you revoke it?</li>
-</ul></li>
-<li class="fragment">How likely is it to leak?
-<ul>
-<li class="fragment">When do you send it?</li>
-<li class="fragment">Where do you send it?</li>
-<li class="fragment">How often do you send it?</li>
-</ul></li>
-</ul>
-</section>
-<section id="authentication-schemes-overview" class="slide level2 unnumbered">
-<h2>Authentication schemes overview</h2>
-<ul>
-<li class="fragment"><strong>HTTP Basic Authentication:</strong> username + password sent with request</li>
-<li class="fragment"><strong>API Keys/Bearer Tokens:</strong> password-like thing sent with request
-<ul>
-<li class="fragment">Dirty secret: This is what more complex schemes are, eventually</li>
-<li class="fragment"><code>httr2::req_auth_bearer_token()</code></li>
-<li class="fragment">Sometimes: <code>httr2::req_headers()</code></li>
-</ul></li>
-<li class="fragment"><strong>OAuth:</strong> Multi-step process to generate a key
-<ul>
-<li class="fragment">Goal: Make the key as short-lived as possible</li>
-<li class="fragment">Not everyone implements the same way (ie often wrong)</li>
-<li class="fragment"><code>httr2::req_oauth_*()</code></li>
-</ul></li>
-<li class="fragment"><strong>Other:</strong>
-<ul>
-<li class="fragment">Cookies</li>
-<li class="fragment"><a href="https://fosstodon.org/deck/@jaredlander/111422477967658857">Certificates</a></li>
-</ul></li>
-</ul>
-</section>
-<section id="dangers-of-leaking-credentials" class="slide level2 unnumbered">
-<h2>Dangers of leaking credentials</h2>
-<ul>
-<li class="fragment">🔴 Username + password
-<ul>
-<li class="fragment">Access entire account</li>
-<li class="fragment">Often difficult to turn off/recover</li>
-</ul></li>
-<li class="fragment">🟠 API key
-<ul>
-<li class="fragment">Can access everything you can access</li>
-<li class="fragment">Often short-lived</li>
-<li class="fragment">You can often revoke this</li>
-</ul></li>
-<li class="fragment">🟡 OAuth exists to minimize these dangers</li>
-</ul>
-</section>
-<section id="what-does-this-api-want" class="slide level2 unnumbered">
-<h2>What does this API want?</h2>
-<ul>
-<li class="fragment">Find “OpenAPI” or “Swagger” links (or “API json”, “API yaml”, etc)
-<ul>
-<li class="fragment">Search for “secrutitySchemes”</li>
-<li class="fragment">Often easier-to-understand details than docs!</li>
-</ul></li>
-<li class="fragment">Might need to do something to “register”
-<ul>
-<li class="fragment">“Request an API key”</li>
-<li class="fragment">“Register your App” (or “Client”) (see OAuth)</li>
-</ul></li>
-</ul>
-</section>
-<section id="http-basic-authentication" class="slide level2 unnumbered">
-<h2>HTTP Basic Authentication</h2>
-<ul>
-<li class="fragment"><code>httr2::req_auth_basic(req, username, password = NULL)</code></li>
-<li class="fragment">Leave password blank: Prompt interactive semi-securely</li>
-<li class="fragment">Avoid using this if you can!
-<ul>
-<li class="fragment">I can’t remember any API that only offers this</li>
-</ul></li>
-</ul>
-</section>
-<section id="api-keys-bearer-tokens" class="slide level2 unnumbered">
-<h2>API Keys &amp; Bearer Tokens</h2>
-<ul>
-<li class="fragment"><code>httr2::req_auth_bearer_token(req, token)</code> (specific header)
-<ul>
-<li class="fragment">Pass <code>token</code> as <code>Sys.get("API_TOKEN_NAME")</code></li>
-<li class="fragment">Save token with <code>usethis::edit_r_environ()</code></li>
-</ul></li>
-<li class="fragment">Catch-all: <code>httr2::req_headers(.req, ..., .redact = NULL)</code>
-<ul>
-<li class="fragment"><code>...</code> = <code>token_parameter = Sys.get("API_TOKEN_NAME")</code></li>
-<li class="fragment"><code>.redact = "token_parameter"</code> to hide in print</li>
-</ul></li>
-</ul>
-</section>
-<section id="oauth-terminology" class="slide level2 unnumbered">
-<h2>OAuth: Terminology</h2>
-<ul>
-<li class="fragment"><strong>User:</strong> You, or someone using your code</li>
-<li class="fragment"><strong>Client:</strong> The thing asking for permission to act as the user
-<ul>
-<li class="fragment">Your code, but also</li>
-<li class="fragment">A reusable thing that represents your code</li>
-<li class="fragment"><strong>Client ID:</strong> Codename</li>
-<li class="fragment"><strong>Client secret:</strong> Client “password”, but often not very secret</li>
-</ul></li>
-<li class="fragment"><strong>Authorization server (auth):</strong> Thing granting permission (usually the API owner)
-<ul>
-<li class="fragment">Often multiple servers (auth vs auth2 on next slide)</li>
-</ul></li>
-<li class="fragment"><strong>Resource server (API):</strong> Thing user is using (the API)</li>
-</ul>
-</section>
-<section id="the-oauth-dance" class="slide level2 unnumbered">
-<h2>The OAuth “dance”</h2>
-<ul>
-<li class="fragment">User to client: Hit this API for me!</li>
-<li class="fragment">Client (ID) to auth: Can I act as this user and do these things?</li>
-<li class="fragment">Auth to user: Is this ok?</li>
-<li class="fragment">User to auth: Yes</li>
-<li class="fragment">Auth to client’s home address: Use this to get a key</li>
-<li class="fragment">Client (ID + secret) to auth2: Turn this into a key (I’m really me!)</li>
-<li class="fragment">Auth2 to client: Here’s your key (and I’ll log what it can do)</li>
-<li class="fragment">Client to API: Here’s my key</li>
-<li class="fragment">API to auth: Can this key do this?</li>
-<li class="fragment">Auth to API: (checks logged scopes) Yes!</li>
-<li class="fragment">API to client: Ok, here’s the info!</li>
-</ul>
-<p>TODO: Image of OAuth dance</p>
-</section>
-<section id="oauth-credential-dangers" class="slide level2 unnumbered">
-<h2>OAuth credential dangers</h2>
-<ul>
-<li class="fragment">🟢 Client id: Like knowing a package name.</li>
-<li class="fragment">🟡 Client secret:
-<ul>
-<li class="fragment">Can pretend to be your client, but user still needs to say ok</li>
-<li class="fragment">Can your <strong>client</strong> do anything special?
-<ul>
-<li class="fragment">Installed (e.g.&nbsp;Slack app)?</li>
-<li class="fragment">API usage limits?</li>
-</ul></li>
-</ul></li>
-<li class="fragment">🟡 Authorization code: Unlikely to be an issue
-<ul>
-<li class="fragment">Only sent to provided redirect_uri</li>
-<li class="fragment">Extremely short lived (often minutes or less)</li>
-</ul></li>
-</ul>
-</section>
-<section id="oauth-credential-dangers-cont" class="slide level2 unnumbered">
-<h2>OAuth credential dangers (cont)</h2>
-<ul>
-<li class="fragment">🟡 Refresh token: A longer-lived authorization code
-<ul>
-<li class="fragment">Can be used to get a new access token</li>
-<li class="fragment">Usually revoked if you auth from scratch</li>
-<li class="fragment">Also need client secret to refresh</li>
-</ul></li>
-<li class="fragment">🟠 Access token: The thing we’re protecting
-<ul>
-<li class="fragment">Can do whatever it’s authorized to do</li>
-<li class="fragment">Usually easy to revoke</li>
-</ul></li>
-<li class="fragment">🔴 Username + password: We don’t want to know these</li>
-</ul>
-</section>
-<section id="httr2oauth_client" class="slide level2 unnumbered">
-<h2>httr2::oauth_client()</h2>
-<ul>
-<li class="fragment">Almost definitely only need these (from API provider):
-<ul>
-<li class="fragment"><code>id</code> = Client ID</li>
-<li class="fragment"><code>token_url</code> = URL where clients exchange authorization codes for tokens</li>
-<li class="fragment"><code>secret</code> = Client secret</li>
-<li class="fragment">Often <code>auth = "header"</code></li>
-<li class="fragment">If this client has multiple uses: <code>name</code> = unique for this use case</li>
-</ul></li>
-<li class="fragment">Construct once &amp; reuse</li>
-</ul>
-</section>
-<section id="oauth-client-demo" class="slide level2 unnumbered">
-<h2>OAuth client demo</h2>
+<section id="req_template" class="slide level2">
+<h2><code>req_template()</code></h2>
+<div class="fragment">
+<p>Build request with variables</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">library</span>(httr2)</span>
-<span id="cb6-2"><a href="#cb6-2"></a>yt_client <span class="ot">&lt;-</span> <span class="fu">oauth_client</span>(</span>
-<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">Sys.getenv</span>(<span class="st">"YOUTUBE_CLIENT_ID"</span>), </span>
-<span id="cb6-4"><a href="#cb6-4"></a>  <span class="st">"https://oauth2.googleapis.com/token"</span>,</span>
-<span id="cb6-5"><a href="#cb6-5"></a>  <span class="at">secret =</span> <span class="fu">Sys.getenv</span>(<span class="st">"YOUTUBE_CLIENT_SECRET"</span>)</span>
-<span id="cb6-6"><a href="#cb6-6"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2" data-code-line-numbers="1|1-2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>req_candidates2 <span class="ot">&lt;-</span> req_fec <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="fu">req_template</span>(<span class="st">"GET /{endpoint}"</span>, <span class="at">endpoint =</span> <span class="st">"candidates"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="httr2req_oauth_auth_code" class="slide level2 unnumbered">
-<h2>httr2::req_oauth_auth_code()</h2>
-<ul>
-<li class="fragment"><code>auth_url</code> = URL to get an authorization code (from API)</li>
-<li class="fragment"><code>scope</code> = Usually comma-separated string of permissions</li>
-<li class="fragment"><code>pkce</code> = Good if supported, often have to turn off</li>
-<li class="fragment"><code>redirect_uri</code> = Where to send response
-<ul>
-<li class="fragment">Often need specific local port “http://localhost:4242” or “http://127.0.0.1:4242”</li>
-<li class="fragment">Must be configured as part of client configuration (at API)</li>
-</ul></li>
-<li class="fragment"><code>cache_disk</code> = Set this <code>TRUE</code> if you can
-<ul>
-<li class="fragment"><code>cache_key</code> if you’ll use this client for multiple tokens</li>
-</ul></li>
-</ul>
-</section>
-<section id="oauth-request-demo" class="slide level2 unnumbered">
-<h2>Oauth request demo</h2>
+</div>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>playlists <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://youtube.googleapis.com/youtube/v3"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"playlists"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">req_url_query</span>(<span class="at">part =</span> <span class="st">"snippet"</span>, <span class="at">mine =</span> <span class="cn">TRUE</span>, <span class="at">maxResults =</span> <span class="dv">50</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-4"><a href="#cb7-4"></a>  <span class="fu">req_oauth_auth_code</span>(</span>
-<span id="cb7-5"><a href="#cb7-5"></a>    yt_client, </span>
-<span id="cb7-6"><a href="#cb7-6"></a>    <span class="st">"https://accounts.google.com/o/oauth2/v2/auth"</span>,</span>
-<span id="cb7-7"><a href="#cb7-7"></a>    <span class="at">scope =</span> <span class="st">"https://www.googleapis.com/auth/youtube"</span>,</span>
-<span id="cb7-8"><a href="#cb7-8"></a>    <span class="at">redirect_uri =</span> <span class="st">"http://127.0.0.1:8888"</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb7-10"><a href="#cb7-10"></a>  <span class="fu">req_perform</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">identical</span>(req_candidates<span class="sc">$</span>url, req_candidates2<span class="sc">$</span>url)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</div>
+<div class="fragment">
+<p>A more useful example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>req_fec <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">req_template</span>(<span class="st">"GET /candidate/{candidate_id}/"</span>, <span class="at">candidate_id =</span> <span class="st">"P40014052"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>Sometimes APIs are pretty much described in this syntax, lets you copy-paste.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="automating-oauth" class="slide level2 unnumbered">
-<h2>Automating OAuth</h2>
+<section id="what-are-the-pieces-of-an-http-request-1" class="slide level2">
+<h2>What are the pieces of an HTTP request?</h2>
+<p>HTTP request = URL + headers + method + <strong><em>body</em></strong></p>
+<aside class="notes">
 <ul>
-<li class="fragment"><em>If you can,</em> use httr2 cache: easiest, but
-<ul>
-<li class="fragment">auto-deletes when 30 days old</li>
-<li class="fragment">fills logs w/ “Caching httr2 token in …” messages</li>
-</ul></li>
-<li class="fragment"><code>httr2::req_oauth_bearer_jwt()</code> if you have JSON web token (service account)</li>
-<li class="fragment"><code>httr2::req_oauth_refresh()</code> if you have a refresh token
-<ul>
-<li class="fragment"><code>httr2::oauth_flow_auth_code()</code> once to get refresh</li>
-</ul></li>
+<li>Re-orient ourselves with the pieces of an HTTP request.</li>
+<li>Focus on body</li>
 </ul>
-</section>
-<section id="browser-cookies" class="slide level2 unnumbered">
-<h2>Browser cookies</h2>
-<p><em>This will feel hacky because it is hacky.</em></p>
-<ul>
-<li class="fragment">Install <a href="https://www.editthiscookie.com/">EditThisCookie</a> browser extension</li>
-<li class="fragment">Use API in browser</li>
-<li class="fragment">Open EditThisCookie extension</li>
-<li class="fragment">Options &gt; “Choose the preferred export format for cookies” &gt; Netscape HTTP Cookie File</li>
-<li class="fragment">Open EditThisCookie extension</li>
-<li class="fragment">Export</li>
-<li class="fragment">Paste into a file at <code>path</code></li>
-<li class="fragment"><code>httr2::req_cookie_preserve(req, path)</code></li>
-</ul>
-</section>
-<section id="meeting-videos" class="slide level2 unnumbered">
-<h2>Meeting Videos</h2>
-<h3 class="unnumbered" id="cohort-1">Cohort 1</h3>
-<iframe src="https://www.youtube.com/embed/URL" width="100%" height="400px" data-external="1">
-</iframe>
-<details>
-<summary>
-Meeting chat log
-</summary>
-<pre><code>LOG</code></pre>
-</details>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 
 <div class="footer footer-default">
 <p><a href="../../" target="wapir-club_index">r4ds.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>

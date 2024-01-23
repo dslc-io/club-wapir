@@ -333,13 +333,13 @@
 <section id="learning-objectives" class="title-slide slide level1 center">
 <h1>️✅ Learning objectives</h1>
 <ul>
-<li>Decide whether this book is for you.</li>
-<li>Identify the major topics that this book will cover.</li>
-<li>Identify prerequisites of this book.</li>
-<li>Describe what this book will <em>not</em> cover.</li>
+<li class="fragment">Explain what an API is.</li>
+<li class="fragment">Decide whether this book is for you.</li>
 </ul>
 <aside class="notes">
 <ul>
+<li>We’ll talk a bit more about using LOs later in this chapter.</li>
+<li>We’ll pick up other information, but these are the key skills.</li>
 <li>Anything else you’d want to see in an intro?</li>
 </ul>
 <style type="text/css">
@@ -355,32 +355,22 @@
       }</style></aside>
 </section>
 
-<section id="who-should-read-this-book" class="title-slide slide level1 center">
-<h1>Who should read this book?</h1>
+<section>
+<section id="what-is-an-api" class="title-slide slide level1 center">
+<h1>What is an API?</h1>
+
+</section>
+<section id="api-application-programming-interface" class="slide level2">
+<h2>API = “application programming interface”</h2>
 <ul>
-<li>Data Analysts
-<ul>
-<li>Part 1: Enrich datasets via APIs</li>
-</ul></li>
-<li>Machine Learning Engineers
-<ul>
-<li>Part 2: Share predictions via APIs</li>
-</ul></li>
-<li>Researchers
-<ul>
-<li>Part 2: Share data via APIs</li>
-</ul></li>
-<li>Shiny App Designers
-<ul>
-<li>Part 1: Work with external APIs</li>
-<li>Part 2: Divide &amp; conquer</li>
-</ul></li>
+<li class="fragment">“application” = function, website… any computerized thing</li>
+<li class="fragment">“programming” = can be used in code</li>
+<li class="fragment">“interface” = way to interact with something</li>
 </ul>
+<p><strong>🤖 APIs allow computers to talk to one another</strong></p>
 <aside class="notes">
 <ul>
-<li>People who analyze data, not necessarily that job title.</li>
-<li>Researchers or anybody else with data to share.</li>
-<li>Does anybody fit into something other than those use cases?</li>
+<li>Right level?</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -394,22 +384,80 @@
           display:block!important;
       }</style></aside>
 </section>
-
+<section id="what-are-web-apis" class="slide level2">
+<h2>What are web APIs?</h2>
+<ul>
+<li class="fragment">💻 Technically any function’s list of arguments is an API</li>
+</ul>
+<blockquote>
+<p>“httr2 is a ground-up rewrite of httr that provides a pipeable <strong><em>API</em></strong> with an explicit request object that solves more problems felt by packages that wrap <strong><em>APIs</em></strong>” (httr2 docs, emphasis added)</p>
+</blockquote>
+<ul>
+<li class="fragment">🕸️ This book = <strong><em>web</em></strong> APIs
+<ul>
+<li class="fragment">Web API = API on the internet</li>
+<li class="fragment">For rest of book, “API” means “web API”</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>httr2 quote helpful/interesting?</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="what-are-some-api-examples" class="slide level2">
+<h2>What are some API examples?</h2>
+<ul>
+<li class="fragment">Cloud services (<a href="https://cran.r-project.org/package=paws">{paws}</a>)</li>
+<li class="fragment">Government agencies (<a href="https://api.open.fec.gov/developers/">OpenFEC</a>)</li>
+<li class="fragment">Random data (<a href="https://sunrisesunset.io/api/">sunrisesunset.io</a>)</li>
+<li class="fragment">Services (<a href="https://openai.com/product">OpenAI</a>)</li>
+<li class="fragment"><a href="https://apis.guru/">APIs.guru</a> = API directory
+<ul>
+<li class="fragment">2,529 APIs as of 2024-01-22</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Number of examples good?</li>
+<li>Variety of examples good?</li>
+<li>Deep enough, or more-full usage examples?</li>
+<li>What would you expect in book (vs slides)?</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
 <section>
 <section id="what-will-i-learn" class="title-slide slide level1 center">
 <h1>What will I learn?</h1>
 <ul>
-<li>Part 1: How can I get web data into R? ({httr2})</li>
-<li>Part 2: How can I create my own APIs with R? ({plumber})</li>
-<li>Part 3: Use Cases? Recipes?</li>
+<li class="fragment">Part 1: How can I get web data into R? ({httr2})</li>
+<li class="fragment">Part 2: How can I create my own APIs with R? ({plumber})</li>
 </ul>
 <aside class="notes">
 <ul>
 <li>Catch-all chapter at end of each section about learning more.</li>
 <li>Survey: https://forms.gle/9qdYTrDL5cZmG26y6</li>
 <li>Please fill out the survey, which will get details about which chapters sound interesting to you.</li>
-<li>Are there any topics there that you <em>don’t</em> care about?</li>
-<li>Considering part 3 with things that span chapters (eg, subdividing a Shiny app into APIs). Interesting? Examples?</li>
 <li>Any missing topics?</li>
 </ul>
 <style type="text/css">
@@ -424,13 +472,12 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="which-chapters-sound-interesting" class="slide level2">
-<h2>Which chapters sound interesting?</h2>
+<section id="what-does-each-chapter-cover" class="slide level2">
+<h2>What does each chapter cover?</h2>
 <div class="columns" style="font-size: 0.7em;">
 <div class="column fragment" style="width:50%;">
 <p><strong>Part 1: How can I get web data into R?</strong></p>
 <ul>
-<li class="fragment">How do computers communicate?</li>
 <li class="fragment">How can I access APIs from R?</li>
 <li class="fragment">How do I tell the API who I am?</li>
 <li class="fragment">How can I process API responses?</li>
@@ -450,21 +497,94 @@
 <li class="fragment">How can I handle API errors?</li>
 <li class="fragment">How can I authenticate API users?</li>
 <li class="fragment">How can I test my plumber API?</li>
-<li class="fragment">How do I deploy my plumber API?
-<ul>
-<li class="fragment">AWS? GCS? Azure? DigitalOcean? Posit Cloud? Posit Connect? Other?</li>
-</ul></li>
+<li class="fragment">How do I deploy my plumber API?</li>
 <li class="fragment">How can I learn more about creating APIs?</li>
-<li class="fragment"><em><strong>Part 3: Use Cases</strong> (eg Subdividing a Shiny app)</em></li>
-<li class="fragment">What else?<br>
-</li>
 </ul>
 </div>
 </div>
 <aside class="notes">
 <ul>
 <li>I want to quickly gauge interest, but more details in the survey.</li>
+<li>Will have an over-arching case study woven into most chapters (but as independent pieces to allow jumping around)</li>
 <li>Any missing topics?</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="what-wont-i-learn" class="slide level2">
+<h2>What won’t I learn?</h2>
+<ul>
+<li class="fragment">How can I access APIs with {<a href="https://httr.r-lib.org/">httr</a>} or {<a href="https://jeroen.r-universe.dev/curl">curl</a>}?</li>
+<li class="fragment">How can I access APIs from other programming languages?</li>
+<li class="fragment">How <em>should</em> I design a complex API?
+<ul>
+<li class="fragment">Many other books, such as <a href="https://www.manning.com/books/designing-apis-with-swagger-and-openapi">Designing APIs with Swagger and OpenAPI</a></li>
+</ul></li>
+<li class="fragment">How can I administer an enterprise API?
+<ul>
+<li class="fragment"><a href="https://do4ds.com/">DevOps for Data Science</a> for tips</li>
+<li class="fragment">Work with professionals for full-scale deployments</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Anything else people would expect?</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="who-should-read-this-book" class="slide level2">
+<h2>Who should read this book?</h2>
+<div class="columns">
+<div class="column fragment" style="width:50%;">
+<ul>
+<li class="fragment">Data Analysts/Scientists
+<ul>
+<li class="fragment">Part 1: Enrich datasets</li>
+</ul></li>
+<li class="fragment">Machine Learning Engineers
+<ul>
+<li class="fragment">Part 1: Feature engineering</li>
+<li class="fragment">Part 2: Share predictions</li>
+</ul></li>
+</ul>
+</div><div class="column fragment" style="width:50%;">
+<ul>
+<li class="fragment">Data Producers (Researchers, etc)
+<ul>
+<li class="fragment">Part 2: Share data</li>
+</ul></li>
+<li class="fragment">Shiny App Designers
+<ul>
+<li class="fragment">Part 1: Load/process data</li>
+<li class="fragment">Part 2: Divide &amp; conquer</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>People who analyze data, not necessarily that job title.</li>
+<li>Researchers or anybody else with data to share.</li>
+<li>Does anybody fit into something other than those use cases?</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -481,18 +601,18 @@
 <section id="prerequisites" class="slide level2">
 <h2>Prerequisites</h2>
 <ul>
-<li>Very few hard prerequisites
+<li class="fragment">Very few hard prerequisites
 <ul>
-<li>Will point to resources when helpful</li>
+<li class="fragment">Will point to resources when helpful</li>
 </ul></li>
-<li>I assume familiarity with R
+<li class="fragment">I assume familiarity with R
 <ul>
-<li><a href="https://r4ds.hadley.nz/">R for Data Science</a></li>
+<li class="fragment"><a href="https://r4ds.hadley.nz/">R for Data Science</a></li>
 </ul></li>
-<li>Helpful:
+<li class="fragment">Helpful:
 <ul>
-<li><a href="https://adv-r.hadley.nz/">Advanced R</a> to construct more robust APIs</li>
-<li><a href="https://r-pkgs.org/">R Packages</a> for deeper dive into 📦</li>
+<li class="fragment"><a href="https://adv-r.hadley.nz/">Advanced R</a> to construct more robust APIs</li>
+<li class="fragment"><a href="https://r-pkgs.org/">R Packages</a> for deeper dive into 📦</li>
 </ul></li>
 </ul>
 <aside class="notes">
@@ -521,37 +641,19 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="what-wont-i-learn" class="slide level2">
-<h2>What won’t I learn?</h2>
+<section id="how-are-chapters-structured" class="slide level2">
+<h2>How are chapters structured?</h2>
 <ul>
-<li>How can I access APIs with {<a href="https://httr.r-lib.org/">httr</a>} or {<a href="https://jeroen.r-universe.dev/curl">curl</a>}?</li>
-<li>How can I access APIs from other programming languages?</li>
-<li>How <em>should</em> I design a complex API?
+<li class="fragment">Learning Objectives ≈ skills
 <ul>
-<li>Covered a tiny bit</li>
-<li>Many other books, such as <a href="https://www.manning.com/books/designing-apis-with-swagger-and-openapi">Designing APIs with Swagger and OpenAPI</a></li>
+<li class="fragment">“After you read this chapter, you will be able to…”</li>
+<li class="fragment">There will be a separate index of these</li>
 </ul></li>
-<li>How can I administer an enterprise API?
-<ul>
-<li><a href="https://do4ds.com/">DevOps for Data Science</a> for tips</li>
-<li>Work with professionals for full-scale deployments</li>
-</ul></li>
+<li class="fragment">Test-Yourself Questions to check understanding</li>
+<li class="fragment">Check online version for API updates</li>
+<li class="fragment">(TODO: Anything to note about code vs text?)</li>
+<li class="fragment">(TODO: Probably an over-arching case study of an election data Shiny app?)</li>
 </ul>
-<aside class="notes">
-<ul>
-<li>Anything else people would expect?</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section></section>
 <section id="what-do-you-think" class="title-slide slide level1 center">
 <h1>What do you think?</h1>
@@ -571,28 +673,11 @@
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section>
-
-<section>
-<section id="meeting-videos" class="title-slide slide level1 center">
-<h1>Meeting Videos</h1>
-
-</section>
-<section id="cohort-1" class="slide level2">
-<h2>Cohort 1</h2>
-<iframe src="https://www.youtube.com/embed/URL" width="100%" height="400px" data-external="1">
-</iframe>
-<details>
-<summary>
-Meeting chat log
-</summary>
-<pre><code>LOG</code></pre>
-</details>
 
 <div class="footer footer-default">
 <p><a href="../" target="wapir-club_index">r4ds.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 

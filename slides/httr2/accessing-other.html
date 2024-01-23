@@ -394,9 +394,9 @@
 <h1>How else can I communicate with APIs from R?</h1>
 <p><strong>Learning objectives:</strong></p>
 <ul>
-<li>Fetch data from GraphQL APIs.</li>
-<li>Fetch data from websocket APIs.</li>
-<li>Fetch data from gRPC APIs.</li>
+<li class="fragment">Fetch data from GraphQL APIs.</li>
+<li class="fragment">Fetch data from websocket APIs.</li>
+<li class="fragment">Fetch data from gRPC APIs.</li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(ghql)</span>
@@ -411,12 +411,12 @@
 <section id="graphql" class="slide level2 unnumbered">
 <h2>GraphQL</h2>
 <ul>
-<li>Current landscape feels like “I use GraphQL in other languages, and want it to technically be possible to do so from R.”</li>
-<li>Queries: <a href="https://docs.ropensci.org/ghql/index.html">ghql</a>
+<li class="fragment">Current landscape feels like “I use GraphQL in other languages, and want it to technically be possible to do so from R.”</li>
+<li class="fragment">Queries: <a href="https://docs.ropensci.org/ghql/index.html">ghql</a>
 <ul>
-<li>Demo on next slide</li>
+<li class="fragment">Demo on next slide</li>
 </ul></li>
-<li>Server side: <a href="http://schloerke.com/gqlr/index.html">gqlr</a> (more in later chapter)</li>
+<li class="fragment">Server side: <a href="http://schloerke.com/gqlr/index.html">gqlr</a> (more in later chapter)</li>
 </ul>
 </section>
 <section id="graphql-setup" class="slide level2 unnumbered">
@@ -469,19 +469,19 @@
 <section id="websocket-review" class="slide level2 unnumbered">
 <h2>websocket review</h2>
 <ul>
-<li>Alternative to HTTP</li>
-<li><code>ws://</code> or <code>wss://</code></li>
-<li>2-way communication</li>
-<li>{websocket} package</li>
+<li class="fragment">Alternative to HTTP</li>
+<li class="fragment"><code>ws://</code> or <code>wss://</code></li>
+<li class="fragment">2-way communication</li>
+<li class="fragment">{websocket} package</li>
 </ul>
 </section>
 <section id="aside-shiny-websockets" class="slide level2 unnumbered">
 <h2>Aside: shiny &amp; websockets</h2>
 <ul>
-<li>You might see websocket-related errors in Shiny</li>
-<li>Shiny UI &amp; server communicate via a websocket connection</li>
-<li>More directly managed via {httpuv} &amp; TypeScript code</li>
-<li>Beyond the scope of this book</li>
+<li class="fragment">You might see websocket-related errors in Shiny</li>
+<li class="fragment">Shiny UI &amp; server communicate via a websocket connection</li>
+<li class="fragment">More directly managed via {httpuv} &amp; TypeScript code</li>
+<li class="fragment">Beyond the scope of this book</li>
 </ul>
 </section>
 <section id="websocket-demo-setup" class="slide level2 unnumbered">
@@ -530,39 +530,39 @@
 <section id="websocket-usecases" class="slide level2 unnumbered">
 <h2>websocket usecases</h2>
 <ul>
-<li>News/Message feeds
+<li class="fragment">News/Message feeds
 <ul>
-<li>Display new content as it comes in</li>
+<li class="fragment">Display new content as it comes in</li>
 </ul></li>
-<li>Messaging
+<li class="fragment">Messaging
 <ul>
-<li>Send and receive ~simultaneously without new connections</li>
+<li class="fragment">Send and receive ~simultaneously without new connections</li>
 </ul></li>
-<li>Multi-player games</li>
-<li>Collaborative editing</li>
-<li>Real-time dashboards</li>
+<li class="fragment">Multi-player games</li>
+<li class="fragment">Collaborative editing</li>
+<li class="fragment">Real-time dashboards</li>
 </ul>
 </section>
 <section id="grpc-review" class="slide level2 unnumbered">
 <h2>gRPC review</h2>
 <ul>
-<li>Google Remote Procedure Call</li>
-<li>Becoming very popular</li>
-<li>Good for real-time, 2-way communication</li>
-<li>Uses HTTP/2 (more socket-like)</li>
+<li class="fragment">Google Remote Procedure Call</li>
+<li class="fragment">Becoming very popular</li>
+<li class="fragment">Good for real-time, 2-way communication</li>
+<li class="fragment">Uses HTTP/2 (more socket-like)</li>
 </ul>
 </section>
 <section id="grpc-what-is-it-really" class="slide level2 unnumbered">
 <h2>gRPC: What is it really?</h2>
 <ul>
-<li>HTTP/2 (upgraded HTTP)
+<li class="fragment">HTTP/2 (upgraded HTTP)
 <ul>
-<li>Can access via {httr2}</li>
+<li class="fragment">Can access via {httr2}</li>
 </ul></li>
-<li>“Protocol buffers” datatype
+<li class="fragment">“Protocol buffers” datatype
 <ul>
-<li>Fully implemented in {RProtoBuf} package</li>
-<li>{protolite} for basics</li>
+<li class="fragment">Fully implemented in {RProtoBuf} package</li>
+<li class="fragment">{protolite} for basics</li>
 </ul></li>
 </ul>
 </section>

@@ -394,21 +394,21 @@
 <h1>How can I create an API?</h1>
 <p><strong>Learning objectives:</strong></p>
 <ul>
-<li>Create an API with {plumber}.</li>
-<li>Organize {plumber} API projects.</li>
-<li>Design a RESTful API.</li>
-<li>Implement a RESTful API in {plumber}.</li>
-<li>Use {plumber} filters to process an API request.</li>
-<li>Use {plumber} hooks to modify an API.</li>
-<li>Debug a {plumber} API.</li>
+<li class="fragment">Create an API with {plumber}.</li>
+<li class="fragment">Organize {plumber} API projects.</li>
+<li class="fragment">Design a RESTful API.</li>
+<li class="fragment">Implement a RESTful API in {plumber}.</li>
+<li class="fragment">Use {plumber} filters to process an API request.</li>
+<li class="fragment">Use {plumber} hooks to modify an API.</li>
+<li class="fragment">Debug a {plumber} API.</li>
 </ul>
 </section>
 <section id="plumber-quickstart" class="slide level2 unnumbered">
 <h2>plumber quickstart</h2>
 <ol type="1">
-<li>Define API endpoints in an R script.</li>
-<li>Launch that API locally.</li>
-<li><em>Later chapter(s): Deploy that API somewhere else.</em></li>
+<li class="fragment">Define API endpoints in an R script.</li>
+<li class="fragment">Launch that API locally.</li>
+<li class="fragment"><em>Later chapter(s): Deploy that API somewhere else.</em></li>
 </ol>
 </section>
 <section id="echo-endpoint-function" class="slide level2 unnumbered">
@@ -420,8 +420,8 @@
 <span id="cb1-4"><a href="#cb1-4"></a></span>
 <span id="cb1-5"><a href="#cb1-5"></a><span class="fu">echo</span>(<span class="st">"my message"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>$msg
-[1] "The message is: 'my message'"</code></pre>
+<pre><code>#&gt; $msg
+#&gt; [1] "The message is: 'my message'"</code></pre>
 </div>
 </div>
 </section>
@@ -487,11 +487,11 @@
 <section id="launch-the-api" class="slide level2 unnumbered">
 <h2>Launch the API</h2>
 <ul>
-<li><code>api &lt;- pr("plumber.R")</code></li>
-<li><code>api &lt;- pr() |&gt; pr_post({definition}) |&gt; etc()</code></li>
-<li><code>api &lt;- plumb(dir = "path/to/definition")</code>
+<li class="fragment"><code>api &lt;- pr("plumber.R")</code></li>
+<li class="fragment"><code>api &lt;- pr() |&gt; pr_post({definition}) |&gt; etc()</code></li>
+<li class="fragment"><code>api &lt;- plumb(dir = "path/to/definition")</code>
 <ul>
-<li>Looks for <code>entrypoint.R</code>, else <code>plumber.R</code></li>
+<li class="fragment">Looks for <code>entrypoint.R</code>, else <code>plumber.R</code></li>
 </ul></li>
 </ul>
 <p>In any case: <code>pr_run(api)</code> to run locally.</p>
@@ -499,24 +499,24 @@
 <section id="organize-plumber-projects" class="slide level2 unnumbered">
 <h2>Organize plumber projects</h2>
 <ul>
-<li>Non-Package:
+<li class="fragment">Non-Package:
 <ul>
-<li><code>plumber.R</code> = “main” file
+<li class="fragment"><code>plumber.R</code> = “main” file
 <ul>
-<li>Can <code>source()</code> any other files, but</li>
-<li><code>#*</code> defs must be in main file</li>
+<li class="fragment">Can <code>source()</code> any other files, but</li>
+<li class="fragment"><code>#*</code> defs must be in main file</li>
 </ul></li>
-<li>Alternative: <code>entrypoint.R</code> file to construct <code>api</code> programmatically</li>
+<li class="fragment">Alternative: <code>entrypoint.R</code> file to construct <code>api</code> programmatically</li>
 </ul></li>
-<li>Package:
+<li class="fragment">Package:
 <ul>
-<li><code>inst/plumber/{API_DIR_NAME}/plumber.R</code>
+<li class="fragment"><code>inst/plumber/{API_DIR_NAME}/plumber.R</code>
 <ul>
-<li>Same rules as above, but filenames matter more</li>
-<li>Least surprise = use <code>entrypoint.R</code></li>
+<li class="fragment">Same rules as above, but filenames matter more</li>
+<li class="fragment">Least surprise = use <code>entrypoint.R</code></li>
 </ul></li>
-<li><code>plumb_api(package = "{pkg}", name = "{API_DIR_NAME}")</code></li>
-<li><code>available_apis(package = "{pkg}")</code></li>
+<li class="fragment"><code>plumb_api(package = "{pkg}", name = "{API_DIR_NAME}")</code></li>
+<li class="fragment"><code>available_apis(package = "{pkg}")</code></li>
 </ul></li>
 </ul>
 </section>
@@ -536,84 +536,84 @@
 <section id="design-a-restful-api" class="slide level2 unnumbered">
 <h2>Design a RESTful API</h2>
 <ul>
-<li>Endpoints = <strong><em>nouns</em></strong>
+<li class="fragment">Endpoints = <strong><em>nouns</em></strong>
 <ul>
-<li>Subpaths = particular individual
+<li class="fragment">Subpaths = particular individual
 <ul>
-<li><code>/tasks</code> = all tasks, vs</li>
-<li><code>/tasks/1234</code> = task ID 1234</li>
+<li class="fragment"><code>/tasks</code> = all tasks, vs</li>
+<li class="fragment"><code>/tasks/1234</code> = task ID 1234</li>
 </ul></li>
 </ul></li>
-<li>Methods define action
+<li class="fragment">Methods define action
 <ul>
-<li><code>GET</code> = fetch</li>
-<li><code>POST</code> = create</li>
-<li><code>PUT</code> = replace</li>
-<li><code>PATCH</code> = modify</li>
-<li><code>DELETE</code> = remove</li>
+<li class="fragment"><code>GET</code> = fetch</li>
+<li class="fragment"><code>POST</code> = create</li>
+<li class="fragment"><code>PUT</code> = replace</li>
+<li class="fragment"><code>PATCH</code> = modify</li>
+<li class="fragment"><code>DELETE</code> = remove</li>
 </ul></li>
 </ul>
 </section>
 <section id="more-on-designing-apis" class="slide level2 unnumbered">
 <h2>More on designing APIs</h2>
 <ul>
-<li>Many books on just this
+<li class="fragment">Many books on just this
 <ul>
-<li><a href="https://livebook.manning.com/book/designing-apis-with-swagger-and-openapi">Designing APIs with Swagger and OpenAPI</a> by Joshua S. Ponelat &amp; Lukas L. Rosenstock</li>
-<li>(more suggestions to come)</li>
+<li class="fragment"><a href="https://livebook.manning.com/book/designing-apis-with-swagger-and-openapi">Designing APIs with Swagger and OpenAPI</a> by Joshua S. Ponelat &amp; Lukas L. Rosenstock</li>
+<li class="fragment">(more suggestions to come)</li>
 </ul></li>
 </ul>
 </section>
 <section id="implementing-apis-in-plumber" class="slide level2 unnumbered">
 <h2>Implementing APIs in plumber</h2>
 <ul>
-<li>Generally think of each method as a separate thing</li>
-<li><code>#* @get /tasks</code> totally separate block from <code>#* @post /tasks</code></li>
-<li><em>Can</em> put multiple <code>@method</code>s in 1 block
+<li class="fragment">Generally think of each method as a separate thing</li>
+<li class="fragment"><code>#* @get /tasks</code> totally separate block from <code>#* @post /tasks</code></li>
+<li class="fragment"><em>Can</em> put multiple <code>@method</code>s in 1 block
 <ul>
-<li>Function can use <code>req$REQUEST_METHOD</code> for routing</li>
+<li class="fragment">Function can use <code>req$REQUEST_METHOD</code> for routing</li>
 </ul></li>
-<li>Remember <code>pr_mount()</code> for nested APIs!</li>
+<li class="fragment">Remember <code>pr_mount()</code> for nested APIs!</li>
 </ul>
 </section>
 <section id="process-requests-with-filters" class="slide level2 unnumbered">
 <h2>Process requests with filters</h2>
 <ul>
-<li>Filter process before endpoints</li>
-<li><code>#* @filter FILTER_NAME</code></li>
-<li>Do one of 3 things at end:
+<li class="fragment">Filter process before endpoints</li>
+<li class="fragment"><code>#* @filter FILTER_NAME</code></li>
+<li class="fragment">Do one of 3 things at end:
 <ul>
-<li>Forward control to next handler</li>
-<li>Return a response itself without forwarding to endpoint</li>
-<li>Throw an error</li>
+<li class="fragment">Forward control to next handler</li>
+<li class="fragment">Return a response itself without forwarding to endpoint</li>
+<li class="fragment">Throw an error</li>
 </ul></li>
-<li>Inputs = <code>req</code> (the request object), <code>res</code> (the response object)
+<li class="fragment">Inputs = <code>req</code> (the request object), <code>res</code> (the response object)
 <ul>
-<li>More on these in next chapter</li>
+<li class="fragment">More on these in next chapter</li>
 </ul></li>
 </ul>
 </section>
 <section id="modify-apis-with-hooks" class="slide level2 unnumbered">
 <h2>Modify APIs with hooks</h2>
 <ul>
-<li>Execute code at points in request lifecycle
+<li class="fragment">Execute code at points in request lifecycle
 <ul>
-<li><code>preroute(data, req, res)</code></li>
-<li><code>postroute(data, req, res, value)</code></li>
-<li><code>preserialize(data, req, res, value)</code></li>
-<li><code>postserialize(data, req, res, value)</code></li>
+<li class="fragment"><code>preroute(data, req, res)</code></li>
+<li class="fragment"><code>postroute(data, req, res, value)</code></li>
+<li class="fragment"><code>preserialize(data, req, res, value)</code></li>
+<li class="fragment"><code>postserialize(data, req, res, value)</code></li>
 </ul></li>
-<li><code>pr_hook()</code> for 1, <code>pr_hooks()</code> for multiple</li>
-<li>Use for: logging, open/close DB connection, debugging</li>
+<li class="fragment"><code>pr_hook()</code> for 1, <code>pr_hooks()</code> for multiple</li>
+<li class="fragment">Use for: logging, open/close DB connection, debugging</li>
 </ul>
 </section>
 <section id="debug-a-plumber-api" class="slide level2 unnumbered">
 <h2>Debug a plumber API</h2>
 <ul>
-<li><code>print()</code>, <code>cat()</code>, <code>cli::cli_inform()</code> in code to throw info to console</li>
-<li>Use hooks to log things along the path</li>
-<li><code>browser()</code> in API functions will throw RStudio into debugger</li>
-<li><code>pr_set_debug()</code> is <strong><em>on</em></strong> by default when interactive</li>
+<li class="fragment"><code>print()</code>, <code>cat()</code>, <code>cli::cli_inform()</code> in code to throw info to console</li>
+<li class="fragment">Use hooks to log things along the path</li>
+<li class="fragment"><code>browser()</code> in API functions will throw RStudio into debugger</li>
+<li class="fragment"><code>pr_set_debug()</code> is <strong><em>on</em></strong> by default when interactive</li>
 </ul>
 </section>
 <section id="meeting-videos" class="slide level2 unnumbered">

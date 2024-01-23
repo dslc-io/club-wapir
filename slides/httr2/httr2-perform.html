@@ -392,51 +392,52 @@
 <section>
 <section id="how-can-i-get-a-lot-of-data-from-an-api" class="title-slide slide level1 center">
 <h1>How can I get a lot of data from an API?</h1>
+<p>Cover req_throttle() &amp; req_timeout() in here!</p>
 <p><strong>Learning objectives:</strong></p>
 <ul>
-<li>Control the behavior of large requests.</li>
-<li>Deal with errors in api calls.</li>
-<li>Request paginated data.</li>
-<li>Perform multiple requests.</li>
-<li>Stream data from an API.</li>
+<li class="fragment">Control the behavior of large requests.</li>
+<li class="fragment">Deal with errors in api calls.</li>
+<li class="fragment">Request paginated data.</li>
+<li class="fragment">Perform multiple requests.</li>
+<li class="fragment">Stream data from an API.</li>
 </ul>
 </section>
 <section id="controlling-large-requests" class="slide level2 unnumbered">
 <h2>Controlling large requests</h2>
 <ul>
-<li><code>httr2::req_progress()</code> adds a progress bar for requests that transfer a lot of data.</li>
-<li><code>httr2::req_timeout()</code> to add a maximum wait time in seconds</li>
-<li><code>httr2::req_cache()</code> to avoid re-calling slow calls</li>
+<li class="fragment"><code>httr2::req_progress()</code> adds a progress bar for requests that transfer a lot of data.</li>
+<li class="fragment"><code>httr2::req_timeout()</code> to add a maximum wait time in seconds</li>
+<li class="fragment"><code>httr2::req_cache()</code> to avoid re-calling slow calls</li>
 </ul>
 </section>
 <section id="throttling-and-retries" class="slide level2 unnumbered">
 <h2>Throttling and retries</h2>
 <ul>
-<li>APIs often throw errors if hit too fast</li>
-<li><code>httr2::req_throttle()</code> to slow down
+<li class="fragment">APIs often throw errors if hit too fast</li>
+<li class="fragment"><code>httr2::req_throttle()</code> to slow down
 <ul>
-<li><code>realm</code> when endpoints have different limits (“Tier 1” vs “Tier 2”)</li>
+<li class="fragment"><code>realm</code> when endpoints have different limits (“Tier 1” vs “Tier 2”)</li>
 </ul></li>
-<li><code>httr2::req_retry()</code> to try again for transient failures
+<li class="fragment"><code>httr2::req_retry()</code> to try again for transient failures
 <ul>
-<li>Default: Statuses 429 &amp; 503 = transient</li>
-<li>(optional) <code>is_transient</code> function to override</li>
-<li>(optional) <code>after</code> function to extract wait from response</li>
+<li class="fragment">Default: Statuses 429 &amp; 503 = transient</li>
+<li class="fragment">(optional) <code>is_transient</code> function to override</li>
+<li class="fragment">(optional) <code>after</code> function to extract wait from response</li>
 </ul></li>
 </ul>
 </section>
 <section id="dealing-with-errors" class="slide level2 unnumbered">
 <h2>Dealing with errors</h2>
 <ul>
-<li><code>httr2::req_error()</code> to handle errors
+<li class="fragment"><code>httr2::req_error()</code> to handle errors
 <ul>
-<li><code>is_error</code> function to escalate something to an error
+<li class="fragment"><code>is_error</code> function to escalate something to an error
 <ul>
-<li><em>Eg: Empty response you know isn’t really empty</em></li>
+<li class="fragment"><em>Eg: Empty response you know isn’t really empty</em></li>
 </ul></li>
-<li><code>body</code> function to parse response into <code>rlang::abort()</code> message.
+<li class="fragment"><code>body</code> function to parse response into <code>rlang::abort()</code> message.
 <ul>
-<li><em>Eg: API description gives details of an error code’s meaning</em></li>
+<li class="fragment"><em>Eg: API description gives details of an error code’s meaning</em></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -444,12 +445,12 @@
 <section id="pagination" class="slide level2 unnumbered">
 <h2>Pagination</h2>
 <ul>
-<li><code>httr2::req_perform_iterative()</code></li>
-<li><code>next_req</code> = function
+<li class="fragment"><code>httr2::req_perform_iterative()</code></li>
+<li class="fragment"><code>next_req</code> = function
 <ul>
-<li><code>iterate_with_offset()</code> to increment query parameter (<code>?page=1</code>, <code>?page=2</code>)</li>
-<li><code>iterate_with_cursor()</code> to extract next page from response</li>
-<li><code>iterate_with_link_url()</code> to follow Link in resp header</li>
+<li class="fragment"><code>iterate_with_offset()</code> to increment query parameter (<code>?page=1</code>, <code>?page=2</code>)</li>
+<li class="fragment"><code>iterate_with_cursor()</code> to extract next page from response</li>
+<li class="fragment"><code>iterate_with_link_url()</code> to follow Link in resp header</li>
 </ul></li>
 </ul>
 </section>
@@ -486,16 +487,16 @@
 <section id="multiple-requests" class="slide level2 unnumbered">
 <h2>Multiple requests</h2>
 <ul>
-<li>Manually create list of separate requests</li>
-<li>Perform all:
+<li class="fragment">Manually create list of separate requests</li>
+<li class="fragment">Perform all:
 <ul>
-<li><code>httr2::req_perform_parallel()</code> all at once
+<li class="fragment"><code>httr2::req_perform_parallel()</code> all at once
 <ul>
-<li>No reauth, no throttle, no retry, no cache</li>
+<li class="fragment">No reauth, no throttle, no retry, no cache</li>
 </ul></li>
-<li><code>httr2::req_perform_sequential()</code> serially
+<li class="fragment"><code>httr2::req_perform_sequential()</code> serially
 <ul>
-<li>Slower but can use other settings</li>
+<li class="fragment">Slower but can use other settings</li>
 </ul></li>
 </ul></li>
 </ul>
@@ -518,18 +519,18 @@
 <section id="parsing-multiple-responses" class="slide level2 unnumbered">
 <h2>Parsing multiple responses</h2>
 <ul>
-<li><code>httr2::resps_data()</code> to combine responses from <code>req_perform_*()</code></li>
-<li>Provide function to extract data from single resp as vector or df.</li>
-<li>More details in Chapter 6.</li>
+<li class="fragment"><code>httr2::resps_data()</code> to combine responses from <code>req_perform_*()</code></li>
+<li class="fragment">Provide function to extract data from single resp as vector or df.</li>
+<li class="fragment">More details in Chapter 6.</li>
 </ul>
 </section>
 <section id="streaming" class="slide level2 unnumbered">
 <h2>Streaming</h2>
 <ul>
-<li><code>httr2::req_perform_stream()</code> to stream data from API</li>
-<li>Blocks R session (see Chapter 10 for alternative)</li>
-<li>Call function every <code>buffer_kb</code> kilobytes</li>
-<li><em>Eg: Save to file, different process could read that file from Shiny</em></li>
+<li class="fragment"><code>httr2::req_perform_stream()</code> to stream data from API</li>
+<li class="fragment">Blocks R session (see Chapter 10 for alternative)</li>
+<li class="fragment">Call function every <code>buffer_kb</code> kilobytes</li>
+<li class="fragment"><em>Eg: Save to file, different process could read that file from Shiny</em></li>
 </ul>
 </section>
 <section id="streaming-simple-example" class="slide level2 unnumbered">
@@ -547,8 +548,8 @@
 <section id="is-this-interesting" class="slide level2 unnumbered">
 <h2>Is this interesting?</h2>
 <ul>
-<li><code>req_options()</code> lets you directly set libcurl options not available in {httr2}</li>
-<li>Should I dig through and find what’s available but not implemented?</li>
+<li class="fragment"><code>req_options()</code> lets you directly set libcurl options not available in {httr2}</li>
+<li class="fragment">Should I dig through and find what’s available but not implemented?</li>
 </ul>
 </section>
 <section id="meeting-videos" class="slide level2 unnumbered">

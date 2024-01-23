@@ -394,51 +394,51 @@
 <h1>How can I get inputs from API users?</h1>
 <p><strong>Learning objectives:</strong></p>
 <ul>
-<li>Decide whether API inputs should be passed in the path, query, body, header, or cookie.</li>
-<li>Process API arguments directly from the request object.</li>
-<li>Process API arguments specified in the path.</li>
-<li>Process API arguments passed in the query string.</li>
-<li>Process API arguments passed in the request body.</li>
-<li>Process API arguments sent as a header.</li>
-<li>Process API arguments stored in a cookie.</li>
+<li class="fragment">Decide whether API inputs should be passed in the path, query, body, header, or cookie.</li>
+<li class="fragment">Process API arguments directly from the request object.</li>
+<li class="fragment">Process API arguments specified in the path.</li>
+<li class="fragment">Process API arguments passed in the query string.</li>
+<li class="fragment">Process API arguments passed in the request body.</li>
+<li class="fragment">Process API arguments sent as a header.</li>
+<li class="fragment">Process API arguments stored in a cookie.</li>
 </ul>
 </section>
 <section id="path-vs-other" class="slide level2 unnumbered">
 <h2>Path vs Other</h2>
 <ul>
-<li><strong>Path</strong> for main noun (the thing you’re acting on)</li>
-<li><strong>Query/body</strong> for arguments</li>
-<li><strong>Cookies/header</strong> for metadata, auth, etc</li>
+<li class="fragment"><strong>Path</strong> for main noun (the thing you’re acting on)</li>
+<li class="fragment"><strong>Query/body</strong> for arguments</li>
+<li class="fragment"><strong>Cookies/header</strong> for metadata, auth, etc</li>
 </ul>
 </section>
 <section id="types-of-inputs" class="slide level2 unnumbered">
 <h2>Types of inputs</h2>
 <p><strong>How will your API be used?</strong></p>
 <ul>
-<li>Directly in browser (Are you sure?)
+<li class="fragment">Directly in browser (Are you sure?)
 <ul>
-<li><code>GET</code></li>
-<li><strong>Query</strong> for things user decides</li>
-<li><strong>Cookies</strong> for state, etc</li>
+<li class="fragment"><code>GET</code></li>
+<li class="fragment"><strong>Query</strong> for things user decides</li>
+<li class="fragment"><strong>Cookies</strong> for state, etc</li>
 </ul></li>
-<li>Mostly programmatic (including from Shiny, etc)
+<li class="fragment">Mostly programmatic (including from Shiny, etc)
 <ul>
-<li><code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code></li>
-<li><strong>Body</strong> for things related to this specific request</li>
-<li><strong>Header</strong> for things that aren’t function arguments</li>
-<li>Possibly <strong>cookies</strong> for state still</li>
+<li class="fragment"><code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code></li>
+<li class="fragment"><strong>Body</strong> for things related to this specific request</li>
+<li class="fragment"><strong>Header</strong> for things that aren’t function arguments</li>
+<li class="fragment">Possibly <strong>cookies</strong> for state still</li>
 </ul></li>
 </ul>
 </section>
 <section id="api-function-arguments" class="slide level2 unnumbered">
 <h2>API function arguments</h2>
 <ul>
-<li><em>Can</em> expect named arguments, BUT</li>
-<li>Better: Accept <code>req</code> (request object)</li>
-<li>Specify priority (or only accept certain ones)
+<li class="fragment"><em>Can</em> expect named arguments, BUT</li>
+<li class="fragment">Better: Accept <code>req</code> (request object)</li>
+<li class="fragment">Specify priority (or only accept certain ones)
 <ul>
-<li>Good documentation MUCH better than flexibility!</li>
-<li>By default: <code>argsQuery</code> &gt; <code>argsPath</code> &gt; <code>argsBody</code></li>
+<li class="fragment">Good documentation MUCH better than flexibility!</li>
+<li class="fragment">By default: <code>argsQuery</code> &gt; <code>argsPath</code> &gt; <code>argsBody</code></li>
 </ul></li>
 </ul>
 <div class="cell">
@@ -451,13 +451,13 @@
 <section id="parameter-types" class="slide level2 unnumbered">
 <h2>Parameter types</h2>
 <ul>
-<li>Optionally specify type (~class) in API definition
+<li class="fragment">Optionally specify type (~class) in API definition
 <ul>
-<li><code>@param x:int</code> (more details later)</li>
+<li class="fragment"><code>@param x:int</code> (more details later)</li>
 </ul></li>
-<li>Enclose in <code>[]</code> to allow length &gt; 1 (array)
+<li class="fragment">Enclose in <code>[]</code> to allow length &gt; 1 (array)
 <ul>
-<li><code>@param x:[int]</code></li>
+<li class="fragment"><code>@param x:[int]</code></li>
 </ul></li>
 </ul>
 </section>
@@ -505,8 +505,8 @@
 </tbody>
 </table>
 <ul>
-<li>All of these have other aliases (eg <code>int</code> for <code>integer</code>)</li>
-<li>Stick with these for smooth experience</li>
+<li class="fragment">All of these have other aliases (eg <code>int</code> for <code>integer</code>)</li>
+<li class="fragment">Stick with these for smooth experience</li>
 </ul>
 </section>
 <section id="path-parameters" class="slide level2 unnumbered">
@@ -535,14 +535,14 @@
 <section id="request-bodies" class="slide level2 unnumbered">
 <h2>Request bodies</h2>
 <ul>
-<li><code>req$body</code> ≈ <code>req$bodyArgs</code>
+<li class="fragment"><code>req$body</code> ≈ <code>req$bodyArgs</code>
 <ul>
-<li><code>body</code> sometimes has raw <code>value</code> + <code>parsed</code>, other details</li>
+<li class="fragment"><code>body</code> sometimes has raw <code>value</code> + <code>parsed</code>, other details</li>
 </ul></li>
-<li>Parsers can prepare body
+<li class="fragment">Parsers can prepare body
 <ul>
-<li>Specify as <code>#* @parser PARSER</code> (<code>json</code>, <code>csv</code>, <code>rds</code>, etc)</li>
-<li>Args in list: <code>#* @parser json list(simplifyVector = FALSE)</code></li>
+<li class="fragment">Specify as <code>#* @parser PARSER</code> (<code>json</code>, <code>csv</code>, <code>rds</code>, etc)</li>
+<li class="fragment">Args in list: <code>#* @parser json list(simplifyVector = FALSE)</code></li>
 </ul></li>
 </ul>
 <div class="cell">
@@ -560,19 +560,19 @@
 <h2>HTTP headers</h2>
 <p>Headers are processed and included in <code>req</code> object:</p>
 <ul>
-<li><code>-</code> replaced with <code>_</code></li>
-<li>UPPERCASE</li>
-<li><code>HTTP_</code> prefix</li>
+<li class="fragment"><code>-</code> replaced with <code>_</code></li>
+<li class="fragment">UPPERCASE</li>
+<li class="fragment"><code>HTTP_</code> prefix</li>
 </ul>
 <p><code>X-custom-header</code> → <code>req$HTTP_X_CUSTOM_HEADER</code></p>
 </section>
 <section id="inputs-in-cookies" class="slide level2 unnumbered">
 <h2>Inputs in Cookies</h2>
 <ul>
-<li><code>req$cookies</code> = named list of (unencrypted) cookies</li>
-<li><code>req$session</code> = named list from encrypted cookies
+<li class="fragment"><code>req$cookies</code> = named list of (unencrypted) cookies</li>
+<li class="fragment"><code>req$session</code> = named list from encrypted cookies
 <ul>
-<li>Much more info when we <em>save</em> cookies</li>
+<li class="fragment">Much more info when we <em>save</em> cookies</li>
 </ul></li>
 </ul>
 </section>

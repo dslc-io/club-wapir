@@ -394,22 +394,22 @@
 <h1>How can I control API output?</h1>
 <p><strong>Learning objectives:</strong></p>
 <ul>
-<li>Return data from an endpoint.</li>
-<li>Return text from an endpoint.</li>
-<li>Return an image from an endpoint.</li>
-<li>Return something else from an endpoint.</li>
+<li class="fragment">Return data from an endpoint.</li>
+<li class="fragment">Return text from an endpoint.</li>
+<li class="fragment">Return an image from an endpoint.</li>
+<li class="fragment">Return something else from an endpoint.</li>
 </ul>
 </section>
 <section id="serializers" class="slide level2 unnumbered">
 <h2>Serializers</h2>
 <ul>
-<li>Vocab: “Serialize” = “translate into a format for storage or transmission”</li>
-<li>Default = <code>json</code> via <code>jsonlite::toJSON()</code></li>
-<li><code>#* @serializer NAME list(ARGS)</code>
+<li class="fragment">Vocab: “Serialize” = “translate into a format for storage or transmission”</li>
+<li class="fragment">Default = <code>json</code> via <code>jsonlite::toJSON()</code></li>
+<li class="fragment"><code>#* @serializer NAME list(ARGS)</code>
 <ul>
-<li>eg, <code>#* @serializer json list(na = "string")</code></li>
+<li class="fragment">eg, <code>#* @serializer json list(na = "string")</code></li>
 </ul></li>
-<li>Impacts behavior <em>AND</em> Swagger docs</li>
+<li class="fragment">Impacts behavior <em>AND</em> Swagger docs</li>
 </ul>
 </section>
 <section id="structured-text" class="slide level2 unnumbered">
@@ -621,7 +621,7 @@
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">#* @serializer contentType list(type = "application/protobuf", serialize_fn = protolite::serialize_pb)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
-<li><code>octet</code> is <code>contentType</code> with a <code>serialize_fn</code> that checks <code>is.raw()</code></li>
+<li class="fragment"><code>octet</code> is <code>contentType</code> with a <code>serialize_fn</code> that checks <code>is.raw()</code></li>
 </ul>
 </section>
 <section id="meeting-videos" class="slide level2 unnumbered">

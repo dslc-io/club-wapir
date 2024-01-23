@@ -394,10 +394,10 @@
 <h1>How can I handle API errors?</h1>
 <p><strong>Learning objectives:</strong></p>
 <ul>
-<li>Describe how {plumber} handles errors by default.</li>
-<li>Send different error messages to the server than to the client.</li>
-<li>Describe the possible responses from an endpoint.</li>
-<li>Return useful error responses from an endpoint.</li>
+<li class="fragment">Describe how {plumber} handles errors by default.</li>
+<li class="fragment">Send different error messages to the server than to the client.</li>
+<li class="fragment">Describe the possible responses from an endpoint.</li>
+<li class="fragment">Return useful error responses from an endpoint.</li>
 </ul>
 </section>
 <section id="plumbers-default-error-handling" class="slide level2 unnumbered">
@@ -412,9 +412,9 @@
 <span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt; I'm an error!\n"]}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
-<li>HTTP status code 500 for all errors</li>
-<li>Error sent to client</li>
-<li>Error also printed in terminal</li>
+<li class="fragment">HTTP status code 500 for all errors</li>
+<li class="fragment">Error sent to client</li>
+<li class="fragment">Error also printed in terminal</li>
 </ul>
 </section>
 <section id="custom-error-handling-basics" class="slide level2 unnumbered">
@@ -438,28 +438,28 @@
 <section id="logging-strategies" class="slide level2 unnumbered">
 <h2>Logging strategies</h2>
 <ul>
-<li><code>print()</code> for function output</li>
-<li><code>cat()</code> for messages</li>
-<li><code>cli::cli_inform()</code> for formatted messages</li>
-<li><code>{log4r}</code> package for neater logs</li>
-<li>See <a href="https://do4ds.com/chapters/sec1/1-4-monitor-log.html">DevOps for Data Science: Logging and Monitoring</a> for more</li>
+<li class="fragment"><code>print()</code> for function output</li>
+<li class="fragment"><code>cat()</code> for messages</li>
+<li class="fragment"><code>cli::cli_inform()</code> for formatted messages</li>
+<li class="fragment"><code>{log4r}</code> package for neater logs</li>
+<li class="fragment">See <a href="https://do4ds.com/chapters/sec1/1-4-monitor-log.html">DevOps for Data Science: Logging and Monitoring</a> for more</li>
 </ul>
 </section>
 <section id="error-responses" class="slide level2 unnumbered">
 <h2>Error responses</h2>
 <p><strong><em>API errors are still responses</em></strong></p>
 <ul>
-<li>Status code specifies broad error category (see next slide)
+<li class="fragment">Status code specifies broad error category (see next slide)
 <ul>
-<li><code>400</code> to <code>499</code> = Client errors (user did something wrong)</li>
-<li><code>500</code> to <code>599</code> = Server errors (something is broken)</li>
-<li>Reminder: By default, {plumber} uses <code>500</code></li>
+<li class="fragment"><code>400</code> to <code>499</code> = Client errors (user did something wrong)</li>
+<li class="fragment"><code>500</code> to <code>599</code> = Server errors (something is broken)</li>
+<li class="fragment">Reminder: By default, {plumber} uses <code>500</code></li>
 </ul></li>
-<li>Best practice: Error format same as successful response
+<li class="fragment">Best practice: Error format same as successful response
 <ul>
-<li>Be careful about this, don’t make silent errors easy!</li>
+<li class="fragment">Be careful about this, don’t make silent errors easy!</li>
 </ul></li>
-<li>Need <code>plumber::pr_handle()</code> family for advanced options</li>
+<li class="fragment">Need <code>plumber::pr_handle()</code> family for advanced options</li>
 </ul>
 </section>
 <section id="http-error-status-codes" class="slide level2 unnumbered">
@@ -521,9 +521,9 @@
 <span id="cb3-4"><a href="#cb3-4"></a><span class="co">#* @response 403 Forbidden. This user cannot access that file.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
-<li><code>@response</code> <code>Status Code</code> <code>Description</code></li>
-<li>Can <em>only</em> give description (not object details)</li>
-<li>This is a <em>promise,</em> but isn’t <em>validated</em> by {plumber}</li>
+<li class="fragment"><code>@response</code> <code>Status Code</code> <code>Description</code></li>
+<li class="fragment">Can <em>only</em> give description (not object details)</li>
+<li class="fragment">This is a <em>promise,</em> but isn’t <em>validated</em> by {plumber}</li>
 </ul>
 </section>
 <section id="recommended-error_handler" class="slide level2 unnumbered">
@@ -547,9 +547,9 @@
 <h2>Programmatic responses</h2>
 <p>TODO: Adapt/finish this slide. And probably add one more about the internal error handling in plumber.R.</p>
 <ul>
-<li>Can specify full OpenAPI Response Object programmatically</li>
-<li>Impacts auto-generated Swagger documentation</li>
-<li>Not well documented (outside of this book)</li>
+<li class="fragment">Can specify full OpenAPI Response Object programmatically</li>
+<li class="fragment">Impacts auto-generated Swagger documentation</li>
+<li class="fragment">Not well documented (outside of this book)</li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">pr_get</span>(</span>

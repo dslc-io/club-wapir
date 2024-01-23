@@ -186,7 +186,7 @@
     "href": "slides/plumber/plumber-intro.html#echo-endpoint-function",
     "title": "Web APIs with R Book Club",
     "section": "echo endpoint: function",
-    "text": "echo endpoint: function\n\necho &lt;- function(msg = \"\") {\n  list(msg = paste0(\"The message is: '\", msg, \"'\"))\n}\n\necho(\"my message\")\n\n$msg\n[1] \"The message is: 'my message'\""
+    "text": "echo endpoint: function\n\necho &lt;- function(msg = \"\") {\n  list(msg = paste0(\"The message is: '\", msg, \"'\"))\n}\n\necho(\"my message\")\n\n#&gt; $msg\n#&gt; [1] \"The message is: 'my message'\""
   },
   {
     "objectID": "slides/plumber/plumber-intro.html#echo-endpoint-plumber",
@@ -301,41 +301,6 @@
     "text": "️✅ Process\nMeetings = weekly\n\n🧑‍🏫 Jon leads a discussion of a chapter\n\n🙋‍♀️ IMPORTANT: You ask questions!\n️✅ Goal: Revise/finalize learning objectives\n📺 Recordings on R4DS YouTube\n\n🔄️ Jon revises slides\n❓Jon writes “test yourself” questions\n\n🧵 Discuss in channel?\n\n(revisions, maybe future cohorts)\n📝 Jon writes chapter\n\n\n\nTalked about this writing process in project club, r4ds.io/youtube\nMeet every week… unless I need a break to catch up.\nDiscussion even more important than in a normal club\nReview revised slides? Maybe spend 2 weeks per chapter?\nWould formal survey of some sort help?\nNot 100% certain about question structure yet (whether “homeworky” or “think about it”).\nHoping to write as we go, but definitely won’t keep up.\n\n\n\n\nr4ds.io/wapir | Jon Harmon | wapir.io"
   },
   {
-    "objectID": "slides/httr2/apis.html#api-application-programming-interface",
-    "href": "slides/httr2/apis.html#api-application-programming-interface",
-    "title": "How do computers communicate?",
-    "section": "API = “application programming interface”",
-    "text": "API = “application programming interface”\n\n“application” = function, website… any computerized thing\n“programming” = can be used in code\n“interface” = way to interact with something\n\n🤖 APIs allow computers to talk to one another\n\n\nRight level?"
-  },
-  {
-    "objectID": "slides/httr2/apis.html#web-apis",
-    "href": "slides/httr2/apis.html#web-apis",
-    "title": "How do computers communicate?",
-    "section": "Web APIs",
-    "text": "Web APIs\n\n💻 Technically any function’s list of arguments is an API\n\n\n“httr2 is a ground-up rewrite of httr that provides a pipeable API with an explicit request object that solves more problems felt by packages that wrap APIs” (httr2 docs, emphasis added)\n\n\n🕸️ This book = web APIs\n\nWeb API = API on the internet\nFor rest of book, “API” means “web API”\n\n\n\n\nhttr2 quote helpful/interesting?"
-  },
-  {
-    "objectID": "slides/httr2/apis.html#web-api-examples",
-    "href": "slides/httr2/apis.html#web-api-examples",
-    "title": "How do computers communicate?",
-    "section": "Web API Examples",
-    "text": "Web API Examples\n\nCloud services ({paws})\nGovernment agencies (OpenFEC)\nRandom data (sunrisesunset.io)\nServices (OpenAI)\nAPIs.guru = API directory\n\n2,529 APIs as of 2023-12-06\n\nMuch more to come in “How can I find APIs?”\n\n\n\nNumber of examples good?\nVariety of examples good?\nDeep enough, or more-full usage examples?\nWhat would you expect in book (vs slides)?"
-  },
-  {
-    "objectID": "slides/httr2/apis.html#http",
-    "href": "slides/httr2/apis.html#http",
-    "title": "How do computers communicate?",
-    "section": "HTTP",
-    "text": "HTTP\n\nHTTP = HyperText Transfer Protocol\n\n“HyperText” = web pages\n“Transfer” = move\n“Protocol” = rules\n“rules for moving web pages”\n\nHTTP(S) = most of internet communication\n\n\n\nIf anyone asks: 1.1 = most, 2.0 = 2-way\nCompare to HTML (HyperText Markup Language)"
-  },
-  {
-    "objectID": "slides/httr2/apis.html#http-requests",
-    "href": "slides/httr2/apis.html#http-requests",
-    "title": "How do computers communicate?",
-    "section": "HTTP Requests",
-    "text": "HTTP Requests\n\nRequest methods (in approximate order of use):\n\nGET (fetch existing thing)\nPOST (push new thing)\nDELETE (delete existing thing)\nPATCH (change existing thing)\nPUT (replace existing thing)\nCONNECT, OPTIONS, HEAD, TRACE (very rare)\n\nRequest = URL + headers + method + body\n\n\n\nMethods aren’t strict\n\nAPI owner can do weird things.\nGET or POST often used for ~everything\nStuff expected & returned can be weird\n\nCONNECT = “start 2-way communication” (eg ask server to be a bridge)\nOPTIONS should tell you method options\nHEAD returns headers that you’d get with GET\n\nEg, use it to check if DL would be big.\n\nTRACE returns the request as the final server received it, with header info about route."
-  },
-  {
     "objectID": "slides/httr2/apis.html#browsers-and-http-requests",
     "href": "slides/httr2/apis.html#browsers-and-http-requests",
     "title": "How do computers communicate?",
@@ -361,14 +326,7 @@
     "href": "slides/httr2/apis.html#other-api-frameworks",
     "title": "How do computers communicate?",
     "section": "Other API Frameworks",
-    "text": "Other API Frameworks\n\nwebsocket\n\nws:// or wss:// vs http:// or https://\n2-way communication\n{websocket} package\n\ngRPC = Google RPC\n\nGood for real-time, 2-way communication\nUses HTTP/2 (more socket-like)\n\n\nDeeper dive coming in “How else can I communicate with APIs from R?”!\n\n\nShiny is websocket between server (R) and ui (JS)\ngRPC best for tightly coupled microservices"
-  },
-  {
-    "objectID": "slides/httr2/apis.html#cohort-1",
-    "href": "slides/httr2/apis.html#cohort-1",
-    "title": "How do computers communicate?",
-    "section": "Cohort 1",
-    "text": "Cohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\nr4ds.io/wapir | Jon Harmon | wapir.io"
+    "text": "Other API Frameworks\n\nwebsocket\n\nws:// or wss:// vs http:// or https://\n2-way communication\n{websocket} package\n\ngRPC = Google RPC\n\nGood for real-time, 2-way communication\nUses HTTP/2 (more socket-like)\n\n\nDeeper dive coming in “How else can I communicate with APIs from R?”!\n\n\nShiny is websocket between server (R) and ui (JS)\ngRPC best for tightly coupled microservices\n\n\n\n\nr4ds.io/wapir | Jon Harmon | wapir.io"
   },
   {
     "objectID": "slides/httr2/accessing-more.html#slide-1",
@@ -637,6 +595,48 @@
     "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\nr4ds.io/wapir | Jon Harmon | wapir.io"
   },
   {
+    "objectID": "slides/httr2/httr2-methods.html#what-are-the-pieces-of-an-http-request",
+    "href": "slides/httr2/httr2-methods.html#what-are-the-pieces-of-an-http-request",
+    "title": "How can I do other things with APIs?",
+    "section": "What are the pieces of an HTTP request?",
+    "text": "What are the pieces of an HTTP request?\nHTTP request = URL + headers + method + body\n\n\nRe-orient ourselves with the pieces of an HTTP request.\nFocus on method."
+  },
+  {
+    "objectID": "slides/httr2/httr2-methods.html#what-are-http-request-methods",
+    "href": "slides/httr2/httr2-methods.html#what-are-http-request-methods",
+    "title": "How can I do other things with APIs?",
+    "section": "What are HTTP request methods?",
+    "text": "What are HTTP request methods?\n\nPaths are nouns\nMethods are verbs\n\nGET (fetch existing thing)\nPOST (push new thing)\nDELETE (delete existing thing)\nPATCH (change existing thing)\nPUT (replace existing thing)\nCONNECT, OPTIONS, HEAD, TRACE (very rare)\n\n\n\n\nBy convention for REST APIs\n\nWe’ll dig into different API frameworks in a later chapter.\n\nPath examples: candidates, calendar-dates, filings, electioneering (ads)\nWe’ve been doing GET by default\nCONNECT = “start 2-way communication” (eg ask server to be a bridge)\nOPTIONS should tell you method options\nHEAD returns headers that you’d get with GET\n\nEg, use it to check if DL would be big.\n\nTRACE returns the request as the final server received it, with header info about route.\nMethods aren’t strict\n\nAPI owner can do weird things.\nGET or POST often used for ~everything"
+  },
+  {
+    "objectID": "slides/httr2/httr2-methods.html#req_method",
+    "href": "slides/httr2/httr2-methods.html#req_method",
+    "title": "How can I do other things with APIs?",
+    "section": "req_method()",
+    "text": "req_method()\n\nGET = default without body\nPOST = default with body\nreq_method() to specify (rarely needed)"
+  },
+  {
+    "objectID": "slides/httr2/httr2-methods.html#req_template",
+    "href": "slides/httr2/httr2-methods.html#req_template",
+    "title": "How can I do other things with APIs?",
+    "section": "req_template()",
+    "text": "req_template()\n\nBuild request with variables\n\nreq_candidates2 &lt;- req_fec |&gt; \n  req_template(\"GET /{endpoint}\", endpoint = \"candidates\")\n\n\n\n\nidentical(req_candidates$url, req_candidates2$url)\n\n\n\nA more useful example:\n\nreq_fec |&gt; \n  req_template(\"GET /candidate/{candidate_id}/\", candidate_id = \"P40014052\")\n\n\n\nSometimes APIs are pretty much described in this syntax, lets you copy-paste."
+  },
+  {
+    "objectID": "slides/httr2/httr2-methods.html#what-are-the-pieces-of-an-http-request-1",
+    "href": "slides/httr2/httr2-methods.html#what-are-the-pieces-of-an-http-request-1",
+    "title": "How can I do other things with APIs?",
+    "section": "What are the pieces of an HTTP request?",
+    "text": "What are the pieces of an HTTP request?\nHTTP request = URL + headers + method + body\n\n\nRe-orient ourselves with the pieces of an HTTP request.\nFocus on body\n\n\n\n\nr4ds.io/wapir | Jon Harmon | wapir.io"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Welcome",
+    "section": "",
+    "text": "This is a companion for the book Web APIs with R by Jon Harmon (in progress, aiming for publication in 2024).\nEach chapter title to the left is a link to a slide deck.\n\nThese slides are being developed as I write the book.\nEach deck will open in its own tab.\nJoin the R4DS Learning Community to participate.\n\nWe follow the R4DS Learning Community Code of Conduct."
+  },
+  {
     "objectID": "slides/project.html#objectives",
     "href": "slides/project.html#objectives",
     "title": "Web APIs with R",
@@ -672,81 +672,74 @@
     "text": "My plan\n\n\n✅ Rough draft slides\n⬜ Discuss material with learners (ID needs)\n❓ Create an assessment?\n🔄️ Revise slides\n📝 Write chapter\n\n\n\n\nI spent November making rough slides of almost everything.\n\nTool to give structure to meetings\n\nDoing this today! (also see next slide)\nNot sure about this yet, but may write exercises next\nIdeal universe = repeat process, might skip to draft\nNo solid completion date yet"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Welcome",
-    "section": "",
-    "text": "This is a companion for the book Web APIs with R by Jon Harmon (in progress, aiming for publication in 2024).\nEach chapter title to the left is a link to a slide deck.\n\nThese slides are being developed as I write the book.\nEach deck will open in its own tab.\nJoin the R4DS Learning Community to participate.\n\nWe follow the R4DS Learning Community Code of Conduct."
+    "objectID": "slides/httr2/httr2.html#what-do-httr2-calls-look-like",
+    "href": "slides/httr2/httr2.html#what-do-httr2-calls-look-like",
+    "title": "How can I access APIs from R?",
+    "section": "What do {httr2} calls look like?",
+    "text": "What do {httr2} calls look like?\n\nPipe-based API calls\n\n\n\ncandidates &lt;- \n  request(\"https://api.open.fec.gov/v1\") |&gt; \n  req_url_path_append(\"candidates\") |&gt; \n  req_url_query(api_key = \"DEMO_KEY\") |&gt; \n  req_url_query(election_year = 2024) |&gt; \n  req_perform() |&gt; \n  resp_body_json()\ncandidates$results[[1]]$candidate_id\n#&gt; [1] \"P40014052\"\n\n\n\n\nhttr2 is a rewrite of httr specifically to use the concept of the pipe.\n\nI’ll add a brief intro to the pipe in the Introduction chapter under prereqs!\nI use |&gt; base R pipe here. Pronounce it “and then”.\n\nhttr2 calls usually involve a request, which you perform, and then you parse the response.\nWe’re hitting the free, open api from the Federal Elections Commission.\n\nI’m thinking about building a Shiny app related to this API, and using it as a case study throughout the book, but I also need to find stable APIs with more options\n\n(step through)\nHere we build the request piece-wise\n\nWe’ll get into details of the functions in a few slides\n\nThen we perform the request. This actually hits the server.\nThen we parse what we get back with a resp_body function.\nThis returns a larger object in a format called JSON, will talk about it more in a later chapter"
   },
   {
-    "objectID": "slides/httr2/httr2.html#what-is-httr2",
-    "href": "slides/httr2/httr2.html#what-is-httr2",
-    "title": "Web APIs with R Book Club",
-    "section": "What is httr2?",
-    "text": "What is httr2?\n\nPipe-based API calls\nHere we’re working with dev (will be released ~soon as 1.0.0)\nrequest |&gt; perform |&gt; resp (parse)"
+    "objectID": "slides/httr2/httr2.html#why-httr",
+    "href": "slides/httr2/httr2.html#why-httr",
+    "title": "How can I access APIs from R?",
+    "section": "Why “httr”?",
+    "text": "Why “httr”?\n\nHTTP = HyperText Transfer Protocol\n\n“HyperText” = web content\n“Transfer” = exchange\n“Protocol” = rules\n“rules for exchanging web content”\nHTTP(S) = most of internet communication\n\n\n\n\nYou may have seen http or https at the start of URLs (web addresses)\n“web content” =\n\noriginally text and links (HTML = HyperText Markup Language)\nnow data, images, videos, etc.\n\n“exchange” or “move”\n“S” means “secure”\nIf anyone asks: 1.1 = most, 2.0 = 2-way"
   },
   {
-    "objectID": "slides/httr2/httr2.html#httr2-demo",
-    "href": "slides/httr2/httr2.html#httr2-demo",
-    "title": "Web APIs with R Book Club",
-    "section": "httr2 demo",
-    "text": "httr2 demo\n\ncandidates &lt;- httr2::request(\"https://api.open.fec.gov/v1\") |&gt; \n  httr2::req_headers(\"X-Api-Key\" = \"DEMO_KEY\") |&gt; \n  httr2::req_url_path_append(\"candidates\") |&gt; \n  httr2::req_url_query(office = c(\"H\", \"S\"), election_year = 2024, .multi = \"explode\") |&gt; \n  httr2::req_perform() |&gt; \n  httr2::resp_body_json()\ncandidates$results[[1]]$candidate_id\n#&gt; [1] \"H4OR05312\""
+    "objectID": "slides/httr2/httr2.html#why-httr2",
+    "href": "slides/httr2/httr2.html#why-httr2",
+    "title": "How can I access APIs from R?",
+    "section": "Why “httr2”?",
+    "text": "Why “httr2”?\n\n“HTTP in R, take 2”\n\n\n\n\n\n\nComplete rewrite. Why? Guesses?\nThings that depend on httr as of January 22, 2024 (Monday)\nCouldn’t fundamentally change, or these package would all break"
   },
   {
-    "objectID": "slides/httr2/httr2.html#url-pieces",
-    "href": "slides/httr2/httr2.html#url-pieces",
-    "title": "Web APIs with R Book Club",
-    "section": "URL Pieces",
-    "text": "URL Pieces\nhttps://api.open.fec.gov/v1/candidates?office=H&office=S&election_year=2024\n\nbase URL = https://api.open.fec.gov/v1/\npath = /v1/candidates\nquery = ?office=H&office=S&election_year=2024"
+    "objectID": "slides/httr2/httr2.html#how-do-i-use-httr2",
+    "href": "slides/httr2/httr2.html#how-do-i-use-httr2",
+    "title": "How can I access APIs from R?",
+    "section": "How do I use {httr2}?",
+    "text": "How do I use {httr2}?\n\nreq_*() functions return httr2_request objects\n\n\n\nreq_fec &lt;- request(\"https://api.open.fec.gov/v1\")\nreq_fec_auth &lt;- req_url_query(req_fec, api_key = \"DEMO_KEY\")\nreq_candidates &lt;- req_url_path_append(req_fec_auth, \"candidates\")\ncandidates_2024 &lt;- req_url_query(req_candidates, election_year = 2024) |&gt; \n  req_perform() |&gt; resp_body_json()\ncandidates_2022 &lt;- req_url_query(req_candidates, election_year = 2022) |&gt; \n  req_perform() |&gt; resp_body_json()\nreq_calendar &lt;- req_url_path_append(req_fec_auth, \"calendar-dates\")\n\n\n\n\nImagine you’re working with an API, like the FEC API\n\nWhat you’ll very often do.\n\nWe’ll go through function specifics in a moment, just soak in the utility of separate objects\nThis is super important, so let’s pause to sink this in\nI’m going to drink some water while you make sure you have that.\nIf you want to use this API, sign up for your own key at https://api.open.fec.gov/developers/\nOpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json"
   },
   {
-    "objectID": "slides/httr2/httr2.html#request-url",
-    "href": "slides/httr2/httr2.html#request-url",
-    "title": "Web APIs with R Book Club",
-    "section": "Request: URL",
-    "text": "Request: URL\n\nrequest() set base URL\nreq_url_path_append() add parts separated by /\nreq_url_query() add query parts\n\n\nreq &lt;- httr2::request(\"https://api.open.fec.gov/v1\") |&gt; \n  httr2::req_url_path_append(\"candidates\") |&gt; \n  httr2::req_url_query(office = c(\"H\", \"S\"), election_year = 2024, .multi = \"explode\")\nreq$url"
+    "objectID": "slides/httr2/httr2.html#how-can-i-quickly-translate-api-docs",
+    "href": "slides/httr2/httr2.html#how-can-i-quickly-translate-api-docs",
+    "title": "How can I access APIs from R?",
+    "section": "How can I quickly translate API docs?",
+    "text": "How can I quickly translate API docs?\n\nDocs often have “Try it out” option\n\nhttps://api.open.fec.gov/developers/\n\nCopy the “Curl” block\n\n\n\ncurl_translate(\n  \"curl -X 'GET' \\\n  'https://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=H'\"\n)\n\n\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\n\nIf you want to use this API, sign up for your own key at that same URL.\nI edited the given curl to fit\nThis code will usually get you started\nNow let’s clean it up and understand it!"
   },
   {
-    "objectID": "slides/httr2/httr2.html#request-url-other-functions",
-    "href": "slides/httr2/httr2.html#request-url-other-functions",
-    "title": "Web APIs with R Book Club",
-    "section": "Request: URL (other functions)",
-    "text": "Request: URL (other functions)\n\nreq_url() replace entire URL (don’t use this)\nreq_url_path() replace part after / (don’t use this)\nreq_template() build request with variables\n\n\nreq &lt;- httr2::request(\"https://api.open.fec.gov/v1\") |&gt; \n  httr2::req_template(\"GET /{endpoint}\", endpoint = \"candidates\")\nreq$url"
+    "objectID": "slides/httr2/httr2.html#request-req_path_append",
+    "href": "slides/httr2/httr2.html#request-req_path_append",
+    "title": "How can I access APIs from R?",
+    "section": "request() & req_path_append()",
+    "text": "request() & req_path_append()\n\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\n\nCleaner: “main” request object + specific path\n\nreq_fec &lt;- request(\"https://api.open.fec.gov/v1\")\nreq_candidates &lt;- req_fec |&gt; \n  req_url_path_append(\"candidates\")\n\n\n\n\nreq_candidates$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates\"\n\n\n\n\n\nhttr2 “thinks” in pieces\nYou don’t have to think about the /\nWe have to be careful about the “v1” in our request, though!\n\nMore on next slide."
   },
   {
-    "objectID": "slides/httr2/httr2.html#request-headers",
-    "href": "slides/httr2/httr2.html#request-headers",
-    "title": "Web APIs with R Book Club",
-    "section": "Request: Headers",
-    "text": "Request: Headers\nWe’ll see more of this in chapter 5 (authentication)!\n\nhttr2::request(\"https://api.open.fec.gov/v1/candidates?office=H&office=S\") |&gt; \n  httr2::req_headers(\"X-Api-Key\" = \"DEMO_KEY\", .redact = \"X-Api-Key\") |&gt; \n  httr2::req_dry_run()"
+    "objectID": "slides/httr2/httr2.html#dont-use-req_url_path",
+    "href": "slides/httr2/httr2.html#dont-use-req_url_path",
+    "title": "How can I access APIs from R?",
+    "section": "Don’t use req_url_path()!",
+    "text": "Don’t use req_url_path()!\n\n\nreq_path_bad &lt;- req_fec |&gt; \n  req_url_path(\"candidates\")\nreq_path_bad$url\n\n#&gt; [1] \"https://api.open.fec.gov/candidates\"\n\n\n\n\n\nreq_candidates$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates\"\n\n\n\n\n\nYou probably never want req_url_path()\nNotably the help docs don’t show an example for this one"
   },
   {
-    "objectID": "slides/httr2/httr2.html#request-method",
-    "href": "slides/httr2/httr2.html#request-method",
-    "title": "Web APIs with R Book Club",
-    "section": "Request: Method",
-    "text": "Request: Method\n\nGET without body\nPOST with body\nreq_method() to specify (rarely needed)"
+    "objectID": "slides/httr2/httr2.html#req_method-more-later",
+    "href": "slides/httr2/httr2.html#req_method-more-later",
+    "title": "How can I access APIs from R?",
+    "section": "req_method(): more later!",
+    "text": "req_method(): more later!\n\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\n\n\n“GET” is default for what we’re doing, so we can leave this part out.\nWe don’t have to think about it until what’s now Chapter 6!"
   },
   {
-    "objectID": "slides/httr2/httr2.html#request-proxy",
-    "href": "slides/httr2/httr2.html#request-proxy",
-    "title": "Web APIs with R Book Club",
-    "section": "Request: Proxy",
-    "text": "Request: Proxy\n\nreq_proxy() to specify proxy\nCan be useful to see response as if you’re somewhere else"
+    "objectID": "slides/httr2/httr2.html#req_url_query",
+    "href": "slides/httr2/httr2.html#req_url_query",
+    "title": "How can I access APIs from R?",
+    "section": "req_url_query()",
+    "text": "req_url_query()\n\nhttps://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=H\n\n\n\nreq_house &lt;- req_candidates |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  )\n\n\n\nCan add query parameters piecewise, even before path!\n\n\n\nreq_fec_auth &lt;- req_fec |&gt; \n  req_url_query(api_key = \"DEMO_KEY\")\nreq_candidates_auth &lt;- req_fec_auth |&gt; \n  req_url_path_append(\"candidates\")\nreq_house2 &lt;- req_candidates_auth |&gt; \n  req_url_query(office = \"H\")\n\n\n\n\nidentical(req_house$url, req_house2$url)\n\n#&gt; [1] TRUE\n\n\n\n\n\nThis is the URL that was in the Curl call\n“Query” = stuff after “?”\nArguments for the endpoint\nDoesn’t automatically set order, so watch out for that."
   },
   {
-    "objectID": "slides/httr2/httr2.html#more-httr2-to-come",
-    "href": "slides/httr2/httr2.html#more-httr2-to-come",
-    "title": "Web APIs with R Book Club",
-    "section": "More httr2 to come!",
-    "text": "More httr2 to come!\nExact order might change, but:\n\nChapter 4 = Authentication\nChapter 5 = Parsing responses\nChapter 6 = Pagination (and other strategies for big responses)"
-  },
-  {
-    "objectID": "slides/httr2/httr2.html#meeting-videos",
-    "href": "slides/httr2/httr2.html#meeting-videos",
-    "title": "Web APIs with R Book Club",
-    "section": "Meeting Videos",
-    "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\nr4ds.io/wapir | Jon Harmon | wapir.io"
+    "objectID": "slides/httr2/httr2.html#req_url_query.multi",
+    "href": "slides/httr2/httr2.html#req_url_query.multi",
+    "title": "How can I access APIs from R?",
+    "section": "req_url_query(.multi)",
+    "text": "req_url_query(.multi)\n\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"))\n\n#&gt; Error in `req_url_query()`:\n#&gt; ! All vector elements of `...` must be length 1.\n#&gt; ℹ Use `.multi` to choose a strategy for handling vectors.\n\n\n\n\n.multi = \"explode\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"explode\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H&office=S\"\n\n\n\n\n.multi = \"pipe\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"pipe\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H|S\"\n\n\n\n\n.multi = \"comma\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"comma\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H,S\"\n\n\n\n\n\nAPIs often can’t handle multiple params with same name\ndefault = “error”\n. in .multi so it doesn’t collide with a parameter named “multi”\n“explode” to separate them as separate copies of that parameter,\n“pipe” or “comma” to list them out in same parameter"
   },
   {
     "objectID": "slides/httr2/httr2-perform.html#controlling-large-requests",
@@ -880,6 +873,27 @@
     "title": "Web APIs with R Book Club",
     "section": "Meeting Videos",
     "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\nr4ds.io/wapir | Jon Harmon | wapir.io"
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#what-are-http-request-headers",
+    "href": "slides/httr2/httr2-authentication.html#what-are-http-request-headers",
+    "title": "Web APIs with R Book Club",
+    "section": "What are HTTP request headers?",
+    "text": "What are HTTP request headers?\n\nMetadata about the request\n\nAuthentication\nCookies\nCache rules\nExpected response\nEtc\n\n\n\nNames are case-insensitive!\n\n\nMuch more in Chapter 3: “How do I tell the API who I am?”"
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#req_headers",
+    "href": "slides/httr2/httr2-authentication.html#req_headers",
+    "title": "Web APIs with R Book Club",
+    "section": "req_headers()",
+    "text": "req_headers()\nTODO: Leftovers from httr2.qmd. Make it fit in this chapter!\n\n\nreq_fec_auth &lt;- req_fec |&gt; \n  req_headers(\"X-Api-Key\" = \"DEMO_KEY\", .redact = \"X-Api-Key\")\n\n\n\n\nreq_dry_run(req_fec_auth)\n\n\n\nBe careful!\n\nreq_fec_auth$headers\n\n\n\n\n.redact arg tells it to hide the value of that argument when it prints to the console.\nreq_dry_run() prints useful info without actually running req_perform()\n\nNormal print of req_fec_auth also works outside of slide context\n\nBe careful: It’s still in the object, just hidden"
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#req_url",
+    "href": "slides/httr2/httr2-authentication.html#req_url",
+    "title": "Web APIs with R Book Club",
+    "section": "req_url()",
+    "text": "req_url()\n\nReplace entire URL\neg: Same authentication, different base_url\n\n\n\nreq_fec_dev_auth &lt;- req_fec_auth |&gt; \n  req_url(\"https://dev.fec.fake/v1\")\n\n\n\n\nreq_dry_run(req_fec_dev_auth)\n\n\n\n\nAt first I lumped this in same bucket as req_url_path()\nYouTube API: metadata vs upload"
   },
   {
     "objectID": "slides/httr2/httr2-authentication.html#but-first-practice-safe-git",
@@ -1085,11 +1099,46 @@
     "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\nr4ds.io/wapir | Jon Harmon | wapir.io"
   },
   {
-    "objectID": "slides/intro.html#which-chapters-sound-interesting",
-    "href": "slides/intro.html#which-chapters-sound-interesting",
+    "objectID": "slides/intro.html#api-application-programming-interface",
+    "href": "slides/intro.html#api-application-programming-interface",
     "title": "Introduction",
-    "section": "Which chapters sound interesting?",
-    "text": "Which chapters sound interesting?\n\n\nPart 1: How can I get web data into R?\n\nHow do computers communicate?\nHow can I access APIs from R?\nHow do I tell the API who I am?\nHow can I process API responses?\nHow can I get a lot of data from an API?\nHow can I find APIs?\nHow can I find API-wrapping packages?\nHow else can I communicate with APIs from R?\nHow can I get data from web pages?\nHow can I learn more about accessing web APIs?\n\n\nPart 2: How can I create my own APIs with R?\n\nHow can I create an API?\nHow can I get inputs from API users?\nHow can I control API output?\nHow can I handle API errors?\nHow can I authenticate API users?\nHow can I test my plumber API?\nHow do I deploy my plumber API?\n\nAWS? GCS? Azure? DigitalOcean? Posit Cloud? Posit Connect? Other?\n\nHow can I learn more about creating APIs?\nPart 3: Use Cases (eg Subdividing a Shiny app)\nWhat else?\n\n\n\n\n\n\nI want to quickly gauge interest, but more details in the survey.\nAny missing topics?"
+    "section": "API = “application programming interface”",
+    "text": "API = “application programming interface”\n\n“application” = function, website… any computerized thing\n“programming” = can be used in code\n“interface” = way to interact with something\n\n🤖 APIs allow computers to talk to one another\n\n\nRight level?"
+  },
+  {
+    "objectID": "slides/intro.html#what-are-web-apis",
+    "href": "slides/intro.html#what-are-web-apis",
+    "title": "Introduction",
+    "section": "What are web APIs?",
+    "text": "What are web APIs?\n\n💻 Technically any function’s list of arguments is an API\n\n\n“httr2 is a ground-up rewrite of httr that provides a pipeable API with an explicit request object that solves more problems felt by packages that wrap APIs” (httr2 docs, emphasis added)\n\n\n🕸️ This book = web APIs\n\nWeb API = API on the internet\nFor rest of book, “API” means “web API”\n\n\n\n\nhttr2 quote helpful/interesting?"
+  },
+  {
+    "objectID": "slides/intro.html#what-are-some-api-examples",
+    "href": "slides/intro.html#what-are-some-api-examples",
+    "title": "Introduction",
+    "section": "What are some API examples?",
+    "text": "What are some API examples?\n\nCloud services ({paws})\nGovernment agencies (OpenFEC)\nRandom data (sunrisesunset.io)\nServices (OpenAI)\nAPIs.guru = API directory\n\n2,529 APIs as of 2024-01-22\n\n\n\n\nNumber of examples good?\nVariety of examples good?\nDeep enough, or more-full usage examples?\nWhat would you expect in book (vs slides)?"
+  },
+  {
+    "objectID": "slides/intro.html#what-does-each-chapter-cover",
+    "href": "slides/intro.html#what-does-each-chapter-cover",
+    "title": "Introduction",
+    "section": "What does each chapter cover?",
+    "text": "What does each chapter cover?\n\n\nPart 1: How can I get web data into R?\n\nHow can I access APIs from R?\nHow do I tell the API who I am?\nHow can I process API responses?\nHow can I get a lot of data from an API?\nHow can I find APIs?\nHow can I find API-wrapping packages?\nHow else can I communicate with APIs from R?\nHow can I get data from web pages?\nHow can I learn more about accessing web APIs?\n\n\nPart 2: How can I create my own APIs with R?\n\nHow can I create an API?\nHow can I get inputs from API users?\nHow can I control API output?\nHow can I handle API errors?\nHow can I authenticate API users?\nHow can I test my plumber API?\nHow do I deploy my plumber API?\nHow can I learn more about creating APIs?\n\n\n\n\n\nI want to quickly gauge interest, but more details in the survey.\nWill have an over-arching case study woven into most chapters (but as independent pieces to allow jumping around)\nAny missing topics?"
+  },
+  {
+    "objectID": "slides/intro.html#what-wont-i-learn",
+    "href": "slides/intro.html#what-wont-i-learn",
+    "title": "Introduction",
+    "section": "What won’t I learn?",
+    "text": "What won’t I learn?\n\nHow can I access APIs with {httr} or {curl}?\nHow can I access APIs from other programming languages?\nHow should I design a complex API?\n\nMany other books, such as Designing APIs with Swagger and OpenAPI\n\nHow can I administer an enterprise API?\n\nDevOps for Data Science for tips\nWork with professionals for full-scale deployments\n\n\n\n\nAnything else people would expect?"
+  },
+  {
+    "objectID": "slides/intro.html#who-should-read-this-book",
+    "href": "slides/intro.html#who-should-read-this-book",
+    "title": "Introduction",
+    "section": "Who should read this book?",
+    "text": "Who should read this book?\n\n\n\nData Analysts/Scientists\n\nPart 1: Enrich datasets\n\nMachine Learning Engineers\n\nPart 1: Feature engineering\nPart 2: Share predictions\n\n\n\n\nData Producers (Researchers, etc)\n\nPart 2: Share data\n\nShiny App Designers\n\nPart 1: Load/process data\nPart 2: Divide & conquer\n\n\n\n\n\n\nPeople who analyze data, not necessarily that job title.\nResearchers or anybody else with data to share.\nDoes anybody fit into something other than those use cases?"
   },
   {
     "objectID": "slides/intro.html#prerequisites",
@@ -1099,18 +1148,11 @@
     "text": "Prerequisites\n\nVery few hard prerequisites\n\nWill point to resources when helpful\n\nI assume familiarity with R\n\nR for Data Science\n\nHelpful:\n\nAdvanced R to construct more robust APIs\nR Packages for deeper dive into 📦\n\n\n\n\n(I repeat these questions in the survey)\nHow many have read R4DS?\nHow many have read Advanced R?\nHow many have read R Packages?\nHow many have written a function?\nHow many have written a package?\nHow many have published a package on CRAN?\nAccessed an API from R with httr?\nAccessed an API from R with httr2?\nAccessed an API from R some other way?\nDiscuss level I can assume."
   },
   {
-    "objectID": "slides/intro.html#what-wont-i-learn",
-    "href": "slides/intro.html#what-wont-i-learn",
+    "objectID": "slides/intro.html#how-are-chapters-structured",
+    "href": "slides/intro.html#how-are-chapters-structured",
     "title": "Introduction",
-    "section": "What won’t I learn?",
-    "text": "What won’t I learn?\n\nHow can I access APIs with {httr} or {curl}?\nHow can I access APIs from other programming languages?\nHow should I design a complex API?\n\nCovered a tiny bit\nMany other books, such as Designing APIs with Swagger and OpenAPI\n\nHow can I administer an enterprise API?\n\nDevOps for Data Science for tips\nWork with professionals for full-scale deployments\n\n\n\n\nAnything else people would expect?"
-  },
-  {
-    "objectID": "slides/intro.html#cohort-1",
-    "href": "slides/intro.html#cohort-1",
-    "title": "Introduction",
-    "section": "Cohort 1",
-    "text": "Cohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\nr4ds.io/wapir | Jon Harmon | wapir.io"
+    "section": "How are chapters structured?",
+    "text": "How are chapters structured?\n\nLearning Objectives ≈ skills\n\n“After you read this chapter, you will be able to…”\nThere will be a separate index of these\n\nTest-Yourself Questions to check understanding\nCheck online version for API updates\n(TODO: Anything to note about code vs text?)\n(TODO: Probably an over-arching case study of an election data Shiny app?)"
   },
   {
     "objectID": "slides/plumber/creating-more.html#slide-1",

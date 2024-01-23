@@ -394,11 +394,11 @@
 <h1>How can I authenticate API users?</h1>
 <p><strong>Learning objectives:</strong></p>
 <ul>
-<li>Implement API keys for a plumber API.</li>
-<li>Implement OAuth2 authentication for a plumber API.</li>
-<li>Use cookies to save and restore API user state.</li>
-<li>Set and read encrypted cookies for API users.</li>
-<li>(Something about things like Posit Connect?)</li>
+<li class="fragment">Implement API keys for a plumber API.</li>
+<li class="fragment">Implement OAuth2 authentication for a plumber API.</li>
+<li class="fragment">Use cookies to save and restore API user state.</li>
+<li class="fragment">Set and read encrypted cookies for API users.</li>
+<li class="fragment">(Something about things like Posit Connect?)</li>
 </ul>
 </section>
 <section id="review-of-authentication-schemes" class="slide level2">
@@ -408,15 +408,15 @@
 <section id="api-key-considerations" class="slide level2 unnumbered">
 <h2>API key considerations</h2>
 <ul>
-<li>Accept in URL query?
+<li class="fragment">Accept in URL query?
 <ul>
-<li>May be easier for user (eg, purely in-browser)</li>
-<li>Less secure than header</li>
+<li class="fragment">May be easier for user (eg, purely in-browser)</li>
+<li class="fragment">Less secure than header</li>
 </ul></li>
-<li>Cookies? {-}
+<li class="fragment">Cookies? {-}
 <ul>
-<li>If you set cookie, you need to read it (see later slide)</li>
-<li>Probably also accept header</li>
+<li class="fragment">If you set cookie, you need to read it (see later slide)</li>
+<li class="fragment">Probably also accept header</li>
 </ul></li>
 </ul>
 </section>
@@ -434,7 +434,7 @@
 <span id="cb1-9"><a href="#cb1-9"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
-<li><code>#* @preempt authorize_api_key</code> if endpoint doesn’t use auth</li>
+<li class="fragment"><code>#* @preempt authorize_api_key</code> if endpoint doesn’t use auth</li>
 </ul>
 </section>
 <section id="api-keys-with-plumber-error" class="slide level2 unnumbered">
@@ -456,51 +456,51 @@
 <span id="cb2-14"><a href="#cb2-14"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
-<li><code>#* @preempt stop_unauthorized</code> if endpoint doesn’t <em>require</em> auth
+<li class="fragment"><code>#* @preempt stop_unauthorized</code> if endpoint doesn’t <em>require</em> auth
 <ul>
-<li><em>In addition to <code>authorize_api_key</code></em> if not used at all</li>
+<li class="fragment"><em>In addition to <code>authorize_api_key</code></em> if not used at all</li>
 </ul></li>
 </ul>
 </section>
 <section id="oauth2-with-plumber" class="slide level2 unnumbered">
 <h2>OAuth2 with plumber</h2>
 <ul>
-<li>Endpoint for user to initiate Oauth2 dance
+<li class="fragment">Endpoint for user to initiate Oauth2 dance
 <ul>
-<li>Will launch browser for interaction with OAuth2 provider</li>
+<li class="fragment">Will launch browser for interaction with OAuth2 provider</li>
 </ul></li>
-<li>Endpoint for provider to send code</li>
-<li>Use state params to keep track of user</li>
-<li>End result is a bearer token (+ possibly other pieces)</li>
+<li class="fragment">Endpoint for provider to send code</li>
+<li class="fragment">Use state params to keep track of user</li>
+<li class="fragment">End result is a bearer token (+ possibly other pieces)</li>
 </ul>
 <p>TODO: Actually implement this and make sure it works how you think!</p>
 </section>
 <section id="using-cookies-for-user-state" class="slide level2 unnumbered">
 <h2>Using cookies for user state</h2>
 <ul>
-<li>Client controls cookies, so don’t store anything you “own”
+<li class="fragment">Client controls cookies, so don’t store anything you “own”
 <ul>
-<li>Eg, store a key, not a user ID</li>
-<li>Safer: Store preferences</li>
-<li>General rule: things you’d accept as user input</li>
+<li class="fragment">Eg, store a key, not a user ID</li>
+<li class="fragment">Safer: Store preferences</li>
+<li class="fragment">General rule: things you’d accept as user input</li>
 </ul></li>
-<li><code>res$setCookie()</code> for unencrypted data</li>
+<li class="fragment"><code>res$setCookie()</code> for unencrypted data</li>
 </ul>
 </section>
 <section id="encrypted-cookies" class="slide level2 unnumbered">
 <h2>Encrypted cookies</h2>
 <ul>
-<li><code>pr_cookie(pr, key, name)</code> in router
+<li class="fragment"><code>pr_cookie(pr, key, name)</code> in router
 <ul>
-<li>Tells plumber to read/write that cookie.</li>
-<li>Encrypts with <code>key</code></li>
-<li>By default <code>name = "plumber"</code>
+<li class="fragment">Tells plumber to read/write that cookie.</li>
+<li class="fragment">Encrypts with <code>key</code></li>
+<li class="fragment">By default <code>name = "plumber"</code>
 <ul>
-<li>All stored in <code>req$session$plumber</code></li>
+<li class="fragment">All stored in <code>req$session$plumber</code></li>
 </ul></li>
 </ul></li>
-<li>Can include lists (ends up as json)</li>
-<li>TODO: Add details about env vars and/or keyring (probably same as httr2 slides)</li>
+<li class="fragment">Can include lists (ends up as json)</li>
+<li class="fragment">TODO: Add details about env vars and/or keyring (probably same as httr2 slides)</li>
 </ul>
 </section>
 <section id="meeting-videos" class="slide level2 unnumbered">

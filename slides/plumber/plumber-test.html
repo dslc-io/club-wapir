@@ -394,20 +394,20 @@
 <h1>How can I test my plumber API?</h1>
 <p><strong>Learning objectives:</strong></p>
 <ul>
-<li>Minimize API-specific code in your functions.</li>
-<li>Wrap an API into an R package.</li>
-<li>Test functions with {testthat}.</li>
-<li>Test API-specific functions with <code>req</code> arguments.</li>
-<li>Test {plumber} routers.</li>
+<li class="fragment">Minimize API-specific code in your functions.</li>
+<li class="fragment">Wrap an API into an R package.</li>
+<li class="fragment">Test functions with {testthat}.</li>
+<li class="fragment">Test API-specific functions with <code>req</code> arguments.</li>
+<li class="fragment">Test {plumber} routers.</li>
 </ul>
 <p>Partially inpsired by <a href="https://www.jumpingrivers.com/blog/api-as-a-package-testing/">API as a Package series from Jumping Rivers</a></p>
 </section>
 <section id="pure-functions" class="slide level2 unnumbered">
 <h2>Pure Functions</h2>
 <ul>
-<li>No hidden inputs</li>
-<li>No side effects</li>
-<li>Given inputs, always return same output.</li>
+<li class="fragment">No hidden inputs</li>
+<li class="fragment">No side effects</li>
+<li class="fragment">Given inputs, always return same output.</li>
 </ul>
 <p><em>Abstract pure functions out of endpoint functions for easier testing.</em></p>
 </section>
@@ -418,23 +418,23 @@
 <section id="plumber-apis-as-packages" class="slide level2 unnumbered">
 <h2>plumber APIs as packages</h2>
 <ul>
-<li><a href="https://r-pkgs.org/">R Packages</a> book for intro to R packages</li>
-<li>Functions in <code>R/</code></li>
-<li>APIs in <code>inst/plumber/API_NAME/</code>
+<li class="fragment"><a href="https://r-pkgs.org/">R Packages</a> book for intro to R packages</li>
+<li class="fragment">Functions in <code>R/</code></li>
+<li class="fragment">APIs in <code>inst/plumber/API_NAME/</code>
 <ul>
-<li>Recommended: Use <code>entrypoint.R</code> to build router programmatically</li>
+<li class="fragment">Recommended: Use <code>entrypoint.R</code> to build router programmatically</li>
 </ul></li>
-<li>Launch with <code>plumber::plumb_api("yourpkg", "API_NAME")</code></li>
+<li class="fragment">Launch with <code>plumber::plumb_api("yourpkg", "API_NAME")</code></li>
 </ul>
 </section>
 <section id="brief-intro-to-testthat" class="slide level2 unnumbered">
 <h2>Brief Intro to testthat</h2>
 <p>Much more in <a href="https://r-pkgs.org/">R Packages</a>!</p>
 <ul>
-<li><code>usethis::use_testthat()</code> in package</li>
-<li>Tests in <code>tests/testthat/test-filename.R</code></li>
-<li><code>test_that("What you expected", { code to test that })</code></li>
-<li>Pure functions are relatively easy to test!</li>
+<li class="fragment"><code>usethis::use_testthat()</code> in package</li>
+<li class="fragment">Tests in <code>tests/testthat/test-filename.R</code></li>
+<li class="fragment"><code>test_that("What you expected", { code to test that })</code></li>
+<li class="fragment">Pure functions are relatively easy to test!</li>
 </ul>
 </section>
 <section id="example-example-from-above-in-a-package" class="slide level2 unnumbered">
@@ -511,7 +511,7 @@
 <h2>random notes</h2>
 <p>Include ideas from these <a href="https://www.rplumber.io/">plumber</a> articles:</p>
 <ul>
-<li><a href="https://www.rplumber.io/articles/execution-model.html">Runtime</a></li>
+<li class="fragment"><a href="https://www.rplumber.io/articles/execution-model.html">Runtime</a></li>
 </ul>
 <p><a href="https://www.jumpingrivers.com/blog/api-as-a-package-testing/">JumpingRivers had a blog about this!</a></p>
 </section>

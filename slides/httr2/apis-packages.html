@@ -394,9 +394,9 @@
 <h1>How can I find API-wrapping packages?</h1>
 <p><strong>Learning objectives:</strong></p>
 <ul>
-<li>Use <code>tools::CRAN_package_db()</code> to search for packages.</li>
-<li>Search the <a href="https://r-universe.dev">R-universe</a>.</li>
-<li>Use {anyapi} to search for packages.</li>
+<li class="fragment">Use <code>tools::CRAN_package_db()</code> to search for packages.</li>
+<li class="fragment">Search the <a href="https://r-universe.dev">R-universe</a>.</li>
+<li class="fragment">Use {anyapi} to search for packages.</li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(dplyr)</span>
@@ -409,10 +409,10 @@
 <section id="general-tips-for-searching" class="slide level2 unnumbered">
 <h2>General tips for searching</h2>
 <ul>
-<li><code>tolower(FIELD)</code> to find “API”, “api”, “Api”, etc</li>
-<li><code>\\b</code> in regex pattern for “word <strong><em>b</em></strong>oundary”
+<li class="fragment"><code>tolower(FIELD)</code> to find “API”, “api”, “Api”, etc</li>
+<li class="fragment"><code>\\b</code> in regex pattern for “word <strong><em>b</em></strong>oundary”
 <ul>
-<li><code>"\\bapi\\b"</code> = “api surrounded by spaces, (), newline, etc”</li>
+<li class="fragment"><code>"\\bapi\\b"</code> = “api surrounded by spaces, (), newline, etc”</li>
 </ul></li>
 </ul>
 </section>
@@ -431,9 +431,9 @@
 <section id="searching-the-r-universe" class="slide level2 unnumbered">
 <h2>Searching the R Universe</h2>
 <ul>
-<li>Web interface at https://r-universe.dev/</li>
-<li>API in {universe} package? (broken as of 2023-11-13)</li>
-<li>API at <code>https://r-universe.dev/stats/powersearch</code></li>
+<li class="fragment">Web interface at https://r-universe.dev/</li>
+<li class="fragment">API in {universe} package? (broken as of 2023-11-13)</li>
+<li class="fragment">API at <code>https://r-universe.dev/stats/powersearch</code></li>
 </ul>
 </section>
 <section id="searching-the-r-universe-api" class="slide level2 unnumbered">
@@ -457,14 +457,14 @@
 <section id="anyapi" class="slide level2 unnumbered">
 <h2>anyapi</h2>
 <ul>
-<li>{anyapi} package wraps these functions
+<li class="fragment">{anyapi} package wraps these functions
 <ul>
-<li>(technically not yet)</li>
+<li class="fragment">(technically not yet)</li>
 </ul></li>
-<li>If package doesn’t exist
+<li class="fragment">If package doesn’t exist
 <ul>
-<li>Search for API spec</li>
-<li>Create package on-the-fly to interact with the API</li>
+<li class="fragment">Search for API spec</li>
+<li class="fragment">Create package on-the-fly to interact with the API</li>
 </ul></li>
 </ul>
 </section>
