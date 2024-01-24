@@ -478,6 +478,7 @@
 <li>We’re hitting the free, open api from the Federal Elections Commission.
 <ul>
 <li>I’m thinking about building a Shiny app related to this API, and using it as a case study throughout the book, but I also need to find stable APIs with more options</li>
+<li>Stable API ideas? Ideally free. I also might host something for people to use.</li>
 </ul></li>
 <li>(step through)</li>
 <li>Here we build the request piece-wise
@@ -546,6 +547,7 @@
 </div>
 <aside class="notes">
 <ul>
+<li>Both packages by Hadley Wickham (R4DS and other books, tidyverse, Chief Scientist at Posit)</li>
 <li>Complete rewrite. Why? Guesses?</li>
 <li>Things that depend on httr as of January 22, 2024 (Monday)</li>
 <li>Couldn’t fundamentally change, or these package would all break</li>
@@ -588,8 +590,6 @@
 <li>We’ll go through function specifics in a moment, just soak in the utility of separate objects</li>
 <li>This is super important, so let’s pause to sink this in</li>
 <li>I’m going to drink some water while you make sure you have that.</li>
-<li>If you want to use this API, sign up for your own key at https://api.open.fec.gov/developers/</li>
-<li>OpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -652,6 +652,7 @@
 <li>I edited the given curl to fit</li>
 <li>This code will usually get you started</li>
 <li>Now let’s clean it up and understand it!</li>
+<li>Extra: OpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -667,7 +668,6 @@
 </section>
 <section id="request-req_path_append" class="slide level2">
 <h2><code>request()</code> &amp; <code>req_path_append()</code></h2>
-<div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6" data-code-line-numbers="1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1/candidates/"</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">req_method</span>(<span class="st">"GET"</span>) <span class="sc">|&gt;</span> </span>
@@ -676,7 +676,6 @@
 <span id="cb6-5"><a href="#cb6-5"></a>    <span class="at">office =</span> <span class="st">"H"</span></span>
 <span id="cb6-6"><a href="#cb6-6"></a>  ) <span class="sc">|&gt;</span> </span>
 <span id="cb6-7"><a href="#cb6-7"></a>  <span class="fu">req_perform</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 </div>
 <div class="fragment">
 <p>Cleaner: “main” request object + specific path</p>
@@ -754,7 +753,6 @@
 </section>
 <section id="req_method-more-later" class="slide level2">
 <h2><code>req_method()</code>: more later!</h2>
-<div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1/candidates/"</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb14-2"><a href="#cb14-2"></a>  <span class="fu">req_method</span>(<span class="st">"GET"</span>) <span class="sc">|&gt;</span> </span>
@@ -763,7 +761,6 @@
 <span id="cb14-5"><a href="#cb14-5"></a>    <span class="at">office =</span> <span class="st">"H"</span></span>
 <span id="cb14-6"><a href="#cb14-6"></a>  ) <span class="sc">|&gt;</span> </span>
 <span id="cb14-7"><a href="#cb14-7"></a>  <span class="fu">req_perform</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 </div>
 <aside class="notes">
 <ul>
@@ -784,7 +781,7 @@
 </section>
 <section id="req_url_query" class="slide level2">
 <h2><code>req_url_query()</code></h2>
-<div class="fragment" style="font-size:0.9em;">
+<div style="font-size:0.9em;">
 <p>https://api.open.fec.gov/v1/candidates/<strong><em>?api_key=DEMO_KEY&amp;office=H</em></strong></p>
 </div>
 <div class="fragment">
@@ -822,6 +819,7 @@
 <li>This is the URL that was in the Curl call</li>
 <li>“Query” = stuff after “?”</li>
 <li>Arguments for the endpoint</li>
+<li>1st req_url_query() call is what curl_translate gave us</li>
 <li>Doesn’t automatically set order, so watch out for that.</li>
 </ul>
 <style type="text/css">
@@ -849,18 +847,9 @@
 </div>
 </div>
 <div class="fragment">
-<p><code>.multi = "explode"</code></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu">req_url_query</span>(req_candidates, <span class="at">office =</span> <span class="fu">c</span>(<span class="st">"H"</span>, <span class="st">"S"</span>), <span class="at">.multi =</span> <span class="st">"explode"</span>)<span class="sc">$</span>url</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; [1] "https://api.open.fec.gov/v1/candidates?office=H&amp;office=S"</code></pre>
-</div>
-</div>
-</div>
-<div class="fragment">
 <p><code>.multi = "pipe"</code></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">req_url_query</span>(req_candidates, <span class="at">office =</span> <span class="fu">c</span>(<span class="st">"H"</span>, <span class="st">"S"</span>), <span class="at">.multi =</span> <span class="st">"pipe"</span>)<span class="sc">$</span>url</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu">req_url_query</span>(req_candidates, <span class="at">office =</span> <span class="fu">c</span>(<span class="st">"H"</span>, <span class="st">"S"</span>), <span class="at">.multi =</span> <span class="st">"pipe"</span>)<span class="sc">$</span>url</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; [1] "https://api.open.fec.gov/v1/candidates?office=H|S"</code></pre>
 </div>
@@ -869,9 +858,18 @@
 <div class="fragment">
 <p><code>.multi = "comma"</code></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">req_url_query</span>(req_candidates, <span class="at">office =</span> <span class="fu">c</span>(<span class="st">"H"</span>, <span class="st">"S"</span>), <span class="at">.multi =</span> <span class="st">"comma"</span>)<span class="sc">$</span>url</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">req_url_query</span>(req_candidates, <span class="at">office =</span> <span class="fu">c</span>(<span class="st">"H"</span>, <span class="st">"S"</span>), <span class="at">.multi =</span> <span class="st">"comma"</span>)<span class="sc">$</span>url</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; [1] "https://api.open.fec.gov/v1/candidates?office=H,S"</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><code>.multi = "explode"</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">req_url_query</span>(req_candidates, <span class="at">office =</span> <span class="fu">c</span>(<span class="st">"H"</span>, <span class="st">"S"</span>), <span class="at">.multi =</span> <span class="st">"explode"</span>)<span class="sc">$</span>url</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "https://api.open.fec.gov/v1/candidates?office=H&amp;office=S"</code></pre>
 </div>
 </div>
 </div>
@@ -880,8 +878,8 @@
 <li>APIs often can’t handle multiple params with same name</li>
 <li>default = “error”</li>
 <li><code>.</code> in <code>.multi</code> so it doesn’t collide with a parameter named “multi”</li>
-<li>“explode” to separate them as separate copies of that parameter,</li>
 <li>“pipe” or “comma” to list them out in same parameter</li>
+<li>“explode” to separate them as separate copies of that parameter (what this API actually wants)</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {

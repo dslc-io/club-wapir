@@ -676,7 +676,7 @@
     "href": "slides/httr2/httr2.html#what-do-httr2-calls-look-like",
     "title": "How can I access APIs from R?",
     "section": "What do {httr2} calls look like?",
-    "text": "What do {httr2} calls look like?\n\nPipe-based API calls\n\n\n\ncandidates &lt;- \n  request(\"https://api.open.fec.gov/v1\") |&gt; \n  req_url_path_append(\"candidates\") |&gt; \n  req_url_query(api_key = \"DEMO_KEY\") |&gt; \n  req_url_query(election_year = 2024) |&gt; \n  req_perform() |&gt; \n  resp_body_json()\ncandidates$results[[1]]$candidate_id\n#&gt; [1] \"P40014052\"\n\n\n\n\nhttr2 is a rewrite of httr specifically to use the concept of the pipe.\n\nI’ll add a brief intro to the pipe in the Introduction chapter under prereqs!\nI use |&gt; base R pipe here. Pronounce it “and then”.\n\nhttr2 calls usually involve a request, which you perform, and then you parse the response.\nWe’re hitting the free, open api from the Federal Elections Commission.\n\nI’m thinking about building a Shiny app related to this API, and using it as a case study throughout the book, but I also need to find stable APIs with more options\n\n(step through)\nHere we build the request piece-wise\n\nWe’ll get into details of the functions in a few slides\n\nThen we perform the request. This actually hits the server.\nThen we parse what we get back with a resp_body function.\nThis returns a larger object in a format called JSON, will talk about it more in a later chapter"
+    "text": "What do {httr2} calls look like?\n\nPipe-based API calls\n\n\n\ncandidates &lt;- \n  request(\"https://api.open.fec.gov/v1\") |&gt; \n  req_url_path_append(\"candidates\") |&gt; \n  req_url_query(api_key = \"DEMO_KEY\") |&gt; \n  req_url_query(election_year = 2024) |&gt; \n  req_perform() |&gt; \n  resp_body_json()\ncandidates$results[[1]]$candidate_id\n#&gt; [1] \"P40014052\"\n\n\n\n\nhttr2 is a rewrite of httr specifically to use the concept of the pipe.\n\nI’ll add a brief intro to the pipe in the Introduction chapter under prereqs!\nI use |&gt; base R pipe here. Pronounce it “and then”.\n\nhttr2 calls usually involve a request, which you perform, and then you parse the response.\nWe’re hitting the free, open api from the Federal Elections Commission.\n\nI’m thinking about building a Shiny app related to this API, and using it as a case study throughout the book, but I also need to find stable APIs with more options\nStable API ideas? Ideally free. I also might host something for people to use.\n\n(step through)\nHere we build the request piece-wise\n\nWe’ll get into details of the functions in a few slides\n\nThen we perform the request. This actually hits the server.\nThen we parse what we get back with a resp_body function.\nThis returns a larger object in a format called JSON, will talk about it more in a later chapter"
   },
   {
     "objectID": "slides/httr2/httr2.html#why-httr",
@@ -690,28 +690,28 @@
     "href": "slides/httr2/httr2.html#why-httr2",
     "title": "How can I access APIs from R?",
     "section": "Why “httr2”?",
-    "text": "Why “httr2”?\n\n“HTTP in R, take 2”\n\n\n\n\n\n\nComplete rewrite. Why? Guesses?\nThings that depend on httr as of January 22, 2024 (Monday)\nCouldn’t fundamentally change, or these package would all break"
+    "text": "Why “httr2”?\n\n“HTTP in R, take 2”\n\n\n\n\n\n\nBoth packages by Hadley Wickham (R4DS and other books, tidyverse, Chief Scientist at Posit)\nComplete rewrite. Why? Guesses?\nThings that depend on httr as of January 22, 2024 (Monday)\nCouldn’t fundamentally change, or these package would all break"
   },
   {
     "objectID": "slides/httr2/httr2.html#how-do-i-use-httr2",
     "href": "slides/httr2/httr2.html#how-do-i-use-httr2",
     "title": "How can I access APIs from R?",
     "section": "How do I use {httr2}?",
-    "text": "How do I use {httr2}?\n\nreq_*() functions return httr2_request objects\n\n\n\nreq_fec &lt;- request(\"https://api.open.fec.gov/v1\")\nreq_fec_auth &lt;- req_url_query(req_fec, api_key = \"DEMO_KEY\")\nreq_candidates &lt;- req_url_path_append(req_fec_auth, \"candidates\")\ncandidates_2024 &lt;- req_url_query(req_candidates, election_year = 2024) |&gt; \n  req_perform() |&gt; resp_body_json()\ncandidates_2022 &lt;- req_url_query(req_candidates, election_year = 2022) |&gt; \n  req_perform() |&gt; resp_body_json()\nreq_calendar &lt;- req_url_path_append(req_fec_auth, \"calendar-dates\")\n\n\n\n\nImagine you’re working with an API, like the FEC API\n\nWhat you’ll very often do.\n\nWe’ll go through function specifics in a moment, just soak in the utility of separate objects\nThis is super important, so let’s pause to sink this in\nI’m going to drink some water while you make sure you have that.\nIf you want to use this API, sign up for your own key at https://api.open.fec.gov/developers/\nOpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json"
+    "text": "How do I use {httr2}?\n\nreq_*() functions return httr2_request objects\n\n\n\nreq_fec &lt;- request(\"https://api.open.fec.gov/v1\")\nreq_fec_auth &lt;- req_url_query(req_fec, api_key = \"DEMO_KEY\")\nreq_candidates &lt;- req_url_path_append(req_fec_auth, \"candidates\")\ncandidates_2024 &lt;- req_url_query(req_candidates, election_year = 2024) |&gt; \n  req_perform() |&gt; resp_body_json()\ncandidates_2022 &lt;- req_url_query(req_candidates, election_year = 2022) |&gt; \n  req_perform() |&gt; resp_body_json()\nreq_calendar &lt;- req_url_path_append(req_fec_auth, \"calendar-dates\")\n\n\n\n\nImagine you’re working with an API, like the FEC API\n\nWhat you’ll very often do.\n\nWe’ll go through function specifics in a moment, just soak in the utility of separate objects\nThis is super important, so let’s pause to sink this in\nI’m going to drink some water while you make sure you have that."
   },
   {
     "objectID": "slides/httr2/httr2.html#how-can-i-quickly-translate-api-docs",
     "href": "slides/httr2/httr2.html#how-can-i-quickly-translate-api-docs",
     "title": "How can I access APIs from R?",
     "section": "How can I quickly translate API docs?",
-    "text": "How can I quickly translate API docs?\n\nDocs often have “Try it out” option\n\nhttps://api.open.fec.gov/developers/\n\nCopy the “Curl” block\n\n\n\ncurl_translate(\n  \"curl -X 'GET' \\\n  'https://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=H'\"\n)\n\n\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\n\nIf you want to use this API, sign up for your own key at that same URL.\nI edited the given curl to fit\nThis code will usually get you started\nNow let’s clean it up and understand it!"
+    "text": "How can I quickly translate API docs?\n\nDocs often have “Try it out” option\n\nhttps://api.open.fec.gov/developers/\n\nCopy the “Curl” block\n\n\n\ncurl_translate(\n  \"curl -X 'GET' \\\n  'https://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=H'\"\n)\n\n\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\n\nIf you want to use this API, sign up for your own key at that same URL.\nI edited the given curl to fit\nThis code will usually get you started\nNow let’s clean it up and understand it!\nExtra: OpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json"
   },
   {
     "objectID": "slides/httr2/httr2.html#request-req_path_append",
     "href": "slides/httr2/httr2.html#request-req_path_append",
     "title": "How can I access APIs from R?",
     "section": "request() & req_path_append()",
-    "text": "request() & req_path_append()\n\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\n\nCleaner: “main” request object + specific path\n\nreq_fec &lt;- request(\"https://api.open.fec.gov/v1\")\nreq_candidates &lt;- req_fec |&gt; \n  req_url_path_append(\"candidates\")\n\n\n\n\nreq_candidates$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates\"\n\n\n\n\n\nhttr2 “thinks” in pieces\nYou don’t have to think about the /\nWe have to be careful about the “v1” in our request, though!\n\nMore on next slide."
+    "text": "request() & req_path_append()\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\nCleaner: “main” request object + specific path\n\nreq_fec &lt;- request(\"https://api.open.fec.gov/v1\")\nreq_candidates &lt;- req_fec |&gt; \n  req_url_path_append(\"candidates\")\n\n\n\n\nreq_candidates$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates\"\n\n\n\n\n\nhttr2 “thinks” in pieces\nYou don’t have to think about the /\nWe have to be careful about the “v1” in our request, though!\n\nMore on next slide."
   },
   {
     "objectID": "slides/httr2/httr2.html#dont-use-req_url_path",
@@ -725,21 +725,21 @@
     "href": "slides/httr2/httr2.html#req_method-more-later",
     "title": "How can I access APIs from R?",
     "section": "req_method(): more later!",
-    "text": "req_method(): more later!\n\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\n\n\n“GET” is default for what we’re doing, so we can leave this part out.\nWe don’t have to think about it until what’s now Chapter 6!"
+    "text": "req_method(): more later!\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\n\n“GET” is default for what we’re doing, so we can leave this part out.\nWe don’t have to think about it until what’s now Chapter 6!"
   },
   {
     "objectID": "slides/httr2/httr2.html#req_url_query",
     "href": "slides/httr2/httr2.html#req_url_query",
     "title": "How can I access APIs from R?",
     "section": "req_url_query()",
-    "text": "req_url_query()\n\nhttps://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=H\n\n\n\nreq_house &lt;- req_candidates |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  )\n\n\n\nCan add query parameters piecewise, even before path!\n\n\n\nreq_fec_auth &lt;- req_fec |&gt; \n  req_url_query(api_key = \"DEMO_KEY\")\nreq_candidates_auth &lt;- req_fec_auth |&gt; \n  req_url_path_append(\"candidates\")\nreq_house2 &lt;- req_candidates_auth |&gt; \n  req_url_query(office = \"H\")\n\n\n\n\nidentical(req_house$url, req_house2$url)\n\n#&gt; [1] TRUE\n\n\n\n\n\nThis is the URL that was in the Curl call\n“Query” = stuff after “?”\nArguments for the endpoint\nDoesn’t automatically set order, so watch out for that."
+    "text": "req_url_query()\n\nhttps://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=H\n\n\n\nreq_house &lt;- req_candidates |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  )\n\n\n\nCan add query parameters piecewise, even before path!\n\n\n\nreq_fec_auth &lt;- req_fec |&gt; \n  req_url_query(api_key = \"DEMO_KEY\")\nreq_candidates_auth &lt;- req_fec_auth |&gt; \n  req_url_path_append(\"candidates\")\nreq_house2 &lt;- req_candidates_auth |&gt; \n  req_url_query(office = \"H\")\n\n\n\n\nidentical(req_house$url, req_house2$url)\n\n#&gt; [1] TRUE\n\n\n\n\n\nThis is the URL that was in the Curl call\n“Query” = stuff after “?”\nArguments for the endpoint\n1st req_url_query() call is what curl_translate gave us\nDoesn’t automatically set order, so watch out for that."
   },
   {
     "objectID": "slides/httr2/httr2.html#req_url_query.multi",
     "href": "slides/httr2/httr2.html#req_url_query.multi",
     "title": "How can I access APIs from R?",
     "section": "req_url_query(.multi)",
-    "text": "req_url_query(.multi)\n\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"))\n\n#&gt; Error in `req_url_query()`:\n#&gt; ! All vector elements of `...` must be length 1.\n#&gt; ℹ Use `.multi` to choose a strategy for handling vectors.\n\n\n\n\n.multi = \"explode\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"explode\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H&office=S\"\n\n\n\n\n.multi = \"pipe\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"pipe\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H|S\"\n\n\n\n\n.multi = \"comma\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"comma\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H,S\"\n\n\n\n\n\nAPIs often can’t handle multiple params with same name\ndefault = “error”\n. in .multi so it doesn’t collide with a parameter named “multi”\n“explode” to separate them as separate copies of that parameter,\n“pipe” or “comma” to list them out in same parameter"
+    "text": "req_url_query(.multi)\n\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"))\n\n#&gt; Error in `req_url_query()`:\n#&gt; ! All vector elements of `...` must be length 1.\n#&gt; ℹ Use `.multi` to choose a strategy for handling vectors.\n\n\n\n\n.multi = \"pipe\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"pipe\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H|S\"\n\n\n\n\n.multi = \"comma\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"comma\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H,S\"\n\n\n\n\n.multi = \"explode\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"explode\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H&office=S\"\n\n\n\n\n\nAPIs often can’t handle multiple params with same name\ndefault = “error”\n. in .multi so it doesn’t collide with a parameter named “multi”\n“pipe” or “comma” to list them out in same parameter\n“explode” to separate them as separate copies of that parameter (what this API actually wants)"
   },
   {
     "objectID": "slides/httr2/httr2-perform.html#controlling-large-requests",
@@ -1103,14 +1103,14 @@
     "href": "slides/intro.html#api-application-programming-interface",
     "title": "Introduction",
     "section": "API = “application programming interface”",
-    "text": "API = “application programming interface”\n\n“application” = function, website… any computerized thing\n“programming” = can be used in code\n“interface” = way to interact with something\n\n🤖 APIs allow computers to talk to one another\n\n\nRight level?"
+    "text": "API = “application programming interface”\n\n“application” = function, website… any computerized thing\n“programming” = can be used in code\n“interface” = way to interact with something\n\n\n🤖 APIs allow computers to talk to one another\n\n\n\nRight level?"
   },
   {
     "objectID": "slides/intro.html#what-are-web-apis",
     "href": "slides/intro.html#what-are-web-apis",
     "title": "Introduction",
     "section": "What are web APIs?",
-    "text": "What are web APIs?\n\n💻 Technically any function’s list of arguments is an API\n\n\n“httr2 is a ground-up rewrite of httr that provides a pipeable API with an explicit request object that solves more problems felt by packages that wrap APIs” (httr2 docs, emphasis added)\n\n\n🕸️ This book = web APIs\n\nWeb API = API on the internet\nFor rest of book, “API” means “web API”\n\n\n\n\nhttr2 quote helpful/interesting?"
+    "text": "What are web APIs?\n\n💻 Technically any function’s list of arguments is an API\n\n\n\n“httr2 is a ground-up rewrite of httr that provides a pipeable API with an explicit request object that solves more problems felt by packages that wrap APIs” (httr2 docs, emphasis added)\n\n\n\n🕸️ This book = web APIs\n\nWeb API = API on the internet\nFor rest of book, “API” means “web API”\n\n\n\n\nhttr2 quote helpful/interesting?"
   },
   {
     "objectID": "slides/intro.html#what-are-some-api-examples",
