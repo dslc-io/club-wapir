@@ -61,6 +61,7 @@ candidates$results[[1]]$candidate_id
 -   httr2 calls usually involve a request, which you perform, and then you parse the response.
 -   We're hitting the free, open api from the Federal Elections Commission.
     -   I'm thinking about building a Shiny app related to this API, and using it as a case study throughout the book, but I also need to find stable APIs with more options
+    -   Stable API ideas? Ideally free. I also might host something for people to use.
 -   (step through)
 -   Here we build the request piece-wise
     -   We'll get into details of the functions in a few slides
@@ -101,6 +102,7 @@ HTTP = HyperText Transfer Protocol
 :::
 
 ::: notes
+-   Both packages by Hadley Wickham (R4DS and other books, tidyverse, Chief Scientist at Posit)
 -   Complete rewrite. Why? Guesses?
 -   Things that depend on httr as of January 22, 2024 (Monday)
 -   Couldn't fundamentally change, or these package would all break
@@ -132,8 +134,6 @@ req_calendar <- req_url_path_append(req_fec_auth, "calendar-dates")
 -   We'll go through function specifics in a moment, just soak in the utility of separate objects 
 -   This is super important, so let's pause to sink this in
 -   I'm going to drink some water while you make sure you have that.
--   If you want to use this API, sign up for your own key at https://api.open.fec.gov/developers/
--   OpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json
 :::
 
 # How do I fetch data with {httr2}?
@@ -174,11 +174,11 @@ request("https://api.open.fec.gov/v1/candidates/") |>
 -   I edited the given curl to fit
 -   This code will usually get you started
 -   Now let's clean it up and understand it!
+-   Extra: OpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json
 :::
 
 ## `request()` & `req_path_append()`
 
-::: fragment
 ```{r}
 #| code-line-numbers: "1"
 request("https://api.open.fec.gov/v1/candidates/") |> 
@@ -189,7 +189,6 @@ request("https://api.open.fec.gov/v1/candidates/") |>
   ) |> 
   req_perform()
 ```
-:::
 
 ::: fragment
 Cleaner: "main" request object + specific path
@@ -242,7 +241,6 @@ req_candidates$url
 
 ## `req_method()`: more later!
 
-::: fragment
 ```{r}
 #| code-line-numbers: "2"
 request("https://api.open.fec.gov/v1/candidates/") |> 
@@ -253,7 +251,6 @@ request("https://api.open.fec.gov/v1/candidates/") |>
   ) |> 
   req_perform()
 ```
-:::
 
 ::: notes
 -   "GET" is default for what we're doing, so we can leave this part out.
@@ -263,7 +260,7 @@ request("https://api.open.fec.gov/v1/candidates/") |>
 
 ## `req_url_query()`
 
-::: {.fragment style="font-size:0.9em;"}
+::: {style="font-size:0.9em;"}
 https://api.open.fec.gov/v1/candidates/***?api_key=DEMO_KEY&office=H***
 :::
 ::: fragment
@@ -303,6 +300,7 @@ identical(req_house$url, req_house2$url)
 -   This is the URL that was in the Curl call
 -   "Query" = stuff after "?"
 -   Arguments for the endpoint
+-   1st req_url_query() call is what curl_translate gave us
 -   Doesn't automatically set order, so watch out for that.
 :::
 
@@ -313,14 +311,6 @@ identical(req_house$url, req_house2$url)
 #| eval: true
 #| error: true
 req_url_query(req_candidates, office = c("H", "S"))
-```
-:::
-
-::: fragment
-`.multi = "explode"`
-```{r}
-#| eval: true
-req_url_query(req_candidates, office = c("H", "S"), .multi = "explode")$url
 ```
 :::
 
@@ -340,12 +330,20 @@ req_url_query(req_candidates, office = c("H", "S"), .multi = "comma")$url
 ```
 :::
 
+::: fragment
+`.multi = "explode"`
+```{r}
+#| eval: true
+req_url_query(req_candidates, office = c("H", "S"), .multi = "explode")$url
+```
+:::
+
 ::: notes
 -   APIs often can't handle multiple params with same name
 -   default = "error"
 -   `.` in `.multi` so it doesn't collide with a parameter named "multi"
--   "explode" to separate them as separate copies of that parameter,
 -   "pipe" or "comma" to list them out in same parameter
+-   "explode" to separate them as separate copies of that parameter (what this API actually wants)
 :::
 
 # More httr2 to come!

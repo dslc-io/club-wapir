@@ -5,8 +5,10 @@ engine: knitr
 
 # ️✅ Learning objectives
 
+::: nonincremental
 -   Explain what an API is.
 -   Decide whether this book is for you.
+:::
 
 ::: notes
 -   We'll talk a bit more about using LOs later in this chapter.
@@ -22,7 +24,9 @@ engine: knitr
 -   "programming" = can be used in code
 -   "interface" = way to interact with something
 
+::: fragment
 **🤖 APIs allow computers to talk to one another**
+:::
 
 ::: notes
 -   Right level?
@@ -30,13 +34,18 @@ engine: knitr
 
 ## What are web APIs?
 
--   💻 Technically any function's list of arguments is an API
-
+::: fragment
+💻 Technically any function's list of arguments is an API
+:::
+::: fragment
 > "httr2 is a ground-up rewrite of httr that provides a pipeable ***API*** with an explicit request object that solves more problems felt by packages that wrap ***APIs***" (httr2 docs, emphasis added)
+:::
+::: fragment
+🕸️ This book = ***web*** APIs
 
--   🕸️ This book = ***web*** APIs
-    -   Web API = API on the internet
-    -   For rest of book, "API" means "web API"
+-   Web API = API on the internet
+-   For rest of book, "API" means "web API"
+:::
 
 ::: notes
 -   httr2 quote helpful/interesting?
