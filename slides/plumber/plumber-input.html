@@ -8,9 +8,9 @@
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.3.450">
+  <meta name="generator" content="quarto-1.4.549">
 
-  <title>Web APIs with R Book Club – plumber-input</title>
+  <title>Web APIs with R Book Club</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -30,7 +30,7 @@
     }
     /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span { line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -220,7 +220,8 @@
   }
 
   .callout.callout-titled .callout-body > .callout-content > :last-child {
-    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0;
   }
 
   .callout.callout-titled .callout-icon::before {
@@ -442,10 +443,10 @@
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="cf">function</span>(req) {</span>
-<span id="cb1-2"><a href="#cb1-2"></a>  x <span class="ot">&lt;-</span> req<span class="sc">$</span>argsPath<span class="sc">$</span>x <span class="sc">%||%</span> req<span class="sc">$</span>argsBody<span class="sc">$</span>x <span class="sc">%||%</span> req<span class="sc">$</span>argsQuery<span class="sc">$</span>x <span class="sc">%||%</span> </span>
-<span id="cb1-3"><a href="#cb1-3"></a>    req<span class="sc">$</span>cookies<span class="sc">$</span>x <span class="sc">%||%</span> req<span class="sc">$</span>HTTP_X</span>
-<span id="cb1-4"><a href="#cb1-4"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="cf">function</span>(req) {</span>
+<span id="cb1-2"><a></a>  x <span class="ot">&lt;-</span> req<span class="sc">$</span>argsPath<span class="sc">$</span>x <span class="sc">%||%</span> req<span class="sc">$</span>argsBody<span class="sc">$</span>x <span class="sc">%||%</span> req<span class="sc">$</span>argsQuery<span class="sc">$</span>x <span class="sc">%||%</span> </span>
+<span id="cb1-3"><a></a>    req<span class="sc">$</span>cookies<span class="sc">$</span>x <span class="sc">%||%</span> req<span class="sc">$</span>HTTP_X</span>
+<span id="cb1-4"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="parameter-types" class="slide level2 unnumbered">
@@ -512,13 +513,13 @@
 <section id="path-parameters" class="slide level2 unnumbered">
 <h2>Path parameters</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">#* @get /users/&lt;id&gt;</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="cf">function</span>(id) {...} <span class="co"># better: use req$argsPath$id</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="co">#* @get /users/&lt;id&gt;</span></span>
+<span id="cb2-2"><a></a><span class="cf">function</span>(id) {...} <span class="co"># better: use req$argsPath$id</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Optional: only route certain types</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">#* @get /users/&lt;id:int&gt;</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="cf">function</span>(id) {...} <span class="co"># better: use req$argsPath$id</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="co">#* @get /users/&lt;id:int&gt;</span></span>
+<span id="cb3-2"><a></a><span class="cf">function</span>(id) {...} <span class="co"># better: use req$argsPath$id</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>{plumber} casts typed <em>path</em> input</p>
 </section>
@@ -526,9 +527,9 @@
 <h2>Query parameters</h2>
 <p><code>https://example.com/api/repeat?letter=x&amp;number=1</code></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co">#* @get repeat</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="co">#* @param letter:string The letter.</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="co">#* @param number:integer The number of times to repeat it.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="co">#* @get repeat</span></span>
+<span id="cb4-2"><a></a><span class="co">#* @param letter:string The letter.</span></span>
+<span id="cb4-3"><a></a><span class="co">#* @param number:integer The number of times to repeat it.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>{plumber} does <em>not</em> cast <em>query</em> input!</p>
 </section>
@@ -546,9 +547,9 @@
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">#* @param df:object The input data.frame. Must contain columns "first_name" </span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#*        and "city".</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#* @parser feather list(col_select = c("first_name", "city"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co">#* @param df:object The input data.frame. Must contain columns "first_name" </span></span>
+<span id="cb5-2"><a></a><span class="co">#*        and "city".</span></span>
+<span id="cb5-3"><a></a><span class="co">#* @parser feather list(col_select = c("first_name", "city"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="stabilizing-input" class="slide level2 unnumbered">
@@ -592,8 +593,10 @@ Meeting chat log
 <pre><code>LOG</code></pre>
 </details>
 
+<div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 <p><a href="../../" target="wapir-club_index">r4ds.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
+</div>
 </div>
 </section></section>
     </div>
@@ -622,7 +625,6 @@ Meeting chat log
       Reveal.initialize({
 'controlsAuto': true,
 'previewLinksAuto': false,
-'smaller': false,
 'pdfSeparateFragments': false,
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
@@ -921,10 +923,27 @@ Meeting chat log
         // clear code selection
         e.clearSelection();
       });
-      function tippyHover(el, contentFn) {
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp("https:\/\/r4ds\.github\.io\/bookclub-wapir\/");
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+              // target, if specified
+              link.setAttribute("target", "_blank");
+              if (link.getAttribute("rel") === null) {
+                link.setAttribute("rel", "noopener");
+              }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
         const config = {
           allowHTML: true,
-          content: contentFn,
           maxWidth: 500,
           delay: 100,
           arrow: false,
@@ -934,8 +953,17 @@ Meeting chat log
           interactive: true,
           interactiveBorder: 10,
           theme: 'light-border',
-          placement: 'bottom-start'
+          placement: 'bottom-start',
         };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
           config['offset'] = [0,0];
           config['maxWidth'] = 700;
         window.tippy(el, config); 
@@ -989,20 +1017,6 @@ Meeting chat log
           });
         }
       }
-        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-          var filterRegex = new RegExp("https:\/\/github\.com\/r4ds\/bookclub-wapir");
-        var isInternal = (href) => {
-            return filterRegex.test(href) || localhostRegex.test(href);
-        }
-        // Inspect non-navigation links and adorn them if external
-     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-        for (var i=0; i<links.length; i++) {
-          const link = links[i];
-          if (!isInternal(link.href)) {
-              // target, if specified
-              link.setAttribute("target", "_blank");
-          }
-        }
     });
     </script>
     

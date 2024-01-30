@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-html/tabby.min.js"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.549">
 
-  <title>Web APIs with R Book Club</title>
+  <title>Web APIs with R Book Club - Learning Objectives</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -28,77 +28,12 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-    /* CSS for syntax highlighting */
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-      }
-    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-    div.sourceCode
-      { color: #f8f8f2;  }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span { color: #f8f8f2; } /* Normal */
-    code span.al { color: #f07178; background-color: #2a0f15; font-weight: bold; } /* Alert */
-    code span.an { color: #d4d0ab; } /* Annotation */
-    code span.at { color: #00e0e0; } /* Attribute */
-    code span.bn { color: #d4d0ab; } /* BaseN */
-    code span.bu { color: #abe338; } /* BuiltIn */
-    code span.cf { color: #ffa07a; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #abe338; } /* Char */
-    code span.cn { color: #ffd700; } /* Constant */
-    code span.co { color: #f8f8f2; font-style: italic; } /* Comment */
-    code span.cv { color: #ffd700; } /* CommentVar */
-    code span.do { color: #f8f8f2; } /* Documentation */
-    code span.dt { color: #ffa07a; } /* DataType */
-    code span.dv { color: #d4d0ab; } /* DecVal */
-    code span.er { color: #f07178; text-decoration: underline; } /* Error */
-    code span.ex { color: #00e0e0; font-weight: bold; } /* Extension */
-    code span.fl { color: #d4d0ab; } /* Float */
-    code span.fu { color: #ffa07a; } /* Function */
-    code span.im { color: #abe338; } /* Import */
-    code span.in { color: #d4d0ab; } /* Information */
-    code span.kw { color: #ffa07a; font-weight: bold; } /* Keyword */
-    code span.op { color: #ffa07a; } /* Operator */
-    code span.ot { color: #00e0e0; } /* Other */
-    code span.pp { color: #dcc6e0; } /* Preprocessor */
-    code span.re { color: #00e0e0; background-color: #f8f8f2; } /* RegionMarker */
-    code span.sc { color: #abe338; } /* SpecialChar */
-    code span.ss { color: #abe338; } /* SpecialString */
-    code span.st { color: #abe338; } /* String */
-    code span.va { color: #00e0e0; } /* Variable */
-    code span.vs { color: #abe338; } /* VerbatimString */
-    code span.wa { color: #dcc6e0; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto.css">
-  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto.css">
+  <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -389,205 +324,139 @@
   <div class="reveal">
     <div class="slides">
 
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Learning Objectives</h1>
 
+<div class="quarto-title-authors">
+</div>
+
+</section>
 <section>
-<section id="how-can-i-get-a-lot-of-data-from-an-api" class="title-slide slide level1 center">
-<h1>How can I get a lot of data from an API?</h1>
-<p>Cover req_throttle() &amp; req_timeout() in here!</p>
-<p><strong>Learning objectives:</strong></p>
-<ul>
-<li class="fragment">Control the behavior of large requests.</li>
-<li class="fragment">Deal with errors in api calls.</li>
-<li class="fragment">Request paginated data.</li>
-<li class="fragment">Perform multiple requests.</li>
-<li class="fragment">Stream data from an API.</li>
-</ul>
+<section id="why-learning-objectives-los" class="title-slide slide level1 center">
+<h1>Why learning objectives (LOs)?</h1>
+
 </section>
-<section id="controlling-large-requests" class="slide level2 unnumbered">
-<h2>Controlling large requests</h2>
+<section id="what-type-of-los-are-we-focusing-on" class="slide level2">
+<h2>What type of LOs are we focusing on?</h2>
 <ul>
-<li class="fragment"><code>httr2::req_progress()</code> adds a progress bar for requests that transfer a lot of data.</li>
-<li class="fragment"><code>httr2::req_timeout()</code> to add a maximum wait time in seconds</li>
-<li class="fragment"><code>httr2::req_cache()</code> to avoid re-calling slow calls</li>
-</ul>
-</section>
-<section id="throttling-and-retries" class="slide level2 unnumbered">
-<h2>Throttling and retries</h2>
+<li class="fragment">Readers probably solving semi-specific problems, so…</li>
+<li class="fragment">Skill-based learning objectives
 <ul>
-<li class="fragment">APIs often throw errors if hit too fast</li>
-<li class="fragment"><code>httr2::req_throttle()</code> to slow down
-<ul>
-<li class="fragment"><code>realm</code> when endpoints have different limits (“Tier 1” vs “Tier 2”)</li>
-</ul></li>
-<li class="fragment"><code>httr2::req_retry()</code> to try again for transient failures
-<ul>
-<li class="fragment">Default: Statuses 429 &amp; 503 = transient</li>
-<li class="fragment">(optional) <code>is_transient</code> function to override</li>
-<li class="fragment">(optional) <code>after</code> function to extract wait from response</li>
+<li class="fragment">“After you read this chapter, you will be able to…”</li>
 </ul></li>
 </ul>
-</section>
-<section id="dealing-with-errors" class="slide level2 unnumbered">
-<h2>Dealing with errors</h2>
+<aside class="notes">
 <ul>
-<li class="fragment"><code>httr2::req_error()</code> to handle errors
-<ul>
-<li class="fragment"><code>is_error</code> function to escalate something to an error
-<ul>
-<li class="fragment"><em>Eg: Empty response you know isn’t really empty</em></li>
-</ul></li>
-<li class="fragment"><code>body</code> function to parse response into <code>rlang::abort()</code> message.
-<ul>
-<li class="fragment"><em>Eg: API description gives details of an error code’s meaning</em></li>
-</ul></li>
-</ul></li>
+<li>Any disagreement with that first bullet?</li>
 </ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="pagination" class="slide level2 unnumbered">
-<h2>Pagination</h2>
+<section id="why-do-they-matter" class="slide level2">
+<h2>Why do they matter?</h2>
 <ul>
-<li class="fragment"><code>httr2::req_perform_iterative()</code></li>
-<li class="fragment"><code>next_req</code> = function
+<li class="fragment">Students learn more when they have clear objectives.</li>
+<li class="fragment">Lends structure to my process.</li>
+<li class="fragment">Eventually: Lends structure to R4DS</li>
+</ul>
+<aside class="notes">
 <ul>
-<li class="fragment"><code>iterate_with_offset()</code> to increment query parameter (<code>?page=1</code>, <code>?page=2</code>)</li>
-<li class="fragment"><code>iterate_with_cursor()</code> to extract next page from response</li>
-<li class="fragment"><code>iterate_with_link_url()</code> to follow Link in resp header</li>
+<li>I like having a process!</li>
+<li>Aiming to implement these across all of R4DS</li>
+<li>(Eventually want to also auto-map questions to them)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="part-1-how-can-i-interact-with-the-web-from-r" class="title-slide slide level1 center">
+<h1>Part 1: How can I interact with the web from R?</h1>
+
+</section>
+<section id="part-1-learning-objectives-brain-dump" class="slide level2">
+<h2>Part 1 Learning Objectives Brain Dump</h2>
+<ul>
+<li class="fragment">Discover useful APIs</li>
+<li class="fragment">Find specific APIs</li>
+<li class="fragment">Fetch data with simple APIs (no auth)</li>
+<li class="fragment">Fetch <em>lots</em> of data from simple APIs (pagination)</li>
+<li class="fragment">Process fetched data into R-standard formats</li>
+<li class="fragment">Authenticate with APIs (tell it who you are)</li>
+<li class="fragment">Do other things (send/update/delete data) with APIs
+<ul>
+<li class="fragment">Probably do <code>curl_translate()</code> formally here</li>
 </ul></li>
+<li class="fragment">Find R packages that wrap APIs</li>
+<li class="fragment">(Use other forms of APIs?)</li>
+<li class="fragment">Get web data without APIs ({rvest})</li>
+<li class="fragment">Learn more about accessing APIs</li>
 </ul>
+</section></section>
+<section id="part-2-how-can-i-create-my-own-apis-with-r" class="title-slide slide level1 center">
+<h1>Part 2: How can I create my own APIs with R?</h1>
+<p>(not filling this out yet)</p>
 </section>
-<section id="pagination-fec" class="slide level2 unnumbered">
-<h2>Pagination: FEC</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>resps <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1/candidates"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-2"><a></a>  <span class="fu">req_headers</span>(<span class="st">"X-Api-Key"</span> <span class="ot">=</span> <span class="st">"DEMO_KEY"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">office =</span> <span class="st">"H"</span>, <span class="at">per_page =</span> <span class="dv">100</span>, <span class="at">election_year =</span> <span class="dv">2020</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
-<span id="cb1-5"><a></a>    <span class="fu">iterate_with_offset</span>(</span>
-<span id="cb1-6"><a></a>      <span class="st">"page"</span>,</span>
-<span id="cb1-7"><a></a>      <span class="at">resp_pages =</span> \(resp) <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>pagination<span class="sc">$</span>pages <span class="co"># Check once</span></span>
-<span id="cb1-8"><a></a>    ),</span>
-<span id="cb1-9"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span> <span class="co"># Important! Default = 20</span></span>
-<span id="cb1-10"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="pagination-youtube" class="slide level2 unnumbered">
-<h2>Pagination: YouTube</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>resps <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://youtube.googleapis.com/youtube/v3"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-2"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"playlists"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">part =</span> <span class="st">"snippet"</span>, <span class="at">mine =</span> <span class="cn">TRUE</span>, <span class="at">maxResults =</span> <span class="dv">50</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-4"><a></a>  <span class="fu">req_auth_bearer_token</span>(IGNORE_FOR_NOW) <span class="sc">|&gt;</span> </span>
-<span id="cb2-5"><a></a>  <span class="fu">req_perform_iteratively</span>(</span>
-<span id="cb2-6"><a></a>    <span class="fu">iterate_with_cursor</span>(</span>
-<span id="cb2-7"><a></a>      <span class="st">"pageToken"</span>,</span>
-<span id="cb2-8"><a></a>      <span class="cf">function</span>(resp) <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>nextPageToken</span>
-<span id="cb2-9"><a></a>    )</span>
-<span id="cb2-10"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="multiple-requests" class="slide level2 unnumbered">
-<h2>Multiple requests</h2>
+
+<section id="what-do-you-think" class="title-slide slide level1 center">
+<h1>What do you think?</h1>
+<p>Please complete this <a href="https://forms.gle/HWUEsQ34vtuGKuu19">survey</a>!</p>
+<aside class="notes">
 <ul>
-<li class="fragment">Manually create list of separate requests</li>
-<li class="fragment">Perform all:
-<ul>
-<li class="fragment"><code>httr2::req_perform_parallel()</code> all at once
-<ul>
-<li class="fragment">No reauth, no throttle, no retry, no cache</li>
-</ul></li>
-<li class="fragment"><code>httr2::req_perform_sequential()</code> serially
-<ul>
-<li class="fragment">Slower but can use other settings</li>
-</ul></li>
-</ul></li>
+<li>https://forms.gle/HWUEsQ34vtuGKuu19</li>
 </ul>
-</section>
-<section id="multiple-requests-youtube" class="slide level2 unnumbered">
-<h2>Multiple requests: YouTube</h2>
-<p>Get 10 most recent videos from list of playlists.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>base_req <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://youtube.googleapis.com/youtube/v3"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"playlistItems"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">part =</span> <span class="st">"contentDetails"</span>, <span class="at">maxResults =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a></a>  <span class="fu">req_auth_bearer_token</span>(IGNORE_FOR_NOW)</span>
-<span id="cb3-5"><a></a></span>
-<span id="cb3-6"><a></a>resps <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
-<span id="cb3-7"><a></a>  playlists, \(playlist) <span class="fu">req_url_query</span>(base_req, <span class="at">playlistId =</span> playlist)</span>
-<span id="cb3-8"><a></a>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-9"><a></a>  <span class="fu">req_perform_parallel</span>() <span class="co"># or req_perform_sequential()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="parsing-multiple-responses" class="slide level2 unnumbered">
-<h2>Parsing multiple responses</h2>
-<ul>
-<li class="fragment"><code>httr2::resps_data()</code> to combine responses from <code>req_perform_*()</code></li>
-<li class="fragment">Provide function to extract data from single resp as vector or df.</li>
-<li class="fragment">More details in Chapter 6.</li>
-</ul>
-</section>
-<section id="streaming" class="slide level2 unnumbered">
-<h2>Streaming</h2>
-<ul>
-<li class="fragment"><code>httr2::req_perform_stream()</code> to stream data from API</li>
-<li class="fragment">Blocks R session (see Chapter 10 for alternative)</li>
-<li class="fragment">Call function every <code>buffer_kb</code> kilobytes</li>
-<li class="fragment"><em>Eg: Save to file, different process could read that file from Shiny</em></li>
-</ul>
-</section>
-<section id="streaming-simple-example" class="slide level2 unnumbered">
-<h2>Streaming: Simple example</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>show_bytes <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb4-2"><a></a>  cli<span class="sc">::</span><span class="fu">cli_inform</span>(<span class="st">"Got {length(x)} bytes at {Sys.time()}."</span>)</span>
-<span id="cb4-3"><a></a>  <span class="cn">TRUE</span></span>
-<span id="cb4-4"><a></a>}</span>
-<span id="cb4-5"><a></a>resp <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(httr2<span class="sc">::</span><span class="fu">example_url</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb4-6"><a></a>  httr2<span class="sc">::</span><span class="fu">req_url_path</span>(<span class="st">"/stream-bytes/100000"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-7"><a></a>  httr2<span class="sc">::</span><span class="fu">req_perform_stream</span>(show_bytes, <span class="at">buffer_kb =</span> <span class="dv">32</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="is-this-interesting" class="slide level2 unnumbered">
-<h2>Is this interesting?</h2>
-<ul>
-<li class="fragment"><code>req_options()</code> lets you directly set libcurl options not available in {httr2}</li>
-<li class="fragment">Should I dig through and find what’s available but not implemented?</li>
-</ul>
-</section>
-<section id="meeting-videos" class="slide level2 unnumbered">
-<h2>Meeting Videos</h2>
-<h3 class="unnumbered" id="cohort-1">Cohort 1</h3>
-<iframe src="https://www.youtube.com/embed/URL" width="100%" height="400px" data-external="1">
-</iframe>
-<details>
-<summary>
-Meeting chat log
-</summary>
-<pre><code>LOG</code></pre>
-</details>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
-<p><a href="../../" target="wapir-club_index">r4ds.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
+<p><a href="../" target="wapir-club_index">r4ds.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
 </div>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <script src="../site_libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
-  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script src="../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../site_libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>

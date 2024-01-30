@@ -8,9 +8,9 @@
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.3.450">
+  <meta name="generator" content="quarto-1.4.549">
 
-  <title>Web APIs with R Book Club – accessing-other</title>
+  <title>Web APIs with R Book Club</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -30,7 +30,7 @@
     }
     /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span { line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -220,7 +220,8 @@
   }
 
   .callout.callout-titled .callout-body > .callout-content > :last-child {
-    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0;
   }
 
   .callout.callout-titled .callout-icon::before {
@@ -399,13 +400,13 @@
 <li class="fragment">Fetch data from gRPC APIs.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(ghql)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(jsonlite)</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(httr2)</span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(websocket)</span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="fu">library</span>(protolite)</span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># library(RProtoBuf)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(ghql)</span>
+<span id="cb1-2"><a></a><span class="fu">library</span>(jsonlite)</span>
+<span id="cb1-3"><a></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a></a><span class="fu">library</span>(httr2)</span>
+<span id="cb1-5"><a></a><span class="fu">library</span>(websocket)</span>
+<span id="cb1-6"><a></a><span class="fu">library</span>(protolite)</span>
+<span id="cb1-7"><a></a><span class="co"># library(RProtoBuf)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="graphql" class="slide level2 unnumbered">
@@ -422,48 +423,48 @@
 <section id="graphql-setup" class="slide level2 unnumbered">
 <h2>GraphQL setup</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>ghql_con <span class="ot">&lt;-</span> GraphqlClient<span class="sc">$</span><span class="fu">new</span>(</span>
-<span id="cb2-2"><a href="#cb2-2"></a>  <span class="at">url =</span> <span class="st">"https://api.github.com/graphql"</span>,</span>
-<span id="cb2-3"><a href="#cb2-3"></a>  <span class="at">headers =</span> <span class="fu">list</span>(<span class="at">Authorization =</span> <span class="fu">paste0</span>(<span class="st">"Bearer "</span>, <span class="fu">Sys.getenv</span>(<span class="st">"GITHUB_PAT"</span>)))</span>
-<span id="cb2-4"><a href="#cb2-4"></a>)</span>
-<span id="cb2-5"><a href="#cb2-5"></a>ghql_con<span class="sc">$</span><span class="fu">load_schema</span>()</span>
-<span id="cb2-6"><a href="#cb2-6"></a>qry <span class="ot">&lt;-</span> Query<span class="sc">$</span><span class="fu">new</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>ghql_con <span class="ot">&lt;-</span> GraphqlClient<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb2-2"><a></a>  <span class="at">url =</span> <span class="st">"https://api.github.com/graphql"</span>,</span>
+<span id="cb2-3"><a></a>  <span class="at">headers =</span> <span class="fu">list</span>(<span class="at">Authorization =</span> <span class="fu">paste0</span>(<span class="st">"Bearer "</span>, <span class="fu">Sys.getenv</span>(<span class="st">"GITHUB_PAT"</span>)))</span>
+<span id="cb2-4"><a></a>)</span>
+<span id="cb2-5"><a></a>ghql_con<span class="sc">$</span><span class="fu">load_schema</span>()</span>
+<span id="cb2-6"><a></a>qry <span class="ot">&lt;-</span> Query<span class="sc">$</span><span class="fu">new</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="graphql-query" class="slide level2 unnumbered">
 <h2>GraphQL query</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>qry<span class="sc">$</span><span class="fu">query</span>(<span class="st">'mydata'</span>, <span class="st">'{</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="st">  repositoryOwner(login:"jonthegeek") {</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="st">    repositories(first: 5, orderBy: {field:PUSHED_AT,direction:DESC}, isFork:false) {</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="st">      edges {</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="st">        node {</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="st">          name</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="st">          stargazers {</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="st">            totalCount</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="st">          }</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="st">        }</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="st">      }</span></span>
-<span id="cb3-12"><a href="#cb3-12"></a><span class="st">    }</span></span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="st">  }</span></span>
-<span id="cb3-14"><a href="#cb3-14"></a><span class="st">}'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>qry<span class="sc">$</span><span class="fu">query</span>(<span class="st">'mydata'</span>, <span class="st">'{</span></span>
+<span id="cb3-2"><a></a><span class="st">  repositoryOwner(login:"jonthegeek") {</span></span>
+<span id="cb3-3"><a></a><span class="st">    repositories(first: 5, orderBy: {field:PUSHED_AT,direction:DESC}, isFork:false) {</span></span>
+<span id="cb3-4"><a></a><span class="st">      edges {</span></span>
+<span id="cb3-5"><a></a><span class="st">        node {</span></span>
+<span id="cb3-6"><a></a><span class="st">          name</span></span>
+<span id="cb3-7"><a></a><span class="st">          stargazers {</span></span>
+<span id="cb3-8"><a></a><span class="st">            totalCount</span></span>
+<span id="cb3-9"><a></a><span class="st">          }</span></span>
+<span id="cb3-10"><a></a><span class="st">        }</span></span>
+<span id="cb3-11"><a></a><span class="st">      }</span></span>
+<span id="cb3-12"><a></a><span class="st">    }</span></span>
+<span id="cb3-13"><a></a><span class="st">  }</span></span>
+<span id="cb3-14"><a></a><span class="st">}'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="graphql-response" class="slide level2 unnumbered">
 <h2>GraphQL response</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>x <span class="ot">&lt;-</span> ghql_con<span class="sc">$</span><span class="fu">exec</span>(qry<span class="sc">$</span>queries<span class="sc">$</span>mydata) <span class="co"># We created a query named "mydata"</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(x)</span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="co">#&gt; $data</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="co">#&gt; $data$repositoryOwner</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="co">#&gt; $data$repositoryOwner$repositories</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt; $data$repositoryOwner$repositories$edges</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#&gt;                   node.name node.totalCount</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#&gt; 1                     wapir              17</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#&gt; 2                    zoomer               3</span></span>
-<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#&gt; 3                rstats.fyi               0</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a><span class="co">#&gt; 4                 tidyslack               0</span></span>
-<span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt; 5 jonthegeek.r-universe.dev               0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>x <span class="ot">&lt;-</span> ghql_con<span class="sc">$</span><span class="fu">exec</span>(qry<span class="sc">$</span>queries<span class="sc">$</span>mydata) <span class="co"># We created a query named "mydata"</span></span>
+<span id="cb4-2"><a></a>jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(x)</span>
+<span id="cb4-3"><a></a><span class="co">#&gt; $data</span></span>
+<span id="cb4-4"><a></a><span class="co">#&gt; $data$repositoryOwner</span></span>
+<span id="cb4-5"><a></a><span class="co">#&gt; $data$repositoryOwner$repositories</span></span>
+<span id="cb4-6"><a></a><span class="co">#&gt; $data$repositoryOwner$repositories$edges</span></span>
+<span id="cb4-7"><a></a><span class="co">#&gt;                   node.name node.totalCount</span></span>
+<span id="cb4-8"><a></a><span class="co">#&gt; 1                     wapir              17</span></span>
+<span id="cb4-9"><a></a><span class="co">#&gt; 2                    zoomer               3</span></span>
+<span id="cb4-10"><a></a><span class="co">#&gt; 3                rstats.fyi               0</span></span>
+<span id="cb4-11"><a></a><span class="co">#&gt; 4                 tidyslack               0</span></span>
+<span id="cb4-12"><a></a><span class="co">#&gt; 5 jonthegeek.r-universe.dev               0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="websocket-review" class="slide level2 unnumbered">
@@ -487,44 +488,44 @@
 <section id="websocket-demo-setup" class="slide level2 unnumbered">
 <h2>websocket demo: setup</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>ws <span class="ot">&lt;-</span> WebSocket<span class="sc">$</span><span class="fu">new</span>(<span class="st">"ws://echo.websocket.events/"</span>, <span class="at">autoConnect =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb5-2"><a href="#cb5-2"></a>ws<span class="sc">$</span><span class="fu">onMessage</span>(\(event) {</span>
-<span id="cb5-3"><a href="#cb5-3"></a>  now <span class="ot">&lt;-</span> <span class="fu">format</span>(<span class="fu">Sys.time</span>(), <span class="at">digits =</span> <span class="dv">0</span>)</span>
-<span id="cb5-4"><a href="#cb5-4"></a>  <span class="fu">cat</span>(<span class="st">"Client got msg:"</span>, event<span class="sc">$</span>data, <span class="st">"at"</span>, now, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb5-5"><a href="#cb5-5"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>ws <span class="ot">&lt;-</span> WebSocket<span class="sc">$</span><span class="fu">new</span>(<span class="st">"ws://echo.websocket.events/"</span>, <span class="at">autoConnect =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-2"><a></a>ws<span class="sc">$</span><span class="fu">onMessage</span>(\(event) {</span>
+<span id="cb5-3"><a></a>  now <span class="ot">&lt;-</span> <span class="fu">format</span>(<span class="fu">Sys.time</span>(), <span class="at">digits =</span> <span class="dv">0</span>)</span>
+<span id="cb5-4"><a></a>  <span class="fu">cat</span>(<span class="st">"Client got msg:"</span>, event<span class="sc">$</span>data, <span class="st">"at"</span>, now, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb5-5"><a></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="websocket-demo" class="slide level2 unnumbered">
 <h2>websocket demo</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>ws<span class="sc">$</span><span class="fu">connect</span>()</span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="co">#&gt; Client got msg: echo.websocket.events sponsored by Lob.com at 2023-11-15 2023-11-15 08:28:04</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="co"># (can do other things in console now)</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="dv">1</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt; [1] 1</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a>ws<span class="sc">$</span><span class="fu">send</span>(<span class="st">"hello"</span>)</span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt; Client got msg: hello at 2023-11-15 08:28:10</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a>ws<span class="sc">$</span><span class="fu">close</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>ws<span class="sc">$</span><span class="fu">connect</span>()</span>
+<span id="cb6-2"><a></a><span class="co">#&gt; Client got msg: echo.websocket.events sponsored by Lob.com at 2023-11-15 2023-11-15 08:28:04</span></span>
+<span id="cb6-3"><a></a><span class="co"># (can do other things in console now)</span></span>
+<span id="cb6-4"><a></a><span class="dv">1</span></span>
+<span id="cb6-5"><a></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb6-6"><a></a>ws<span class="sc">$</span><span class="fu">send</span>(<span class="st">"hello"</span>)</span>
+<span id="cb6-7"><a></a><span class="co">#&gt; Client got msg: hello at 2023-11-15 08:28:10</span></span>
+<span id="cb6-8"><a></a>ws<span class="sc">$</span><span class="fu">close</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="websocket-toward-usefulness" class="slide level2 unnumbered">
 <h2>websocket: toward usefulness</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>ws_counter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a>ws2 <span class="ot">&lt;-</span> WebSocket<span class="sc">$</span><span class="fu">new</span>(<span class="st">"ws://echo.websocket.events/"</span>, <span class="at">autoConnect =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb7-3"><a href="#cb7-3"></a>ws2<span class="sc">$</span><span class="fu">onMessage</span>(\(event) {</span>
-<span id="cb7-4"><a href="#cb7-4"></a>  ws_counter <span class="ot">&lt;&lt;-</span> ws_counter <span class="sc">+</span> <span class="dv">1</span> <span class="co"># Add 1 to global ws_counter var </span></span>
-<span id="cb7-5"><a href="#cb7-5"></a>  <span class="fu">cat</span>(ws_counter, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb7-6"><a href="#cb7-6"></a>})</span>
-<span id="cb7-7"><a href="#cb7-7"></a>ws_counter</span>
-<span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt; 1</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a>ws2<span class="sc">$</span><span class="fu">connect</span>()</span>
-<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt; 2</span></span>
-<span id="cb7-11"><a href="#cb7-11"></a>ws2<span class="sc">$</span><span class="fu">send</span>(<span class="st">"update"</span>)</span>
-<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt; 3</span></span>
-<span id="cb7-13"><a href="#cb7-13"></a>ws2<span class="sc">$</span><span class="fu">send</span>(<span class="st">"update again"</span>)</span>
-<span id="cb7-14"><a href="#cb7-14"></a><span class="co">#&gt; 4</span></span>
-<span id="cb7-15"><a href="#cb7-15"></a>ws2<span class="sc">$</span><span class="fu">close</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>ws_counter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb7-2"><a></a>ws2 <span class="ot">&lt;-</span> WebSocket<span class="sc">$</span><span class="fu">new</span>(<span class="st">"ws://echo.websocket.events/"</span>, <span class="at">autoConnect =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb7-3"><a></a>ws2<span class="sc">$</span><span class="fu">onMessage</span>(\(event) {</span>
+<span id="cb7-4"><a></a>  ws_counter <span class="ot">&lt;&lt;-</span> ws_counter <span class="sc">+</span> <span class="dv">1</span> <span class="co"># Add 1 to global ws_counter var </span></span>
+<span id="cb7-5"><a></a>  <span class="fu">cat</span>(ws_counter, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb7-6"><a></a>})</span>
+<span id="cb7-7"><a></a>ws_counter</span>
+<span id="cb7-8"><a></a><span class="co">#&gt; 1</span></span>
+<span id="cb7-9"><a></a>ws2<span class="sc">$</span><span class="fu">connect</span>()</span>
+<span id="cb7-10"><a></a><span class="co">#&gt; 2</span></span>
+<span id="cb7-11"><a></a>ws2<span class="sc">$</span><span class="fu">send</span>(<span class="st">"update"</span>)</span>
+<span id="cb7-12"><a></a><span class="co">#&gt; 3</span></span>
+<span id="cb7-13"><a></a>ws2<span class="sc">$</span><span class="fu">send</span>(<span class="st">"update again"</span>)</span>
+<span id="cb7-14"><a></a><span class="co">#&gt; 4</span></span>
+<span id="cb7-15"><a></a>ws2<span class="sc">$</span><span class="fu">close</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="websocket-usecases" class="slide level2 unnumbered">
@@ -570,35 +571,35 @@
 <h2>gRPC demo</h2>
 <p>From <a href="https://www.jstatsoft.org/article/view/v071i02">RProtoBuf paper</a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://demo.ocpu.io/MASS/data/Animals/pb"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb8-2"><a href="#cb8-2"></a>  <span class="fu">req_perform</span>()</span>
-<span id="cb8-3"><a href="#cb8-3"></a>output <span class="ot">&lt;-</span> <span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> </span>
-<span id="cb8-4"><a href="#cb8-4"></a>  <span class="fu">unserialize_pb</span>() <span class="co"># This is the important part</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a><span class="fu">identical</span>(output, MASS<span class="sc">::</span>Animals)</span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="co">#&gt; [1] TRUE</span></span>
-<span id="cb8-7"><a href="#cb8-7"></a><span class="fu">head</span>(output)</span>
-<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt;                     body brain</span></span>
-<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt; Mountain beaver     1.35   8.1</span></span>
-<span id="cb8-10"><a href="#cb8-10"></a><span class="co">#&gt; Cow               465.00 423.0</span></span>
-<span id="cb8-11"><a href="#cb8-11"></a><span class="co">#&gt; Grey wolf          36.33 119.5</span></span>
-<span id="cb8-12"><a href="#cb8-12"></a><span class="co">#&gt; Goat               27.66 115.0</span></span>
-<span id="cb8-13"><a href="#cb8-13"></a><span class="co">#&gt; Guinea pig          1.04   5.5</span></span>
-<span id="cb8-14"><a href="#cb8-14"></a><span class="co">#&gt; Dipliodocus     11700.00  50.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>resp <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://demo.ocpu.io/MASS/data/Animals/pb"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a></a>  <span class="fu">req_perform</span>()</span>
+<span id="cb8-3"><a></a>output <span class="ot">&lt;-</span> <span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> </span>
+<span id="cb8-4"><a></a>  <span class="fu">unserialize_pb</span>() <span class="co"># This is the important part</span></span>
+<span id="cb8-5"><a></a><span class="fu">identical</span>(output, MASS<span class="sc">::</span>Animals)</span>
+<span id="cb8-6"><a></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb8-7"><a></a><span class="fu">head</span>(output)</span>
+<span id="cb8-8"><a></a><span class="co">#&gt;                     body brain</span></span>
+<span id="cb8-9"><a></a><span class="co">#&gt; Mountain beaver     1.35   8.1</span></span>
+<span id="cb8-10"><a></a><span class="co">#&gt; Cow               465.00 423.0</span></span>
+<span id="cb8-11"><a></a><span class="co">#&gt; Grey wolf          36.33 119.5</span></span>
+<span id="cb8-12"><a></a><span class="co">#&gt; Goat               27.66 115.0</span></span>
+<span id="cb8-13"><a></a><span class="co">#&gt; Guinea pig          1.04   5.5</span></span>
+<span id="cb8-14"><a></a><span class="co">#&gt; Dipliodocus     11700.00  50.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="grpc-demo2-r-via-api" class="slide level2 unnumbered">
 <h2>gRPC demo2: R via API</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>args <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">n =</span> <span class="dv">5</span>, <span class="at">mean =</span> <span class="dv">100</span>)</span>
-<span id="cb9-2"><a href="#cb9-2"></a>payload <span class="ot">&lt;-</span> <span class="fu">serialize_pb</span>(args, <span class="at">connection =</span> <span class="cn">NULL</span>)</span>
-<span id="cb9-3"><a href="#cb9-3"></a>resp <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://cloud.opencpu.org/ocpu/library"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-4"><a href="#cb9-4"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"stats"</span>, <span class="st">"R"</span>, <span class="st">"rnorm"</span>, <span class="st">"pb"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-5"><a href="#cb9-5"></a>  <span class="fu">req_body_raw</span>(payload, <span class="at">type =</span> <span class="st">"application/protobuf"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-6"><a href="#cb9-6"></a>  <span class="fu">req_perform</span>()</span>
-<span id="cb9-7"><a href="#cb9-7"></a></span>
-<span id="cb9-8"><a href="#cb9-8"></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> </span>
-<span id="cb9-9"><a href="#cb9-9"></a>  <span class="fu">unserialize_pb</span>()</span>
-<span id="cb9-10"><a href="#cb9-10"></a><span class="co">#&gt; [1] 102.61489 101.70467  99.12647  99.85958 100.47736</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>args <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">n =</span> <span class="dv">5</span>, <span class="at">mean =</span> <span class="dv">100</span>)</span>
+<span id="cb9-2"><a></a>payload <span class="ot">&lt;-</span> <span class="fu">serialize_pb</span>(args, <span class="at">connection =</span> <span class="cn">NULL</span>)</span>
+<span id="cb9-3"><a></a>resp <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://cloud.opencpu.org/ocpu/library"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-4"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"stats"</span>, <span class="st">"R"</span>, <span class="st">"rnorm"</span>, <span class="st">"pb"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-5"><a></a>  <span class="fu">req_body_raw</span>(payload, <span class="at">type =</span> <span class="st">"application/protobuf"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-6"><a></a>  <span class="fu">req_perform</span>()</span>
+<span id="cb9-7"><a></a></span>
+<span id="cb9-8"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> </span>
+<span id="cb9-9"><a></a>  <span class="fu">unserialize_pb</span>()</span>
+<span id="cb9-10"><a></a><span class="co">#&gt; [1] 102.61489 101.70467  99.12647  99.85958 100.47736</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="meeting-videos" class="slide level2 unnumbered">
@@ -613,8 +614,10 @@ Meeting chat log
 <pre><code>LOG</code></pre>
 </details>
 
+<div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 <p><a href="../../" target="wapir-club_index">r4ds.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
+</div>
 </div>
 </section></section>
     </div>
@@ -643,7 +646,6 @@ Meeting chat log
       Reveal.initialize({
 'controlsAuto': true,
 'previewLinksAuto': false,
-'smaller': false,
 'pdfSeparateFragments': false,
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
@@ -942,10 +944,27 @@ Meeting chat log
         // clear code selection
         e.clearSelection();
       });
-      function tippyHover(el, contentFn) {
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp("https:\/\/r4ds\.github\.io\/bookclub-wapir\/");
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+              // target, if specified
+              link.setAttribute("target", "_blank");
+              if (link.getAttribute("rel") === null) {
+                link.setAttribute("rel", "noopener");
+              }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
         const config = {
           allowHTML: true,
-          content: contentFn,
           maxWidth: 500,
           delay: 100,
           arrow: false,
@@ -955,8 +974,17 @@ Meeting chat log
           interactive: true,
           interactiveBorder: 10,
           theme: 'light-border',
-          placement: 'bottom-start'
+          placement: 'bottom-start',
         };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
           config['offset'] = [0,0];
           config['maxWidth'] = 700;
         window.tippy(el, config); 
@@ -1010,20 +1038,6 @@ Meeting chat log
           });
         }
       }
-        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-          var filterRegex = new RegExp("https:\/\/github\.com\/r4ds\/bookclub-wapir");
-        var isInternal = (href) => {
-            return filterRegex.test(href) || localhostRegex.test(href);
-        }
-        // Inspect non-navigation links and adorn them if external
-     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-        for (var i=0; i<links.length; i++) {
-          const link = links[i];
-          if (!isInternal(link.href)) {
-              // target, if specified
-              link.setAttribute("target", "_blank");
-          }
-        }
     });
     </script>
     
