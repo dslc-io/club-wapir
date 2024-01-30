@@ -1,0 +1,57 @@
+---
+title: "Learning Objectives"
+engine: knitr
+---
+
+# Why learning objectives (LOs)?
+
+## What type of LOs are we focusing on?
+
+-   Readers probably solving semi-specific problems, so...
+-   Skill-based learning objectives
+    -   "After you read this chapter, you will be able to..."
+
+::: notes
+-   Any disagreement with that first bullet?
+:::
+
+## Why do they matter?
+
+-   Students learn more when they have clear objectives.
+-   Lends structure to my process.
+-   Eventually: Lends structure to R4DS
+
+::: notes
+-   I like having a process!
+-   Aiming to implement these across all of R4DS
+-   (Eventually want to also auto-map questions to them)
+:::
+
+# Part 1: How can I interact with the web from R?
+
+## Part 1 Learning Objectives Brain Dump
+
+-   Discover useful APIs
+-   Find specific APIs
+-   Fetch data with simple APIs (no auth)
+-   Fetch *lots* of data from simple APIs (pagination) 
+-   Process fetched data into R-standard formats
+-   Authenticate with APIs (tell it who you are)
+-   Do other things (send/update/delete data) with APIs
+    -   Probably do `curl_translate()` formally here
+-   Find R packages that wrap APIs
+-   (Use other forms of APIs?)
+-   Get web data without APIs ({rvest})
+-   Learn more about accessing APIs
+
+# Part 2: How can I create my own APIs with R?
+
+(not filling this out yet)
+
+# What do you think?
+
+Please complete this [survey](https://forms.gle/HWUEsQ34vtuGKuu19)!
+
+::: notes
+-   https://forms.gle/HWUEsQ34vtuGKuu19
+:::

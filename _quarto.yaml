@@ -21,8 +21,10 @@ website:
         target: wapir-club_club_intro
       - file: slides/intro.qmd
         target: wapir-club_intro
+      - file: slides/los.qmd
+        target: wapir-club_los
 
-      - section: "How can I get web data into R?"
+      - section: "How can I interact with the web from R?"
         contents:
           - file: slides/httr2/httr2.qmd
             target: wapir-club_httr2
