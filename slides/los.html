@@ -393,22 +393,54 @@
 </section>
 <section id="part-1-learning-objectives-brain-dump" class="slide level2">
 <h2>Part 1 Learning Objectives Brain Dump</h2>
+<div class="columns">
+<div class="column">
 <ul>
 <li class="fragment">Discover useful APIs</li>
+<li class="fragment">Process web data into R-standard formats</li>
+<li class="fragment">Fetch data with simple APIs</li>
+<li class="fragment">Fetch <em>lots</em> of data from APIs</li>
+<li class="fragment">Authenticate with APIs</li>
 <li class="fragment">Find specific APIs</li>
-<li class="fragment">Fetch data with simple APIs (no auth)</li>
-<li class="fragment">Fetch <em>lots</em> of data from simple APIs (pagination)</li>
-<li class="fragment">Process fetched data into R-standard formats</li>
-<li class="fragment">Authenticate with APIs (tell it who you are)</li>
-<li class="fragment">Do other things (send/update/delete data) with APIs
+</ul>
+</div><div class="column">
 <ul>
-<li class="fragment">Probably do <code>curl_translate()</code> formally here</li>
-</ul></li>
+<li class="fragment">Do other things (send/update/delete data) with APIs</li>
 <li class="fragment">Find R packages that wrap APIs</li>
 <li class="fragment">(Use other forms of APIs?)</li>
 <li class="fragment">Get web data without APIs ({rvest})</li>
 <li class="fragment">Learn more about accessing APIs</li>
 </ul>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Discover: Just vaguely via apis.guru or similar.</li>
+<li>Process: This isn’t API-specific, but APIs often have deeply nested data</li>
+<li>Fetch data: No auth. Very basic parsing of the return</li>
+<li>Fetch lots: Important concept regardless of whether it’s “simple”</li>
+<li>Authenticate: Complicated (see Slack), I want to make it as clear as possible
+<ul>
+<li>In part 2 we’ll build the complicated thing, I think.</li>
+</ul></li>
+<li>Find specific: Shoved this way down the list because it will be hard to have examples that aren’t easy. I think I’ll replace apis.guru with a true wiki.</li>
+<li>Do other: <code>curl_translate()</code> deep dive here.</li>
+<li>Find R packages: I want it late so you can tell if it’s a bad package</li>
+<li>Others: gRPC, GraphQL, Websockets</li>
+<li>rvest: Technically could skip?</li>
+<li>Learn more: Book recommendations, blogs, etc.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section id="part-2-how-can-i-create-my-own-apis-with-r" class="title-slide slide level1 center">
 <h1>Part 2: How can I create my own APIs with R?</h1>
