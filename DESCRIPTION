@@ -20,6 +20,7 @@ Imports:
     jsonlite,
     lubridate,
     protolite,
+    purrr,
     rmarkdown,
     stringr,
     tibble,
