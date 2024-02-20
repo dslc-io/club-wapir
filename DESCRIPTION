@@ -31,4 +31,6 @@ Imports:
     websocket,
     xml2,
     yaml
+Remotes:
+    mgirlich/tibblify#191
 Encoding: UTF-8

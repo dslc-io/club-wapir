@@ -422,7 +422,7 @@ names(youtube_spec)
 ```{r}
 #| label: apis_start-api_spec-tibblify
 #| eval: true
-youtube_paths0 <- tibblify::tibblify(youtube_spec$paths) |> 
+youtube_paths <- tibblify::tibblify(youtube_spec$paths) |> 
   dplyr::glimpse()
 ```
 
@@ -431,7 +431,7 @@ youtube_paths0 <- tibblify::tibblify(youtube_spec$paths) |>
 ```{r}
 #| label: apis_start-api_spec-tibblify-ref
 #| eval: true
-youtube_paths0$parameters[[1]]
+youtube_paths$parameters[[1]]
 ```
 
 ## parse_openapi_spec()
