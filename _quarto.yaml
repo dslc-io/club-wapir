@@ -38,6 +38,8 @@ website:
             target: wapir-club_httr2-perform
           - file: slides/httr2/httr2-methods.qmd
             target: wapir-club_httr2-methods
+          - file: slides/httr2/apis-find.qmd
+            target: wapir-club_apis-find
           - file: slides/httr2/apis-packages.qmd
             target: wapir-club_apis-packages
           - file: slides/httr2/accessing-other.qmd
