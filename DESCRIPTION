@@ -15,6 +15,7 @@ Imports:
     cli,
     dplyr,
     ghql,
+    here,
     httpuv,
     httr2 (>= 1.0.0),
     jsonlite,
