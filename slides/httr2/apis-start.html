@@ -10,7 +10,7 @@
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.550">
 
-  <title>Web APIs with R Book Club</title>
+  <title>Web APIs with R Book Club - How can I get started with APIs?</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -389,245 +389,537 @@
   <div class="reveal">
     <div class="slides">
 
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">How can I get started with APIs?</h1>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section id="learning-objectives" class="title-slide slide level1 center">
+<h1>️✅ Learning objectives</h1>
+<div>
+<ul>
+<li>Fetch information from the web with {jsonlite}.</li>
+<li>Parse nested lists with the {tidyverse}.</li>
+<li>Parse nested lists with {tibblify}.</li>
+<li>Read API docs.</li>
+<li>Use an API’s OpenAPI specification to learn about the API.</li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a></a><span class="fu">library</span>(jsonlite)</span>
+<span id="cb1-3"><a></a><span class="fu">library</span>(purrr)</span>
+<span id="cb1-4"><a></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-5"><a></a><span class="fu">library</span>(tibblify)</span>
+<span id="cb1-6"><a></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<aside class="notes">
+<ul>
+<li>Pretend this is our second meeting. Chapter 1 talked about what APIs are, but we haven’t done httr2 yet.</li>
+<li>Has anybody used:
+<ul>
+<li>nested lists (unnest)</li>
+<li>tibble::enframe()</li>
+<li>tibblify</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 
 <section>
-<section id="how-can-i-create-an-api" class="title-slide slide level1 center">
-<h1>How can I create an API?</h1>
-<p><strong>Learning objectives:</strong></p>
+<section id="where-can-i-find-apis" class="title-slide slide level1 center">
+<h1>Where can I find APIs?</h1>
+
+<img data-src="../../images/apisguru.png" class="r-stretch"><aside class="notes">
 <ul>
-<li class="fragment">Create an API with {plumber}.</li>
-<li class="fragment">Organize {plumber} API projects.</li>
-<li class="fragment">Design a RESTful API.</li>
-<li class="fragment">Implement a RESTful API in {plumber}.</li>
-<li class="fragment">Use {plumber} filters to process an API request.</li>
-<li class="fragment">Use {plumber} hooks to modify an API.</li>
-<li class="fragment">Debug a {plumber} API.</li>
+<li>I’m very likely going to build a replacement for APIs.guru.
+<ul>
+<li>Doesn’t update often enough.</li>
+<li>Most recent merge: March 8, 2023</li>
+<li>It should live up to its name, and be easier to update!</li>
+</ul></li>
+<li>But principles will still hold!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="browsing-apis.guru" class="slide level2">
+<h2>Browsing APIs.guru</h2>
+<p>(<a href="https://apis.guru/">launch APIs.guru to explore</a>)</p>
+<ul>
+<li class="fragment">Good if you know what you’re looking for</li>
+<li class="fragment">Less good for exploration</li>
+<li class="fragment">But we can grab the data directly!</li>
 </ul>
 </section>
-<section id="plumber-quickstart" class="slide level2 unnumbered">
-<h2>plumber quickstart</h2>
-<ol type="1">
-<li class="fragment">Define API endpoints in an R script.</li>
-<li class="fragment">Launch that API locally.</li>
-<li class="fragment"><em>Later chapter(s): Deploy that API somewhere else.</em></li>
-</ol>
+<section id="the-apis.guru-api" class="slide level2">
+<h2>The APIs.guru API</h2>
+<ul>
+<li class="fragment">(<a href="https://apis.guru/api-doc/#operation/listAPIs">launch APIs.guru API page to explore</a>)</li>
+<li class="fragment">(<a href="https://api.apis.guru/v2/list.json">list.json result</a>)</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>JSON = JavaScript Object Notation</li>
+<li>By far most common format for API data</li>
+<li>I’m using <a href="https://chromewebstore.google.com/detail/jsonvue/chklaanhfefbnpoihckbnefhakgolnmc?pli=1">JSONVue browser extension</a></li>
+<li>Great for nested data</li>
+<li>We aren’t going to dig into the format because we won’t use it directly</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="echo-endpoint-function" class="slide level2 unnumbered">
-<h2>echo endpoint: function</h2>
+<section id="list-all-apis.guru-apis" class="slide level2">
+<h2>List all APIs.guru APIs</h2>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>echo <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">msg =</span> <span class="st">""</span>) {</span>
-<span id="cb1-2"><a></a>  <span class="fu">list</span>(<span class="at">msg =</span> <span class="fu">paste0</span>(<span class="st">"The message is: '"</span>, msg, <span class="st">"'"</span>))</span>
-<span id="cb1-3"><a></a>}</span>
-<span id="cb1-4"><a></a></span>
-<span id="cb1-5"><a></a><span class="fu">echo</span>(<span class="st">"my message"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>all_apis <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"https://api.apis.guru/v2/list.json"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">length</span>(all_apis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt; $msg
-#&gt; [1] "The message is: 'my message'"</code></pre>
+<pre><code>#&gt; [1] 2529</code></pre>
 </div>
 </div>
-</section>
-<section id="echo-endpoint-plumber" class="slide level2 unnumbered">
-<h2>echo endpoint: plumber</h2>
+</div>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="co">#* Echo back the input parameter</span></span>
-<span id="cb3-2"><a></a><span class="co">#* @param msg The message to echo back.</span></span>
-<span id="cb3-3"><a></a><span class="co">#* @get /echo</span></span>
-<span id="cb3-4"><a></a><span class="cf">function</span>(<span class="at">msg =</span> <span class="st">""</span>) {</span>
-<span id="cb3-5"><a></a>  <span class="fu">list</span>(<span class="at">msg =</span> <span class="fu">paste0</span>(<span class="st">"The message is: '"</span>, msg, <span class="st">"'"</span>))</span>
-<span id="cb3-6"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">head</span>(<span class="fu">names</span>(all_apis))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "1forge.com"                    "1password.com:events"         
+#&gt; [3] "1password.local:connect"       "6-dot-authentiqio.appspot.com"
+#&gt; [5] "ably.io:platform"              "ably.net:control"</code></pre>
 </div>
-</section>
-<section id="echo-endpoint-plumber-alternate" class="slide level2 unnumbered">
-<h2>echo endpoint: plumber (alternate)</h2>
+</div>
+</div>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="co">#* Echo back the input parameter</span></span>
-<span id="cb4-2"><a></a><span class="co">#* @param msg The message to echo back.</span></span>
-<span id="cb4-3"><a></a><span class="co">#* @get /echo</span></span>
-<span id="cb4-4"><a></a>echo <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">msg =</span> <span class="st">""</span>) {</span>
-<span id="cb4-5"><a></a>  <span class="fu">list</span>(<span class="at">msg =</span> <span class="fu">paste0</span>(<span class="st">"The message is: '"</span>, msg, <span class="st">"'"</span>))</span>
-<span id="cb4-6"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>purrr<span class="sc">::</span><span class="fu">pluck_depth</span>(all_apis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] 10</code></pre>
 </div>
-<p>or</p>
+</div>
+</div>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co">#* Echo back the input parameter</span></span>
-<span id="cb5-2"><a></a><span class="co">#* @param msg The message to echo back.</span></span>
-<span id="cb5-3"><a></a><span class="co">#* @get /echo</span></span>
-<span id="cb5-4"><a></a>echo <span class="co"># Defined elsewhere</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">str</span>(<span class="fu">head</span>(all_apis, <span class="dv">2</span>), <span class="at">max.level =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; List of 2
+#&gt;  $ 1forge.com          :List of 3
+#&gt;   ..$ added    : chr "2017-05-30T08:34:14.000Z"
+#&gt;   ..$ preferred: chr "0.0.1"
+#&gt;   ..$ versions :List of 1
+#&gt;  $ 1password.com:events:List of 3
+#&gt;   ..$ added    : chr "2021-07-19T10:17:09.188Z"
+#&gt;   ..$ preferred: chr "1.0.0"
+#&gt;   ..$ versions :List of 1</code></pre>
 </div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>jsonlite = one of several packages for parsing JSON
+<ul>
+<li>We’ll stick with it because it works &amp; is used by higher-level packages</li>
+</ul></li>
+<li>fromJSON does some automatic guessing, we’ll come back to this in a later chapter</li>
+<li>This result is a huge, nested list</li>
+<li>purrr::pluck_depth() tells you how nested a list is</li>
+<li>hard to see this. Let’s rectangle it!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="echo-endpoint-in-action" class="slide level2 unnumbered">
-<h2>echo endpoint in action</h2>
-
-<img data-src="images/plumber-intro_echo.png" class="r-stretch"></section>
-<section id="plot-endpoint" class="slide level2 unnumbered">
-<h2>plot endpoint</h2>
+<section id="rectangling-data" class="slide level2">
+<h2>Rectangling data</h2>
+<ul>
+<li class="fragment">“Rectangling” = converting hierarchical data to data frame</li>
+<li class="fragment">Some background in <a href="https://r4ds.hadley.nz/rectangling.html">R4DS Chapter 23: “Hierarchical data”</a>
+<ul>
+<li class="fragment">But we’ll use different methods</li>
+</ul></li>
+<li class="fragment">Trial-and-error = ok</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Rectangular data is nice because then you can use normal tidyverse functions</li>
+<li>There’s a tidyverse function that I think handles returns from APIs better than what they show there.</li>
+<li>You might need to play around with unnest_wider vs unnest_longer (we’ll see examples in a sec). Don’t feel like you’re doing something wrong!</li>
+<li>In a couple chapters, we’ll see how to use the API spec (when it’s available) to help us guess less.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="rectangling-apis.gurus-list" class="slide level2">
+<h2>Rectangling APIs.guru’s list</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="co">#* Plot out data from the iris dataset</span></span>
-<span id="cb6-2"><a></a><span class="co">#* @param spec If provided, filter the data to only this species (e.g. 'setosa')</span></span>
-<span id="cb6-3"><a></a><span class="co">#* @get /plot</span></span>
-<span id="cb6-4"><a></a><span class="co">#* @serializer png</span></span>
-<span id="cb6-5"><a></a><span class="cf">function</span>(spec) {</span>
-<span id="cb6-6"><a></a>  myData <span class="ot">&lt;-</span> iris</span>
-<span id="cb6-7"><a></a>  title <span class="ot">&lt;-</span> <span class="st">"All Species"</span></span>
-<span id="cb6-8"><a></a></span>
-<span id="cb6-9"><a></a>  <span class="co"># Filter if the species was specified</span></span>
-<span id="cb6-10"><a></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">missing</span>(spec)){</span>
-<span id="cb6-11"><a></a>    title <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Only the '"</span>, spec, <span class="st">"' Species"</span>)</span>
-<span id="cb6-12"><a></a>    myData <span class="ot">&lt;-</span> <span class="fu">subset</span>(iris, Species <span class="sc">==</span> spec)</span>
-<span id="cb6-13"><a></a>  }</span>
-<span id="cb6-14"><a></a></span>
-<span id="cb6-15"><a></a>  <span class="fu">plot</span>(myData<span class="sc">$</span>Sepal.Length, myData<span class="sc">$</span>Petal.Length,</span>
-<span id="cb6-16"><a></a>       <span class="at">main=</span>title, <span class="at">xlab=</span><span class="st">"Sepal Length"</span>, <span class="at">ylab=</span><span class="st">"Petal Length"</span>)</span>
-<span id="cb6-17"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>all_apis_df <span class="ot">&lt;-</span> all_apis <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="st">"api_name"</span>)</span>
+<span id="cb11-3"><a></a>all_apis_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 2,529 × 2
+#&gt;    api_name                      value           
+#&gt;    &lt;chr&gt;                         &lt;list&gt;          
+#&gt;  1 1forge.com                    &lt;named list [3]&gt;
+#&gt;  2 1password.com:events          &lt;named list [3]&gt;
+#&gt;  3 1password.local:connect       &lt;named list [3]&gt;
+#&gt;  4 6-dot-authentiqio.appspot.com &lt;named list [3]&gt;
+#&gt;  5 ably.io:platform              &lt;named list [3]&gt;
+#&gt;  6 ably.net:control              &lt;named list [3]&gt;
+#&gt;  7 abstractapi.com:geolocation   &lt;named list [3]&gt;
+#&gt;  8 adafruit.com                  &lt;named list [3]&gt;
+#&gt;  9 adobe.com:aem                 &lt;named list [3]&gt;
+#&gt; 10 adyen.com:AccountService      &lt;named list [3]&gt;
+#&gt; # ℹ 2,519 more rows</code></pre>
 </div>
-</section>
-<section id="plot-endpoint-in-action" class="slide level2 unnumbered">
-<h2>plot endpoint in action</h2>
-
-<img data-src="images/plumber-intro_plot.png" class="r-stretch"></section>
-<section id="launch-the-api" class="slide level2 unnumbered">
-<h2>Launch the API</h2>
+</div>
+<aside class="notes">
 <ul>
-<li class="fragment"><code>api &lt;- pr("plumber.R")</code></li>
-<li class="fragment"><code>api &lt;- pr() |&gt; pr_post({definition}) |&gt; etc()</code></li>
-<li class="fragment"><code>api &lt;- plumb(dir = "path/to/definition")</code>
+<li><code>tibble::enframe()</code> is underused, imo!</li>
+<li>Best with named lists</li>
+<li><code>name</code> arg is often useful (if input is named)
 <ul>
-<li class="fragment">Looks for <code>entrypoint.R</code>, else <code>plumber.R</code></li>
+<li>If it isn’t named, set to NULL</li>
 </ul></li>
+<li><code>value</code> arg is available but we’re almost always going to destroy that column</li>
+<li>Need to figure out whether those values are rows (observations) or columns (variables)</li>
 </ul>
-<p>In any case: <code>pr_run(api)</code> to run locally.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="organize-plumber-projects" class="slide level2 unnumbered">
-<h2>Organize plumber projects</h2>
-<ul>
-<li class="fragment">Non-Package:
-<ul>
-<li class="fragment"><code>plumber.R</code> = “main” file
-<ul>
-<li class="fragment">Can <code>source()</code> any other files, but</li>
-<li class="fragment"><code>#*</code> defs must be in main file</li>
-</ul></li>
-<li class="fragment">Alternative: <code>entrypoint.R</code> file to construct <code>api</code> programmatically</li>
-</ul></li>
-<li class="fragment">Package:
-<ul>
-<li class="fragment"><code>inst/plumber/{API_DIR_NAME}/plumber.R</code>
-<ul>
-<li class="fragment">Same rules as above, but filenames matter more</li>
-<li class="fragment">Least surprise = use <code>entrypoint.R</code></li>
-</ul></li>
-<li class="fragment"><code>plumb_api(package = "{pkg}", name = "{API_DIR_NAME}")</code></li>
-<li class="fragment"><code>available_apis(package = "{pkg}")</code></li>
-</ul></li>
-</ul>
-</section>
-<section id="nest-plumber-apis" class="slide level2 unnumbered">
-<h2>Nest plumber APIs</h2>
+<section id="unnest-wider-or-longer" class="slide level2">
+<h2>Unnest wider or longer?</h2>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="co"># Define in entrypoint.R</span></span>
-<span id="cb7-2"><a></a></span>
-<span id="cb7-3"><a></a>users <span class="ot">&lt;-</span> <span class="fu">pr</span>(<span class="st">"users.R"</span>)</span>
-<span id="cb7-4"><a></a>products <span class="ot">&lt;-</span> <span class="fu">pr</span>(<span class="st">"products.R"</span>)</span>
-<span id="cb7-5"><a></a></span>
-<span id="cb7-6"><a></a>pr <span class="sc">|&gt;</span> </span>
-<span id="cb7-7"><a></a>  <span class="fu">pr_mount</span>(<span class="st">"/users"</span>, users) <span class="sc">|&gt;</span> </span>
-<span id="cb7-8"><a></a>  <span class="fu">pr_mount</span>(<span class="st">"/products"</span>, products)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>all_apis_df<span class="sc">$</span>value <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] 3</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>all_apis_df<span class="sc">$</span>value[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "added"     "preferred" "versions"</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">setdiff</span>(</span>
+<span id="cb17-2"><a></a>  <span class="fu">names</span>(all_apis_df<span class="sc">$</span>value[[<span class="dv">1</span>]]),</span>
+<span id="cb17-3"><a></a>  <span class="fu">names</span>(all_apis_df<span class="sc">$</span>value[[<span class="dv">11</span>]])</span>
+<span id="cb17-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; character(0)</code></pre>
+</div>
+</div>
 </div>
 </section>
-<section id="design-a-restful-api" class="slide level2 unnumbered">
-<h2>Design a RESTful API</h2>
+<section id="our-first-unnest" class="slide level2">
+<h2>Our first unnest</h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>all_apis_versions <span class="ot">&lt;-</span> all_apis_df <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(value)</span>
+<span id="cb19-3"><a></a>all_apis_versions</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 2,529 × 4
+#&gt;    api_name                      added                    preferred versions    
+#&gt;    &lt;chr&gt;                         &lt;chr&gt;                    &lt;chr&gt;     &lt;list&gt;      
+#&gt;  1 1forge.com                    2017-05-30T08:34:14.000Z 0.0.1     &lt;named list&gt;
+#&gt;  2 1password.com:events          2021-07-19T10:17:09.188Z 1.0.0     &lt;named list&gt;
+#&gt;  3 1password.local:connect       2021-04-16T15:56:45.939Z 1.5.7     &lt;named list&gt;
+#&gt;  4 6-dot-authentiqio.appspot.com 2017-03-15T14:45:58.000Z 6         &lt;named list&gt;
+#&gt;  5 ably.io:platform              2019-07-13T11:28:07.000Z 1.1.0     &lt;named list&gt;
+#&gt;  6 ably.net:control              2021-07-26T09:45:31.536Z 1.0.14    &lt;named list&gt;
+#&gt;  7 abstractapi.com:geolocation   2021-04-14T17:12:40.648Z 1.0.0     &lt;named list&gt;
+#&gt;  8 adafruit.com                  2018-02-10T10:41:43.000Z 2.0.0     &lt;named list&gt;
+#&gt;  9 adobe.com:aem                 2019-01-03T07:01:34.000Z 3.7.1-pr… &lt;named list&gt;
+#&gt; 10 adyen.com:AccountService      2023-02-17T11:02:20.620Z 6         &lt;named list&gt;
+#&gt; # ℹ 2,519 more rows</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="unnest-2-wider-or-longer" class="slide level2">
+<h2>Unnest 2: wider or longer?</h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>all_apis_versions<span class="sc">$</span>versions <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;  [1]  1  4  2  5 16  3  6 11 10  7  8  9 23 17 12 13 19 22 24 21</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>all_apis_versions<span class="sc">$</span>versions <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;  [1] 1 1 1 1 1 1 1 1 1 4</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>all_apis_versions<span class="sc">$</span>versions[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "0.0.1"</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>all_apis_versions<span class="sc">$</span>versions[[<span class="dv">10</span>]] <span class="sc">|&gt;</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "3" "4" "5" "6"</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="unnest-2" class="slide level2">
+<h2>Unnest 2</h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29" data-code-line-numbers="1-2|3|4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>all_apis_preferred <span class="ot">&lt;-</span> all_apis_versions <span class="sc">|&gt;</span></span>
+<span id="cb29-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_longer</span>(versions, <span class="at">indices_to =</span> <span class="st">"version"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb29-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(preferred <span class="sc">==</span> version) <span class="sc">|&gt;</span></span>
+<span id="cb29-4"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(api_name, version, versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>all_apis_preferred</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 2,529 × 3
+#&gt;    api_name                      version     versions        
+#&gt;    &lt;chr&gt;                         &lt;chr&gt;       &lt;named list&gt;    
+#&gt;  1 1forge.com                    0.0.1       &lt;named list [7]&gt;
+#&gt;  2 1password.com:events          1.0.0       &lt;named list [7]&gt;
+#&gt;  3 1password.local:connect       1.5.7       &lt;named list [7]&gt;
+#&gt;  4 6-dot-authentiqio.appspot.com 6           &lt;named list [7]&gt;
+#&gt;  5 ably.io:platform              1.1.0       &lt;named list [7]&gt;
+#&gt;  6 ably.net:control              1.0.14      &lt;named list [7]&gt;
+#&gt;  7 abstractapi.com:geolocation   1.0.0       &lt;named list [8]&gt;
+#&gt;  8 adafruit.com                  2.0.0       &lt;named list [7]&gt;
+#&gt;  9 adobe.com:aem                 3.7.1-pre.0 &lt;named list [7]&gt;
+#&gt; 10 adyen.com:AccountService      6           &lt;named list [7]&gt;
+#&gt; # ℹ 2,519 more rows</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="unnest-3-wider-or-longer" class="slide level2">
+<h2>Unnest 3: wider or longer?</h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>all_apis_preferred<span class="sc">$</span>versions <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] 7 8</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a><span class="fu">setdiff</span>(</span>
+<span id="cb34-2"><a></a>  <span class="fu">names</span>(all_apis_preferred<span class="sc">$</span>versions[[<span class="dv">7</span>]]),</span>
+<span id="cb34-3"><a></a>  <span class="fu">names</span>(all_apis_preferred<span class="sc">$</span>versions[[<span class="dv">1</span>]])</span>
+<span id="cb34-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "externalDocs"</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>all_apis_preferred_wide <span class="ot">&lt;-</span> all_apis_preferred <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="all-apis" class="slide level2">
+<h2>All APIs</h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37" data-code-line-numbers="1|2|3|4|5-6|7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>all_apis <span class="sc">|&gt;</span> </span>
+<span id="cb37-2"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="st">"api_name"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb37-3"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(value) <span class="sc">|&gt;</span> </span>
+<span id="cb37-4"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_longer</span>(versions, <span class="at">indices_to =</span> <span class="st">"version"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb37-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(preferred <span class="sc">==</span> version) <span class="sc">|&gt;</span></span>
+<span id="cb37-6"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(api_name, version, versions) <span class="sc">|&gt;</span></span>
+<span id="cb37-7"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 2,529 × 10
+#&gt;    api_name         version added info         updated swaggerUrl swaggerYamlUrl
+#&gt;    &lt;chr&gt;            &lt;chr&gt;   &lt;chr&gt; &lt;list&gt;       &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;         
+#&gt;  1 1forge.com       0.0.1   2017… &lt;named list&gt; 2017-0… https://a… https://api.a…
+#&gt;  2 1password.com:e… 1.0.0   2021… &lt;named list&gt; 2023-0… https://a… https://api.a…
+#&gt;  3 1password.local… 1.5.7   2021… &lt;named list&gt; 2023-0… https://a… https://api.a…
+#&gt;  4 6-dot-authentiq… 6       2017… &lt;named list&gt; 2021-0… https://a… https://api.a…
+#&gt;  5 ably.io:platform 1.1.0   2019… &lt;named list&gt; 2021-0… https://a… https://api.a…
+#&gt;  6 ably.net:control 1.0.14  2021… &lt;named list&gt; 2021-0… https://a… https://api.a…
+#&gt;  7 abstractapi.com… 1.0.0   2021… &lt;named list&gt; 2021-0… https://a… https://api.a…
+#&gt;  8 adafruit.com     2.0.0   2018… &lt;named list&gt; 2021-0… https://a… https://api.a…
+#&gt;  9 adobe.com:aem    3.7.1-… 2019… &lt;named list&gt; 2023-0… https://a… https://api.a…
+#&gt; 10 adyen.com:Accou… 6       2023… &lt;named list&gt; 2023-0… https://a… https://api.a…
+#&gt; # ℹ 2,519 more rows
+#&gt; # ℹ 3 more variables: openapiVer &lt;chr&gt;, link &lt;chr&gt;, externalDocs &lt;list&gt;</code></pre>
+</div>
+</div>
+</div>
+<aside class="notes">
 <ul>
-<li class="fragment">Endpoints = <strong><em>nouns</em></strong>
+<li>If we dug in a little more, we’d see that info is variable-like, but all over the place; different APIs have different values
 <ul>
-<li class="fragment">Subpaths = particular individual
-<ul>
-<li class="fragment"><code>/tasks</code> = all tasks, vs</li>
-<li class="fragment"><code>/tasks/1234</code> = task ID 1234</li>
-</ul></li>
-</ul></li>
-<li class="fragment">Methods define action
-<ul>
-<li class="fragment"><code>GET</code> = fetch</li>
-<li class="fragment"><code>POST</code> = create</li>
-<li class="fragment"><code>PUT</code> = replace</li>
-<li class="fragment"><code>PATCH</code> = modify</li>
-<li class="fragment"><code>DELETE</code> = remove</li>
+<li>APIs.guru adds a couple things in here, including a “category” that we’ll use</li>
 </ul></li>
 </ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="more-on-designing-apis" class="slide level2 unnumbered">
-<h2>More on designing APIs</h2>
+<section id="filter-apis" class="slide level2">
+<h2>Filter APIs</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39" data-code-line-numbers="1-2|3-5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a>all_apis_preferred_wide <span class="sc">|&gt;</span></span>
+<span id="cb39-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">hoist</span>(info, <span class="at">categories =</span> <span class="st">"x-apisguru-categories"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb39-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
+<span id="cb39-4"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="st">"open_data"</span> <span class="sc">%in%</span> categories) <span class="sc">|&gt;</span></span>
+<span id="cb39-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 318 × 11
+#&gt;    api_name             version added categories info         updated swaggerUrl
+#&gt;    &lt;chr&gt;                &lt;chr&gt;   &lt;chr&gt; &lt;list&gt;     &lt;list&gt;       &lt;chr&gt;   &lt;chr&gt;     
+#&gt;  1 amentum.space:aviat… 1.5.0   2021… &lt;chr [2]&gt;  &lt;named list&gt; 2023-0… https://a…
+#&gt;  2 amentum.space:gravi… 1.1.1   2021… &lt;chr [2]&gt;  &lt;named list&gt; 2021-0… https://a…
+#&gt;  3 amentum.space:space… 1.1.2   2021… &lt;chr [2]&gt;  &lt;named list&gt; 2023-0… https://a…
+#&gt;  4 api.gov.uk:vehicle-… 1.1.0   2020… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…
+#&gt;  5 apis.guru            2.2.0   2015… &lt;chr [2]&gt;  &lt;named list&gt; 2023-0… https://a…
+#&gt;  6 apisetu.gov.in:aaha… 3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…
+#&gt;  7 apisetu.gov.in:acko  3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…
+#&gt;  8 apisetu.gov.in:agtr… 3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…
+#&gt;  9 apisetu.gov.in:ahar… 3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…
+#&gt; 10 apisetu.gov.in:aiim… 3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…
+#&gt; # ℹ 308 more rows
+#&gt; # ℹ 4 more variables: swaggerYamlUrl &lt;chr&gt;, openapiVer &lt;chr&gt;, link &lt;chr&gt;,
+#&gt; #   externalDocs &lt;list&gt;</code></pre>
+</div>
+</div>
+<aside class="notes">
 <ul>
-<li class="fragment">Many books on just this
-<ul>
-<li class="fragment"><a href="https://livebook.manning.com/book/designing-apis-with-swagger-and-openapi">Designing APIs with Swagger and OpenAPI</a> by Joshua S. Ponelat &amp; Lukas L. Rosenstock</li>
-<li class="fragment">(more suggestions to come)</li>
-</ul></li>
+<li>Could also unnest_longer and filter for “open_data”</li>
+<li><code>swaggerUrl</code> is JSON, <code>swaggerYamlUrl</code> is YAML version of the same thing</li>
+<li>YAML is another data format. Technically YAML is a superset of JSON, with added commenting capabilities.</li>
+<li>RMarkdown headers + package descriptions are YAML-related.</li>
+<li>We mostly don’t care (mostly because YAML plays slightly better with tibblify, as we’ll see)</li>
+<li>“Swagger” is the old name for the OpenAPI specification, a standard way to describe APIs.</li>
+<li>Not everyone uses swagger/OpenAPI, but, when they do, your life is easier</li>
 </ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="implementing-apis-in-plumber" class="slide level2 unnumbered">
-<h2>Implementing APIs in plumber</h2>
+<section id="api-standards" class="slide level2">
+<h2>API Standards</h2>
 <ul>
-<li class="fragment">Generally think of each method as a separate thing</li>
-<li class="fragment"><code>#* @get /tasks</code> totally separate block from <code>#* @post /tasks</code></li>
-<li class="fragment"><em>Can</em> put multiple <code>@method</code>s in 1 block
-<ul>
-<li class="fragment">Function can use <code>req$REQUEST_METHOD</code> for routing</li>
-</ul></li>
-<li class="fragment">Remember <code>pr_mount()</code> for nested APIs!</li>
+<li class="fragment"><a href="https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.json">APIs.guru</a></li>
+<li class="fragment"><a href="https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json">OpenFEC</a></li>
+<li class="fragment"><a href="https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.json">YouTube Data API v3</a></li>
+<li class="fragment"><a href="https://api.apis.guru/v2/specs/asana.com/1.0/openapi.json">Asana</a></li>
 </ul>
-</section>
-<section id="process-requests-with-filters" class="slide level2 unnumbered">
-<h2>Process requests with filters</h2>
+<aside class="notes">
 <ul>
-<li class="fragment">Filter process before endpoints</li>
-<li class="fragment"><code>#* @filter FILTER_NAME</code></li>
-<li class="fragment">Do one of 3 things at end:
-<ul>
-<li class="fragment">Forward control to next handler</li>
-<li class="fragment">Return a response itself without forwarding to endpoint</li>
-<li class="fragment">Throw an error</li>
-</ul></li>
-<li class="fragment">Inputs = <code>req</code> (the request object), <code>res</code> (the response object)
-<ul>
-<li class="fragment">More on these in next chapter</li>
-</ul></li>
+<li>OpenAPI 3.0+ easier to use than Swagger (aka 2.0)</li>
+<li>Still some confusing bits, such as <code>security</code> vs <code>components$securitySchemas</code></li>
+<li>People can and will do things wrong/weird.</li>
 </ul>
-</section>
-<section id="modify-apis-with-hooks" class="slide level2 unnumbered">
-<h2>Modify APIs with hooks</h2>
-<ul>
-<li class="fragment">Execute code at points in request lifecycle
-<ul>
-<li class="fragment"><code>preroute(data, req, res)</code></li>
-<li class="fragment"><code>postroute(data, req, res, value)</code></li>
-<li class="fragment"><code>preserialize(data, req, res, value)</code></li>
-<li class="fragment"><code>postserialize(data, req, res, value)</code></li>
-</ul></li>
-<li class="fragment"><code>pr_hook()</code> for 1, <code>pr_hooks()</code> for multiple</li>
-<li class="fragment">Use for: logging, open/close DB connection, debugging</li>
-</ul>
-</section>
-<section id="debug-a-plumber-api" class="slide level2 unnumbered">
-<h2>Debug a plumber API</h2>
-<ul>
-<li class="fragment"><code>print()</code>, <code>cat()</code>, <code>cli::cli_inform()</code> in code to throw info to console</li>
-<li class="fragment">Use hooks to log things along the path</li>
-<li class="fragment"><code>browser()</code> in API functions will throw RStudio into debugger</li>
-<li class="fragment"><code>pr_set_debug()</code> is <strong><em>on</em></strong> by default when interactive</li>
-</ul>
-</section>
-<section id="meeting-videos" class="slide level2 unnumbered">
-<h2>Meeting Videos</h2>
-<h3 class="unnumbered" id="cohort-1">Cohort 1</h3>
-<iframe src="https://www.youtube.com/embed/URL" width="100%" height="400px" data-external="1">
-</iframe>
-<details>
-<summary>
-Meeting chat log
-</summary>
-<pre><code>LOG</code></pre>
-</details>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
