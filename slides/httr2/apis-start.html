@@ -400,11 +400,12 @@
 <h1>️✅ Learning objectives</h1>
 <div>
 <ul>
-<li>Fetch information from the web with {jsonlite}.</li>
-<li>Parse nested lists with the {tidyverse}.</li>
-<li>Parse nested lists with {tibblify}.</li>
 <li>Read API docs.</li>
+<li>Fetch json-formated data from the web.</li>
+<li>Fetch yaml-formatted data from the web.</li>
+<li>Parse nested lists with the {tidyverse}.</li>
 <li>Use an API’s OpenAPI specification to learn about the API.</li>
+<li>Parse nested lists with {tibblify}.</li>
 </ul>
 </div>
 <div class="cell">
@@ -413,7 +414,8 @@
 <span id="cb1-3"><a></a><span class="fu">library</span>(purrr)</span>
 <span id="cb1-4"><a></a><span class="fu">library</span>(tibble)</span>
 <span id="cb1-5"><a></a><span class="fu">library</span>(tibblify)</span>
-<span id="cb1-6"><a></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-7"><a></a><span class="fu">library</span>(yaml)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <aside class="notes">
 <ul>
@@ -553,8 +555,12 @@
 <li>jsonlite = one of several packages for parsing JSON
 <ul>
 <li>We’ll stick with it because it works &amp; is used by higher-level packages</li>
+<li>Used in {shiny}, {httr}, {httr2}, dozens of other packages</li>
 </ul></li>
-<li>fromJSON does some automatic guessing, we’ll come back to this in a later chapter</li>
+<li>fromJSON does some automatic guessing, we’ll come back to this in a later chapter
+<ul>
+<li>Alternatives: read_json reads file, parse_json reads string; don’t guess by default</li>
+</ul></li>
 <li>This result is a huge, nested list</li>
 <li>purrr::pluck_depth() tells you how nested a list is</li>
 <li>hard to see this. Let’s rectangle it!</li>
@@ -570,9 +576,10 @@
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section>
-<section id="rectangling-data" class="slide level2">
-<h2>Rectangling data</h2>
+</section></section>
+<section>
+<section id="rectangling-data" class="title-slide slide level1 center">
+<h1>Rectangling data</h1>
 <ul>
 <li class="fragment">“Rectangling” = converting hierarchical data to data frame</li>
 <li class="fragment">Some background in <a href="https://r4ds.hadley.nz/rectangling.html">R4DS Chapter 23: “Hierarchical data”</a>
@@ -602,10 +609,15 @@
 </section>
 <section id="rectangling-apis.gurus-list" class="slide level2">
 <h2>Rectangling APIs.guru’s list</h2>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>all_apis_df <span class="ot">&lt;-</span> all_apis <span class="sc">|&gt;</span></span>
-<span id="cb11-2"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="st">"api_name"</span>)</span>
-<span id="cb11-3"><a></a>all_apis_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11" data-code-line-numbers="1-2|2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>all_apis_df <span class="ot">&lt;-</span> all_apis <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="st">"api_name"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>all_apis_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 2,529 × 2
 #&gt;    api_name                      value           
@@ -623,6 +635,7 @@
 #&gt; # ℹ 2,519 more rows</code></pre>
 </div>
 </div>
+</div>
 <aside class="notes">
 <ul>
 <li><code>tibble::enframe()</code> is underused, imo!</li>
@@ -632,7 +645,7 @@
 <li>If it isn’t named, set to NULL</li>
 </ul></li>
 <li><code>value</code> arg is available but we’re almost always going to destroy that column</li>
-<li>Need to figure out whether those values are rows (observations) or columns (variables)</li>
+<li>Need to figure out whether those values are blocks of results (rows) or separate pieces of information about a single result (columns)</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -650,7 +663,7 @@
 <h2>Unnest wider or longer?</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>all_apis_df<span class="sc">$</span>value <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>all_apis_df<span class="sc">$</span>value <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; [1] 3</code></pre>
 </div>
@@ -658,7 +671,7 @@
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>all_apis_df<span class="sc">$</span>value[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>all_apis_df<span class="sc">$</span>value[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; [1] "added"     "preferred" "versions"</code></pre>
 </div>
@@ -666,23 +679,59 @@
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">setdiff</span>(</span>
-<span id="cb17-2"><a></a>  <span class="fu">names</span>(all_apis_df<span class="sc">$</span>value[[<span class="dv">1</span>]]),</span>
-<span id="cb17-3"><a></a>  <span class="fu">names</span>(all_apis_df<span class="sc">$</span>value[[<span class="dv">11</span>]])</span>
-<span id="cb17-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a><span class="fu">setdiff</span>(</span>
+<span id="cb18-2"><a></a>  <span class="fu">names</span>(all_apis_df<span class="sc">$</span>value[[<span class="dv">1</span>]]),</span>
+<span id="cb18-3"><a></a>  <span class="fu">names</span>(all_apis_df<span class="sc">$</span>value[[<span class="dv">11</span>]])</span>
+<span id="cb18-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; character(0)</code></pre>
 </div>
 </div>
 </div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a><span class="fu">str</span>(all_apis_df<span class="sc">$</span>value[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">max.level =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; List of 2
+#&gt;  $ :List of 3
+#&gt;   ..$ added    : chr "2017-05-30T08:34:14.000Z"
+#&gt;   ..$ preferred: chr "0.0.1"
+#&gt;   ..$ versions :List of 1
+#&gt;  $ :List of 3
+#&gt;   ..$ added    : chr "2021-07-19T10:17:09.188Z"
+#&gt;   ..$ preferred: chr "1.0.0"
+#&gt;   ..$ versions :List of 1</code></pre>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Wider if multiple variables per value, longer if multiple observations per value.</li>
+<li>(make sure everyone groks why wider)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="our-first-unnest" class="slide level2">
 <h2>Our first unnest</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>all_apis_versions <span class="ot">&lt;-</span> all_apis_df <span class="sc">|&gt;</span></span>
-<span id="cb19-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(value)</span>
-<span id="cb19-3"><a></a>all_apis_versions</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>all_apis_versions <span class="ot">&lt;-</span> all_apis_df <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>all_apis_versions</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 2,529 × 4
 #&gt;    api_name                      added                    preferred versions    
@@ -701,12 +750,32 @@
 </div>
 </div>
 </div>
+<aside class="notes">
+<ul>
+<li><code>tidyr::unnest_auto()</code> will guess, sometimes useful (but replace in final code)</li>
+<li>Why not just <code>unnest()</code>?
+<ul>
+<li>Useful if the column contains identically structured dfs (unnests to cols and rows)</li>
+<li>Loses names and can otherwise make a mess if we aren’t careful.</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="unnest-2-wider-or-longer" class="slide level2">
 <h2>Unnest 2: wider or longer?</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>all_apis_versions<span class="sc">$</span>versions <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>all_apis_versions<span class="sc">$</span>versions <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt;  [1]  1  4  2  5 16  3  6 11 10  7  8  9 23 17 12 13 19 22 24 21</code></pre>
 </div>
@@ -714,7 +783,7 @@
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>all_apis_versions<span class="sc">$</span>versions <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>all_apis_versions<span class="sc">$</span>versions <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt;  [1] 1 1 1 1 1 1 1 1 1 4</code></pre>
 </div>
@@ -722,7 +791,7 @@
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>all_apis_versions<span class="sc">$</span>versions[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>all_apis_versions<span class="sc">$</span>versions[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; [1] "0.0.1"</code></pre>
 </div>
@@ -730,9 +799,21 @@
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>all_apis_versions<span class="sc">$</span>versions[[<span class="dv">10</span>]] <span class="sc">|&gt;</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>all_apis_versions<span class="sc">$</span>versions[[<span class="dv">10</span>]] <span class="sc">|&gt;</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; [1] "3" "4" "5" "6"</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a>all_apis_versions<span class="sc">$</span>versions[[<span class="dv">10</span>]] <span class="sc">|&gt;</span> <span class="fu">str</span>(<span class="at">max.level =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; List of 4
+#&gt;  $ 3:List of 7
+#&gt;  $ 4:List of 7
+#&gt;  $ 5:List of 7
+#&gt;  $ 6:List of 7</code></pre>
 </div>
 </div>
 </div>
@@ -741,15 +822,15 @@
 <h2>Unnest 2</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29" data-code-line-numbers="1-2|3|4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>all_apis_preferred <span class="ot">&lt;-</span> all_apis_versions <span class="sc">|&gt;</span></span>
-<span id="cb29-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_longer</span>(versions, <span class="at">indices_to =</span> <span class="st">"version"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb29-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(preferred <span class="sc">==</span> version) <span class="sc">|&gt;</span></span>
-<span id="cb29-4"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(api_name, version, versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35" data-code-line-numbers="1-2|3|4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>all_apis_preferred <span class="ot">&lt;-</span> all_apis_versions <span class="sc">|&gt;</span></span>
+<span id="cb35-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_longer</span>(versions, <span class="at">indices_to =</span> <span class="st">"version"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb35-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(preferred <span class="sc">==</span> version) <span class="sc">|&gt;</span></span>
+<span id="cb35-4"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(api_name, version, versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>all_apis_preferred</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>all_apis_preferred</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 2,529 × 3
 #&gt;    api_name                      version     versions        
@@ -773,7 +854,7 @@
 <h2>Unnest 3: wider or longer?</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>all_apis_preferred<span class="sc">$</span>versions <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a>all_apis_preferred<span class="sc">$</span>versions <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; [1] 7 8</code></pre>
 </div>
@@ -781,10 +862,10 @@
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a><span class="fu">setdiff</span>(</span>
-<span id="cb34-2"><a></a>  <span class="fu">names</span>(all_apis_preferred<span class="sc">$</span>versions[[<span class="dv">7</span>]]),</span>
-<span id="cb34-3"><a></a>  <span class="fu">names</span>(all_apis_preferred<span class="sc">$</span>versions[[<span class="dv">1</span>]])</span>
-<span id="cb34-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a><span class="fu">setdiff</span>(</span>
+<span id="cb40-2"><a></a>  <span class="fu">names</span>(all_apis_preferred<span class="sc">$</span>versions[[<span class="dv">7</span>]]),</span>
+<span id="cb40-3"><a></a>  <span class="fu">names</span>(all_apis_preferred<span class="sc">$</span>versions[[<span class="dv">1</span>]])</span>
+<span id="cb40-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; [1] "externalDocs"</code></pre>
 </div>
@@ -792,8 +873,8 @@
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>all_apis_preferred_wide <span class="ot">&lt;-</span> all_apis_preferred <span class="sc">|&gt;</span></span>
-<span id="cb36-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a>all_apis_preferred_wide <span class="ot">&lt;-</span> all_apis_preferred <span class="sc">|&gt;</span></span>
+<span id="cb42-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
@@ -801,13 +882,13 @@
 <h2>All APIs</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37" data-code-line-numbers="1|2|3|4|5-6|7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>all_apis <span class="sc">|&gt;</span> </span>
-<span id="cb37-2"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="st">"api_name"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb37-3"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(value) <span class="sc">|&gt;</span> </span>
-<span id="cb37-4"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_longer</span>(versions, <span class="at">indices_to =</span> <span class="st">"version"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb37-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(preferred <span class="sc">==</span> version) <span class="sc">|&gt;</span></span>
-<span id="cb37-6"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(api_name, version, versions) <span class="sc">|&gt;</span></span>
-<span id="cb37-7"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43" data-code-line-numbers="1|2|3|4|5-6|7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a>all_apis <span class="sc">|&gt;</span> </span>
+<span id="cb43-2"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="st">"api_name"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb43-3"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(value) <span class="sc">|&gt;</span> </span>
+<span id="cb43-4"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_longer</span>(versions, <span class="at">indices_to =</span> <span class="st">"version"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb43-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(preferred <span class="sc">==</span> version) <span class="sc">|&gt;</span></span>
+<span id="cb43-6"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(api_name, version, versions) <span class="sc">|&gt;</span></span>
+<span id="cb43-7"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 2,529 × 10
 #&gt;    api_name         version added info         updated swaggerUrl swaggerYamlUrl
@@ -849,11 +930,11 @@
 <section id="filter-apis" class="slide level2">
 <h2>Filter APIs</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39" data-code-line-numbers="1-2|3-5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a>all_apis_preferred_wide <span class="sc">|&gt;</span></span>
-<span id="cb39-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">hoist</span>(info, <span class="at">categories =</span> <span class="st">"x-apisguru-categories"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb39-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
-<span id="cb39-4"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="st">"open_data"</span> <span class="sc">%in%</span> categories) <span class="sc">|&gt;</span></span>
-<span id="cb39-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45" data-code-line-numbers="1-2|3-5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a>all_apis_preferred_wide <span class="sc">|&gt;</span></span>
+<span id="cb45-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">hoist</span>(info, <span class="at">categories =</span> <span class="st">"x-apisguru-categories"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb45-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
+<span id="cb45-4"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="st">"open_data"</span> <span class="sc">%in%</span> categories) <span class="sc">|&gt;</span></span>
+<span id="cb45-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 318 × 11
 #&gt;    api_name             version added categories info         updated swaggerUrl
@@ -894,9 +975,14 @@
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section></section>
+<section>
+<section id="api-definitions" class="title-slide slide level1 center">
+<h1>API Definitions</h1>
+
 </section>
-<section id="api-standards" class="slide level2">
-<h2>API Standards</h2>
+<section id="api-descriptions" class="slide level2">
+<h2>API Descriptions</h2>
 <ul>
 <li class="fragment"><a href="https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.json">APIs.guru</a></li>
 <li class="fragment"><a href="https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json">OpenFEC</a></li>
@@ -905,10 +991,222 @@
 </ul>
 <aside class="notes">
 <ul>
+<li>Technically the OpenAPI specification is the standard, and each API has a “description”</li>
 <li>OpenAPI 3.0+ easier to use than Swagger (aka 2.0)</li>
 <li>Still some confusing bits, such as <code>security</code> vs <code>components$securitySchemas</code></li>
 <li>People can and will do things wrong/weird.</li>
 </ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="read-an-api-description" class="slide level2">
+<h2>Read an API description</h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a>youtube_spec <span class="ot">&lt;-</span> yaml<span class="sc">::</span><span class="fu">read_yaml</span>(<span class="st">"https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a></a><span class="fu">names</span>(youtube_spec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "openapi"      "servers"      "info"         "externalDocs" "tags"        
+#&gt; [6] "paths"        "components"</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="introduction-to-tibblify" class="slide level2">
+<h2>Introduction to tibblify</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a></a>youtube_paths <span class="ot">&lt;-</span> tibblify<span class="sc">::</span><span class="fu">tibblify</span>(youtube_spec<span class="sc">$</span>paths) <span class="sc">|&gt;</span> </span>
+<span id="cb50-2"><a></a>  dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Rows: 39
+#&gt; Columns: 6
+#&gt; $ .names     &lt;chr&gt; "/youtube/v3/abuseReports", "/youtube/v3/activities", "/you…
+#&gt; $ parameters &lt;list&lt;tibble[,1]&gt;&gt; [&lt;tbl_df[11 x 1]&gt;], [&lt;tbl_df[11 x 1]&gt;], [&lt;tbl_…
+#&gt; $ post       &lt;tibble[,7]&gt; &lt;tbl_df[26 x 7]&gt;
+#&gt; $ get        &lt;tibble[,6]&gt; &lt;tbl_df[26 x 6]&gt;
+#&gt; $ delete     &lt;tibble[,6]&gt; &lt;tbl_df[26 x 6]&gt;
+#&gt; $ put        &lt;tibble[,7]&gt; &lt;tbl_df[26 x 7]&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="openapi-references" class="slide level2">
+<h2>OpenAPI References</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a></a>youtube_paths<span class="sc">$</span>parameters[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 11 × 1
+#&gt;    `$ref`                                 
+#&gt;    &lt;chr&gt;                                  
+#&gt;  1 #/components/parameters/_.xgafv        
+#&gt;  2 #/components/parameters/access_token   
+#&gt;  3 #/components/parameters/alt            
+#&gt;  4 #/components/parameters/callback       
+#&gt;  5 #/components/parameters/fields         
+#&gt;  6 #/components/parameters/key            
+#&gt;  7 #/components/parameters/oauth_token    
+#&gt;  8 #/components/parameters/prettyPrint    
+#&gt;  9 #/components/parameters/quotaUser      
+#&gt; 10 #/components/parameters/upload_protocol
+#&gt; 11 #/components/parameters/uploadType</code></pre>
+</div>
+</div>
+</section>
+<section id="parse_openapi_spec" class="slide level2">
+<h2>parse_openapi_spec()</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a></a>youtube_paths <span class="ot">&lt;-</span> tibblify<span class="sc">::</span><span class="fu">parse_openapi_spec</span>(youtube_spec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a></a>youtube_paths</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 39 × 2
+#&gt;    endpoint                          operations       
+#&gt;    &lt;chr&gt;                             &lt;list&gt;           
+#&gt;  1 /youtube/v3/abuseReports          &lt;tibble [1 × 10]&gt;
+#&gt;  2 /youtube/v3/activities            &lt;tibble [1 × 10]&gt;
+#&gt;  3 /youtube/v3/captions              &lt;tibble [4 × 10]&gt;
+#&gt;  4 /youtube/v3/captions/{id}         &lt;tibble [1 × 10]&gt;
+#&gt;  5 /youtube/v3/channelBanners/insert &lt;tibble [1 × 10]&gt;
+#&gt;  6 /youtube/v3/channelSections       &lt;tibble [4 × 10]&gt;
+#&gt;  7 /youtube/v3/channels              &lt;tibble [2 × 10]&gt;
+#&gt;  8 /youtube/v3/commentThreads        &lt;tibble [3 × 10]&gt;
+#&gt;  9 /youtube/v3/comments              &lt;tibble [4 × 10]&gt;
+#&gt; 10 /youtube/v3/comments/markAsSpam   &lt;tibble [1 × 10]&gt;
+#&gt; # ℹ 29 more rows</code></pre>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>We’re looking at a dev version of tibblify which I plan to push through
+<ul>
+<li><code>pak::pak("mgirlich/tibblify#191")</code></li>
+</ul></li>
+<li>“endpoint” is another term for “path” – a url in the API</li>
+<li>Deals with references from paths to components &gt; schemas</li>
+<li>Captions has 4 different methods, so its tibble has 4 rows.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="unnesting-paths" class="slide level2">
+<h2>Unnesting paths</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a></a>youtube_paths <span class="sc">|&gt;</span> tidyr<span class="sc">::</span><span class="fu">unnest</span>(operations)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 76 × 11
+#&gt;    endpoint          operation summary description operation_id tags  parameters
+#&gt;    &lt;chr&gt;             &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt; &lt;list&gt;    
+#&gt;  1 /youtube/v3/abus… post      &lt;NA&gt;    Inserts a … youtube.abu… abus… &lt;tibble&gt;  
+#&gt;  2 /youtube/v3/acti… get       &lt;NA&gt;    Retrieves … youtube.act… acti… &lt;tibble&gt;  
+#&gt;  3 /youtube/v3/capt… delete    &lt;NA&gt;    Deletes a … youtube.cap… capt… &lt;tibble&gt;  
+#&gt;  4 /youtube/v3/capt… get       &lt;NA&gt;    Retrieves … youtube.cap… capt… &lt;tibble&gt;  
+#&gt;  5 /youtube/v3/capt… post      &lt;NA&gt;    Inserts a … youtube.cap… capt… &lt;tibble&gt;  
+#&gt;  6 /youtube/v3/capt… put       &lt;NA&gt;    Updates an… youtube.cap… capt… &lt;tibble&gt;  
+#&gt;  7 /youtube/v3/capt… get       &lt;NA&gt;    Downloads … youtube.cap… capt… &lt;tibble&gt;  
+#&gt;  8 /youtube/v3/chan… post      &lt;NA&gt;    Inserts a … youtube.cha… chan… &lt;tibble&gt;  
+#&gt;  9 /youtube/v3/chan… delete    &lt;NA&gt;    Deletes a … youtube.cha… chan… &lt;tibble&gt;  
+#&gt; 10 /youtube/v3/chan… get       &lt;NA&gt;    Retrieves … youtube.cha… chan… &lt;tibble&gt;  
+#&gt; # ℹ 66 more rows
+#&gt; # ℹ 4 more variables: request_body &lt;list&gt;, responses &lt;list&gt;, deprecated &lt;lgl&gt;,
+#&gt; #   global_parameters &lt;list&gt;</code></pre>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li><code>operation</code> aka method, we’ll discuss these more later; GET means you can load it like a web page</li>
+<li>Note rows 3-6 are that <code>captions</code> endpoint, and then 7 is <code>captions/{id}</code></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="path-details" class="slide level2">
+<h2>Path details</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a></a>youtube_paths <span class="sc">|&gt;</span> tidyr<span class="sc">::</span><span class="fu">unnest</span>(operations) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Rows: 76
+#&gt; Columns: 11
+#&gt; $ endpoint          &lt;chr&gt; "/youtube/v3/abuseReports", "/youtube/v3/activities"…
+#&gt; $ operation         &lt;chr&gt; "post", "get", "delete", "get", "post", "put", "get"…
+#&gt; $ summary           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+#&gt; $ description       &lt;chr&gt; "Inserts a new resource into this collection.", "Ret…
+#&gt; $ operation_id      &lt;chr&gt; "youtube.abuseReports.insert", "youtube.activities.l…
+#&gt; $ tags              &lt;chr&gt; "abuseReports", "activities", "captions", "captions"…
+#&gt; $ parameters        &lt;list&gt; [&lt;tbl_df[1 x 9]&gt;], [&lt;tbl_df[9 x 9]&gt;], [&lt;tbl_df[3 x …
+#&gt; $ request_body      &lt;list&gt; [&lt;tbl_df[1 x 3]&gt;], &lt;NULL&gt;, &lt;NULL&gt;, &lt;NULL&gt;, [&lt;tbl_df…
+#&gt; $ responses         &lt;list&gt; [&lt;tbl_df[1 x 5]&gt;], [&lt;tbl_df[1 x 5]&gt;], [&lt;tbl_df[1 x …
+#&gt; $ deprecated        &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FAL…
+#&gt; $ global_parameters &lt;list&gt; [&lt;tbl_df[11 x 9]&gt;], [&lt;tbl_df[11 x 9]&gt;], [&lt;tbl_df[11…</code></pre>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>(<code>endpoint</code> = path)</li>
+<li>(<code>operation</code> = <code>method</code> = more details in a few chapters)</li>
+<li><code>summary</code> is meant for a very brief description, not often used</li>
+<li><code>description</code> can have markdown</li>
+<li><code>operation_id</code> = unique string for this operation, meant for tools to use as a function name</li>
+<li><code>tags</code> = Categories; can have more than one per endpoint, but often just one</li>
+<li><code>parameters</code> = tibble of inputs</li>
+<li><code>request_body</code> = tibble of a fancier type of input (later chapter)</li>
+<li><code>responses</code> = tibble of expected output</li>
+<li><code>deprecated</code> = is this endpoint no longer intended to be used</li>
+<li><code>global_parameters</code> = tibble of shared inputs</li>
+<li>This tibble contains MOST of the useful information about the API
+<ul>
+<li>We’ll dig into this tibble for a simple API in the next chapter</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section id="survey" class="title-slide slide level1 center">
+<h1>Survey</h1>
+<p><a href="https://forms.gle/jiq4jsaXV6accnNS6">Please let me know what you think about this chapter!</a></p>
+<aside class="notes">
+<p>https://forms.gle/jiq4jsaXV6accnNS6</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -926,7 +1224,7 @@
 <p><a href="../../" target="wapir-club_index">r4ds.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
 </div>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 
