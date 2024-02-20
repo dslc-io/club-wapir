@@ -493,3 +493,11 @@ youtube_paths |> tidyr::unnest(operations) |> dplyr::glimpse()
 -   This tibble contains MOST of the useful information about the API
     -   We'll dig into this tibble for a simple API in the next chapter
 :::
+
+# Survey
+
+[Please let me know what you think about this chapter!](https://forms.gle/jiq4jsaXV6accnNS6)
+
+::: notes
+https://forms.gle/jiq4jsaXV6accnNS6
+:::
