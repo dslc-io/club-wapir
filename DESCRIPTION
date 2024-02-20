@@ -29,5 +29,6 @@ Imports:
     tidyr,
     webfakes,
     websocket,
-    xml2
+    xml2,
+    yaml
 Encoding: UTF-8

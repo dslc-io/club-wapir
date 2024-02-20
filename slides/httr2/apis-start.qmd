@@ -6,11 +6,12 @@ title: How can I get started with APIs?
 # ️✅ Learning objectives
 
 ::: nonincremental
--   Fetch information from the web with {jsonlite}.
--   Parse nested lists with the {tidyverse}.
--   Parse nested lists with {tibblify}.
 -   Read API docs.
+-   Fetch json-formated data from the web.
+-   Fetch yaml-formatted information from the web.
+-   Parse nested lists with the {tidyverse}.
 -   Use an API's OpenAPI specification to learn about the API.
+-   Parse nested lists with {tibblify}.
 :::
 
 ```{r}
@@ -22,6 +23,7 @@ library(purrr)
 library(tibble)
 library(tibblify)
 library(tidyr)
+library(yaml)
 ```
 
 ::: notes
@@ -122,13 +124,15 @@ str(head(all_apis, 2), max.level = 2)
 ::: notes
 -   jsonlite = one of several packages for parsing JSON
     -   We'll stick with it because it works & is used by higher-level packages
+    -   Used in {shiny}, {httr}, {httr2}, dozens of other packages
 -   fromJSON does some automatic guessing, we'll come back to this in a later chapter
+    -   Alternatives: read_json reads file, parse_json reads string; don't guess by default 
 -   This result is a huge, nested list
 -   purrr::pluck_depth() tells you how nested a list is
 -   hard to see this. Let's rectangle it!
 :::
 
-## Rectangling data
+# Rectangling data
 
 -   "Rectangling" = converting hierarchical data to data frame
 -   Some background in [R4DS Chapter 23: "Hierarchical data"](https://r4ds.hadley.nz/rectangling.html)
@@ -144,21 +148,29 @@ str(head(all_apis, 2), max.level = 2)
 
 ## Rectangling APIs.guru's list
 
+::: fragment
 ```{r}
 #| label: apis_start-apis_guru_list_df
 #| eval: true
+#| code-line-numbers: 1-2|2
 all_apis_df <- all_apis |>
   tibble::enframe(name = "api_name")
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_df2
+#| eval: true
 all_apis_df
 ```
-
+:::
 ::: notes
 -   `tibble::enframe()` is underused, imo!
 -   Best with named lists
 -   `name` arg is often useful (if input is named)
     -   If it isn't named, set to NULL
 -   `value` arg is available but we're almost always going to destroy that column
--   Need to figure out whether those values are rows (observations) or columns (variables)
+-   Need to figure out whether those values are blocks of results (rows) or separate pieces of information about a single result (columns)
 :::
 
 ## Unnest wider or longer?
@@ -187,6 +199,18 @@ setdiff(
 )
 ```
 :::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_df_explore4
+#| eval: true
+str(all_apis_df$value[1:2], max.level = 2)
+```
+:::
+
+::: notes
+-   Wider if multiple variables per value, longer if multiple observations per value.
+-   (make sure everyone groks why wider)
+:::
 
 ## Our first unnest
 
@@ -196,8 +220,21 @@ setdiff(
 #| eval: true
 all_apis_versions <- all_apis_df |>
   tidyr::unnest_wider(value)
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_versions2
+#| eval: true
 all_apis_versions
 ```
+:::
+
+::: notes
+-   `tidyr::unnest_auto()` will guess, sometimes useful (but replace in final code)
+-   Why not just `unnest()`?
+    -   Useful if the column contains identically structured dfs (unnests to cols and rows)
+    -   Loses names and can otherwise make a mess if we aren't careful.
 :::
 
 ## Unnest 2: wider or longer?
@@ -228,6 +265,13 @@ all_apis_versions$versions[[1]] |> names()
 #| label: apis_start-apis_guru_list_all_apis_versions_explore4
 #| eval: true
 all_apis_versions$versions[[10]] |> names()
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_versions_explore5
+#| eval: true
+all_apis_versions$versions[[10]] |> str(max.level = 1)
 ```
 :::
 
@@ -325,7 +369,9 @@ all_apis_preferred_wide |>
 -   Not everyone uses swagger/OpenAPI, but, when they do, your life is easier
 :::
 
-## API Standards
+# API Definitions
+
+## API Descriptions
 
 -   [APIs.guru](https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.json)
 -   [OpenFEC](https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json)
@@ -333,7 +379,117 @@ all_apis_preferred_wide |>
 -   [Asana](https://api.apis.guru/v2/specs/asana.com/1.0/openapi.json)
 
 ::: notes
+-   Technically the OpenAPI specification is the standard, and each API has a "description"
 -   OpenAPI 3.0+ easier to use than Swagger (aka 2.0)
 -   Still some confusing bits, such as `security` vs `components$securitySchemas`
 -   People can and will do things wrong/weird.
+:::
+
+## Read an API description
+
+```{r}
+#| label: apis_start-api_spec-download
+#| eval: false
+#| include: false
+download.file(
+  "https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml",
+  here::here("slides", "httr2", "apis-start", "youtube.yaml")
+)
+```
+```{r}
+#| label: apis_start-api_spec-load
+#| eval: true
+#| include: false
+youtube_spec <- yaml::read_yaml(here::here("slides", "httr2", "apis-start", "youtube.yaml"))
+```
+
+::: fragment
+```{r}
+#| label: apis_start-api_spec
+youtube_spec <- yaml::read_yaml("https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml")
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-api_spec-examine
+#| eval: true
+names(youtube_spec)
+```
+:::
+
+## Introduction to tibblify
+
+```{r}
+#| label: apis_start-api_spec-tibblify
+#| eval: true
+youtube_paths <- tibblify::tibblify(youtube_spec$paths) |> 
+  dplyr::glimpse()
+```
+
+## OpenAPI References
+
+```{r}
+#| label: apis_start-api_spec-tibblify-ref
+#| eval: true
+youtube_paths$parameters[[1]]
+```
+
+## parse_openapi_spec()
+
+```{r}
+#| label: apis_start-api_spec-tibblify-openapi
+#| eval: true
+youtube_paths <- tibblify::parse_openapi_spec(youtube_spec)
+```
+::: fragment
+```{r}
+#| label: apis_start-api_spec-tibblify2
+#| eval: true
+youtube_paths
+```
+:::
+
+::: notes
+-   We're looking at a dev version of tibblify which I plan to push through
+    -   `pak::pak("mgirlich/tibblify#191")`
+-   "endpoint" is another term for "path" -- a url in the API
+-   Deals with references from paths to components > schemas
+-   Captions has 4 different methods, so its tibble has 4 rows.
+:::
+
+## Unnesting paths
+
+```{r}
+#| label: apis_start-api_spec-tibblify3
+#| eval: true
+youtube_paths |> tidyr::unnest(operations)
+```
+
+::: notes
+-   `operation` aka method, we'll discuss these more later; GET means you can load it like a web page
+-   Note rows 3-6 are that `captions` endpoint, and then 7 is `captions/{id}`
+:::
+
+## Path details
+
+```{r}
+#| label: apis_start-api_spec-tibblify4
+#| eval: true
+youtube_paths |> tidyr::unnest(operations) |> dplyr::glimpse()
+```
+
+::: notes
+-   (`endpoint` = path)
+-   (`operation` = `method` = more details in a few chapters)
+-   `summary` is meant for a very brief description, not often used
+-   `description` can have markdown
+-   `operation_id` = unique string for this operation, meant for tools to use as a function name
+-   `tags` = Categories; can have more than one per endpoint, but often just one
+-   `parameters` = tibble of inputs
+-   `request_body` = tibble of a fancier type of input (later chapter)
+-   `responses` = tibble of expected output
+-   `deprecated` = is this endpoint no longer intended to be used
+-   `global_parameters` = tibble of shared inputs
+-   This tibble contains MOST of the useful information about the API
+    -   We'll dig into this tibble for a simple API in the next chapter
 :::
