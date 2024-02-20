@@ -1,0 +1,339 @@
+---
+engine: knitr
+title: How can I get started with APIs?
+---
+
+# ️✅ Learning objectives
+
+::: nonincremental
+-   Fetch information from the web with {jsonlite}.
+-   Parse nested lists with the {tidyverse}.
+-   Parse nested lists with {tibblify}.
+-   Read API docs.
+-   Use an API's OpenAPI specification to learn about the API.
+:::
+
+```{r}
+#| label: apis-start-packages-used
+#| eval: true
+library(dplyr)
+library(jsonlite)
+library(purrr)
+library(tibble)
+library(tibblify)
+library(tidyr)
+```
+
+::: notes
+-   Pretend this is our second meeting. Chapter 1 talked about what APIs are, but we haven't done httr2 yet.
+-   Has anybody used:
+    -   nested lists (unnest)
+    -   tibble::enframe()
+    -   tibblify
+:::
+
+# Where can I find APIs?
+
+![](/images/apisguru.png)
+
+::: notes
+-   I'm very likely going to build a replacement for APIs.guru.
+    -   Doesn't update often enough.
+    -   Most recent merge: March 8, 2023
+    -   It should live up to its name, and be easier to update!
+-   But principles will still hold!
+:::
+
+## Browsing APIs.guru
+
+([launch APIs.guru to explore](https://apis.guru/))
+
+-   Good if you know what you're looking for
+-   Less good for exploration
+-   But we can grab the data directly!
+
+## The APIs.guru API
+
+-   ([launch APIs.guru API page to explore](https://apis.guru/api-doc/#operation/listAPIs))
+-   ([list.json result](https://api.apis.guru/v2/list.json))
+
+::: notes
+-   JSON = JavaScript Object Notation
+-   By far most common format for API data
+-   I'm using [JSONVue browser extension](https://chromewebstore.google.com/detail/jsonvue/chklaanhfefbnpoihckbnefhakgolnmc?pli=1) 
+-   Great for nested data
+-   We aren't going to dig into the format because we won't use it directly
+:::
+
+## List all APIs.guru APIs
+
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list
+all_apis <- jsonlite::fromJSON("https://api.apis.guru/v2/list.json")
+```
+:::
+
+```{r}
+#| label: apis_start-apis_guru_list_download
+#| eval: false
+#| include: false
+download.file(
+  "https://api.apis.guru/v2/list.json",
+  here::here("slides", "httr2", "apis-start", "list.json")
+)
+```
+```{r}
+#| label: apis_start-apis_guru_list_load
+#| eval: true
+#| include: false
+all_apis <- jsonlite::fromJSON(here::here("slides", "httr2", "apis-start", "list.json"))
+```
+
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_length
+#| eval: true
+length(all_apis)
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_head
+#| eval: true
+head(names(all_apis))
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_depth
+#| eval: true
+purrr::pluck_depth(all_apis)
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_str
+#| eval: true
+str(head(all_apis, 2), max.level = 2)
+```
+:::
+
+::: notes
+-   jsonlite = one of several packages for parsing JSON
+    -   We'll stick with it because it works & is used by higher-level packages
+-   fromJSON does some automatic guessing, we'll come back to this in a later chapter
+-   This result is a huge, nested list
+-   purrr::pluck_depth() tells you how nested a list is
+-   hard to see this. Let's rectangle it!
+:::
+
+## Rectangling data
+
+-   "Rectangling" = converting hierarchical data to data frame
+-   Some background in [R4DS Chapter 23: "Hierarchical data"](https://r4ds.hadley.nz/rectangling.html)
+    -   But we'll use different methods
+-   Trial-and-error = ok
+
+::: notes
+-   Rectangular data is nice because then you can use normal tidyverse functions
+-   There's a tidyverse function that I think handles returns from APIs better than what they show there.
+-   You might need to play around with unnest_wider vs unnest_longer (we'll see examples in a sec). Don't feel like you're doing something wrong!
+-   In a couple chapters, we'll see how to use the API spec (when it's available) to help us guess less.
+:::
+
+## Rectangling APIs.guru's list
+
+```{r}
+#| label: apis_start-apis_guru_list_df
+#| eval: true
+all_apis_df <- all_apis |>
+  tibble::enframe(name = "api_name")
+all_apis_df
+```
+
+::: notes
+-   `tibble::enframe()` is underused, imo!
+-   Best with named lists
+-   `name` arg is often useful (if input is named)
+    -   If it isn't named, set to NULL
+-   `value` arg is available but we're almost always going to destroy that column
+-   Need to figure out whether those values are rows (observations) or columns (variables)
+:::
+
+## Unnest wider or longer?
+
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_df_explore
+#| eval: true
+all_apis_df$value |> lengths() |> unique()
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_df_explore2
+#| eval: true
+all_apis_df$value[[1]] |> names()
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_df_explore3
+#| eval: true
+setdiff(
+  names(all_apis_df$value[[1]]),
+  names(all_apis_df$value[[11]])
+)
+```
+:::
+
+## Our first unnest
+
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_versions
+#| eval: true
+all_apis_versions <- all_apis_df |>
+  tidyr::unnest_wider(value)
+all_apis_versions
+```
+:::
+
+## Unnest 2: wider or longer?
+
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_versions_explore
+#| eval: true
+all_apis_versions$versions |> lengths() |> unique()
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_versions_explore2
+#| eval: true
+all_apis_versions$versions |> lengths() |> head(10)
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_versions_explore3
+#| eval: true
+all_apis_versions$versions[[1]] |> names()
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_versions_explore4
+#| eval: true
+all_apis_versions$versions[[10]] |> names()
+```
+:::
+
+## Unnest 2
+
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_preferred
+#| eval: true
+#| code-line-numbers: 1-2|3|4
+all_apis_preferred <- all_apis_versions |>
+  tidyr::unnest_longer(versions, indices_to = "version") |>
+  dplyr::filter(preferred == version) |>
+  dplyr::select(api_name, version, versions)
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_preferred_print
+#| eval: true
+all_apis_preferred
+```
+:::
+
+## Unnest 3: wider or longer?
+
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_preferred_explore
+#| eval: true
+all_apis_preferred$versions |> lengths() |> unique()
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_preferred_explore2
+#| eval: true
+setdiff(
+  names(all_apis_preferred$versions[[7]]),
+  names(all_apis_preferred$versions[[1]])
+)
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_preferred_explore3
+#| eval: true
+all_apis_preferred_wide <- all_apis_preferred |>
+  tidyr::unnest_wider(versions)
+```
+:::
+
+## All APIs
+
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_preferred_wide
+#| eval: true
+#| code-line-numbers: 1|2|3|4|5-6|7
+all_apis |> 
+  tibble::enframe(name = "api_name") |> 
+  tidyr::unnest_wider(value) |> 
+  tidyr::unnest_longer(versions, indices_to = "version") |>
+  dplyr::filter(preferred == version) |>
+  dplyr::select(api_name, version, versions) |>
+  tidyr::unnest_wider(versions)
+```
+:::
+
+::: notes
+-   If we dug in a little more, we'd see that info is variable-like, but all over the place; different APIs have different values
+    -   APIs.guru adds a couple things in here, including a "category" that we'll use
+:::
+
+## Filter APIs
+
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_preferred_wide_filter
+#| eval: true
+#| code-line-numbers: 1-2|3-5
+all_apis_preferred_wide |>
+  tidyr::hoist(info, categories = "x-apisguru-categories") |>
+  dplyr::rowwise() |>
+  dplyr::filter("open_data" %in% categories) |>
+  dplyr::ungroup()
+```
+
+::: notes
+-   Could also unnest_longer and filter for "open_data"
+-   `swaggerUrl` is JSON, `swaggerYamlUrl` is YAML version of the same thing
+-   YAML is another data format. Technically YAML is a superset of JSON, with added commenting capabilities.
+-   RMarkdown headers + package descriptions are YAML-related.
+-   We mostly don't care (mostly because YAML plays slightly better with tibblify, as we'll see)
+-   "Swagger" is the old name for the OpenAPI specification, a standard way to describe APIs.
+-   Not everyone uses swagger/OpenAPI, but, when they do, your life is easier
+:::
+
+## API Standards
+
+-   [APIs.guru](https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.json)
+-   [OpenFEC](https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json)
+-   [YouTube Data API v3](https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.json)
+-   [Asana](https://api.apis.guru/v2/specs/asana.com/1.0/openapi.json)
+
+::: notes
+-   OpenAPI 3.0+ easier to use than Swagger (aka 2.0)
+-   Still some confusing bits, such as `security` vs `components$securitySchemas`
+-   People can and will do things wrong/weird.
+:::

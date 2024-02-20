@@ -26,6 +26,8 @@ website:
 
       - section: "How can I interact with the web from R?"
         contents:
+          - file: slides/httr2/apis-start.qmd
+            target: wapir-club_apis-find
           - file: slides/httr2/httr2.qmd
             target: wapir-club_httr2
           - file: slides/httr2/httr2-authentication.qmd
