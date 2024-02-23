@@ -401,11 +401,9 @@
 <div>
 <ul>
 <li>Read API docs.</li>
-<li>Fetch json-formated data from the web.</li>
+<li>Fetch json-formatted data from the web.</li>
 <li>Fetch yaml-formatted data from the web.</li>
 <li>Parse nested lists with the {tidyverse}.</li>
-<li>Use an API’s OpenAPI specification to learn about the API.</li>
-<li>Parse nested lists with {tibblify}.</li>
 </ul>
 </div>
 <div class="cell">
@@ -470,6 +468,7 @@
 <h2>Browsing APIs.guru</h2>
 <p>(<a href="https://apis.guru/">launch APIs.guru to explore</a>)</p>
 <ul>
+<li class="fragment">Warning: No API database is complete! Just because it isn’t here doesn’t mean it doesn’t exist!</li>
 <li class="fragment">Good if you know what you’re looking for</li>
 <li class="fragment">Less good for exploration</li>
 <li class="fragment">But we can grab the data directly!</li>
@@ -607,8 +606,198 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="rectangling-apis.gurus-list" class="slide level2">
-<h2>Rectangling APIs.guru’s list</h2>
+<section id="unnesting" class="slide level2">
+<h2>Unnesting</h2>
+<ul>
+<li class="fragment">Is <code>value</code> a list of lists of observations?
+<ul>
+<li class="fragment"><code>tidyr::unnest_longer(value)</code> separates into rows</li>
+</ul></li>
+<li class="fragment">Is <code>value</code> a list of lists of variables?
+<ul>
+<li class="fragment"><code>tidyr::unnest_wider(value)</code> separates into columns</li>
+</ul></li>
+<li class="fragment"><code>tidyr::unnest_auto()</code> uses heuristic to choose between those</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Tidy data: Every row is a single observation, every column is a single variable.</li>
+<li>“Heuristic” is a fancy word for “set of rules.” I used it here specifically so I can define it and try to demystify it.</li>
+<li><code>unnest_auto()</code> isn’t perfect.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="how-does-unnest_auto-choose-unnest-direction" class="slide level2">
+<h2>How does <code>unnest_auto()</code> choose unnest direction?</h2>
+<div style="font-size: 0.7em;">
+<ol type="1">
+<li class="fragment"><code>element_names &lt;- purrr::map(df$col, names)</code></li>
+<li class="fragment"><code>has_null &lt;- unique(purrr::map_lgl(element_names, is.null))</code></li>
+<li class="fragment"><code>identical(has_null, TRUE)</code>?
+<ul>
+<li class="fragment"><code>unnest_longer(col, indices_include = FALSE)</code></li>
+</ul></li>
+<li class="fragment"><code>identical(has_null, FALSE)</code>?
+<ul>
+<li class="fragment"><code>common_names &lt;- purrr::reduce(element_names, intersect)</code></li>
+<li class="fragment"><code>length(common_names) &gt; 0</code>?
+<ul>
+<li class="fragment"><code>unnest_wider(col)</code></li>
+</ul></li>
+<li class="fragment"><code>length(common_names) == 0</code>?
+<ul>
+<li class="fragment"><code>unnest_longer(col, indices_include = TRUE)</code></li>
+</ul></li>
+</ul></li>
+<li class="fragment">Leftovers: <code>unnest_longer(col, indices_include = FALSE)</code></li>
+</ol>
+</div>
+<aside class="notes">
+<ul>
+<li>This will be a flowchart.</li>
+<li>Get the names of the elements of the column. We’ll use this info for the rest of our decisions.</li>
+<li>Check whether any elements lack names
+<ul>
+<li>All lack names? Unnest longer.</li>
+<li>All have names? Check for shared names
+<ul>
+<li>Shared names? Unnest wider.</li>
+<li>No shared names? Unnest longer, include indices.</li>
+</ul></li>
+<li>Mix of named and unnamd? Unnest longer, drop indices.</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="what-does-unnest_auto-miss-1" class="slide level2">
+<h2>What does <code>unnest_auto()</code> miss? (1)</h2>
+<p>Column is a named list (not a list of named lists).</p>
+<ul>
+<li class="fragment">Error: Names are lost</li>
+<li class="fragment">Check: <code>rlang::is_named(df$col)</code></li>
+<li class="fragment">Fix: <code>dplyr::mutate(col_name = names(col))</code> before unnesting.</li>
+</ul>
+</section>
+<section id="what-does-unnest_auto-miss-2" class="slide level2">
+<h2>What does <code>unnest_auto()</code> miss? (2)</h2>
+<p>One or more elements of a list column are empty.</p>
+<ul>
+<li class="fragment">Error: Assumes <code>unnest_longer()</code>, even if it’s just some missing values among a column that is obviously otherwise <code>unnest_wider</code>-worthy.</li>
+<li class="fragment">Check: <code>any(lengths(df$col) == 0)</code></li>
+<li class="fragment">Fix: Do the <code>unnest_auto()</code> checks only on values of <code>col</code> that have <code>lengths(col) &gt; 0</code></li>
+</ul>
+<aside class="notes">
+<p>An empty item doesn’t have any names.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="what-does-unnest_auto-miss-3" class="slide level2">
+<h2>What does <code>unnest_auto()</code> miss? (3)</h2>
+<p>One or more elements of a list column lacks names, other elements have names.</p>
+<ul>
+<li class="fragment">Error: Names are lost.</li>
+<li class="fragment">Check: (flowchart already tests this, but makes the wrong decision)</li>
+<li class="fragment">Fix: <code>unnest_longer(col, indices_to = "descriptive_name")</code> as fall-through</li>
+</ul>
+</section>
+<section id="how-should-i-choose-unnest-direction" class="slide level2">
+<h2>How should I choose unnest direction?</h2>
+<div style="font-size: 0.7em;">
+<ol start="0" type="1">
+<li class="fragment"><code>rlang::is_named(df$col)</code>?
+<ul>
+<li class="fragment"><code>dplyr::mutate(names_col = names(col), .before = col)</code></li>
+</ul></li>
+<li class="fragment"><code>non_empties &lt;- df$col[lengths(df$col) &gt; 0]</code>
+<ul>
+<li class="fragment"><code>element_names &lt;- purrr::map(df$col, names)</code></li>
+</ul></li>
+<li class="fragment"><code>has_null &lt;- unique(purrr::map_lgl(element_names, is.null))</code></li>
+<li class="fragment"><code>identical(has_null, TRUE)</code>?
+<ul>
+<li class="fragment"><code>unnest_longer(col, indices_include = FALSE)</code></li>
+</ul></li>
+<li class="fragment"><code>identical(has_null, FALSE)</code>?
+<ul>
+<li class="fragment"><code>common_names &lt;- purrr::reduce(element_names, intersect)</code></li>
+<li class="fragment"><code>length(common_names) &gt; 0</code>?
+<ul>
+<li class="fragment"><code>unnest_wider(col)</code></li>
+</ul></li>
+<li class="fragment"><code>length(common_names) == 0</code>?
+<ul>
+<li class="fragment"><code>unnest_longer(col, indices_include = TRUE)</code></li>
+</ul></li>
+</ul></li>
+<li class="fragment">Leftovers: <code>unnest_longer(col, indices_to = "descriptive_name")</code></li>
+</ol>
+</div>
+<aside class="notes">
+<ol start="0" type="1">
+<li>Does the overall column have names? Avoid losing the names</li>
+<li>Get the names of the <em>non-empty</em> elements of the column. We’ll use this for the rest of our decisions.</li>
+<li>(no change)</li>
+<li>(no change)</li>
+<li>(no change, but see validation)
+<ul>
+<li>(no change)
+<ul>
+<li>Validate this! Overlapping names could be coincidental (eg, first version is always “v1”, some have additional versions)</li>
+</ul></li>
+</ul></li>
+<li>Leftovers: Mix of named and unnamed elements, or no shared names.
+<ul>
+<li>Keep the names when they exist!</li>
+</ul></li>
+</ol>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="rectangling-apis.gurus-list" class="title-slide slide level1 center">
+<h1>Rectangling APIs.guru’s list</h1>
+
+</section>
+<section id="enframe" class="slide level2">
+<h2><code>enframe()</code></h2>
 <div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11" data-code-line-numbers="1-2|2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>all_apis_df <span class="ot">&lt;-</span> all_apis <span class="sc">|&gt;</span></span>
@@ -659,54 +848,49 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="unnest-wider-or-longer" class="slide level2">
-<h2>Unnest wider or longer?</h2>
+<section id="value-column-unnest-wider-or-longer" class="slide level2">
+<h2><code>value</code> column: Unnest wider or longer?</h2>
+<p>(incorporate flowchart once it exists)</p>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>all_apis_df<span class="sc">$</span>value <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>rlang<span class="sc">::</span><span class="fu">is_named</span>(all_apis_df<span class="sc">$</span>value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt; [1] 3</code></pre>
+<pre><code>#&gt; [1] FALSE</code></pre>
 </div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>all_apis_df<span class="sc">$</span>value[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16" data-code-line-numbers="1|2|3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>non_empties <span class="ot">&lt;-</span> all_apis_df<span class="sc">$</span>value[<span class="fu">lengths</span>(all_apis_df<span class="sc">$</span>value) <span class="sc">&gt;</span> <span class="dv">0</span>]</span>
+<span id="cb16-2"><a></a>element_names <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(non_empties, names)</span>
+<span id="cb16-3"><a></a>has_null <span class="ot">&lt;-</span> <span class="fu">unique</span>(purrr<span class="sc">::</span><span class="fu">map_lgl</span>(element_names, is.null))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>has_null</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] FALSE</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>common_names <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">reduce</span>(element_names, intersect)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>common_names</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; [1] "added"     "preferred" "versions"</code></pre>
-</div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a><span class="fu">setdiff</span>(</span>
-<span id="cb18-2"><a></a>  <span class="fu">names</span>(all_apis_df<span class="sc">$</span>value[[<span class="dv">1</span>]]),</span>
-<span id="cb18-3"><a></a>  <span class="fu">names</span>(all_apis_df<span class="sc">$</span>value[[<span class="dv">11</span>]])</span>
-<span id="cb18-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; character(0)</code></pre>
-</div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a><span class="fu">str</span>(all_apis_df<span class="sc">$</span>value[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">max.level =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; List of 2
-#&gt;  $ :List of 3
-#&gt;   ..$ added    : chr "2017-05-30T08:34:14.000Z"
-#&gt;   ..$ preferred: chr "0.0.1"
-#&gt;   ..$ versions :List of 1
-#&gt;  $ :List of 3
-#&gt;   ..$ added    : chr "2021-07-19T10:17:09.188Z"
-#&gt;   ..$ preferred: chr "1.0.0"
-#&gt;   ..$ versions :List of 1</code></pre>
 </div>
 </div>
 </div>
 <aside class="notes">
 <ul>
 <li>Wider if multiple variables per value, longer if multiple observations per value.</li>
+<li>The purrr reduce thing checks for names that everything shares (inspired by unnest_auto).</li>
 <li>(make sure everyone groks why wider)</li>
 </ul>
 <style type="text/css">
@@ -721,8 +905,8 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="our-first-unnest" class="slide level2">
-<h2>Our first unnest</h2>
+<section id="unnest-values" class="slide level2">
+<h2>Unnest values</h2>
 <div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>all_apis_versions <span class="ot">&lt;-</span> all_apis_df <span class="sc">|&gt;</span></span>
@@ -750,14 +934,33 @@
 </div>
 </div>
 </div>
+</section>
+<section id="what-if-we-went-longer" class="slide level2">
+<h2>What if we went longer?</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>all_apis_df <span class="sc">|&gt;</span></span>
+<span id="cb25-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_longer</span>(value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 7,587 × 3
+#&gt;    api_name                      value            value_id 
+#&gt;    &lt;chr&gt;                         &lt;named list&gt;     &lt;chr&gt;    
+#&gt;  1 1forge.com                    &lt;chr [1]&gt;        added    
+#&gt;  2 1forge.com                    &lt;chr [1]&gt;        preferred
+#&gt;  3 1forge.com                    &lt;named list [1]&gt; versions 
+#&gt;  4 1password.com:events          &lt;chr [1]&gt;        added    
+#&gt;  5 1password.com:events          &lt;chr [1]&gt;        preferred
+#&gt;  6 1password.com:events          &lt;named list [1]&gt; versions 
+#&gt;  7 1password.local:connect       &lt;chr [1]&gt;        added    
+#&gt;  8 1password.local:connect       &lt;chr [1]&gt;        preferred
+#&gt;  9 1password.local:connect       &lt;named list [1]&gt; versions 
+#&gt; 10 6-dot-authentiqio.appspot.com &lt;chr [1]&gt;        added    
+#&gt; # ℹ 7,577 more rows</code></pre>
+</div>
+</div>
 <aside class="notes">
 <ul>
-<li><code>tidyr::unnest_auto()</code> will guess, sometimes useful (but replace in final code)</li>
-<li>Why not just <code>unnest()</code>?
-<ul>
-<li>Useful if the column contains identically structured dfs (unnests to cols and rows)</li>
-<li>Loses names and can otherwise make a mess if we aren’t careful.</li>
-</ul></li>
+<li>Thankfully going the wrong way is often obvious.</li>
+<li><code>tidyr::unnest()</code> creates this same monstrosity</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -771,66 +974,189 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="unnest-2-wider-or-longer" class="slide level2">
-<h2>Unnest 2: wider or longer?</h2>
+<section id="choose_unnest_direction" class="slide level2">
+<h2><code>choose_unnest_direction()</code></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a><span class="co"># Based on `tidyr::unnest_auto` and `tidyr:::guess_dir`</span></span>
+<span id="cb27-2"><a></a>choose_unnest_direction <span class="ot">&lt;-</span> <span class="cf">function</span>(df, col) {</span>
+<span id="cb27-3"><a></a>  col <span class="ot">&lt;-</span> tidyselect<span class="sc">::</span><span class="fu">vars_pull</span>(dplyr<span class="sc">::</span><span class="fu">tbl_vars</span>(df), {{col}})</span>
+<span id="cb27-4"><a></a>  col_contents <span class="ot">&lt;-</span> df[[col]]</span>
+<span id="cb27-5"><a></a>  code <span class="ot">&lt;-</span> <span class="fu">character</span>()</span>
+<span id="cb27-6"><a></a>  </span>
+<span id="cb27-7"><a></a>  <span class="cf">if</span> (rlang<span class="sc">::</span><span class="fu">is_named</span>(col_contents)) {</span>
+<span id="cb27-8"><a></a>    code <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb27-9"><a></a>      code,</span>
+<span id="cb27-10"><a></a>      glue<span class="sc">::</span><span class="fu">glue</span>(</span>
+<span id="cb27-11"><a></a>        <span class="st">"dplyr::mutate(descriptive_name = names({col}), .before = {col})"</span></span>
+<span id="cb27-12"><a></a>      )</span>
+<span id="cb27-13"><a></a>    )</span>
+<span id="cb27-14"><a></a>  }</span>
+<span id="cb27-15"><a></a>  </span>
+<span id="cb27-16"><a></a>  non_empties <span class="ot">&lt;-</span> col_contents[<span class="fu">lengths</span>(col_contents) <span class="sc">&gt;</span> <span class="dv">0</span>]</span>
+<span id="cb27-17"><a></a>  </span>
+<span id="cb27-18"><a></a>  element_names <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(non_empties, names)</span>
+<span id="cb27-19"><a></a>  has_null <span class="ot">&lt;-</span> <span class="fu">unique</span>(purrr<span class="sc">::</span><span class="fu">map_lgl</span>(element_names, is.null))</span>
+<span id="cb27-20"><a></a>  <span class="cf">if</span> (<span class="fu">identical</span>(has_null, <span class="cn">TRUE</span>)) {</span>
+<span id="cb27-21"><a></a>    code <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb27-22"><a></a>      code, </span>
+<span id="cb27-23"><a></a>      glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">"tidyr::unnest_longer({col}, indices_include = FALSE)"</span>)</span>
+<span id="cb27-24"><a></a>    )</span>
+<span id="cb27-25"><a></a>    <span class="fu">return</span>(glue<span class="sc">::</span><span class="fu">glue_collapse</span>(code, <span class="at">sep =</span> <span class="st">" |&gt;</span><span class="sc">\n</span><span class="st">  "</span>))</span>
+<span id="cb27-26"><a></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">identical</span>(has_null, <span class="cn">FALSE</span>)) {</span>
+<span id="cb27-27"><a></a>    common_names <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">reduce</span>(element_names, intersect)</span>
+<span id="cb27-28"><a></a>    n_common <span class="ot">&lt;-</span> <span class="fu">length</span>(common_names)</span>
+<span id="cb27-29"><a></a>    <span class="cf">if</span> (n_common <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb27-30"><a></a>      code <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb27-31"><a></a>        code,</span>
+<span id="cb27-32"><a></a>        glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">"tidyr::unnest_wider({col})"</span>)</span>
+<span id="cb27-33"><a></a>      )</span>
+<span id="cb27-34"><a></a>      <span class="fu">return</span>(glue<span class="sc">::</span><span class="fu">glue_collapse</span>(code, <span class="at">sep =</span> <span class="st">" |&gt;</span><span class="sc">\n</span><span class="st">  "</span>))</span>
+<span id="cb27-35"><a></a>    }</span>
+<span id="cb27-36"><a></a>  }</span>
+<span id="cb27-37"><a></a>  code <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb27-38"><a></a>    code,</span>
+<span id="cb27-39"><a></a>    glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">"tidyr::unnest_longer({col}, indices_to = </span><span class="sc">\"</span><span class="st">descriptive_name</span><span class="sc">\"</span><span class="st">)"</span>)</span>
+<span id="cb27-40"><a></a>  )</span>
+<span id="cb27-41"><a></a>  <span class="fu">return</span>(glue<span class="sc">::</span><span class="fu">glue_collapse</span>(code, <span class="at">sep =</span> <span class="st">" |&gt;</span><span class="sc">\n</span><span class="st">  "</span>))</span>
+<span id="cb27-42"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<aside class="notes">
+<p>This has some tidyeval, so I’ll probably move it to a package and talk about it or put it online to copy/paste, rather than showing the code here</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="unnest-versions-wider-or-longer" class="slide level2">
+<h2>Unnest versions: Wider or longer?</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>all_apis_versions<span class="sc">$</span>versions <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>rlang<span class="sc">::</span><span class="fu">is_named</span>(all_apis_versions<span class="sc">$</span>versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt;  [1]  1  4  2  5 16  3  6 11 10  7  8  9 23 17 12 13 19 22 24 21</code></pre>
+<pre><code>#&gt; [1] FALSE</code></pre>
 </div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>all_apis_versions<span class="sc">$</span>versions <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30" data-code-line-numbers="1|2|3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>non_empties <span class="ot">&lt;-</span> all_apis_versions<span class="sc">$</span>versions[<span class="fu">lengths</span>(all_apis_versions<span class="sc">$</span>versions) <span class="sc">&gt;</span> <span class="dv">0</span>]</span>
+<span id="cb30-2"><a></a>element_names <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(non_empties, names)</span>
+<span id="cb30-3"><a></a>has_null <span class="ot">&lt;-</span> <span class="fu">unique</span>(purrr<span class="sc">::</span><span class="fu">map_lgl</span>(element_names, is.null))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>has_null</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt;  [1] 1 1 1 1 1 1 1 1 1 4</code></pre>
+<pre><code>#&gt; [1] FALSE</code></pre>
 </div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>all_apis_versions<span class="sc">$</span>versions[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a>common_names <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">reduce</span>(element_names, intersect)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a>common_names</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt; [1] "0.0.1"</code></pre>
+<pre><code>#&gt; character(0)</code></pre>
 </div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>all_apis_versions<span class="sc">$</span>versions[[<span class="dv">10</span>]] <span class="sc">|&gt;</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a><span class="fu">choose_unnest_direction</span>(all_apis_versions, versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt; [1] "3" "4" "5" "6"</code></pre>
-</div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a>all_apis_versions<span class="sc">$</span>versions[[<span class="dv">10</span>]] <span class="sc">|&gt;</span> <span class="fu">str</span>(<span class="at">max.level =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; List of 4
-#&gt;  $ 3:List of 7
-#&gt;  $ 4:List of 7
-#&gt;  $ 5:List of 7
-#&gt;  $ 6:List of 7</code></pre>
+<pre><code>#&gt; tidyr::unnest_longer(versions, indices_to = "descriptive_name")</code></pre>
 </div>
 </div>
 </div>
 </section>
-<section id="unnest-2" class="slide level2">
-<h2>Unnest 2</h2>
+<section id="unnest-versions" class="slide level2">
+<h2>Unnest versions</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35" data-code-line-numbers="1-2|3|4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>all_apis_preferred <span class="ot">&lt;-</span> all_apis_versions <span class="sc">|&gt;</span></span>
-<span id="cb35-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_longer</span>(versions, <span class="at">indices_to =</span> <span class="st">"version"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb35-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(preferred <span class="sc">==</span> version) <span class="sc">|&gt;</span></span>
-<span id="cb35-4"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(api_name, version, versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a>all_apis_longer <span class="ot">&lt;-</span> all_apis_versions <span class="sc">|&gt;</span></span>
+<span id="cb38-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_longer</span>(versions, <span class="at">indices_to =</span> <span class="st">"version"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>all_apis_preferred</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a>all_apis_longer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 3,992 × 5
+#&gt;    api_name                      added            preferred versions     version
+#&gt;    &lt;chr&gt;                         &lt;chr&gt;            &lt;chr&gt;     &lt;named list&gt; &lt;chr&gt;  
+#&gt;  1 1forge.com                    2017-05-30T08:3… 0.0.1     &lt;named list&gt; 0.0.1  
+#&gt;  2 1password.com:events          2021-07-19T10:1… 1.0.0     &lt;named list&gt; 1.0.0  
+#&gt;  3 1password.local:connect       2021-04-16T15:5… 1.5.7     &lt;named list&gt; 1.5.7  
+#&gt;  4 6-dot-authentiqio.appspot.com 2017-03-15T14:4… 6         &lt;named list&gt; 6      
+#&gt;  5 ably.io:platform              2019-07-13T11:2… 1.1.0     &lt;named list&gt; 1.1.0  
+#&gt;  6 ably.net:control              2021-07-26T09:4… 1.0.14    &lt;named list&gt; 1.0.14 
+#&gt;  7 abstractapi.com:geolocation   2021-04-14T17:1… 1.0.0     &lt;named list&gt; 1.0.0  
+#&gt;  8 adafruit.com                  2018-02-10T10:4… 2.0.0     &lt;named list&gt; 2.0.0  
+#&gt;  9 adobe.com:aem                 2019-01-03T07:0… 3.7.1-pr… &lt;named list&gt; 3.7.1-…
+#&gt; 10 adyen.com:AccountService      2023-02-17T11:0… 6         &lt;named list&gt; 3      
+#&gt; # ℹ 3,982 more rows</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="what-if-we-went-wider" class="slide level2">
+<h2>What if we went wider?</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>all_apis_versions <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="sc">|&gt;</span> tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 6 × 9
+#&gt;   api_name   added preferred `0.0.1`      `1.0.0`      `1.5.7`      `6`         
+#&gt;   &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;     &lt;list&gt;       &lt;list&gt;       &lt;list&gt;       &lt;list&gt;      
+#&gt; 1 1forge.com 2017… 0.0.1     &lt;named list&gt; &lt;NULL&gt;       &lt;NULL&gt;       &lt;NULL&gt;      
+#&gt; 2 1password… 2021… 1.0.0     &lt;NULL&gt;       &lt;named list&gt; &lt;NULL&gt;       &lt;NULL&gt;      
+#&gt; 3 1password… 2021… 1.5.7     &lt;NULL&gt;       &lt;NULL&gt;       &lt;named list&gt; &lt;NULL&gt;      
+#&gt; 4 6-dot-aut… 2017… 6         &lt;NULL&gt;       &lt;NULL&gt;       &lt;NULL&gt;       &lt;named list&gt;
+#&gt; 5 ably.io:p… 2019… 1.1.0     &lt;NULL&gt;       &lt;NULL&gt;       &lt;NULL&gt;       &lt;NULL&gt;      
+#&gt; 6 ably.net:… 2021… 1.0.14    &lt;NULL&gt;       &lt;NULL&gt;       &lt;NULL&gt;       &lt;NULL&gt;      
+#&gt; # ℹ 2 more variables: `1.1.0` &lt;list&gt;, `1.0.14` &lt;list&gt;</code></pre>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li><code>head()</code> because otherwise we have something like 800 new columns</li>
+<li>Note the <code>NULL</code>s</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="preferred-versions" class="slide level2">
+<h2>Preferred versions</h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43" data-code-line-numbers="1-2|3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a>all_apis_preferred <span class="ot">&lt;-</span> all_apis_longer <span class="sc">|&gt;</span></span>
+<span id="cb43-2"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(preferred <span class="sc">==</span> version) <span class="sc">|&gt;</span></span>
+<span id="cb43-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(api_name, version, versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a>all_apis_preferred</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 2,529 × 3
 #&gt;    api_name                      version     versions        
@@ -850,45 +1176,51 @@
 </div>
 </div>
 </section>
-<section id="unnest-3-wider-or-longer" class="slide level2">
-<h2>Unnest 3: wider or longer?</h2>
+<section id="preferred-versions-wider-or-longer" class="slide level2">
+<h2>Preferred versions: Wider or longer?</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a>all_apis_preferred<span class="sc">$</span>versions <span class="sc">|&gt;</span> <span class="fu">lengths</span>() <span class="sc">|&gt;</span> <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a></a><span class="fu">choose_unnest_direction</span>(all_apis_preferred, versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt; [1] 7 8</code></pre>
+<pre><code>#&gt; dplyr::mutate(descriptive_name = names(versions), .before = versions) |&gt;
+#&gt;   tidyr::unnest_wider(versions)</code></pre>
 </div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a><span class="fu">setdiff</span>(</span>
-<span id="cb40-2"><a></a>  <span class="fu">names</span>(all_apis_preferred<span class="sc">$</span>versions[[<span class="dv">7</span>]]),</span>
-<span id="cb40-3"><a></a>  <span class="fu">names</span>(all_apis_preferred<span class="sc">$</span>versions[[<span class="dv">1</span>]])</span>
-<span id="cb40-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a></a><span class="fu">head</span>(<span class="fu">names</span>(all_apis_preferred<span class="sc">$</span>versions))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt; [1] "externalDocs"</code></pre>
+<pre><code>#&gt; [1] "0.0.1"  "1.0.0"  "1.5.7"  "6"      "1.1.0"  "1.0.14"</code></pre>
 </div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a>all_apis_preferred_wide <span class="ot">&lt;-</span> all_apis_preferred <span class="sc">|&gt;</span></span>
-<span id="cb42-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a></a>all_apis_preferred_wide <span class="ot">&lt;-</span> all_apis_preferred <span class="sc">|&gt;</span></span>
+<span id="cb50-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
+<aside class="notes">
+<ul>
+<li>We already dealt with these names, don’t need the mutate.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="all-apis" class="slide level2">
-<h2>All APIs</h2>
-<div class="fragment">
+<section id="preferred-versions-unnested" class="slide level2">
+<h2>Preferred versions unnested</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43" data-code-line-numbers="1|2|3|4|5-6|7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a>all_apis <span class="sc">|&gt;</span> </span>
-<span id="cb43-2"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="st">"api_name"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb43-3"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(value) <span class="sc">|&gt;</span> </span>
-<span id="cb43-4"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_longer</span>(versions, <span class="at">indices_to =</span> <span class="st">"version"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb43-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(preferred <span class="sc">==</span> version) <span class="sc">|&gt;</span></span>
-<span id="cb43-6"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(api_name, version, versions) <span class="sc">|&gt;</span></span>
-<span id="cb43-7"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a></a>all_apis_preferred_wide</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 2,529 × 10
 #&gt;    api_name         version added info         updated swaggerUrl swaggerYamlUrl
@@ -907,13 +1239,141 @@
 #&gt; # ℹ 3 more variables: openapiVer &lt;chr&gt;, link &lt;chr&gt;, externalDocs &lt;list&gt;</code></pre>
 </div>
 </div>
+</section>
+<section id="preferred-versions-glimpse" class="slide level2">
+<h2>Preferred versions glimpse</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(all_apis_preferred_wide)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Rows: 2,529
+#&gt; Columns: 10
+#&gt; $ api_name       &lt;chr&gt; "1forge.com", "1password.com:events", "1password.local:…
+#&gt; $ version        &lt;chr&gt; "0.0.1", "1.0.0", "1.5.7", "6", "1.1.0", "1.0.14", "1.0…
+#&gt; $ added          &lt;chr&gt; "2017-05-30T08:34:14.000Z", "2021-07-19T10:17:09.188Z",…
+#&gt; $ info           &lt;list&gt; [["contact@1forge.com", "1Forge", "http://1forge.com"]…
+#&gt; $ updated        &lt;chr&gt; "2017-06-27T16:49:57.000Z", "2023-02-27T15:08:09.418Z",…
+#&gt; $ swaggerUrl     &lt;chr&gt; "https://api.apis.guru/v2/specs/1forge.com/0.0.1/swagge…
+#&gt; $ swaggerYamlUrl &lt;chr&gt; "https://api.apis.guru/v2/specs/1forge.com/0.0.1/swagge…
+#&gt; $ openapiVer     &lt;chr&gt; "2.0", "3.0.0", "3.0.2", "3.0.0", "3.0.1", "3.0.1", "3.…
+#&gt; $ link           &lt;chr&gt; "https://api.apis.guru/v2/specs/1forge.com/0.0.1.json",…
+#&gt; $ externalDocs   &lt;list&gt; &lt;NULL&gt;, &lt;NULL&gt;, &lt;NULL&gt;, &lt;NULL&gt;, &lt;NULL&gt;, &lt;NULL&gt;, ["API …</code></pre>
+</div>
+</div>
+</section>
+<section id="info-wider-or-longer" class="slide level2">
+<h2>info: wider or longer?</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a></a><span class="fu">choose_unnest_direction</span>(all_apis_preferred_wide, info)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; tidyr::unnest_wider(info)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a></a>all_apis_preferred_wide <span class="sc">|&gt;</span> </span>
+<span id="cb57-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(info, <span class="at">names_sep =</span> <span class="st">"_"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 2,529 × 76
+#&gt;    api_name  version added info_contact info_description info_title info_version
+#&gt;    &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt; &lt;list&gt;       &lt;chr&gt;            &lt;chr&gt;      &lt;chr&gt;       
+#&gt;  1 1forge.c… 0.0.1   2017… &lt;named list&gt; "Stock and Fore… 1Forge Fi… 0.0.1       
+#&gt;  2 1passwor… 1.0.0   2021… &lt;NULL&gt;       "1Password Even… Events API 1.0.0       
+#&gt;  3 1passwor… 1.5.7   2021… &lt;named list&gt; "REST API inter… 1Password… 1.5.7       
+#&gt;  4 6-dot-au… 6       2017… &lt;named list&gt; "Strong authent… Authentiq… 6           
+#&gt;  5 ably.io:… 1.1.0   2019… &lt;named list&gt; "The [REST API … Platform … 1.1.0       
+#&gt;  6 ably.net… 1.0.14  2021… &lt;named list&gt; "Use the Contro… Control A… 1.0.14      
+#&gt;  7 abstract… 1.0.0   2021… &lt;NULL&gt;       "Abstract IP ge… IP geoloc… 1.0.0       
+#&gt;  8 adafruit… 2.0.0   2018… &lt;NULL&gt;       "### The Intern… Adafruit … 2.0.0       
+#&gt;  9 adobe.co… 3.7.1-… 2019… &lt;named list&gt; "Swagger AEM is… Adobe Exp… 3.7.1-pre.0 
+#&gt; 10 adyen.co… 6       2023… &lt;named list&gt; "This API is us… Account A… 6           
+#&gt; # ℹ 2,519 more rows
+#&gt; # ℹ 69 more variables: `info_x-apisguru-categories` &lt;list&gt;,
+#&gt; #   `info_x-logo` &lt;list&gt;, `info_x-origin` &lt;list&gt;, `info_x-providerName` &lt;chr&gt;,
+#&gt; #   `info_x-serviceName` &lt;chr&gt;, info_license &lt;list&gt;, info_termsOfService &lt;chr&gt;,
+#&gt; #   `info_x-unofficialSpec` &lt;lgl&gt;, `info_x-preferred` &lt;lgl&gt;,
+#&gt; #   `info_x-publicVersion` &lt;lgl&gt;, `info_x-timestamp` &lt;chr&gt;,
+#&gt; #   `info_x-description-language` &lt;chr&gt;, `info_x-release-note` &lt;list&gt;, …</code></pre>
+</div>
 </div>
 <aside class="notes">
 <ul>
-<li>If we dug in a little more, we’d see that info is variable-like, but all over the place; different APIs have different values
+<li><code>names_sep</code> avoids name overlap &amp; shows us all the things that came from info</li>
+<li>Notice that it went from 10 columns to 76.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="info-hoist" class="slide level2">
+<h2>info: <code>hoist()</code></h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a></a>all_preferred_apis_with_categories <span class="ot">&lt;-</span> all_apis_preferred_wide <span class="sc">|&gt;</span></span>
+<span id="cb59-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">hoist</span>(info, <span class="at">categories =</span> <span class="st">"x-apisguru-categories"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a></a>all_preferred_apis_with_categories</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 2,529 × 11
+#&gt;    api_name             version added categories info         updated swaggerUrl
+#&gt;    &lt;chr&gt;                &lt;chr&gt;   &lt;chr&gt; &lt;list&gt;     &lt;list&gt;       &lt;chr&gt;   &lt;chr&gt;     
+#&gt;  1 1forge.com           0.0.1   2017… &lt;chr [1]&gt;  &lt;named list&gt; 2017-0… https://a…
+#&gt;  2 1password.com:events 1.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2023-0… https://a…
+#&gt;  3 1password.local:con… 1.5.7   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2023-0… https://a…
+#&gt;  4 6-dot-authentiqio.a… 6       2017… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…
+#&gt;  5 ably.io:platform     1.1.0   2019… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…
+#&gt;  6 ably.net:control     1.0.14  2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…
+#&gt;  7 abstractapi.com:geo… 1.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…
+#&gt;  8 adafruit.com         2.0.0   2018… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…
+#&gt;  9 adobe.com:aem        3.7.1-… 2019… &lt;chr [1]&gt;  &lt;named list&gt; 2023-0… https://a…
+#&gt; 10 adyen.com:AccountSe… 6       2023… &lt;chr [1]&gt;  &lt;named list&gt; 2023-0… https://a…
+#&gt; # ℹ 2,519 more rows
+#&gt; # ℹ 4 more variables: swaggerYamlUrl &lt;chr&gt;, openapiVer &lt;chr&gt;, link &lt;chr&gt;,
+#&gt; #   externalDocs &lt;list&gt;</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="unnest_auto" class="slide level2">
+<h2><code>unnest_auto()</code></h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62" data-code-line-numbers="1-2|3|4|5-6|7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a></a>all_apis <span class="sc">|&gt;</span> </span>
+<span id="cb62-2"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="st">"api_name"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb62-3"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_auto</span>(value) <span class="sc">|&gt;</span> </span>
+<span id="cb62-4"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_auto</span>(versions) <span class="sc">|&gt;</span></span>
+<span id="cb62-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(preferred <span class="sc">==</span> versions_id) <span class="sc">|&gt;</span></span>
+<span id="cb62-6"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(api_name, versions_id, versions) <span class="sc">|&gt;</span></span>
+<span id="cb62-7"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_auto</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 2,529 × 10
+#&gt;    api_name     versions_id added info         updated swaggerUrl swaggerYamlUrl
+#&gt;    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt; &lt;list&gt;       &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;         
+#&gt;  1 1forge.com   0.0.1       2017… &lt;named list&gt; 2017-0… https://a… https://api.a…
+#&gt;  2 1password.c… 1.0.0       2021… &lt;named list&gt; 2023-0… https://a… https://api.a…
+#&gt;  3 1password.l… 1.5.7       2021… &lt;named list&gt; 2023-0… https://a… https://api.a…
+#&gt;  4 6-dot-authe… 6           2017… &lt;named list&gt; 2021-0… https://a… https://api.a…
+#&gt;  5 ably.io:pla… 1.1.0       2019… &lt;named list&gt; 2021-0… https://a… https://api.a…
+#&gt;  6 ably.net:co… 1.0.14      2021… &lt;named list&gt; 2021-0… https://a… https://api.a…
+#&gt;  7 abstractapi… 1.0.0       2021… &lt;named list&gt; 2021-0… https://a… https://api.a…
+#&gt;  8 adafruit.com 2.0.0       2018… &lt;named list&gt; 2021-0… https://a… https://api.a…
+#&gt;  9 adobe.com:a… 3.7.1-pre.0 2019… &lt;named list&gt; 2023-0… https://a… https://api.a…
+#&gt; 10 adyen.com:A… 6           2023… &lt;named list&gt; 2023-0… https://a… https://api.a…
+#&gt; # ℹ 2,519 more rows
+#&gt; # ℹ 3 more variables: openapiVer &lt;chr&gt;, link &lt;chr&gt;, externalDocs &lt;list&gt;</code></pre>
+</div>
+</div>
+</div>
+<aside class="notes">
 <ul>
-<li>APIs.guru adds a couple things in here, including a “category” that we’ll use</li>
-</ul></li>
+<li><code>unnest_auto()</code> does fine here</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -930,11 +1390,11 @@
 <section id="filter-apis" class="slide level2">
 <h2>Filter APIs</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45" data-code-line-numbers="1-2|3-5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a>all_apis_preferred_wide <span class="sc">|&gt;</span></span>
-<span id="cb45-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">hoist</span>(info, <span class="at">categories =</span> <span class="st">"x-apisguru-categories"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb45-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
-<span id="cb45-4"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="st">"open_data"</span> <span class="sc">%in%</span> categories) <span class="sc">|&gt;</span></span>
-<span id="cb45-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb64" data-code-line-numbers="1-2|3-5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a></a>all_apis_preferred_wide <span class="sc">|&gt;</span></span>
+<span id="cb64-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">hoist</span>(info, <span class="at">categories =</span> <span class="st">"x-apisguru-categories"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb64-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
+<span id="cb64-4"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="st">"open_data"</span> <span class="sc">%in%</span> categories) <span class="sc">|&gt;</span></span>
+<span id="cb64-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 318 × 11
 #&gt;    api_name             version added categories info         updated swaggerUrl
@@ -960,235 +1420,7 @@
 <li><code>swaggerUrl</code> is JSON, <code>swaggerYamlUrl</code> is YAML version of the same thing</li>
 <li>YAML is another data format. Technically YAML is a superset of JSON, with added commenting capabilities.</li>
 <li>RMarkdown headers + package descriptions are YAML-related.</li>
-<li>We mostly don’t care (mostly because YAML plays slightly better with tibblify, as we’ll see)</li>
-<li>“Swagger” is the old name for the OpenAPI specification, a standard way to describe APIs.</li>
-<li>Not everyone uses swagger/OpenAPI, but, when they do, your life is easier</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section></section>
-<section>
-<section id="api-definitions" class="title-slide slide level1 center">
-<h1>API Definitions</h1>
-
-</section>
-<section id="api-descriptions" class="slide level2">
-<h2>API Descriptions</h2>
-<ul>
-<li class="fragment"><a href="https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.json">APIs.guru</a></li>
-<li class="fragment"><a href="https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json">OpenFEC</a></li>
-<li class="fragment"><a href="https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.json">YouTube Data API v3</a></li>
-<li class="fragment"><a href="https://api.apis.guru/v2/specs/asana.com/1.0/openapi.json">Asana</a></li>
-</ul>
-<aside class="notes">
-<ul>
-<li>Technically the OpenAPI specification is the standard, and each API has a “description”</li>
-<li>OpenAPI 3.0+ easier to use than Swagger (aka 2.0)</li>
-<li>Still some confusing bits, such as <code>security</code> vs <code>components$securitySchemas</code></li>
-<li>People can and will do things wrong/weird.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="read-an-api-description" class="slide level2">
-<h2>Read an API description</h2>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a>youtube_spec <span class="ot">&lt;-</span> yaml<span class="sc">::</span><span class="fu">read_yaml</span>(<span class="st">"https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a></a><span class="fu">names</span>(youtube_spec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; [1] "openapi"      "servers"      "info"         "externalDocs" "tags"        
-#&gt; [6] "paths"        "components"</code></pre>
-</div>
-</div>
-</div>
-</section>
-<section id="introduction-to-tibblify" class="slide level2">
-<h2>Introduction to tibblify</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a></a>youtube_paths <span class="ot">&lt;-</span> tibblify<span class="sc">::</span><span class="fu">tibblify</span>(youtube_spec<span class="sc">$</span>paths) <span class="sc">|&gt;</span> </span>
-<span id="cb50-2"><a></a>  dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; Rows: 39
-#&gt; Columns: 6
-#&gt; $ .names     &lt;chr&gt; "/youtube/v3/abuseReports", "/youtube/v3/activities", "/you…
-#&gt; $ parameters &lt;list&lt;tibble[,1]&gt;&gt; [&lt;tbl_df[11 x 1]&gt;], [&lt;tbl_df[11 x 1]&gt;], [&lt;tbl_…
-#&gt; $ post       &lt;tibble[,7]&gt; &lt;tbl_df[26 x 7]&gt;
-#&gt; $ get        &lt;tibble[,6]&gt; &lt;tbl_df[26 x 6]&gt;
-#&gt; $ delete     &lt;tibble[,6]&gt; &lt;tbl_df[26 x 6]&gt;
-#&gt; $ put        &lt;tibble[,7]&gt; &lt;tbl_df[26 x 7]&gt;</code></pre>
-</div>
-</div>
-</section>
-<section id="openapi-references" class="slide level2">
-<h2>OpenAPI References</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a></a>youtube_paths<span class="sc">$</span>parameters[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 11 × 1
-#&gt;    `$ref`                                 
-#&gt;    &lt;chr&gt;                                  
-#&gt;  1 #/components/parameters/_.xgafv        
-#&gt;  2 #/components/parameters/access_token   
-#&gt;  3 #/components/parameters/alt            
-#&gt;  4 #/components/parameters/callback       
-#&gt;  5 #/components/parameters/fields         
-#&gt;  6 #/components/parameters/key            
-#&gt;  7 #/components/parameters/oauth_token    
-#&gt;  8 #/components/parameters/prettyPrint    
-#&gt;  9 #/components/parameters/quotaUser      
-#&gt; 10 #/components/parameters/upload_protocol
-#&gt; 11 #/components/parameters/uploadType</code></pre>
-</div>
-</div>
-</section>
-<section id="parse_openapi_spec" class="slide level2">
-<h2>parse_openapi_spec()</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a></a>youtube_paths <span class="ot">&lt;-</span> tibblify<span class="sc">::</span><span class="fu">parse_openapi_spec</span>(youtube_spec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a></a>youtube_paths</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 39 × 2
-#&gt;    endpoint                          operations       
-#&gt;    &lt;chr&gt;                             &lt;list&gt;           
-#&gt;  1 /youtube/v3/abuseReports          &lt;tibble [1 × 10]&gt;
-#&gt;  2 /youtube/v3/activities            &lt;tibble [1 × 10]&gt;
-#&gt;  3 /youtube/v3/captions              &lt;tibble [4 × 10]&gt;
-#&gt;  4 /youtube/v3/captions/{id}         &lt;tibble [1 × 10]&gt;
-#&gt;  5 /youtube/v3/channelBanners/insert &lt;tibble [1 × 10]&gt;
-#&gt;  6 /youtube/v3/channelSections       &lt;tibble [4 × 10]&gt;
-#&gt;  7 /youtube/v3/channels              &lt;tibble [2 × 10]&gt;
-#&gt;  8 /youtube/v3/commentThreads        &lt;tibble [3 × 10]&gt;
-#&gt;  9 /youtube/v3/comments              &lt;tibble [4 × 10]&gt;
-#&gt; 10 /youtube/v3/comments/markAsSpam   &lt;tibble [1 × 10]&gt;
-#&gt; # ℹ 29 more rows</code></pre>
-</div>
-</div>
-</div>
-<aside class="notes">
-<ul>
-<li>We’re looking at a dev version of tibblify which I plan to push through
-<ul>
-<li><code>pak::pak("mgirlich/tibblify#191")</code></li>
-</ul></li>
-<li>“endpoint” is another term for “path” – a url in the API</li>
-<li>Deals with references from paths to components &gt; schemas</li>
-<li>Captions has 4 different methods, so its tibble has 4 rows.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="unnesting-paths" class="slide level2">
-<h2>Unnesting paths</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a></a>youtube_paths <span class="sc">|&gt;</span> tidyr<span class="sc">::</span><span class="fu">unnest</span>(operations)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 76 × 11
-#&gt;    endpoint          operation summary description operation_id tags  parameters
-#&gt;    &lt;chr&gt;             &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt; &lt;list&gt;    
-#&gt;  1 /youtube/v3/abus… post      &lt;NA&gt;    Inserts a … youtube.abu… abus… &lt;tibble&gt;  
-#&gt;  2 /youtube/v3/acti… get       &lt;NA&gt;    Retrieves … youtube.act… acti… &lt;tibble&gt;  
-#&gt;  3 /youtube/v3/capt… delete    &lt;NA&gt;    Deletes a … youtube.cap… capt… &lt;tibble&gt;  
-#&gt;  4 /youtube/v3/capt… get       &lt;NA&gt;    Retrieves … youtube.cap… capt… &lt;tibble&gt;  
-#&gt;  5 /youtube/v3/capt… post      &lt;NA&gt;    Inserts a … youtube.cap… capt… &lt;tibble&gt;  
-#&gt;  6 /youtube/v3/capt… put       &lt;NA&gt;    Updates an… youtube.cap… capt… &lt;tibble&gt;  
-#&gt;  7 /youtube/v3/capt… get       &lt;NA&gt;    Downloads … youtube.cap… capt… &lt;tibble&gt;  
-#&gt;  8 /youtube/v3/chan… post      &lt;NA&gt;    Inserts a … youtube.cha… chan… &lt;tibble&gt;  
-#&gt;  9 /youtube/v3/chan… delete    &lt;NA&gt;    Deletes a … youtube.cha… chan… &lt;tibble&gt;  
-#&gt; 10 /youtube/v3/chan… get       &lt;NA&gt;    Retrieves … youtube.cha… chan… &lt;tibble&gt;  
-#&gt; # ℹ 66 more rows
-#&gt; # ℹ 4 more variables: request_body &lt;list&gt;, responses &lt;list&gt;, deprecated &lt;lgl&gt;,
-#&gt; #   global_parameters &lt;list&gt;</code></pre>
-</div>
-</div>
-<aside class="notes">
-<ul>
-<li><code>operation</code> aka method, we’ll discuss these more later; GET means you can load it like a web page</li>
-<li>Note rows 3-6 are that <code>captions</code> endpoint, and then 7 is <code>captions/{id}</code></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="path-details" class="slide level2">
-<h2>Path details</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a></a>youtube_paths <span class="sc">|&gt;</span> tidyr<span class="sc">::</span><span class="fu">unnest</span>(operations) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; Rows: 76
-#&gt; Columns: 11
-#&gt; $ endpoint          &lt;chr&gt; "/youtube/v3/abuseReports", "/youtube/v3/activities"…
-#&gt; $ operation         &lt;chr&gt; "post", "get", "delete", "get", "post", "put", "get"…
-#&gt; $ summary           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
-#&gt; $ description       &lt;chr&gt; "Inserts a new resource into this collection.", "Ret…
-#&gt; $ operation_id      &lt;chr&gt; "youtube.abuseReports.insert", "youtube.activities.l…
-#&gt; $ tags              &lt;chr&gt; "abuseReports", "activities", "captions", "captions"…
-#&gt; $ parameters        &lt;list&gt; [&lt;tbl_df[1 x 9]&gt;], [&lt;tbl_df[9 x 9]&gt;], [&lt;tbl_df[3 x …
-#&gt; $ request_body      &lt;list&gt; [&lt;tbl_df[1 x 3]&gt;], &lt;NULL&gt;, &lt;NULL&gt;, &lt;NULL&gt;, [&lt;tbl_df…
-#&gt; $ responses         &lt;list&gt; [&lt;tbl_df[1 x 5]&gt;], [&lt;tbl_df[1 x 5]&gt;], [&lt;tbl_df[1 x …
-#&gt; $ deprecated        &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FAL…
-#&gt; $ global_parameters &lt;list&gt; [&lt;tbl_df[11 x 9]&gt;], [&lt;tbl_df[11 x 9]&gt;], [&lt;tbl_df[11…</code></pre>
-</div>
-</div>
-<aside class="notes">
-<ul>
-<li>(<code>endpoint</code> = path)</li>
-<li>(<code>operation</code> = <code>method</code> = more details in a few chapters)</li>
-<li><code>summary</code> is meant for a very brief description, not often used</li>
-<li><code>description</code> can have markdown</li>
-<li><code>operation_id</code> = unique string for this operation, meant for tools to use as a function name</li>
-<li><code>tags</code> = Categories; can have more than one per endpoint, but often just one</li>
-<li><code>parameters</code> = tibble of inputs</li>
-<li><code>request_body</code> = tibble of a fancier type of input (later chapter)</li>
-<li><code>responses</code> = tibble of expected output</li>
-<li><code>deprecated</code> = is this endpoint no longer intended to be used</li>
-<li><code>global_parameters</code> = tibble of shared inputs</li>
-<li>This tibble contains MOST of the useful information about the API
-<ul>
-<li>We’ll dig into this tibble for a simple API in the next chapter</li>
-</ul></li>
+<li>We’ll see more about YAML and find out what “Swagger” means in the next chapter!</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
