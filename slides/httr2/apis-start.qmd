@@ -7,11 +7,9 @@ title: How can I get started with APIs?
 
 ::: nonincremental
 -   Read API docs.
--   Fetch json-formated data from the web.
+-   Fetch json-formatted data from the web.
 -   Fetch yaml-formatted data from the web.
 -   Parse nested lists with the {tidyverse}.
--   Use an API's OpenAPI specification to learn about the API.
--   Parse nested lists with {tibblify}.
 :::
 
 ```{r}
@@ -50,6 +48,7 @@ library(yaml)
 
 ([launch APIs.guru to explore](https://apis.guru/))
 
+-   Warning: No API database is complete! Just because it isn't here doesn't mean it doesn't exist!
 -   Good if you know what you're looking for
 -   Less good for exploration
 -   But we can grab the data directly!
@@ -146,7 +145,113 @@ str(head(all_apis, 2), max.level = 2)
 -   In a couple chapters, we'll see how to use the API spec (when it's available) to help us guess less.
 :::
 
-## Rectangling APIs.guru's list
+## Unnesting
+
+-   Is `value` a list of lists of observations?
+    -   `tidyr::unnest_longer(value)` separates into rows
+-   Is `value` a list of lists of variables?
+    -   `tidyr::unnest_wider(value)` separates into columns
+-   `tidyr::unnest_auto()` uses heuristic to choose between those
+
+::: notes
+-   Tidy data: Every row is a single observation, every column is a single variable.
+-   "Heuristic" is a fancy word for "set of rules." I used it here specifically so I can define it and try to demystify it.
+-   `unnest_auto()` isn't perfect.
+:::
+
+## How does `unnest_auto()` choose unnest direction?
+
+::: {style="font-size: 0.7em;"}
+
+1.  `element_names <- purrr::map(df$col, names)`
+2.  `has_null <- unique(purrr::map_lgl(element_names, is.null))`
+3.  `identical(has_null, TRUE)`? 
+    -   `unnest_longer(col, indices_include = FALSE)`
+4.  `identical(has_null, FALSE)`?
+    -   `common_names <- purrr::reduce(element_names, intersect)`
+    -   `length(common_names) > 0`?
+        -   `unnest_wider(col)`
+    -   `length(common_names) == 0`?
+        -   `unnest_longer(col, indices_include = TRUE)`
+5.  Leftovers: `unnest_longer(col, indices_include = FALSE)`
+
+:::
+
+::: notes
+-   This will be a flowchart.
+-   Get the names of the elements of the column. We'll use this info for the rest of our decisions.
+-   Check whether any elements lack names
+    -   All lack names? Unnest longer.
+    -   All have names? Check for shared names
+        -   Shared names? Unnest wider.
+        -   No shared names? Unnest longer, include indices.
+    -   Mix of named and unnamd? Unnest longer, drop indices.
+:::
+
+## What does `unnest_auto()` miss? (1)
+
+Column is a named list (not a list of named lists).
+
+-   Error: Names are lost
+-   Check: `rlang::is_named(df$col)`
+-   Fix: `dplyr::mutate(col_name = names(col))` before unnesting.
+
+## What does `unnest_auto()` miss? (2)
+
+One or more elements of a list column are empty.
+
+-   Error: Assumes `unnest_longer()`, even if it's just some missing values among a column that is obviously otherwise `unnest_wider`-worthy.
+-   Check: `any(lengths(df$col) == 0)`
+-   Fix: Do the `unnest_auto()` checks only on values of `col` that have `lengths(col) > 0`
+
+::: notes
+An empty item doesn't have any names.
+:::
+
+## What does `unnest_auto()` miss? (3)
+
+One or more elements of a list column lacks names, other elements have names.
+
+-   Error: Names are lost.
+-   Check: (flowchart already tests this, but makes the wrong decision)
+-   Fix: `unnest_longer(col, indices_to = "descriptive_name")` as fall-through
+
+## How should I choose unnest direction?
+
+::: {style="font-size: 0.7em;"}
+
+0.  `rlang::is_named(df$col)`?
+    -   `dplyr::mutate(names_col = names(col), .before = col)`
+1.  `non_empties <- df$col[lengths(df$col) > 0]`
+    -   `element_names <- purrr::map(df$col, names)`
+2.  `has_null <- unique(purrr::map_lgl(element_names, is.null))`
+3.  `identical(has_null, TRUE)`? 
+    -   `unnest_longer(col, indices_include = FALSE)`
+4.  `identical(has_null, FALSE)`?
+    -   `common_names <- purrr::reduce(element_names, intersect)`
+    -   `length(common_names) > 0`?
+        -   `unnest_wider(col)`
+    -   `length(common_names) == 0`?
+        -   `unnest_longer(col, indices_include = TRUE)`
+5.  Leftovers: `unnest_longer(col, indices_to = "descriptive_name")`
+
+:::
+
+::: notes
+0.  Does the overall column have names? Avoid losing the names
+1.  Get the names of the *non-empty* elements of the column. We'll use this for the rest of our decisions.
+2.  (no change)
+3.  (no change)
+4.  (no change, but see validation)
+    -   (no change)
+        -   Validate this! Overlapping names could be coincidental (eg, first version is always "v1", some have additional versions)
+5.  Leftovers: Mix of named and unnamed elements, or no shared names.
+    -   Keep the names when they exist!
+:::
+
+# Rectangling APIs.guru's list
+
+## `enframe()`
 
 ::: fragment
 ```{r}
@@ -173,46 +278,56 @@ all_apis_df
 -   Need to figure out whether those values are blocks of results (rows) or separate pieces of information about a single result (columns)
 :::
 
-## Unnest wider or longer?
+## `value` column: Unnest wider or longer?
+
+(incorporate flowchart once it exists)
 
 ::: fragment
 ```{r}
 #| label: apis_start-apis_guru_list_df_explore
 #| eval: true
-all_apis_df$value |> lengths() |> unique()
+rlang::is_named(all_apis_df$value)
 ```
 :::
 ::: fragment
 ```{r}
 #| label: apis_start-apis_guru_list_df_explore2
 #| eval: true
-all_apis_df$value[[1]] |> names()
+#| code-line-numbers: 1|2|3
+non_empties <- all_apis_df$value[lengths(all_apis_df$value) > 0]
+element_names <- purrr::map(non_empties, names)
+has_null <- unique(purrr::map_lgl(element_names, is.null))
 ```
 :::
 ::: fragment
 ```{r}
 #| label: apis_start-apis_guru_list_df_explore3
 #| eval: true
-setdiff(
-  names(all_apis_df$value[[1]]),
-  names(all_apis_df$value[[11]])
-)
+has_null
 ```
 :::
 ::: fragment
 ```{r}
 #| label: apis_start-apis_guru_list_df_explore4
 #| eval: true
-str(all_apis_df$value[1:2], max.level = 2)
+common_names <- purrr::reduce(element_names, intersect)
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_df_explore5
+#| eval: true
+common_names
 ```
 :::
 
 ::: notes
 -   Wider if multiple variables per value, longer if multiple observations per value.
+-   The purrr reduce thing checks for names that everything shares (inspired by unnest_auto).
 -   (make sure everyone groks why wider)
 :::
 
-## Our first unnest
+## Unnest values
 
 ::: fragment
 ```{r}
@@ -230,60 +345,160 @@ all_apis_versions
 ```
 :::
 
+## What if we went longer?
+
+```{r}
+#| label: apis_start-incorrectly_unnest_longer
+#| eval: true
+all_apis_df |>
+  tidyr::unnest_longer(value)
+```
+
 ::: notes
--   `tidyr::unnest_auto()` will guess, sometimes useful (but replace in final code)
--   Why not just `unnest()`?
-    -   Useful if the column contains identically structured dfs (unnests to cols and rows)
-    -   Loses names and can otherwise make a mess if we aren't careful.
+-   Thankfully going the wrong way is often obvious.
+-   `tidyr::unnest()` creates this same monstrosity
 :::
 
-## Unnest 2: wider or longer?
+## `choose_unnest_direction()`
+
+```{r}
+#| label: apis_start-choose_unnest_direction
+#| eval: true
+# Based on `tidyr::unnest_auto` and `tidyr:::guess_dir`
+choose_unnest_direction <- function(df, col) {
+  col <- tidyselect::vars_pull(dplyr::tbl_vars(df), {{col}})
+  col_contents <- df[[col]]
+  code <- character()
+  
+  if (rlang::is_named(col_contents)) {
+    code <- c(
+      code,
+      glue::glue(
+        "dplyr::mutate(descriptive_name = names({col}), .before = {col})"
+      )
+    )
+  }
+  
+  non_empties <- col_contents[lengths(col_contents) > 0]
+  
+  element_names <- purrr::map(non_empties, names)
+  has_null <- unique(purrr::map_lgl(element_names, is.null))
+  if (identical(has_null, TRUE)) {
+    code <- c(
+      code, 
+      glue::glue("tidyr::unnest_longer({col}, indices_include = FALSE)")
+    )
+    return(glue::glue_collapse(code, sep = " |>\n  "))
+  } else if (identical(has_null, FALSE)) {
+    common_names <- purrr::reduce(element_names, intersect)
+    n_common <- length(common_names)
+    if (n_common > 0) {
+      code <- c(
+        code,
+        glue::glue("tidyr::unnest_wider({col})")
+      )
+      return(glue::glue_collapse(code, sep = " |>\n  "))
+    }
+  }
+  code <- c(
+    code,
+    glue::glue("tidyr::unnest_longer({col}, indices_to = \"descriptive_name\")")
+  )
+  return(glue::glue_collapse(code, sep = " |>\n  "))
+}
+```
+
+::: notes
+This has some tidyeval, so I'll probably move it to a package and talk about it or put it online to copy/paste, rather than showing the code here
+:::
+
+## Unnest versions: Wider or longer?
 
 ::: fragment
 ```{r}
-#| label: apis_start-apis_guru_list_all_apis_versions_explore
+#| label: apis_start-apis_guru_list_versions
 #| eval: true
-all_apis_versions$versions |> lengths() |> unique()
+rlang::is_named(all_apis_versions$versions)
 ```
 :::
 ::: fragment
 ```{r}
-#| label: apis_start-apis_guru_list_all_apis_versions_explore2
+#| label: apis_start-apis_guru_list_versions2
 #| eval: true
-all_apis_versions$versions |> lengths() |> head(10)
+#| code-line-numbers: 1|2|3
+non_empties <- all_apis_versions$versions[lengths(all_apis_versions$versions) > 0]
+element_names <- purrr::map(non_empties, names)
+has_null <- unique(purrr::map_lgl(element_names, is.null))
 ```
 :::
 ::: fragment
 ```{r}
-#| label: apis_start-apis_guru_list_all_apis_versions_explore3
+#| label: apis_start-apis_guru_list_versions3
 #| eval: true
-all_apis_versions$versions[[1]] |> names()
+has_null
 ```
 :::
 ::: fragment
 ```{r}
-#| label: apis_start-apis_guru_list_all_apis_versions_explore4
+#| label: apis_start-apis_guru_list_versions4
 #| eval: true
-all_apis_versions$versions[[10]] |> names()
+common_names <- purrr::reduce(element_names, intersect)
 ```
 :::
 ::: fragment
 ```{r}
-#| label: apis_start-apis_guru_list_all_apis_versions_explore5
+#| label: apis_start-apis_guru_list_versions5
 #| eval: true
-all_apis_versions$versions[[10]] |> str(max.level = 1)
+common_names
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_versions6
+#| eval: true
+choose_unnest_direction(all_apis_versions, versions)
 ```
 :::
 
-## Unnest 2
+## Unnest versions
+
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_versions_longer
+#| eval: true
+all_apis_longer <- all_apis_versions |>
+  tidyr::unnest_longer(versions, indices_to = "version")
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_versions_longer_print
+#| eval: true
+all_apis_longer
+```
+:::
+
+## What if we went wider?
+
+```{r}
+#| label: apis_start-apis_start-apis_guru_list_all_apis_preferred_wide
+#| eval: true
+all_apis_versions |> head() |> tidyr::unnest_wider(versions)
+```
+
+::: notes
+-   `head()` because otherwise we have something like 800 new columns
+-   Note the `NULL`s
+:::
+
+## Preferred versions
 
 ::: fragment
 ```{r}
 #| label: apis_start-apis_guru_list_all_apis_preferred
 #| eval: true
-#| code-line-numbers: 1-2|3|4
-all_apis_preferred <- all_apis_versions |>
-  tidyr::unnest_longer(versions, indices_to = "version") |>
+#| code-line-numbers: 1-2|3
+all_apis_preferred <- all_apis_longer |>
   dplyr::filter(preferred == version) |>
   dplyr::select(api_name, version, versions)
 ```
@@ -296,23 +511,20 @@ all_apis_preferred
 ```
 :::
 
-## Unnest 3: wider or longer?
+## Preferred versions: Wider or longer?
 
 ::: fragment
 ```{r}
 #| label: apis_start-apis_guru_list_all_apis_preferred_explore
 #| eval: true
-all_apis_preferred$versions |> lengths() |> unique()
+choose_unnest_direction(all_apis_preferred, versions)
 ```
 :::
 ::: fragment
 ```{r}
 #| label: apis_start-apis_guru_list_all_apis_preferred_explore2
 #| eval: true
-setdiff(
-  names(all_apis_preferred$versions[[7]]),
-  names(all_apis_preferred$versions[[1]])
-)
+head(names(all_apis_preferred$versions))
 ```
 :::
 ::: fragment
@@ -324,26 +536,78 @@ all_apis_preferred_wide <- all_apis_preferred |>
 ```
 :::
 
-## All APIs
+::: notes
+-   We already dealt with these names, don't need the mutate.
+:::
+
+## Preferred versions unnested
+
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_preferred_wide_print
+#| eval: true
+all_apis_preferred_wide
+```
+
+## Preferred versions glimpse
+
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_preferred_wide_glimpse
+#| eval: true
+dplyr::glimpse(all_apis_preferred_wide)
+```
+
+## info: wider or longer?
+
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_info_wider
+#| eval: true
+choose_unnest_direction(all_apis_preferred_wide, info)
+all_apis_preferred_wide |> 
+  tidyr::unnest_wider(info, names_sep = "_")
+```
+
+::: notes
+-   `names_sep` avoids name overlap & shows us all the things that came from info
+-   Notice that it went from 10 columns to 76.
+:::
+
+## info: `hoist()`
 
 ::: fragment
 ```{r}
-#| label: apis_start-apis_guru_list_all_apis_preferred_wide
+#| label: apis_start-apis_guru_list_all_apis_info_hoist
 #| eval: true
-#| code-line-numbers: 1|2|3|4|5-6|7
+all_preferred_apis_with_categories <- all_apis_preferred_wide |>
+  tidyr::hoist(info, categories = "x-apisguru-categories")
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_info_hoist2
+#| eval: true
+all_preferred_apis_with_categories
+```
+:::
+
+## `unnest_auto()`
+
+::: fragment
+```{r}
+#| label: apis_start-apis_guru_list_all_apis_unnest_auto
+#| eval: true
+#| code-line-numbers: 1-2|3|4|5-6|7
 all_apis |> 
   tibble::enframe(name = "api_name") |> 
-  tidyr::unnest_wider(value) |> 
-  tidyr::unnest_longer(versions, indices_to = "version") |>
-  dplyr::filter(preferred == version) |>
-  dplyr::select(api_name, version, versions) |>
-  tidyr::unnest_wider(versions)
+  tidyr::unnest_auto(value) |> 
+  tidyr::unnest_auto(versions) |>
+  dplyr::filter(preferred == versions_id) |>
+  dplyr::select(api_name, versions_id, versions) |>
+  tidyr::unnest_auto(versions)
 ```
 :::
 
 ::: notes
--   If we dug in a little more, we'd see that info is variable-like, but all over the place; different APIs have different values
-    -   APIs.guru adds a couple things in here, including a "category" that we'll use
+-   `unnest_auto()` does fine here
 :::
 
 ## Filter APIs
@@ -364,134 +628,7 @@ all_apis_preferred_wide |>
 -   `swaggerUrl` is JSON, `swaggerYamlUrl` is YAML version of the same thing
 -   YAML is another data format. Technically YAML is a superset of JSON, with added commenting capabilities.
 -   RMarkdown headers + package descriptions are YAML-related.
--   We mostly don't care (mostly because YAML plays slightly better with tibblify, as we'll see)
--   "Swagger" is the old name for the OpenAPI specification, a standard way to describe APIs.
--   Not everyone uses swagger/OpenAPI, but, when they do, your life is easier
-:::
-
-# API Definitions
-
-## API Descriptions
-
--   [APIs.guru](https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.json)
--   [OpenFEC](https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json)
--   [YouTube Data API v3](https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.json)
--   [Asana](https://api.apis.guru/v2/specs/asana.com/1.0/openapi.json)
-
-::: notes
--   Technically the OpenAPI specification is the standard, and each API has a "description"
--   OpenAPI 3.0+ easier to use than Swagger (aka 2.0)
--   Still some confusing bits, such as `security` vs `components$securitySchemas`
--   People can and will do things wrong/weird.
-:::
-
-## Read an API description
-
-```{r}
-#| label: apis_start-api_spec-download
-#| eval: false
-#| include: false
-download.file(
-  "https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml",
-  here::here("slides", "httr2", "apis-start", "youtube.yaml")
-)
-```
-```{r}
-#| label: apis_start-api_spec-load
-#| eval: true
-#| include: false
-youtube_spec <- yaml::read_yaml(here::here("slides", "httr2", "apis-start", "youtube.yaml"))
-```
-
-::: fragment
-```{r}
-#| label: apis_start-api_spec
-youtube_spec <- yaml::read_yaml("https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml")
-```
-:::
-::: fragment
-```{r}
-#| label: apis_start-api_spec-examine
-#| eval: true
-names(youtube_spec)
-```
-:::
-
-## Introduction to tibblify
-
-```{r}
-#| label: apis_start-api_spec-tibblify
-#| eval: true
-youtube_paths <- tibblify::tibblify(youtube_spec$paths) |> 
-  dplyr::glimpse()
-```
-
-## OpenAPI References
-
-```{r}
-#| label: apis_start-api_spec-tibblify-ref
-#| eval: true
-youtube_paths$parameters[[1]]
-```
-
-## parse_openapi_spec()
-
-```{r}
-#| label: apis_start-api_spec-tibblify-openapi
-#| eval: true
-youtube_paths <- tibblify::parse_openapi_spec(youtube_spec)
-```
-::: fragment
-```{r}
-#| label: apis_start-api_spec-tibblify2
-#| eval: true
-youtube_paths
-```
-:::
-
-::: notes
--   We're looking at a dev version of tibblify which I plan to push through
-    -   `pak::pak("mgirlich/tibblify#191")`
--   "endpoint" is another term for "path" -- a url in the API
--   Deals with references from paths to components > schemas
--   Captions has 4 different methods, so its tibble has 4 rows.
-:::
-
-## Unnesting paths
-
-```{r}
-#| label: apis_start-api_spec-tibblify3
-#| eval: true
-youtube_paths |> tidyr::unnest(operations)
-```
-
-::: notes
--   `operation` aka method, we'll discuss these more later; GET means you can load it like a web page
--   Note rows 3-6 are that `captions` endpoint, and then 7 is `captions/{id}`
-:::
-
-## Path details
-
-```{r}
-#| label: apis_start-api_spec-tibblify4
-#| eval: true
-youtube_paths |> tidyr::unnest(operations) |> dplyr::glimpse()
-```
-
-::: notes
--   (`endpoint` = path)
--   (`operation` = `method` = more details in a few chapters)
--   `summary` is meant for a very brief description, not often used
--   `description` can have markdown
--   `operation_id` = unique string for this operation, meant for tools to use as a function name
--   `tags` = Categories; can have more than one per endpoint, but often just one
--   `parameters` = tibble of inputs
--   `request_body` = tibble of a fancier type of input (later chapter)
--   `responses` = tibble of expected output
--   `deprecated` = is this endpoint no longer intended to be used
--   `global_parameters` = tibble of shared inputs
--   This tibble contains MOST of the useful information about the API
-    -   We'll dig into this tibble for a simple API in the next chapter
+-   We'll see more about YAML and find out what "Swagger" means in the next chapter!
 :::
 
 # Survey
