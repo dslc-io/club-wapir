@@ -1,0 +1,142 @@
+---
+engine: knitr
+title: How can I use an API description?
+---
+
+# ️✅ Learning objectives
+
+::: nonincremental
+-   Use an API's OpenAPI description to learn about the API.
+-   Parse nested lists with {tibblify}.
+-   Parse API responses with {tibblify} and the response description.
+:::
+
+```{r}
+#| label: openapi-packages-used
+#| eval: true
+```
+
+# API Descriptions
+
+## API Descriptions
+
+-   [APIs.guru](https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.json)
+-   [OpenFEC](https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json)
+-   [YouTube Data API v3](https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.json)
+-   [Asana](https://api.apis.guru/v2/specs/asana.com/1.0/openapi.json)
+
+::: notes
+-   Technically the OpenAPI specification is the standard, and each API has a "description"
+-   OpenAPI 3.0+ easier to use than Swagger (aka 2.0)
+-   Still some confusing bits, such as `security` vs `components$securitySchemas`
+-   People can and will do things wrong/weird.
+:::
+
+## Read an API description
+
+```{r}
+#| label: apis_start-api_spec-download
+#| eval: false
+#| include: false
+download.file(
+  "https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml",
+  here::here("slides", "httr2", "apis-start", "youtube.yaml")
+)
+```
+```{r}
+#| label: apis_start-api_spec-load
+#| eval: true
+#| include: false
+youtube_spec <- yaml::read_yaml(here::here("slides", "httr2", "apis-start", "youtube.yaml"))
+```
+
+::: fragment
+```{r}
+#| label: apis_start-api_spec
+youtube_spec <- yaml::read_yaml("https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml")
+```
+:::
+::: fragment
+```{r}
+#| label: apis_start-api_spec-examine
+#| eval: true
+names(youtube_spec)
+```
+:::
+
+## Introduction to tibblify
+
+```{r}
+#| label: apis_start-api_spec-tibblify
+#| eval: true
+youtube_paths <- tibblify::tibblify(youtube_spec$paths) |> 
+  dplyr::glimpse()
+```
+
+## OpenAPI References
+
+```{r}
+#| label: apis_start-api_spec-tibblify-ref
+#| eval: true
+youtube_paths$parameters[[1]]
+```
+
+## parse_openapi_spec()
+
+```{r}
+#| label: apis_start-api_spec-tibblify-openapi
+#| eval: true
+youtube_paths <- tibblify::parse_openapi_spec(youtube_spec)
+```
+::: fragment
+```{r}
+#| label: apis_start-api_spec-tibblify2
+#| eval: true
+youtube_paths
+```
+:::
+
+::: notes
+-   We're looking at a dev version of tibblify which I plan to push through
+    -   `pak::pak("mgirlich/tibblify#191")`
+-   "endpoint" is another term for "path" -- a url in the API
+-   Deals with references from paths to components > schemas
+-   Captions has 4 different methods, so its tibble has 4 rows.
+:::
+
+## Unnesting paths
+
+```{r}
+#| label: apis_start-api_spec-tibblify3
+#| eval: true
+youtube_paths |> tidyr::unnest(operations)
+```
+
+::: notes
+-   `operation` aka method, we'll discuss these more later; GET means you can load it like a web page
+-   Note rows 3-6 are that `captions` endpoint, and then 7 is `captions/{id}`
+:::
+
+## Path details
+
+```{r}
+#| label: apis_start-api_spec-tibblify4
+#| eval: true
+youtube_paths |> tidyr::unnest(operations) |> dplyr::glimpse()
+```
+
+::: notes
+-   (`endpoint` = path)
+-   (`operation` = `method` = more details in a few chapters)
+-   `summary` is meant for a very brief description, not often used
+-   `description` can have markdown
+-   `operation_id` = unique string for this operation, meant for tools to use as a function name
+-   `tags` = Categories; can have more than one per endpoint, but often just one
+-   `parameters` = tibble of inputs
+-   `request_body` = tibble of a fancier type of input (later chapter)
+-   `responses` = tibble of expected output
+-   `deprecated` = is this endpoint no longer intended to be used
+-   `global_parameters` = tibble of shared inputs
+-   This tibble contains MOST of the useful information about the API
+    -   We'll dig into this tibble for a simple API in the next chapter
+:::
