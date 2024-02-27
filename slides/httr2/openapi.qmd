@@ -14,6 +14,10 @@ title: How can I use an API description?
 ```{r}
 #| label: openapi-packages-used
 #| eval: true
+library(yaml)
+library(tibblify)
+library(dplyr)
+library(tidyr)
 ```
 
 # The OpenAPI Specification
