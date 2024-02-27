@@ -150,53 +150,92 @@
     ]
   },
   {
-    "objectID": "slides/httr2/openapi.html#api-descriptions-1",
-    "href": "slides/httr2/openapi.html#api-descriptions-1",
+    "objectID": "slides/httr2/openapi.html#exploring-api-descriptions",
+    "href": "slides/httr2/openapi.html#exploring-api-descriptions",
     "title": "How can I use an API description?",
-    "section": "API Descriptions",
-    "text": "API Descriptions\n\nAPIs.guru\nOpenFEC\nYouTube Data API v3\nAsana\n\n\n\nTechnically the OpenAPI specification is the standard, and each API has a “description”\nOpenAPI 3.0+ easier to use than Swagger (aka 2.0)\nStill some confusing bits, such as security vs components$securitySchemas\nPeople can and will do things wrong/weird."
+    "section": "Exploring API Descriptions",
+    "text": "Exploring API Descriptions\n\nAPIs.guru\nOpenFEC\nYouTube Data API v3\n\n\n\nTechnically the OpenAPI specification is the standard, and each API has a “description” that’s defined in a “document” (which can be a composite of multiple files).\nStill some confusing bits, such as security vs components$securitySchemas\nPeople can and will do things wrong/weird.",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I use an API description?"
+    ]
   },
   {
-    "objectID": "slides/httr2/openapi.html#read-an-api-description",
-    "href": "slides/httr2/openapi.html#read-an-api-description",
+    "objectID": "slides/httr2/openapi.html#swagger-vs-openapi",
+    "href": "slides/httr2/openapi.html#swagger-vs-openapi",
     "title": "How can I use an API description?",
-    "section": "Read an API description",
-    "text": "Read an API description\n\n\nyoutube_spec &lt;- yaml::read_yaml(\"https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml\")\n\n\n\n\nnames(youtube_spec)\n\n#&gt; [1] \"openapi\"      \"servers\"      \"info\"         \"externalDocs\" \"tags\"        \n#&gt; [6] \"paths\"        \"components\""
+    "section": "Swagger vs OpenAPI",
+    "text": "Swagger vs OpenAPI\n\n2011: Wordnik created Swagger API format + tools\n2015: SmartBear Software acquired Swagger project\n2015: Swagger API specification donated to newly founded OpenAPI Initiative\n2016: Swagger Spec 2.0 ➡️ OpenAPI Specification (OAS) 2.0.\nOfficially: OAS = format, Swagger = tools\n\n\n\nWordnik is a nonprofit organization with a free online English dictionary, compiles a bunch of sources, so they wanted a way to standardize all those APIs.\nThey open-sourced the project shortly after creating it.\nSmartBear makes tools for making and using APIs.\nOpenAPI Initiative is part of the Linux Foundation. Founding members include Google, IBM, and Microsoft.\nPeople still call the format “swagger” all the time.",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I use an API description?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/openapi.html#read-api-descriptions",
+    "href": "slides/httr2/openapi.html#read-api-descriptions",
+    "title": "How can I use an API description?",
+    "section": "Read API Descriptions",
+    "text": "Read API Descriptions\n\n\napisguru_spec &lt;- yaml::read_yaml(\"https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.yaml\")\nyoutube_spec &lt;- yaml::read_yaml(\"https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml\")\n\n\n\n\nnames(apisguru_spec)\n\n#&gt;  [1] \"openapi\"          \"servers\"          \"info\"             \"externalDocs\"    \n#&gt;  [5] \"security\"         \"tags\"             \"paths\"            \"components\"      \n#&gt;  [9] \"x-optic-standard\" \"x-optic-url\"\n\nnames(youtube_spec)\n\n#&gt; [1] \"openapi\"      \"servers\"      \"info\"         \"externalDocs\" \"tags\"        \n#&gt; [6] \"paths\"        \"components\"",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I use an API description?"
+    ]
   },
   {
     "objectID": "slides/httr2/openapi.html#introduction-to-tibblify",
     "href": "slides/httr2/openapi.html#introduction-to-tibblify",
     "title": "How can I use an API description?",
     "section": "Introduction to tibblify",
-    "text": "Introduction to tibblify\n\nyoutube_paths &lt;- tibblify::tibblify(youtube_spec$paths) |&gt; \n  dplyr::glimpse()\n\n#&gt; Rows: 39\n#&gt; Columns: 6\n#&gt; $ .names     &lt;chr&gt; \"/youtube/v3/abuseReports\", \"/youtube/v3/activities\", \"/you…\n#&gt; $ parameters &lt;list&lt;tibble[,1]&gt;&gt; [&lt;tbl_df[11 x 1]&gt;], [&lt;tbl_df[11 x 1]&gt;], [&lt;tbl_…\n#&gt; $ post       &lt;tibble[,7]&gt; &lt;tbl_df[26 x 7]&gt;\n#&gt; $ get        &lt;tibble[,6]&gt; &lt;tbl_df[26 x 6]&gt;\n#&gt; $ delete     &lt;tibble[,6]&gt; &lt;tbl_df[26 x 6]&gt;\n#&gt; $ put        &lt;tibble[,7]&gt; &lt;tbl_df[26 x 7]&gt;"
+    "text": "Introduction to tibblify\nTODO: Use tibblify to get response specs, and then use that to tibblify responses. Show without the spec (messy) and then in theory it SHOULD get the ~same result as previous slides with spec.\n\nyoutube_paths &lt;- tibblify::tibblify(youtube_spec$paths) |&gt; \n  dplyr::glimpse()\n\n#&gt; Rows: 39\n#&gt; Columns: 6\n#&gt; $ .names     &lt;chr&gt; \"/youtube/v3/abuseReports\", \"/youtube/v3/activities\", \"/you…\n#&gt; $ parameters &lt;list&lt;tibble[,1]&gt;&gt; [&lt;tbl_df[11 x 1]&gt;], [&lt;tbl_df[11 x 1]&gt;], [&lt;tbl_…\n#&gt; $ post       &lt;tibble[,7]&gt; &lt;tbl_df[26 x 7]&gt;\n#&gt; $ get        &lt;tibble[,6]&gt; &lt;tbl_df[26 x 6]&gt;\n#&gt; $ delete     &lt;tibble[,6]&gt; &lt;tbl_df[26 x 6]&gt;\n#&gt; $ put        &lt;tibble[,7]&gt; &lt;tbl_df[26 x 7]&gt;",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I use an API description?"
+    ]
   },
   {
     "objectID": "slides/httr2/openapi.html#openapi-references",
     "href": "slides/httr2/openapi.html#openapi-references",
     "title": "How can I use an API description?",
     "section": "OpenAPI References",
-    "text": "OpenAPI References\n\nyoutube_paths$parameters[[1]]\n\n#&gt; # A tibble: 11 × 1\n#&gt;    `$ref`                                 \n#&gt;    &lt;chr&gt;                                  \n#&gt;  1 #/components/parameters/_.xgafv        \n#&gt;  2 #/components/parameters/access_token   \n#&gt;  3 #/components/parameters/alt            \n#&gt;  4 #/components/parameters/callback       \n#&gt;  5 #/components/parameters/fields         \n#&gt;  6 #/components/parameters/key            \n#&gt;  7 #/components/parameters/oauth_token    \n#&gt;  8 #/components/parameters/prettyPrint    \n#&gt;  9 #/components/parameters/quotaUser      \n#&gt; 10 #/components/parameters/upload_protocol\n#&gt; 11 #/components/parameters/uploadType"
+    "text": "OpenAPI References\n\nyoutube_paths$parameters[[1]]\n\n#&gt; # A tibble: 11 × 1\n#&gt;    `$ref`                                 \n#&gt;    &lt;chr&gt;                                  \n#&gt;  1 #/components/parameters/_.xgafv        \n#&gt;  2 #/components/parameters/access_token   \n#&gt;  3 #/components/parameters/alt            \n#&gt;  4 #/components/parameters/callback       \n#&gt;  5 #/components/parameters/fields         \n#&gt;  6 #/components/parameters/key            \n#&gt;  7 #/components/parameters/oauth_token    \n#&gt;  8 #/components/parameters/prettyPrint    \n#&gt;  9 #/components/parameters/quotaUser      \n#&gt; 10 #/components/parameters/upload_protocol\n#&gt; 11 #/components/parameters/uploadType",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I use an API description?"
+    ]
   },
   {
     "objectID": "slides/httr2/openapi.html#parse_openapi_spec",
     "href": "slides/httr2/openapi.html#parse_openapi_spec",
     "title": "How can I use an API description?",
     "section": "parse_openapi_spec()",
-    "text": "parse_openapi_spec()\n\nyoutube_paths &lt;- tibblify::parse_openapi_spec(youtube_spec)\n\n\n\nyoutube_paths\n\n#&gt; # A tibble: 39 × 2\n#&gt;    endpoint                          operations       \n#&gt;    &lt;chr&gt;                             &lt;list&gt;           \n#&gt;  1 /youtube/v3/abuseReports          &lt;tibble [1 × 10]&gt;\n#&gt;  2 /youtube/v3/activities            &lt;tibble [1 × 10]&gt;\n#&gt;  3 /youtube/v3/captions              &lt;tibble [4 × 10]&gt;\n#&gt;  4 /youtube/v3/captions/{id}         &lt;tibble [1 × 10]&gt;\n#&gt;  5 /youtube/v3/channelBanners/insert &lt;tibble [1 × 10]&gt;\n#&gt;  6 /youtube/v3/channelSections       &lt;tibble [4 × 10]&gt;\n#&gt;  7 /youtube/v3/channels              &lt;tibble [2 × 10]&gt;\n#&gt;  8 /youtube/v3/commentThreads        &lt;tibble [3 × 10]&gt;\n#&gt;  9 /youtube/v3/comments              &lt;tibble [4 × 10]&gt;\n#&gt; 10 /youtube/v3/comments/markAsSpam   &lt;tibble [1 × 10]&gt;\n#&gt; # ℹ 29 more rows\n\n\n\n\n\nWe’re looking at a dev version of tibblify which I plan to push through\n\npak::pak(\"mgirlich/tibblify#191\")\n\n“endpoint” is another term for “path” – a url in the API\nDeals with references from paths to components &gt; schemas\nCaptions has 4 different methods, so its tibble has 4 rows."
+    "text": "parse_openapi_spec()\n\nyoutube_paths &lt;- tibblify::parse_openapi_spec(youtube_spec)\n\n\n\nyoutube_paths\n\n#&gt; # A tibble: 39 × 2\n#&gt;    endpoint                          operations       \n#&gt;    &lt;chr&gt;                             &lt;list&gt;           \n#&gt;  1 /youtube/v3/abuseReports          &lt;tibble [1 × 10]&gt;\n#&gt;  2 /youtube/v3/activities            &lt;tibble [1 × 10]&gt;\n#&gt;  3 /youtube/v3/captions              &lt;tibble [4 × 10]&gt;\n#&gt;  4 /youtube/v3/captions/{id}         &lt;tibble [1 × 10]&gt;\n#&gt;  5 /youtube/v3/channelBanners/insert &lt;tibble [1 × 10]&gt;\n#&gt;  6 /youtube/v3/channelSections       &lt;tibble [4 × 10]&gt;\n#&gt;  7 /youtube/v3/channels              &lt;tibble [2 × 10]&gt;\n#&gt;  8 /youtube/v3/commentThreads        &lt;tibble [3 × 10]&gt;\n#&gt;  9 /youtube/v3/comments              &lt;tibble [4 × 10]&gt;\n#&gt; 10 /youtube/v3/comments/markAsSpam   &lt;tibble [1 × 10]&gt;\n#&gt; # ℹ 29 more rows\n\n\n\n\n\nWe’re looking at a dev version of tibblify which I plan to push through\n\npak::pak(\"mgirlich/tibblify#191\")\n\n“endpoint” is another term for “path” – a url in the API\nDeals with references from paths to components &gt; schemas\nCaptions has 4 different methods, so its tibble has 4 rows.",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I use an API description?"
+    ]
   },
   {
     "objectID": "slides/httr2/openapi.html#unnesting-paths",
     "href": "slides/httr2/openapi.html#unnesting-paths",
     "title": "How can I use an API description?",
     "section": "Unnesting paths",
-    "text": "Unnesting paths\n\nyoutube_paths |&gt; tidyr::unnest(operations)\n\n#&gt; # A tibble: 76 × 11\n#&gt;    endpoint          operation summary description operation_id tags  parameters\n#&gt;    &lt;chr&gt;             &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt; &lt;list&gt;    \n#&gt;  1 /youtube/v3/abus… post      &lt;NA&gt;    Inserts a … youtube.abu… abus… &lt;tibble&gt;  \n#&gt;  2 /youtube/v3/acti… get       &lt;NA&gt;    Retrieves … youtube.act… acti… &lt;tibble&gt;  \n#&gt;  3 /youtube/v3/capt… delete    &lt;NA&gt;    Deletes a … youtube.cap… capt… &lt;tibble&gt;  \n#&gt;  4 /youtube/v3/capt… get       &lt;NA&gt;    Retrieves … youtube.cap… capt… &lt;tibble&gt;  \n#&gt;  5 /youtube/v3/capt… post      &lt;NA&gt;    Inserts a … youtube.cap… capt… &lt;tibble&gt;  \n#&gt;  6 /youtube/v3/capt… put       &lt;NA&gt;    Updates an… youtube.cap… capt… &lt;tibble&gt;  \n#&gt;  7 /youtube/v3/capt… get       &lt;NA&gt;    Downloads … youtube.cap… capt… &lt;tibble&gt;  \n#&gt;  8 /youtube/v3/chan… post      &lt;NA&gt;    Inserts a … youtube.cha… chan… &lt;tibble&gt;  \n#&gt;  9 /youtube/v3/chan… delete    &lt;NA&gt;    Deletes a … youtube.cha… chan… &lt;tibble&gt;  \n#&gt; 10 /youtube/v3/chan… get       &lt;NA&gt;    Retrieves … youtube.cha… chan… &lt;tibble&gt;  \n#&gt; # ℹ 66 more rows\n#&gt; # ℹ 4 more variables: request_body &lt;list&gt;, responses &lt;list&gt;, deprecated &lt;lgl&gt;,\n#&gt; #   global_parameters &lt;list&gt;\n\n\n\n\noperation aka method, we’ll discuss these more later; GET means you can load it like a web page\nNote rows 3-6 are that captions endpoint, and then 7 is captions/{id}"
+    "text": "Unnesting paths\n\nyoutube_paths |&gt; tidyr::unnest(operations)\n\n#&gt; # A tibble: 76 × 11\n#&gt;    endpoint          operation summary description operation_id tags  parameters\n#&gt;    &lt;chr&gt;             &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt; &lt;list&gt;    \n#&gt;  1 /youtube/v3/abus… post      &lt;NA&gt;    Inserts a … youtube.abu… abus… &lt;tibble&gt;  \n#&gt;  2 /youtube/v3/acti… get       &lt;NA&gt;    Retrieves … youtube.act… acti… &lt;tibble&gt;  \n#&gt;  3 /youtube/v3/capt… delete    &lt;NA&gt;    Deletes a … youtube.cap… capt… &lt;tibble&gt;  \n#&gt;  4 /youtube/v3/capt… get       &lt;NA&gt;    Retrieves … youtube.cap… capt… &lt;tibble&gt;  \n#&gt;  5 /youtube/v3/capt… post      &lt;NA&gt;    Inserts a … youtube.cap… capt… &lt;tibble&gt;  \n#&gt;  6 /youtube/v3/capt… put       &lt;NA&gt;    Updates an… youtube.cap… capt… &lt;tibble&gt;  \n#&gt;  7 /youtube/v3/capt… get       &lt;NA&gt;    Downloads … youtube.cap… capt… &lt;tibble&gt;  \n#&gt;  8 /youtube/v3/chan… post      &lt;NA&gt;    Inserts a … youtube.cha… chan… &lt;tibble&gt;  \n#&gt;  9 /youtube/v3/chan… delete    &lt;NA&gt;    Deletes a … youtube.cha… chan… &lt;tibble&gt;  \n#&gt; 10 /youtube/v3/chan… get       &lt;NA&gt;    Retrieves … youtube.cha… chan… &lt;tibble&gt;  \n#&gt; # ℹ 66 more rows\n#&gt; # ℹ 4 more variables: request_body &lt;list&gt;, responses &lt;list&gt;, deprecated &lt;lgl&gt;,\n#&gt; #   global_parameters &lt;list&gt;\n\n\n\n\noperation aka method, we’ll discuss these more later; GET means you can load it like a web page\nNote rows 3-6 are that captions endpoint, and then 7 is captions/{id}",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I use an API description?"
+    ]
   },
   {
     "objectID": "slides/httr2/openapi.html#path-details",
     "href": "slides/httr2/openapi.html#path-details",
     "title": "How can I use an API description?",
     "section": "Path details",
-    "text": "Path details\n\nyoutube_paths |&gt; tidyr::unnest(operations) |&gt; dplyr::glimpse()\n\n#&gt; Rows: 76\n#&gt; Columns: 11\n#&gt; $ endpoint          &lt;chr&gt; \"/youtube/v3/abuseReports\", \"/youtube/v3/activities\"…\n#&gt; $ operation         &lt;chr&gt; \"post\", \"get\", \"delete\", \"get\", \"post\", \"put\", \"get\"…\n#&gt; $ summary           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …\n#&gt; $ description       &lt;chr&gt; \"Inserts a new resource into this collection.\", \"Ret…\n#&gt; $ operation_id      &lt;chr&gt; \"youtube.abuseReports.insert\", \"youtube.activities.l…\n#&gt; $ tags              &lt;chr&gt; \"abuseReports\", \"activities\", \"captions\", \"captions\"…\n#&gt; $ parameters        &lt;list&gt; [&lt;tbl_df[1 x 9]&gt;], [&lt;tbl_df[9 x 9]&gt;], [&lt;tbl_df[3 x …\n#&gt; $ request_body      &lt;list&gt; [&lt;tbl_df[1 x 3]&gt;], &lt;NULL&gt;, &lt;NULL&gt;, &lt;NULL&gt;, [&lt;tbl_df…\n#&gt; $ responses         &lt;list&gt; [&lt;tbl_df[1 x 5]&gt;], [&lt;tbl_df[1 x 5]&gt;], [&lt;tbl_df[1 x …\n#&gt; $ deprecated        &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FAL…\n#&gt; $ global_parameters &lt;list&gt; [&lt;tbl_df[11 x 9]&gt;], [&lt;tbl_df[11 x 9]&gt;], [&lt;tbl_df[11…\n\n\n\n\n(endpoint = path)\n(operation = method = more details in a few chapters)\nsummary is meant for a very brief description, not often used\ndescription can have markdown\noperation_id = unique string for this operation, meant for tools to use as a function name\ntags = Categories; can have more than one per endpoint, but often just one\nparameters = tibble of inputs\nrequest_body = tibble of a fancier type of input (later chapter)\nresponses = tibble of expected output\ndeprecated = is this endpoint no longer intended to be used\nglobal_parameters = tibble of shared inputs\nThis tibble contains MOST of the useful information about the API\n\nWe’ll dig into this tibble for a simple API in the next chapter\n\n\n\n\n\n\nr4ds.io/wapir | Jon Harmon | wapir.io"
+    "text": "Path details\n\nyoutube_paths |&gt; tidyr::unnest(operations) |&gt; dplyr::glimpse()\n\n#&gt; Rows: 76\n#&gt; Columns: 11\n#&gt; $ endpoint          &lt;chr&gt; \"/youtube/v3/abuseReports\", \"/youtube/v3/activities\"…\n#&gt; $ operation         &lt;chr&gt; \"post\", \"get\", \"delete\", \"get\", \"post\", \"put\", \"get\"…\n#&gt; $ summary           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …\n#&gt; $ description       &lt;chr&gt; \"Inserts a new resource into this collection.\", \"Ret…\n#&gt; $ operation_id      &lt;chr&gt; \"youtube.abuseReports.insert\", \"youtube.activities.l…\n#&gt; $ tags              &lt;chr&gt; \"abuseReports\", \"activities\", \"captions\", \"captions\"…\n#&gt; $ parameters        &lt;list&gt; [&lt;tbl_df[1 x 9]&gt;], [&lt;tbl_df[9 x 9]&gt;], [&lt;tbl_df[3 x …\n#&gt; $ request_body      &lt;list&gt; [&lt;tbl_df[1 x 3]&gt;], &lt;NULL&gt;, &lt;NULL&gt;, &lt;NULL&gt;, [&lt;tbl_df…\n#&gt; $ responses         &lt;list&gt; [&lt;tbl_df[1 x 5]&gt;], [&lt;tbl_df[1 x 5]&gt;], [&lt;tbl_df[1 x …\n#&gt; $ deprecated        &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FAL…\n#&gt; $ global_parameters &lt;list&gt; [&lt;tbl_df[11 x 9]&gt;], [&lt;tbl_df[11 x 9]&gt;], [&lt;tbl_df[11…\n\n\n\n\n(endpoint = path)\n(operation = method = more details in a few chapters)\nsummary is meant for a very brief description, not often used\ndescription can have markdown\noperation_id = unique string for this operation, meant for tools to use as a function name\ntags = Categories; can have more than one per endpoint, but often just one\nparameters = tibble of inputs\nrequest_body = tibble of a fancier type of input (later chapter)\nresponses = tibble of expected output\ndeprecated = is this endpoint no longer intended to be used\nglobal_parameters = tibble of shared inputs\nThis tibble contains MOST of the useful information about the API\n\nWe’ll dig into this tibble for a simple API in the next chapter\n\n\n\n\n\n\nr4ds.io/wapir | Jon Harmon | wapir.io",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I use an API description?"
+    ]
   },
   {
     "objectID": "slides/httr2/accessing-more.html#slide-1",
@@ -562,22 +601,33 @@
     ]
   },
   {
-    "objectID": "slides/httr2/apis-start.html#the-apis.guru-api",
-    "href": "slides/httr2/apis-start.html#the-apis.guru-api",
+    "objectID": "slides/httr2/apis-start.html#the-apis.guru-api-list",
+    "href": "slides/httr2/apis-start.html#the-apis.guru-api-list",
     "title": "How can I get started with APIs?",
-    "section": "The APIs.guru API",
-    "text": "The APIs.guru API\n\n(launch APIs.guru API page to explore)\n(list.json result)\n\n\n\nJSON = JavaScript Object Notation\nBy far most common format for API data\nI’m using JSONVue browser extension\nGreat for nested data\nWe aren’t going to dig into the format because we won’t use it directly",
+    "section": "The APIs.guru API List",
+    "text": "The APIs.guru API List\n\n(list.json result)\n\n\n\nJSON = JavaScript Object Notation\nBy far most common format for API data\nI’m using JSONVue browser extension\nJSON: Great for nested data\nWe aren’t going to dig into the format because we won’t use it directly",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get started with APIs?"
     ]
   },
   {
-    "objectID": "slides/httr2/apis-start.html#list-all-apis.guru-apis",
-    "href": "slides/httr2/apis-start.html#list-all-apis.guru-apis",
+    "objectID": "slides/httr2/apis-start.html#fetch-all-apis.guru-apis",
+    "href": "slides/httr2/apis-start.html#fetch-all-apis.guru-apis",
     "title": "How can I get started with APIs?",
-    "section": "List all APIs.guru APIs",
-    "text": "List all APIs.guru APIs\n\n\nall_apis &lt;- jsonlite::fromJSON(\"https://api.apis.guru/v2/list.json\")\n\n\n\n\nlength(all_apis)\n\n#&gt; [1] 2529\n\n\n\n\n\nhead(names(all_apis))\n\n#&gt; [1] \"1forge.com\"                    \"1password.com:events\"         \n#&gt; [3] \"1password.local:connect\"       \"6-dot-authentiqio.appspot.com\"\n#&gt; [5] \"ably.io:platform\"              \"ably.net:control\"\n\n\n\n\n\npurrr::pluck_depth(all_apis)\n\n#&gt; [1] 10\n\n\n\n\n\nstr(head(all_apis, 2), max.level = 2)\n\n#&gt; List of 2\n#&gt;  $ 1forge.com          :List of 3\n#&gt;   ..$ added    : chr \"2017-05-30T08:34:14.000Z\"\n#&gt;   ..$ preferred: chr \"0.0.1\"\n#&gt;   ..$ versions :List of 1\n#&gt;  $ 1password.com:events:List of 3\n#&gt;   ..$ added    : chr \"2021-07-19T10:17:09.188Z\"\n#&gt;   ..$ preferred: chr \"1.0.0\"\n#&gt;   ..$ versions :List of 1\n\n\n\n\n\njsonlite = one of several packages for parsing JSON\n\nWe’ll stick with it because it works & is used by higher-level packages\nUsed in {shiny}, {httr}, {httr2}, dozens of other packages\n\nfromJSON does some automatic guessing, we’ll come back to this in a later chapter\n\nAlternatives: read_json reads file, parse_json reads string; don’t guess by default\n\nThis result is a huge, nested list\npurrr::pluck_depth() tells you how nested a list is\nhard to see this. Let’s rectangle it!",
+    "section": "Fetch all APIs.guru APIs",
+    "text": "Fetch all APIs.guru APIs\n\n\nall_apis &lt;- jsonlite::fromJSON(\"https://api.apis.guru/v2/list.json\")\n\n\n\n\nlength(all_apis)\n\n#&gt; [1] 2529\n\n\n\n\n\nhead(names(all_apis))\n\n#&gt; [1] \"1forge.com\"                    \"1password.com:events\"         \n#&gt; [3] \"1password.local:connect\"       \"6-dot-authentiqio.appspot.com\"\n#&gt; [5] \"ably.io:platform\"              \"ably.net:control\"\n\n\n\n\n\npurrr::pluck_depth(all_apis)\n\n#&gt; [1] 10\n\n\n\n\n\nstr(head(all_apis, 2), max.level = 2)\n\n#&gt; List of 2\n#&gt;  $ 1forge.com          :List of 3\n#&gt;   ..$ added    : chr \"2017-05-30T08:34:14.000Z\"\n#&gt;   ..$ preferred: chr \"0.0.1\"\n#&gt;   ..$ versions :List of 1\n#&gt;  $ 1password.com:events:List of 3\n#&gt;   ..$ added    : chr \"2021-07-19T10:17:09.188Z\"\n#&gt;   ..$ preferred: chr \"1.0.0\"\n#&gt;   ..$ versions :List of 1\n\n\n\n\n\njsonlite = one of several packages for parsing JSON\n\nWe’ll stick with it because it works & is used by higher-level packages\nUsed in {shiny}, {httr}, {httr2}, dozens of other packages\n\nfromJSON does some automatic guessing, we’ll come back to this in a later chapter\n\nAlternatives: read_json reads file, parse_json reads string; don’t guess by default\n\nThis result is a huge, nested list\npurrr::pluck_depth() tells you how nested a list is\nhard to see this. Let’s rectangle it!",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get started with APIs?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/apis-start.html#fetch-json-exercises",
+    "href": "slides/httr2/apis-start.html#fetch-json-exercises",
+    "title": "How can I get started with APIs?",
+    "section": "Fetch JSON: Exercises",
+    "text": "Fetch JSON: Exercises\n(not written yet, but general idea will be…)\n\nProvide URLs of JSON-formatted data\n\nHow many top-level items are described in this data?\nHow deeply is this data nested?\nWhat is the X of the Yth item?\n\n\n\n\nThis data will be on the book’s website to avoid changes.",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get started with APIs?"
@@ -595,11 +645,11 @@
     ]
   },
   {
-    "objectID": "slides/httr2/apis-start.html#how-does-unnest_auto-choose-unnest-direction",
-    "href": "slides/httr2/apis-start.html#how-does-unnest_auto-choose-unnest-direction",
+    "objectID": "slides/httr2/apis-start.html#how-does-unnest_auto-choose",
+    "href": "slides/httr2/apis-start.html#how-does-unnest_auto-choose",
     "title": "How can I get started with APIs?",
-    "section": "How does unnest_auto() choose unnest direction?",
-    "text": "How does unnest_auto() choose unnest direction?\n\n\nelement_names &lt;- purrr::map(df$col, names)\nhas_null &lt;- unique(purrr::map_lgl(element_names, is.null))\nidentical(has_null, TRUE)?\n\nunnest_longer(col, indices_include = FALSE)\n\nidentical(has_null, FALSE)?\n\ncommon_names &lt;- purrr::reduce(element_names, intersect)\nlength(common_names) &gt; 0?\n\nunnest_wider(col)\n\nlength(common_names) == 0?\n\nunnest_longer(col, indices_include = TRUE)\n\n\nLeftovers: unnest_longer(col, indices_include = FALSE)\n\n\n\n\nThis will be a flowchart.\nGet the names of the elements of the column. We’ll use this info for the rest of our decisions.\nCheck whether any elements lack names\n\nAll lack names? Unnest longer.\nAll have names? Check for shared names\n\nShared names? Unnest wider.\nNo shared names? Unnest longer, include indices.\n\nMix of named and unnamd? Unnest longer, drop indices.",
+    "section": "How does unnest_auto() choose?",
+    "text": "How does unnest_auto() choose?\n\n\n\n\n\nflowchart TD\n    B{{\"How many elements have names?\"}}\n        B --&gt;|\"none\"| C[\"Unnest longer, drop indices\"]\n        B --&gt;|\"some\"| C\n        B --&gt;|\"all\"| D{{\"Are any names reused?\"}}\n            D --&gt;|\"yes\"| E[\"Unnest wider\"]\n            D --&gt;|\"no\"| F[\"Unnest longer, keep indices\"]\n\n\n\n\n\n\n\nWould it be helpful to see this as code?",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get started with APIs?"
@@ -621,7 +671,7 @@
     "href": "slides/httr2/apis-start.html#what-does-unnest_auto-miss-2",
     "title": "How can I get started with APIs?",
     "section": "What does unnest_auto() miss? (2)",
-    "text": "What does unnest_auto() miss? (2)\nOne or more elements of a list column are empty.\n\nError: Assumes unnest_longer(), even if it’s just some missing values among a column that is obviously otherwise unnest_wider-worthy.\nCheck: any(lengths(df$col) == 0)\nFix: Do the unnest_auto() checks only on values of col that have lengths(col) &gt; 0\n\n\nAn empty item doesn’t have any names.",
+    "text": "What does unnest_auto() miss? (2)\nOne or more elements of a list column are empty.\n\nError: Assumes unnest_longer(), even if it’s just some missing values among a column that is obviously otherwise unnest_wider-worthy.\nCheck: any(lengths(df$col) == 0)\nFix: Do the unnest_auto() checks only on values of col that have lengths(col) &gt; 0\n\n\n\nAn empty item doesn’t have any names.\nCould be NULL or empty list()\nThis is relatively common in JSON.",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get started with APIs?"
@@ -643,7 +693,7 @@
     "href": "slides/httr2/apis-start.html#how-should-i-choose-unnest-direction",
     "title": "How can I get started with APIs?",
     "section": "How should I choose unnest direction?",
-    "text": "How should I choose unnest direction?\n\n\nrlang::is_named(df$col)?\n\ndplyr::mutate(names_col = names(col), .before = col)\n\nnon_empties &lt;- df$col[lengths(df$col) &gt; 0]\n\nelement_names &lt;- purrr::map(df$col, names)\n\nhas_null &lt;- unique(purrr::map_lgl(element_names, is.null))\nidentical(has_null, TRUE)?\n\nunnest_longer(col, indices_include = FALSE)\n\nidentical(has_null, FALSE)?\n\ncommon_names &lt;- purrr::reduce(element_names, intersect)\nlength(common_names) &gt; 0?\n\nunnest_wider(col)\n\nlength(common_names) == 0?\n\nunnest_longer(col, indices_include = TRUE)\n\n\nLeftovers: unnest_longer(col, indices_to = \"descriptive_name\")\n\n\n\n\nDoes the overall column have names? Avoid losing the names\nGet the names of the non-empty elements of the column. We’ll use this for the rest of our decisions.\n(no change)\n(no change)\n(no change, but see validation)\n\n(no change)\n\nValidate this! Overlapping names could be coincidental (eg, first version is always “v1”, some have additional versions)\n\n\nLeftovers: Mix of named and unnamed elements, or no shared names.\n\nKeep the names when they exist!",
+    "text": "How should I choose unnest direction?\n\n\n\n\n\nflowchart TD\n    A{{\"Is the overall column named?\"}}\n        A --&gt;|\"yes\"| AA[\"Create a names column\"]\n            AA --&gt; B\n        A --&gt;|\"no\"| B\n    B{{\"How many non-empty elements have names?\"}}\n        B --&gt;|\"none\"| C[\"Unnest longer, drop indices\"]\n        B --&gt;|\"some\"| F\n        B --&gt;|\"all\"| D{{\"Are any names reused?\"}}\n            D --&gt;|\"yes\"| E[\"Unnest wider\"]\n            D --&gt;|\"no\"| F[\"Unnest longer, keep indices\"]\n\n\n\n\n\n\n\n\nDoes the overall column have names? Avoid losing the names\nFor the name check, only use non-empty names.\nWhen all have names you should validate! Overlapping names could be coincidental (eg, first version is always “v1”, some have additional versions)\nWhen you keep indices, you should give them a descriptive name.\nWe’ll see this in code as we go.",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get started with APIs?"
@@ -804,22 +854,22 @@
     ]
   },
   {
-    "objectID": "slides/httr2/apis-start.html#unnest_auto",
-    "href": "slides/httr2/apis-start.html#unnest_auto",
+    "objectID": "slides/httr2/apis-start.html#filter-apis",
+    "href": "slides/httr2/apis-start.html#filter-apis",
     "title": "How can I get started with APIs?",
-    "section": "unnest_auto()",
-    "text": "unnest_auto()\n\n\nall_apis |&gt; \n  tibble::enframe(name = \"api_name\") |&gt; \n  tidyr::unnest_auto(value) |&gt; \n  tidyr::unnest_auto(versions) |&gt;\n  dplyr::filter(preferred == versions_id) |&gt;\n  dplyr::select(api_name, versions_id, versions) |&gt;\n  tidyr::unnest_auto(versions)\n\n#&gt; # A tibble: 2,529 × 10\n#&gt;    api_name     versions_id added info         updated swaggerUrl swaggerYamlUrl\n#&gt;    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt; &lt;list&gt;       &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;         \n#&gt;  1 1forge.com   0.0.1       2017… &lt;named list&gt; 2017-0… https://a… https://api.a…\n#&gt;  2 1password.c… 1.0.0       2021… &lt;named list&gt; 2023-0… https://a… https://api.a…\n#&gt;  3 1password.l… 1.5.7       2021… &lt;named list&gt; 2023-0… https://a… https://api.a…\n#&gt;  4 6-dot-authe… 6           2017… &lt;named list&gt; 2021-0… https://a… https://api.a…\n#&gt;  5 ably.io:pla… 1.1.0       2019… &lt;named list&gt; 2021-0… https://a… https://api.a…\n#&gt;  6 ably.net:co… 1.0.14      2021… &lt;named list&gt; 2021-0… https://a… https://api.a…\n#&gt;  7 abstractapi… 1.0.0       2021… &lt;named list&gt; 2021-0… https://a… https://api.a…\n#&gt;  8 adafruit.com 2.0.0       2018… &lt;named list&gt; 2021-0… https://a… https://api.a…\n#&gt;  9 adobe.com:a… 3.7.1-pre.0 2019… &lt;named list&gt; 2023-0… https://a… https://api.a…\n#&gt; 10 adyen.com:A… 6           2023… &lt;named list&gt; 2023-0… https://a… https://api.a…\n#&gt; # ℹ 2,519 more rows\n#&gt; # ℹ 3 more variables: openapiVer &lt;chr&gt;, link &lt;chr&gt;, externalDocs &lt;list&gt;\n\n\n\n\n\nunnest_auto() does fine here",
+    "section": "Filter APIs",
+    "text": "Filter APIs\n\nall_apis_preferred_wide |&gt;\n  tidyr::hoist(info, categories = \"x-apisguru-categories\") |&gt;\n  dplyr::rowwise() |&gt;\n  dplyr::filter(\"open_data\" %in% categories) |&gt;\n  dplyr::ungroup()\n\n#&gt; # A tibble: 318 × 11\n#&gt;    api_name             version added categories info         updated swaggerUrl\n#&gt;    &lt;chr&gt;                &lt;chr&gt;   &lt;chr&gt; &lt;list&gt;     &lt;list&gt;       &lt;chr&gt;   &lt;chr&gt;     \n#&gt;  1 amentum.space:aviat… 1.5.0   2021… &lt;chr [2]&gt;  &lt;named list&gt; 2023-0… https://a…\n#&gt;  2 amentum.space:gravi… 1.1.1   2021… &lt;chr [2]&gt;  &lt;named list&gt; 2021-0… https://a…\n#&gt;  3 amentum.space:space… 1.1.2   2021… &lt;chr [2]&gt;  &lt;named list&gt; 2023-0… https://a…\n#&gt;  4 api.gov.uk:vehicle-… 1.1.0   2020… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…\n#&gt;  5 apis.guru            2.2.0   2015… &lt;chr [2]&gt;  &lt;named list&gt; 2023-0… https://a…\n#&gt;  6 apisetu.gov.in:aaha… 3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…\n#&gt;  7 apisetu.gov.in:acko  3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…\n#&gt;  8 apisetu.gov.in:agtr… 3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…\n#&gt;  9 apisetu.gov.in:ahar… 3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…\n#&gt; 10 apisetu.gov.in:aiim… 3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…\n#&gt; # ℹ 308 more rows\n#&gt; # ℹ 4 more variables: swaggerYamlUrl &lt;chr&gt;, openapiVer &lt;chr&gt;, link &lt;chr&gt;,\n#&gt; #   externalDocs &lt;list&gt;\n\n\n\n\nPoint here is now we can work with this as data.\nCould also unnest_longer and filter for “open_data”\nswaggerUrl is JSON, swaggerYamlUrl is YAML version of the same thing\nYAML is another data format. Technically YAML is a superset of JSON, with added commenting capabilities.\nRMarkdown headers + package descriptions are YAML-related.\nWe’ll see more about YAML and find out what “Swagger” means in the next chapter!",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get started with APIs?"
     ]
   },
   {
-    "objectID": "slides/httr2/apis-start.html#filter-apis",
-    "href": "slides/httr2/apis-start.html#filter-apis",
+    "objectID": "slides/httr2/apis-start.html#rectangling-exercises",
+    "href": "slides/httr2/apis-start.html#rectangling-exercises",
     "title": "How can I get started with APIs?",
-    "section": "Filter APIs",
-    "text": "Filter APIs\n\nall_apis_preferred_wide |&gt;\n  tidyr::hoist(info, categories = \"x-apisguru-categories\") |&gt;\n  dplyr::rowwise() |&gt;\n  dplyr::filter(\"open_data\" %in% categories) |&gt;\n  dplyr::ungroup()\n\n#&gt; # A tibble: 318 × 11\n#&gt;    api_name             version added categories info         updated swaggerUrl\n#&gt;    &lt;chr&gt;                &lt;chr&gt;   &lt;chr&gt; &lt;list&gt;     &lt;list&gt;       &lt;chr&gt;   &lt;chr&gt;     \n#&gt;  1 amentum.space:aviat… 1.5.0   2021… &lt;chr [2]&gt;  &lt;named list&gt; 2023-0… https://a…\n#&gt;  2 amentum.space:gravi… 1.1.1   2021… &lt;chr [2]&gt;  &lt;named list&gt; 2021-0… https://a…\n#&gt;  3 amentum.space:space… 1.1.2   2021… &lt;chr [2]&gt;  &lt;named list&gt; 2023-0… https://a…\n#&gt;  4 api.gov.uk:vehicle-… 1.1.0   2020… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…\n#&gt;  5 apis.guru            2.2.0   2015… &lt;chr [2]&gt;  &lt;named list&gt; 2023-0… https://a…\n#&gt;  6 apisetu.gov.in:aaha… 3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…\n#&gt;  7 apisetu.gov.in:acko  3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…\n#&gt;  8 apisetu.gov.in:agtr… 3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…\n#&gt;  9 apisetu.gov.in:ahar… 3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…\n#&gt; 10 apisetu.gov.in:aiim… 3.0.0   2021… &lt;chr [1]&gt;  &lt;named list&gt; 2021-0… https://a…\n#&gt; # ℹ 308 more rows\n#&gt; # ℹ 4 more variables: swaggerYamlUrl &lt;chr&gt;, openapiVer &lt;chr&gt;, link &lt;chr&gt;,\n#&gt; #   externalDocs &lt;list&gt;\n\n\n\n\nCould also unnest_longer and filter for “open_data”\nswaggerUrl is JSON, swaggerYamlUrl is YAML version of the same thing\nYAML is another data format. Technically YAML is a superset of JSON, with added commenting capabilities.\nRMarkdown headers + package descriptions are YAML-related.\nWe’ll see more about YAML and find out what “Swagger” means in the next chapter!",
+    "section": "Rectangling: Exercises",
+    "text": "Rectangling: Exercises\n\nProvide sample (constructed) data, have you choose direction.\nTo include:\n\nSimple longer.\nSimple wider.\nOverall column is named, otherwise nothing to unnest.\nOverall column is named, then there’s stuff to unnest.\nEmpty values, otherwise clearly wider.\nunnest_auto() goes wider, but shared names are coincidental.\nSome elements unnamed, but definitely longer.",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get started with APIs?"

@@ -405,25 +405,29 @@
 <li>Parse API responses with {tibblify} and the response description.</li>
 </ul>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(yaml)</span>
+<span id="cb1-2"><a></a><span class="fu">library</span>(tibblify)</span>
+<span id="cb1-3"><a></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 
 <section>
-<section id="api-descriptions" class="title-slide slide level1 center">
-<h1>API Descriptions</h1>
+<section id="the-openapi-specification" class="title-slide slide level1 center">
+<h1>The OpenAPI Specification</h1>
 
 </section>
-<section id="api-descriptions-1" class="slide level2">
-<h2>API Descriptions</h2>
+<section id="exploring-api-descriptions" class="slide level2">
+<h2>Exploring API Descriptions</h2>
 <ul>
 <li class="fragment"><a href="https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.json">APIs.guru</a></li>
 <li class="fragment"><a href="https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json">OpenFEC</a></li>
 <li class="fragment"><a href="https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.json">YouTube Data API v3</a></li>
-<li class="fragment"><a href="https://api.apis.guru/v2/specs/asana.com/1.0/openapi.json">Asana</a></li>
 </ul>
 <aside class="notes">
 <ul>
-<li>Technically the OpenAPI specification is the standard, and each API has a “description”</li>
-<li>OpenAPI 3.0+ easier to use than Swagger (aka 2.0)</li>
+<li>Technically the OpenAPI specification is the standard, and each API has a “description” that’s defined in a “document” (which can be a composite of multiple files).</li>
 <li>Still some confusing bits, such as <code>security</code> vs <code>components$securitySchemas</code></li>
 <li>People can and will do things wrong/weird.</li>
 </ul>
@@ -439,16 +443,52 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="read-an-api-description" class="slide level2">
-<h2>Read an API description</h2>
+<section id="swagger-vs-openapi" class="slide level2">
+<h2>Swagger vs OpenAPI</h2>
+<ul>
+<li class="fragment">2011: <a href="https://www.wordnik.com/">Wordnik</a> created Swagger API format + tools</li>
+<li class="fragment">2015: SmartBear Software acquired Swagger project</li>
+<li class="fragment">2015: Swagger API specification donated to newly founded OpenAPI Initiative</li>
+<li class="fragment">2016: Swagger Spec 2.0 ➡️ OpenAPI Specification (OAS) 2.0.</li>
+<li class="fragment"><strong><em>Officially:</em></strong> OAS = format, Swagger = tools</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Wordnik is a nonprofit organization with a free online English dictionary, compiles a bunch of sources, so they wanted a way to standardize all those APIs.</li>
+<li>They open-sourced the project shortly after creating it.</li>
+<li>SmartBear makes tools for making and using APIs.</li>
+<li>OpenAPI Initiative is part of the Linux Foundation. Founding members include Google, IBM, and Microsoft.</li>
+<li>People still call the format “swagger” all the time.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="read-api-descriptions" class="slide level2">
+<h2>Read API Descriptions</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>youtube_spec <span class="ot">&lt;-</span> yaml<span class="sc">::</span><span class="fu">read_yaml</span>(<span class="st">"https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>apisguru_spec <span class="ot">&lt;-</span> yaml<span class="sc">::</span><span class="fu">read_yaml</span>(<span class="st">"https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.yaml"</span>)</span>
+<span id="cb2-2"><a></a>youtube_spec <span class="ot">&lt;-</span> yaml<span class="sc">::</span><span class="fu">read_yaml</span>(<span class="st">"https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">names</span>(youtube_spec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">names</span>(apisguru_spec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;  [1] "openapi"          "servers"          "info"             "externalDocs"    
+#&gt;  [5] "security"         "tags"             "paths"            "components"      
+#&gt;  [9] "x-optic-standard" "x-optic-url"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">names</span>(youtube_spec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; [1] "openapi"      "servers"      "info"         "externalDocs" "tags"        
 #&gt; [6] "paths"        "components"</code></pre>
@@ -458,9 +498,10 @@
 </section>
 <section id="introduction-to-tibblify" class="slide level2">
 <h2>Introduction to tibblify</h2>
+<p>TODO: Use tibblify to get response specs, and then use that to tibblify responses. Show without the spec (messy) and then in theory it SHOULD get the ~same result as previous slides <em>with</em> spec.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>youtube_paths <span class="ot">&lt;-</span> tibblify<span class="sc">::</span><span class="fu">tibblify</span>(youtube_spec<span class="sc">$</span>paths) <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a></a>  dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>youtube_paths <span class="ot">&lt;-</span> tibblify<span class="sc">::</span><span class="fu">tibblify</span>(youtube_spec<span class="sc">$</span>paths) <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a></a>  dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; Rows: 39
 #&gt; Columns: 6
@@ -476,7 +517,7 @@
 <section id="openapi-references" class="slide level2">
 <h2>OpenAPI References</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>youtube_paths<span class="sc">$</span>parameters[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>youtube_paths<span class="sc">$</span>parameters[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 11 × 1
 #&gt;    `$ref`                                 
@@ -498,11 +539,11 @@
 <section id="parse_openapi_spec" class="slide level2">
 <h2>parse_openapi_spec()</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>youtube_paths <span class="ot">&lt;-</span> tibblify<span class="sc">::</span><span class="fu">parse_openapi_spec</span>(youtube_spec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>youtube_paths <span class="ot">&lt;-</span> tibblify<span class="sc">::</span><span class="fu">parse_openapi_spec</span>(youtube_spec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>youtube_paths</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>youtube_paths</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 39 × 2
 #&gt;    endpoint                          operations       
@@ -546,7 +587,7 @@
 <section id="unnesting-paths" class="slide level2">
 <h2>Unnesting paths</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>youtube_paths <span class="sc">|&gt;</span> tidyr<span class="sc">::</span><span class="fu">unnest</span>(operations)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>youtube_paths <span class="sc">|&gt;</span> tidyr<span class="sc">::</span><span class="fu">unnest</span>(operations)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 76 × 11
 #&gt;    endpoint          operation summary description operation_id tags  parameters
@@ -586,7 +627,7 @@
 <section id="path-details" class="slide level2">
 <h2>Path details</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>youtube_paths <span class="sc">|&gt;</span> tidyr<span class="sc">::</span><span class="fu">unnest</span>(operations) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>youtube_paths <span class="sc">|&gt;</span> tidyr<span class="sc">::</span><span class="fu">unnest</span>(operations) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; Rows: 76
 #&gt; Columns: 11

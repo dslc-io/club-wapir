@@ -384,6 +384,9 @@
       margin-right: 0; 
     }
   </style>
+  <script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
+  <script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
+  <link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 </head>
 <body class="quarto-dark">
   <div class="reveal">
@@ -400,9 +403,7 @@
 <h1>️✅ Learning objectives</h1>
 <div>
 <ul>
-<li>Read API docs.</li>
 <li>Fetch json-formatted data from the web.</li>
-<li>Fetch yaml-formatted data from the web.</li>
 <li>Parse nested lists with the {tidyverse}.</li>
 </ul>
 </div>
@@ -411,9 +412,7 @@
 <span id="cb1-2"><a></a><span class="fu">library</span>(jsonlite)</span>
 <span id="cb1-3"><a></a><span class="fu">library</span>(purrr)</span>
 <span id="cb1-4"><a></a><span class="fu">library</span>(tibble)</span>
-<span id="cb1-5"><a></a><span class="fu">library</span>(tibblify)</span>
-<span id="cb1-6"><a></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb1-7"><a></a><span class="fu">library</span>(yaml)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <aside class="notes">
 <ul>
@@ -422,7 +421,6 @@
 <ul>
 <li>nested lists (unnest)</li>
 <li>tibble::enframe()</li>
-<li>tibblify</li>
 </ul></li>
 </ul>
 <style type="text/css">
@@ -474,10 +472,9 @@
 <li class="fragment">But we can grab the data directly!</li>
 </ul>
 </section>
-<section id="the-apis.guru-api" class="slide level2">
-<h2>The APIs.guru API</h2>
+<section id="the-apis.guru-api-list" class="slide level2">
+<h2>The APIs.guru API List</h2>
 <ul>
-<li class="fragment">(<a href="https://apis.guru/api-doc/#operation/listAPIs">launch APIs.guru API page to explore</a>)</li>
 <li class="fragment">(<a href="https://api.apis.guru/v2/list.json">list.json result</a>)</li>
 </ul>
 <aside class="notes">
@@ -485,7 +482,7 @@
 <li>JSON = JavaScript Object Notation</li>
 <li>By far most common format for API data</li>
 <li>I’m using <a href="https://chromewebstore.google.com/detail/jsonvue/chklaanhfefbnpoihckbnefhakgolnmc?pli=1">JSONVue browser extension</a></li>
-<li>Great for nested data</li>
+<li>JSON: Great for nested data</li>
 <li>We aren’t going to dig into the format because we won’t use it directly</li>
 </ul>
 <style type="text/css">
@@ -500,8 +497,8 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="list-all-apis.guru-apis" class="slide level2">
-<h2>List all APIs.guru APIs</h2>
+<section id="fetch-all-apis.guru-apis" class="slide level2">
+<h2>Fetch all APIs.guru APIs</h2>
 <div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>all_apis <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"https://api.apis.guru/v2/list.json"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -575,6 +572,33 @@
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="fetch-json-exercises" class="slide level2">
+<h2>Fetch JSON: Exercises</h2>
+<p>(not written yet, but general idea will be…)</p>
+<ul>
+<li class="fragment">Provide URLs of JSON-formatted data
+<ul>
+<li class="fragment">How many top-level items are described in this data?</li>
+<li class="fragment">How deeply is this data nested?</li>
+<li class="fragment">What is the <em>X</em> of the <em>Y</em>th item?</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>This data will be on the book’s website to avoid changes.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
 <section id="rectangling-data" class="title-slide slide level1 center">
@@ -592,7 +616,7 @@
 <li>Rectangular data is nice because then you can use normal tidyverse functions</li>
 <li>There’s a tidyverse function that I think handles returns from APIs better than what they show there.</li>
 <li>You might need to play around with unnest_wider vs unnest_longer (we’ll see examples in a sec). Don’t feel like you’re doing something wrong!</li>
-<li>In a couple chapters, we’ll see how to use the API spec (when it’s available) to help us guess less.</li>
+<li>In the next chapter (?), we’ll see how to use the API spec (when it’s available) to help us guess less.</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -637,46 +661,28 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="how-does-unnest_auto-choose-unnest-direction" class="slide level2">
-<h2>How does <code>unnest_auto()</code> choose unnest direction?</h2>
-<div style="font-size: 0.7em;">
-<ol type="1">
-<li class="fragment"><code>element_names &lt;- purrr::map(df$col, names)</code></li>
-<li class="fragment"><code>has_null &lt;- unique(purrr::map_lgl(element_names, is.null))</code></li>
-<li class="fragment"><code>identical(has_null, TRUE)</code>?
-<ul>
-<li class="fragment"><code>unnest_longer(col, indices_include = FALSE)</code></li>
-</ul></li>
-<li class="fragment"><code>identical(has_null, FALSE)</code>?
-<ul>
-<li class="fragment"><code>common_names &lt;- purrr::reduce(element_names, intersect)</code></li>
-<li class="fragment"><code>length(common_names) &gt; 0</code>?
-<ul>
-<li class="fragment"><code>unnest_wider(col)</code></li>
-</ul></li>
-<li class="fragment"><code>length(common_names) == 0</code>?
-<ul>
-<li class="fragment"><code>unnest_longer(col, indices_include = TRUE)</code></li>
-</ul></li>
-</ul></li>
-<li class="fragment">Leftovers: <code>unnest_longer(col, indices_include = FALSE)</code></li>
-</ol>
+<section id="how-does-unnest_auto-choose" class="slide level2">
+<h2>How does <code>unnest_auto()</code> choose?</h2>
+<div class="cell" data-reveal="true" data-eval="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    B{{"How many elements have names?"}}
+        B --&gt;|"none"| C["Unnest longer, drop indices"]
+        B --&gt;|"some"| C
+        B --&gt;|"all"| D{{"Are any names reused?"}}
+            D --&gt;|"yes"| E["Unnest wider"]
+            D --&gt;|"no"| F["Unnest longer, keep indices"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
 </div>
 <aside class="notes">
-<ul>
-<li>This will be a flowchart.</li>
-<li>Get the names of the elements of the column. We’ll use this info for the rest of our decisions.</li>
-<li>Check whether any elements lack names
-<ul>
-<li>All lack names? Unnest longer.</li>
-<li>All have names? Check for shared names
-<ul>
-<li>Shared names? Unnest wider.</li>
-<li>No shared names? Unnest longer, include indices.</li>
-</ul></li>
-<li>Mix of named and unnamd? Unnest longer, drop indices.</li>
-</ul></li>
-</ul>
+<p>Would it be helpful to see this as code?</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -689,6 +695,7 @@
           display:block!important;
       }</style></aside>
 </section>
+
 <section id="what-does-unnest_auto-miss-1" class="slide level2">
 <h2>What does <code>unnest_auto()</code> miss? (1)</h2>
 <p>Column is a named list (not a list of named lists).</p>
@@ -707,7 +714,11 @@
 <li class="fragment">Fix: Do the <code>unnest_auto()</code> checks only on values of <code>col</code> that have <code>lengths(col) &gt; 0</code></li>
 </ul>
 <aside class="notes">
-<p>An empty item doesn’t have any names.</p>
+<ul>
+<li>An empty item doesn’t have any names.</li>
+<li>Could be <code>NULL</code> or empty <code>list()</code></li>
+<li>This is relatively common in JSON.</li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -731,54 +742,36 @@
 </section>
 <section id="how-should-i-choose-unnest-direction" class="slide level2">
 <h2>How should I choose unnest direction?</h2>
-<div style="font-size: 0.7em;">
-<ol start="0" type="1">
-<li class="fragment"><code>rlang::is_named(df$col)</code>?
-<ul>
-<li class="fragment"><code>dplyr::mutate(names_col = names(col), .before = col)</code></li>
-</ul></li>
-<li class="fragment"><code>non_empties &lt;- df$col[lengths(df$col) &gt; 0]</code>
-<ul>
-<li class="fragment"><code>element_names &lt;- purrr::map(df$col, names)</code></li>
-</ul></li>
-<li class="fragment"><code>has_null &lt;- unique(purrr::map_lgl(element_names, is.null))</code></li>
-<li class="fragment"><code>identical(has_null, TRUE)</code>?
-<ul>
-<li class="fragment"><code>unnest_longer(col, indices_include = FALSE)</code></li>
-</ul></li>
-<li class="fragment"><code>identical(has_null, FALSE)</code>?
-<ul>
-<li class="fragment"><code>common_names &lt;- purrr::reduce(element_names, intersect)</code></li>
-<li class="fragment"><code>length(common_names) &gt; 0</code>?
-<ul>
-<li class="fragment"><code>unnest_wider(col)</code></li>
-</ul></li>
-<li class="fragment"><code>length(common_names) == 0</code>?
-<ul>
-<li class="fragment"><code>unnest_longer(col, indices_include = TRUE)</code></li>
-</ul></li>
-</ul></li>
-<li class="fragment">Leftovers: <code>unnest_longer(col, indices_to = "descriptive_name")</code></li>
-</ol>
+<div class="cell" data-reveal="true" data-eval="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A{{"Is the overall column named?"}}
+        A --&gt;|"yes"| AA["Create a names column"]
+            AA --&gt; B
+        A --&gt;|"no"| B
+    B{{"How many non-empty elements have names?"}}
+        B --&gt;|"none"| C["Unnest longer, drop indices"]
+        B --&gt;|"some"| F
+        B --&gt;|"all"| D{{"Are any names reused?"}}
+            D --&gt;|"yes"| E["Unnest wider"]
+            D --&gt;|"no"| F["Unnest longer, keep indices"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
 </div>
 <aside class="notes">
-<ol start="0" type="1">
+<ul>
 <li>Does the overall column have names? Avoid losing the names</li>
-<li>Get the names of the <em>non-empty</em> elements of the column. We’ll use this for the rest of our decisions.</li>
-<li>(no change)</li>
-<li>(no change)</li>
-<li>(no change, but see validation)
-<ul>
-<li>(no change)
-<ul>
-<li>Validate this! Overlapping names could be coincidental (eg, first version is always “v1”, some have additional versions)</li>
-</ul></li>
-</ul></li>
-<li>Leftovers: Mix of named and unnamed elements, or no shared names.
-<ul>
-<li>Keep the names when they exist!</li>
-</ul></li>
-</ol>
+<li>For the name check, only use non-empty names.</li>
+<li>When all have names you should validate! Overlapping names could be coincidental (eg, first version is always “v1”, some have additional versions)</li>
+<li>When you keep indices, you should give them a descriptive name.</li>
+<li>We’ll see this in code as we go.</li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1341,60 +1334,14 @@
 </div>
 </div>
 </section>
-<section id="unnest_auto" class="slide level2">
-<h2><code>unnest_auto()</code></h2>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb62" data-code-line-numbers="1-2|3|4|5-6|7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a></a>all_apis <span class="sc">|&gt;</span> </span>
-<span id="cb62-2"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="st">"api_name"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb62-3"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_auto</span>(value) <span class="sc">|&gt;</span> </span>
-<span id="cb62-4"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_auto</span>(versions) <span class="sc">|&gt;</span></span>
-<span id="cb62-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(preferred <span class="sc">==</span> versions_id) <span class="sc">|&gt;</span></span>
-<span id="cb62-6"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(api_name, versions_id, versions) <span class="sc">|&gt;</span></span>
-<span id="cb62-7"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_auto</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 2,529 × 10
-#&gt;    api_name     versions_id added info         updated swaggerUrl swaggerYamlUrl
-#&gt;    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt; &lt;list&gt;       &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;         
-#&gt;  1 1forge.com   0.0.1       2017… &lt;named list&gt; 2017-0… https://a… https://api.a…
-#&gt;  2 1password.c… 1.0.0       2021… &lt;named list&gt; 2023-0… https://a… https://api.a…
-#&gt;  3 1password.l… 1.5.7       2021… &lt;named list&gt; 2023-0… https://a… https://api.a…
-#&gt;  4 6-dot-authe… 6           2017… &lt;named list&gt; 2021-0… https://a… https://api.a…
-#&gt;  5 ably.io:pla… 1.1.0       2019… &lt;named list&gt; 2021-0… https://a… https://api.a…
-#&gt;  6 ably.net:co… 1.0.14      2021… &lt;named list&gt; 2021-0… https://a… https://api.a…
-#&gt;  7 abstractapi… 1.0.0       2021… &lt;named list&gt; 2021-0… https://a… https://api.a…
-#&gt;  8 adafruit.com 2.0.0       2018… &lt;named list&gt; 2021-0… https://a… https://api.a…
-#&gt;  9 adobe.com:a… 3.7.1-pre.0 2019… &lt;named list&gt; 2023-0… https://a… https://api.a…
-#&gt; 10 adyen.com:A… 6           2023… &lt;named list&gt; 2023-0… https://a… https://api.a…
-#&gt; # ℹ 2,519 more rows
-#&gt; # ℹ 3 more variables: openapiVer &lt;chr&gt;, link &lt;chr&gt;, externalDocs &lt;list&gt;</code></pre>
-</div>
-</div>
-</div>
-<aside class="notes">
-<ul>
-<li><code>unnest_auto()</code> does fine here</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
 <section id="filter-apis" class="slide level2">
 <h2>Filter APIs</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb64" data-code-line-numbers="1-2|3-5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a></a>all_apis_preferred_wide <span class="sc">|&gt;</span></span>
-<span id="cb64-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">hoist</span>(info, <span class="at">categories =</span> <span class="st">"x-apisguru-categories"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb64-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
-<span id="cb64-4"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="st">"open_data"</span> <span class="sc">%in%</span> categories) <span class="sc">|&gt;</span></span>
-<span id="cb64-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb62" data-code-line-numbers="1-2|3-5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a></a>all_apis_preferred_wide <span class="sc">|&gt;</span></span>
+<span id="cb62-2"><a></a>  tidyr<span class="sc">::</span><span class="fu">hoist</span>(info, <span class="at">categories =</span> <span class="st">"x-apisguru-categories"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb62-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
+<span id="cb62-4"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="st">"open_data"</span> <span class="sc">%in%</span> categories) <span class="sc">|&gt;</span></span>
+<span id="cb62-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 318 × 11
 #&gt;    api_name             version added categories info         updated swaggerUrl
@@ -1416,6 +1363,7 @@
 </div>
 <aside class="notes">
 <ul>
+<li>Point here is now we can work with this as data.</li>
 <li>Could also unnest_longer and filter for “open_data”</li>
 <li><code>swaggerUrl</code> is JSON, <code>swaggerYamlUrl</code> is YAML version of the same thing</li>
 <li>YAML is another data format. Technically YAML is a superset of JSON, with added commenting capabilities.</li>
@@ -1433,6 +1381,22 @@
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="rectangling-exercises" class="slide level2">
+<h2>Rectangling: Exercises</h2>
+<ul>
+<li class="fragment">Provide sample (constructed) data, have you choose direction.</li>
+<li class="fragment">To include:
+<ul>
+<li class="fragment">Simple longer.</li>
+<li class="fragment">Simple wider.</li>
+<li class="fragment">Overall column is named, otherwise nothing to unnest.</li>
+<li class="fragment">Overall column is named, then there’s stuff to unnest.</li>
+<li class="fragment">Empty values, otherwise clearly wider.</li>
+<li class="fragment"><code>unnest_auto()</code> goes wider, but shared names are coincidental.</li>
+<li class="fragment">Some elements unnamed, but definitely longer.</li>
+</ul></li>
+</ul>
 </section></section>
 <section id="survey" class="title-slide slide level1 center">
 <h1>Survey</h1>
