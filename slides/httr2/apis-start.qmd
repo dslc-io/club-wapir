@@ -6,9 +6,7 @@ title: How can I get started with APIs?
 # ️✅ Learning objectives
 
 ::: nonincremental
--   Read API docs.
 -   Fetch json-formatted data from the web.
--   Fetch yaml-formatted data from the web.
 -   Parse nested lists with the {tidyverse}.
 :::
 
@@ -19,9 +17,7 @@ library(dplyr)
 library(jsonlite)
 library(purrr)
 library(tibble)
-library(tibblify)
 library(tidyr)
-library(yaml)
 ```
 
 ::: notes
@@ -29,7 +25,6 @@ library(yaml)
 -   Has anybody used:
     -   nested lists (unnest)
     -   tibble::enframe()
-    -   tibblify
 :::
 
 # Where can I find APIs?
@@ -53,20 +48,19 @@ library(yaml)
 -   Less good for exploration
 -   But we can grab the data directly!
 
-## The APIs.guru API
+## The APIs.guru API List
 
--   ([launch APIs.guru API page to explore](https://apis.guru/api-doc/#operation/listAPIs))
 -   ([list.json result](https://api.apis.guru/v2/list.json))
 
 ::: notes
 -   JSON = JavaScript Object Notation
 -   By far most common format for API data
 -   I'm using [JSONVue browser extension](https://chromewebstore.google.com/detail/jsonvue/chklaanhfefbnpoihckbnefhakgolnmc?pli=1) 
--   Great for nested data
+-   JSON: Great for nested data
 -   We aren't going to dig into the format because we won't use it directly
 :::
 
-## List all APIs.guru APIs
+## Fetch all APIs.guru APIs
 
 ::: fragment
 ```{r}
@@ -131,6 +125,19 @@ str(head(all_apis, 2), max.level = 2)
 -   hard to see this. Let's rectangle it!
 :::
 
+## Fetch JSON: Exercises 
+
+(not written yet, but general idea will be...)
+
+-   Provide URLs of JSON-formatted data
+    -   How many top-level items are described in this data?
+    -   How deeply is this data nested?
+    -   What is the *X* of the *Y*th item?
+
+::: notes
+-   This data will be on the book's website to avoid changes.
+:::
+
 # Rectangling data
 
 -   "Rectangling" = converting hierarchical data to data frame
@@ -142,7 +149,7 @@ str(head(all_apis, 2), max.level = 2)
 -   Rectangular data is nice because then you can use normal tidyverse functions
 -   There's a tidyverse function that I think handles returns from APIs better than what they show there.
 -   You might need to play around with unnest_wider vs unnest_longer (we'll see examples in a sec). Don't feel like you're doing something wrong!
--   In a couple chapters, we'll see how to use the API spec (when it's available) to help us guess less.
+-   In the next chapter (?), we'll see how to use the API spec (when it's available) to help us guess less.
 :::
 
 ## Unnesting
@@ -159,7 +166,25 @@ str(head(all_apis, 2), max.level = 2)
 -   `unnest_auto()` isn't perfect.
 :::
 
-## How does `unnest_auto()` choose unnest direction?
+## How does `unnest_auto()` choose?
+
+```{mermaid}
+%%| eval: true
+%%| echo: false
+flowchart TD
+    B{{"How many elements have names?"}}
+        B -->|"none"| C["Unnest longer, drop indices"]
+        B -->|"some"| C
+        B -->|"all"| D{{"Are any names reused?"}}
+            D -->|"yes"| E["Unnest wider"]
+            D -->|"no"| F["Unnest longer, keep indices"]
+```
+
+::: notes
+Would it be helpful to see this as code?
+:::
+
+## unnnest_auto code {visibility="hidden"}
 
 ::: {style="font-size: 0.7em;"}
 
@@ -175,17 +200,6 @@ str(head(all_apis, 2), max.level = 2)
         -   `unnest_longer(col, indices_include = TRUE)`
 5.  Leftovers: `unnest_longer(col, indices_include = FALSE)`
 
-:::
-
-::: notes
--   This will be a flowchart.
--   Get the names of the elements of the column. We'll use this info for the rest of our decisions.
--   Check whether any elements lack names
-    -   All lack names? Unnest longer.
-    -   All have names? Check for shared names
-        -   Shared names? Unnest wider.
-        -   No shared names? Unnest longer, include indices.
-    -   Mix of named and unnamd? Unnest longer, drop indices.
 :::
 
 ## What does `unnest_auto()` miss? (1)
@@ -205,7 +219,9 @@ One or more elements of a list column are empty.
 -   Fix: Do the `unnest_auto()` checks only on values of `col` that have `lengths(col) > 0`
 
 ::: notes
-An empty item doesn't have any names.
+-   An empty item doesn't have any names.
+-   Could be `NULL` or empty `list()`
+-   This is relatively common in JSON.
 :::
 
 ## What does `unnest_auto()` miss? (3)
@@ -218,35 +234,28 @@ One or more elements of a list column lacks names, other elements have names.
 
 ## How should I choose unnest direction?
 
-::: {style="font-size: 0.7em;"}
-
-0.  `rlang::is_named(df$col)`?
-    -   `dplyr::mutate(names_col = names(col), .before = col)`
-1.  `non_empties <- df$col[lengths(df$col) > 0]`
-    -   `element_names <- purrr::map(df$col, names)`
-2.  `has_null <- unique(purrr::map_lgl(element_names, is.null))`
-3.  `identical(has_null, TRUE)`? 
-    -   `unnest_longer(col, indices_include = FALSE)`
-4.  `identical(has_null, FALSE)`?
-    -   `common_names <- purrr::reduce(element_names, intersect)`
-    -   `length(common_names) > 0`?
-        -   `unnest_wider(col)`
-    -   `length(common_names) == 0`?
-        -   `unnest_longer(col, indices_include = TRUE)`
-5.  Leftovers: `unnest_longer(col, indices_to = "descriptive_name")`
-
-:::
+```{mermaid}
+%%| eval: true
+%%| echo: false
+flowchart TD
+    A{{"Is the overall column named?"}}
+        A -->|"yes"| AA["Create a names column"]
+            AA --> B
+        A -->|"no"| B
+    B{{"How many non-empty elements have names?"}}
+        B -->|"none"| C["Unnest longer, drop indices"]
+        B -->|"some"| F
+        B -->|"all"| D{{"Are any names reused?"}}
+            D -->|"yes"| E["Unnest wider"]
+            D -->|"no"| F["Unnest longer, keep indices"]
+```
 
 ::: notes
-0.  Does the overall column have names? Avoid losing the names
-1.  Get the names of the *non-empty* elements of the column. We'll use this for the rest of our decisions.
-2.  (no change)
-3.  (no change)
-4.  (no change, but see validation)
-    -   (no change)
-        -   Validate this! Overlapping names could be coincidental (eg, first version is always "v1", some have additional versions)
-5.  Leftovers: Mix of named and unnamed elements, or no shared names.
-    -   Keep the names when they exist!
+-   Does the overall column have names? Avoid losing the names
+-   For the name check, only use non-empty names.
+-   When all have names you should validate! Overlapping names could be coincidental (eg, first version is always "v1", some have additional versions)
+-   When you keep indices, you should give them a descriptive name.
+-   We'll see this in code as we go.
 :::
 
 # Rectangling APIs.guru's list
@@ -589,27 +598,6 @@ all_preferred_apis_with_categories
 ```
 :::
 
-## `unnest_auto()`
-
-::: fragment
-```{r}
-#| label: apis_start-apis_guru_list_all_apis_unnest_auto
-#| eval: true
-#| code-line-numbers: 1-2|3|4|5-6|7
-all_apis |> 
-  tibble::enframe(name = "api_name") |> 
-  tidyr::unnest_auto(value) |> 
-  tidyr::unnest_auto(versions) |>
-  dplyr::filter(preferred == versions_id) |>
-  dplyr::select(api_name, versions_id, versions) |>
-  tidyr::unnest_auto(versions)
-```
-:::
-
-::: notes
--   `unnest_auto()` does fine here
-:::
-
 ## Filter APIs
 
 ```{r}
@@ -624,12 +612,25 @@ all_apis_preferred_wide |>
 ```
 
 ::: notes
+-   Point here is now we can work with this as data.
 -   Could also unnest_longer and filter for "open_data"
 -   `swaggerUrl` is JSON, `swaggerYamlUrl` is YAML version of the same thing
 -   YAML is another data format. Technically YAML is a superset of JSON, with added commenting capabilities.
 -   RMarkdown headers + package descriptions are YAML-related.
 -   We'll see more about YAML and find out what "Swagger" means in the next chapter!
 :::
+
+## Rectangling: Exercises
+
+-   Provide sample (constructed) data, have you choose direction.
+-   To include:
+    -   Simple longer.
+    -   Simple wider.
+    -   Overall column is named, otherwise nothing to unnest.
+    -   Overall column is named, then there's stuff to unnest.
+    -   Empty values, otherwise clearly wider.
+    -   `unnest_auto()` goes wider, but shared names are coincidental.
+    -   Some elements unnamed, but definitely longer.
 
 # Survey
 

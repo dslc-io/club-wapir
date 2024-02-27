@@ -14,45 +14,69 @@ title: How can I use an API description?
 ```{r}
 #| label: openapi-packages-used
 #| eval: true
+library(yaml)
+library(tibblify)
+library(dplyr)
+library(tidyr)
 ```
 
-# API Descriptions
+# The OpenAPI Specification
 
-## API Descriptions
+## Exploring API Descriptions
 
 -   [APIs.guru](https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.json)
 -   [OpenFEC](https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json)
 -   [YouTube Data API v3](https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.json)
--   [Asana](https://api.apis.guru/v2/specs/asana.com/1.0/openapi.json)
 
 ::: notes
--   Technically the OpenAPI specification is the standard, and each API has a "description"
--   OpenAPI 3.0+ easier to use than Swagger (aka 2.0)
+-   Technically the OpenAPI specification is the standard, and each API has a "description" that's defined in a "document" (which can be a composite of multiple files).
 -   Still some confusing bits, such as `security` vs `components$securitySchemas`
 -   People can and will do things wrong/weird.
 :::
 
-## Read an API description
+## Swagger vs OpenAPI
+
+-   2011: [Wordnik](https://www.wordnik.com/) created Swagger API format + tools
+-   2015: SmartBear Software acquired Swagger project 
+-   2015: Swagger API specification donated to newly founded OpenAPI Initiative
+-   2016: Swagger Spec 2.0 ➡️ OpenAPI Specification (OAS) 2.0.
+-   ***Officially:*** OAS = format, Swagger = tools
+
+::: notes
+-   Wordnik is a nonprofit organization with a free online English dictionary, compiles a bunch of sources, so they wanted a way to standardize all those APIs.
+-   They open-sourced the project shortly after creating it.
+-   SmartBear makes tools for making and using APIs.
+-   OpenAPI Initiative is part of the Linux Foundation. Founding members include Google, IBM, and Microsoft.
+-   People still call the format "swagger" all the time.
+:::
+
+## Read API Descriptions
 
 ```{r}
-#| label: apis_start-api_spec-download
+#| label: openapi-api_spec-download
 #| eval: false
 #| include: false
 download.file(
   "https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml",
-  here::here("slides", "httr2", "apis-start", "youtube.yaml")
+  here::here("slides", "httr2", "openapi", "youtube.yaml")
+)
+download.file(
+  "https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.yaml",
+  here::here("slides", "httr2", "openapi", "apisguru.yaml")
 )
 ```
 ```{r}
-#| label: apis_start-api_spec-load
+#| label: openapi-api_spec-load
 #| eval: true
 #| include: false
-youtube_spec <- yaml::read_yaml(here::here("slides", "httr2", "apis-start", "youtube.yaml"))
+apisguru_spec <- yaml::read_yaml(here::here("slides", "httr2", "openapi", "apisguru.yaml"))
+youtube_spec <- yaml::read_yaml(here::here("slides", "httr2", "openapi", "youtube.yaml"))
 ```
 
 ::: fragment
 ```{r}
-#| label: apis_start-api_spec
+#| label: openapi-api_spec
+apisguru_spec <- yaml::read_yaml("https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.yaml")
 youtube_spec <- yaml::read_yaml("https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml")
 ```
 :::
@@ -60,11 +84,14 @@ youtube_spec <- yaml::read_yaml("https://api.apis.guru/v2/specs/googleapis.com/y
 ```{r}
 #| label: apis_start-api_spec-examine
 #| eval: true
+names(apisguru_spec)
 names(youtube_spec)
 ```
 :::
 
 ## Introduction to tibblify
+
+TODO: Use tibblify to get response specs, and then use that to tibblify responses. Show without the spec (messy) and then in theory it SHOULD get the ~same result as previous slides *with* spec.
 
 ```{r}
 #| label: apis_start-api_spec-tibblify
