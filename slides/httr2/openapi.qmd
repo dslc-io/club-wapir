@@ -1,169 +1,539 @@
 ---
 engine: knitr
 title: How can I use an API description?
+resources:
+  - "openapi/gh_users.json"
 ---
 
 # ️✅ Learning objectives
 
 ::: nonincremental
--   Use an API's OpenAPI description to learn about the API.
 -   Parse nested lists with {tibblify}.
+-   Use an API's OpenAPI description to learn about the API.
 -   Parse API responses with {tibblify} and the response description.
 :::
 
 ```{r}
 #| label: openapi-packages-used
 #| eval: true
-library(yaml)
-library(tibblify)
-library(dplyr)
+#| warning: false
+library(jsonlite)
 library(tidyr)
+library(dplyr)
+library(tibblify)
+library(yaml)
+library(waldo)
 ```
+
+## Why rectangle?
+
+-   Apps usually "think" in objects
+    -   Preferred data: Objects-with-properties ([example json](openapi/demo_json.json))
+-   Data scientists usually compare many objects at once
+    -   Preferred data: data frames
+        -   Columns of variables (of same class)
+        -   Rows of observations (~objects)
+-   APIs are usually designed for the first model
+-   Even data APIs tend to "think" in objects
+    -   Because most programmers do
+
+::: notes
+-   This really belongs in the previous chapter or maybe intro, but I'm putting it here for this cohort.
+-   Apps and thus most programmers.
+    -   Even when you get a list of things, like on Amazon, each of those product blocks in the list is an html div object. It's rarely really columns of similar data.
+-   Maybe this is obvious to some, but this felt like an epiphany to me.
+-   Fundamental difference between R and everything else.
+    -   Things like pandas/polars are attempts to make Python think like R.
+-   Really pause to discuss.
+:::
+
+# The tibblify package
+
+## Typical JSON data
+
+```{r}
+#| label: openapi-write_demo_json
+#| include: false
+#| eval: false
+all_apis <- jsonlite::fromJSON(here::here("slides", "httr2", "apis-start", "list.json"))
+demo_json <- all_apis[c("apis.guru", "fec.gov", "googleapis.com:youtube")] |> 
+  tibble::enframe(name = "api_id") |> 
+  tidyr::unnest_wider(value) |> 
+  tidyr::unnest_longer(versions, indices_to = "version") |>
+  dplyr::filter(preferred == version) |>
+  dplyr::select(api_id, version, versions) |> 
+  tidyr::unnest_wider(versions) |> 
+  dplyr::select(-info, -externalDocs) |> 
+  # I want lists not a dataframe.
+  dplyr::mutate(
+    versions = purrr::pmap(
+      list(version, added, updated, swaggerUrl, swaggerYamlUrl, openapiVer, link),
+      \(version, added, updated, swaggerUrl, swaggerYamlUrl, openapiVer, link) {
+        setNames(
+          list(
+            list(
+              added = added, 
+              updated = updated, 
+              swaggerUrl = swaggerUrl, 
+              swaggerYamlUrl = swaggerYamlUrl, 
+              openapiVer = openapiVer, 
+              link = link
+            )
+          ),
+          version
+        )
+      }
+    ),
+    .keep = "unused"
+  )
+# Finally, I want a list, not a df.
+demo_json2 <- purrr::map(
+  demo_json$versions, \(version) list(versions = version)
+)
+names(demo_json2) <- demo_json$api_id
+jsonlite::write_json(
+  demo_json2, 
+  "slides/httr2/openapi/demo_json.json", 
+  auto_unbox = TRUE
+)
+```
+
+[demo_json.json](openapi/demo_json.json)
+
+```{r}
+#| label: openapi-read_demo_json
+#| include: false
+#| eval: true
+demo_json <- jsonlite::fromJSON(
+  here::here("slides", "httr2", "openapi", "demo_json.json")
+)
+```
+
+::: fragment
+```{r}
+#| label: openapi-read_demo_json-url
+url <- "https://r4ds.github.io/bookclub-wapir/slides/httr2/openapi/demo_json.json"
+demo_json <- jsonlite::fromJSON(url)
+```
+:::
+
+::: notes
+-   When you click through, point out that the object-per-api is a perfectly reasonable standard, but that this data makes way more sense in R with a row per api, but a standardized column for each variable, like we saw in the last chapter & last slide
+-   Note that sometimes `jsonlite::fromJSON()` mangles data, `jsonlite::read_json()` is same thing without auto-parsing.
+:::
+
+## Unnesting demo_json manually
+
+```{r}
+#| label: openapi-rectangle_demo_json-manual
+#| eval: true
+demo_json |> 
+  tibble::enframe(name = "api_id") |>
+  tidyr::unnest_longer(value, indices_include = FALSE) |> 
+  tidyr::unnest_longer(value, indices_to = "version") |>
+  tidyr::unnest_wider(value)
+```
+
+::: notes
+-   Wouldn't it be nice if we could do all of that automatically?
+:::
+
+## Introducing tibblify
+
+-   {tibblify} 📦 to auto-convert hierarchical data to tibbles
+-   Super-charged `tidyr::unnest_auto()`
+-   Tibbles all the way down
+-   Experimental functionality for APIs
+
+::: notes
+-   (bullet 4): This probably belongs in a separate package, but for now it's in a dev branch of tibblify.
+:::
+
+## Unnesting demo_json with tibblify
+
+::: fragment
+```{r}
+#| label: openapi-rectangle_demo_json-tibblify_auto
+#| eval: true
+dj_tibblified <- tibblify::tibblify(demo_json)
+dj_tibblified
+```
+:::
+::: fragment
+```{r}
+#| label: openapi-rectangle_demo_json-tibblify_auto-unnest
+#| eval: true
+dj_tibblified |> 
+  dplyr::rename(api_id = ".names") |> 
+  tidyr::unnest(versions)
+```
+:::
+
+::: notes
+-   At first tibblified looks similar to result of `enframe()`.
+-   By default anything it has to name gets `.names`
+    -   We'll see how to clean that up later.
+-   But the nested things are tibbles, so we can use `tidyr::unnest()`
+:::
+
+## Unnesting manually vs tibblify
+
+:::: columns
+::: {.column .fragment}
+```{r}
+#| label: openapi-rectangle_demo_json-manual-side_by_side
+#| eval: true
+dj_tidyr <- 
+  demo_json |> 
+  tibble::enframe(name = "api_id") |>
+  tidyr::unnest_longer(
+    value, indices_include = FALSE
+  ) |> 
+  tidyr::unnest_longer(
+    value, indices_to = "version"
+  ) |>
+  tidyr::unnest_wider(value)
+```
+:::
+::: {.column .fragment}
+```{r}
+#| label: openapi-rectangle_demo_json-tibblify_auto-side_by_side
+#| eval: true
+dj_tibblify <- 
+  demo_json |>
+  tibblify::tibblify() |> 
+  dplyr::rename(api_id = ".names") |> 
+  tidyr::unnest(versions) |> 
+  dplyr::rename(version = ".names")
+```
+:::
+::::
+
+<br>
+
+::: fragment
+```{r}
+#| label: openapi-rectangle_demo_json-tibblify_auto-compare
+#| eval: true
+waldo::compare(
+  dj_tibblify, dj_tidyr, 
+  list_as_map = TRUE # Ignore column order
+)
+```
+:::
+
+::: notes
+-   {waldo} is a package for finding differences.
+-   `list_as_map = TRUE` means "ignore column order" here.
+-   What did tibblify do to figure out how to rectangle the data?
+:::
+
+## tspec_guess()
+
+-   `tibblify::tibblify()` `spec` argument
+    -   "What should this look like?"
+-   Guessed by default with `tibblify::guess_tspec()`
+
+::: fragment
+```{r}
+#| label: openapi-tibblify-tspec_guess
+#| eval: true
+tibblify::guess_tspec(demo_json)
+```
+:::
+
+::: notes
+-   Point out `.names_to`.
+-   Point out date columns ("added" and "updated").
+-   It would be nice if we had a way to tell it what to expect.
+:::
 
 # The OpenAPI Specification
 
-## Exploring API Descriptions
+## Multiple Standards
 
--   [APIs.guru](https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.json)
--   [OpenFEC](https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json)
--   [YouTube Data API v3](https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.json)
+-   Swagger 2.0 ➡️ OpenAPI 2.0
+-   **OpenAPI 3.x**
+-   OpenAPI 4.0 (in development)
+-   Postman Collection
+-   API Blueprint
+-   Web Application Description Language (WADL)
+
+::: notes
+-   Swagger was created by wordnik.com, free online dictionary that compiles a bunch of sources (and wanted a way to store API info consistently).
+-   Swagger specification & tools bought by SmartBear, spec donated to OpenAPI Initiative to make it officially open forever.
+-   Swagger now technically means the tools, OpenAPI is the spec.
+    -   But people talk about "swagger specs" all the time.
+-   We'll focus on OpenAPI 3
+-   We might talk about tools to convert others to OpenAPI 3.
+:::
+
+## YAML
+
+"Yet Another Markup Language" ➡️ "YAML Ain't Markup Language"
+
+:::: columns
+::: {.column .fragment}
+JSON
+```{json}
+{
+  "info": {
+    "contact": {
+      "email": "mike.ralphson@gmail.com",
+      "name": "APIs.guru",
+      "url": "https://APIs.guru"
+    },
+    "title": "APIs.guru",
+    "version": "2.2.0",
+    "x-apisguru-categories": [
+      "open_data",
+      "developer_tools"
+    ]
+  },
+    "security": []
+}
+```
+:::
+::: {.column .fragment}
+YAML
+```{yaml}
+info:
+  contact:
+    email: mike.ralphson@gmail.com
+    name: APIs.guru
+    url: https://APIs.guru
+  title: APIs.guru
+  version: 2.2.0
+  x-apisguru-categories:
+    - open_data
+    - developer_tools
+security: [] # No security needed
+```
+:::
+::::
+
+::: notes
+-   Originally "Yet Another Markup Language"
+    -   Meaning of name changed because they wanted to stress it's for data, not documents per se.
+    -   "YAML Ain't Markup Language"
+-   YAML adds comments, readability
+    -   Quoting optional for strings
+    -   Indentation for children, rather than brackets
+-   All JSON strings are valid YAML, not all YAML is valid JSON.
+-   .yaml or .yml
+-   You might have seen it:
+    -   RMarkdown/Quarto headers & config
+    -   Package configuration files (`_pkgdown.yml`, `codecov.yml`)
+    -   GitHub Actions
+:::
+
+## Exploring an API Description
+
+-   [APIs.guru](https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.yaml)
+
+::: fragment
+```{yaml}
+#| label: openapi-api_desc_yaml-specification
+#| code-line-numbers: 1|2-5|6|7|8-10|11
+openapi: 3.0.0 # Specification version number
+info: # title, version, description, contact, license
+servers: # One or more URLs + optional descriptions
+tags: # Optional name, description, externalDocs of endpoint categories
+externalDocs: # Optional url & description of additional documentation
+security: # Optional list of named default security schemes
+paths: # Endpoints of the API
+webhooks: # Description of endpoints YOU can specify for API to SEND to
+jsonSchemaDialect: # URI to extend components/schemas
+x-whatever: # Extend with additional properties
+components: # Reusable schemas, securitySchemes, reusable pieces of everything above
+```
+:::
 
 ::: notes
 -   Technically the OpenAPI specification is the standard, and each API has a "description" that's defined in a "document" (which can be a composite of multiple files).
--   Still some confusing bits, such as `security` vs `components$securitySchemas`
 -   People can and will do things wrong/weird.
+-   openapi = Spec version number, not API
+-   Info, servers, tags, externalDocs = Info about the API.
+-   security = default schemes to use, schemes are described in components/securitySchemes
+-   paths = the things the API can do, detailed in later chapter(s)
+-   webhooks, jsonSchemaDialect, extensions = we won't talk about these much if at all
+-   Components is for storing reusable pieces of info about the API.
 :::
 
-## Swagger vs OpenAPI
+## apis.guru APIs Schema
 
--   2011: [Wordnik](https://www.wordnik.com/) created Swagger API format + tools
--   2015: SmartBear Software acquired Swagger project 
--   2015: Swagger API specification donated to newly founded OpenAPI Initiative
--   2016: Swagger Spec 2.0 ➡️ OpenAPI Specification (OAS) 2.0.
--   ***Officially:*** OAS = format, Swagger = tools
-
-::: notes
--   Wordnik is a nonprofit organization with a free online English dictionary, compiles a bunch of sources, so they wanted a way to standardize all those APIs.
--   They open-sourced the project shortly after creating it.
--   SmartBear makes tools for making and using APIs.
--   OpenAPI Initiative is part of the Linux Foundation. Founding members include Google, IBM, and Microsoft.
--   People still call the format "swagger" all the time.
+::: fragment
+```{yaml}
+#| label: openapi-apis_schema_yaml
+#| code-line-numbers: 1-10|1-2|3|6-8|10|9|4-5|3-10
+components:
+  schemas:
+    APIs:
+      additionalProperties:
+        $ref: "#/components/schemas/API"
+      description: |
+        List of API details.
+        It is a JSON object with API IDs(`<provider>[:<service>]`) as keys.
+      minProperties: 1
+      type: object
+```
 :::
-
-## Read API Descriptions
-
+::: fragment
 ```{r}
-#| label: openapi-api_spec-download
-#| eval: false
-#| include: false
-download.file(
-  "https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml",
-  here::here("slides", "httr2", "openapi", "youtube.yaml")
+tspec_apis <- tspec_df(
+  .names_to = "api_id",
+  tspec_api
 )
-download.file(
-  "https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.yaml",
-  here::here("slides", "httr2", "openapi", "apisguru.yaml")
+```
+:::
+
+::: notes
+-   The thing we're loading is described in APIs schema
+-   I've simplified this slightly from the full openapi object.
+-   JSON doesn't require a name for the names, so we need to pick something ("api_id")
+-   additionalProperties --> tspec_, properties --> tib_
+:::
+
+## apis.guru API Schema
+
+::: fragment
+```{yaml}
+#| label: openapi-api_schema_yaml
+#| code-line-numbers: 1-15|3|5|15|4|13-14|6-12|12|10|11|8-9|3-15
+components:
+  schemas:
+    API:
+      additionalProperties: false
+      description: Meta information about API
+      properties:
+        versions:
+          additionalProperties:
+            $ref: "#/components/schemas/ApiVersion"
+          description: List of supported versions of the API
+          minProperties: 1
+          type: object
+      required:
+        - versions
+      type: object
+```
+:::
+::: fragment
+```{r}
+tspec_api <- tspec_row(
+  tib_df(
+    "versions", 
+    .names_to = "version", 
+    tspec_api_version
+  )
+)
+
+```
+:::
+
+::: notes
+-   `additionalProperties: false` means `tspec_row()`
+-   `versions` property needs a `tib_` function.
+-   `versions` is an `object`, so `tib_df` (or `tib_row`)
+-   `versions` has `additionalProperties`, so defined in `tspec_df()`.
+-   
+:::
+
+## apis.guru ApiVersion Schema
+
+```{yaml}
+#| label: openapi-api_version_schema_yaml
+#| code-line-numbers: 1-35|3|35|4|29-34|5-28
+components:
+  schemas:
+    ApiVersion:
+      additionalProperties: false
+      properties:
+        added:
+          description: Timestamp when the version was added
+          format: date-time
+          type: string
+        link:
+          description: Link to the individual API entry for this API
+          format: url
+          type: string
+        openapiVer:
+          description: The value of the `openapi` or `swagger` property of the source definition
+          type: string
+        swaggerUrl:
+          description: URL to OpenAPI definition in JSON format
+          format: url
+          type: string
+        swaggerYamlUrl:
+          description: URL to OpenAPI definition in YAML format
+          format: url
+          type: string
+        updated:
+          description: Timestamp when the version was updated
+          format: date-time
+          type: string
+      required:
+        - added
+        - updated
+        - swaggerUrl
+        - swaggerYamlUrl
+        - openapiVer
+      type: object
+```
+
+## apis.guru ApiVersion tspec
+
+```{r}
+#| eval: true
+#| code-line-numbers: 1-10|11-18|12-13|14-16|17
+tib_chr_datetime <- function(key, ..., required = TRUE) {
+  tibblify::tib_scalar(
+    key = key,
+    ptype = vctrs::new_datetime(tzone = "UTC"),
+    required = required,
+    ptype_inner = character(),
+    transform = \(x) as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%OSZ", tz = "UTC"),
+    ...
+  )
+}
+tspec_api_version <- tspec_row(
+  tib_chr_datetime("added"),
+  tib_chr_datetime("updated"),
+  tib_chr("openapiVer"),
+  tib_chr("swaggerUrl"),
+  tib_chr("swaggerYamlUrl"),
+  tib_chr("link", required = FALSE)
 )
 ```
 ```{r}
-#| label: openapi-api_spec-load
-#| eval: true
 #| include: false
-apisguru_spec <- yaml::read_yaml(here::here("slides", "httr2", "openapi", "apisguru.yaml"))
-youtube_spec <- yaml::read_yaml(here::here("slides", "httr2", "openapi", "youtube.yaml"))
-```
-
-::: fragment
-```{r}
-#| label: openapi-api_spec
-apisguru_spec <- yaml::read_yaml("https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.yaml")
-youtube_spec <- yaml::read_yaml("https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml")
-```
-:::
-::: fragment
-```{r}
-#| label: apis_start-api_spec-examine
 #| eval: true
-names(apisguru_spec)
-names(youtube_spec)
+tspec_api <- tspec_row(
+  tib_df("versions", tspec_api_version, .names_to = "version")
+)
+tspec_apis <- tspec_df(
+  .names_to = "api_id",
+  tspec_api
+)
 ```
-:::
 
-## Introduction to tibblify
-
-TODO: Use tibblify to get response specs, and then use that to tibblify responses. Show without the spec (messy) and then in theory it SHOULD get the ~same result as previous slides *with* spec.
+## Using tspecs: version
 
 ```{r}
-#| label: apis_start-api_spec-tibblify
 #| eval: true
-youtube_paths <- tibblify::tibblify(youtube_spec$paths) |> 
-  dplyr::glimpse()
+tibblify(demo_json$apis.guru$versions$`2.2.0`, tspec_api_version)
 ```
 
-## OpenAPI References
+
+## Using tspecs: api
 
 ```{r}
-#| label: apis_start-api_spec-tibblify-ref
 #| eval: true
-youtube_paths$parameters[[1]]
+tibblify(demo_json$apis.guru, tspec_api) |> tidyr::unnest(versions)
 ```
 
-## parse_openapi_spec()
+## Using tspecs: apis
 
 ```{r}
-#| label: apis_start-api_spec-tibblify-openapi
 #| eval: true
-youtube_paths <- tibblify::parse_openapi_spec(youtube_spec)
+tibblify(demo_json, tspec_apis) |> tidyr::unnest(versions)
 ```
-::: fragment
-```{r}
-#| label: apis_start-api_spec-tibblify2
-#| eval: true
-youtube_paths
-```
-:::
-
-::: notes
--   We're looking at a dev version of tibblify which I plan to push through
-    -   `pak::pak("mgirlich/tibblify#191")`
--   "endpoint" is another term for "path" -- a url in the API
--   Deals with references from paths to components > schemas
--   Captions has 4 different methods, so its tibble has 4 rows.
-:::
-
-## Unnesting paths
-
-```{r}
-#| label: apis_start-api_spec-tibblify3
-#| eval: true
-youtube_paths |> tidyr::unnest(operations)
-```
-
-::: notes
--   `operation` aka method, we'll discuss these more later; GET means you can load it like a web page
--   Note rows 3-6 are that `captions` endpoint, and then 7 is `captions/{id}`
-:::
-
-## Path details
-
-```{r}
-#| label: apis_start-api_spec-tibblify4
-#| eval: true
-youtube_paths |> tidyr::unnest(operations) |> dplyr::glimpse()
-```
-
-::: notes
--   (`endpoint` = path)
--   (`operation` = `method` = more details in a few chapters)
--   `summary` is meant for a very brief description, not often used
--   `description` can have markdown
--   `operation_id` = unique string for this operation, meant for tools to use as a function name
--   `tags` = Categories; can have more than one per endpoint, but often just one
--   `parameters` = tibble of inputs
--   `request_body` = tibble of a fancier type of input (later chapter)
--   `responses` = tibble of expected output
--   `deprecated` = is this endpoint no longer intended to be used
--   `global_parameters` = tibble of shared inputs
--   This tibble contains MOST of the useful information about the API
-    -   We'll dig into this tibble for a simple API in the next chapter
-:::
