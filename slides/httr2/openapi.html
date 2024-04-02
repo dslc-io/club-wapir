@@ -8,7 +8,7 @@
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.550">
+  <meta name="generator" content="quarto-1.4.552">
 
   <title>Web APIs with R Book Club - How can I use an API description?</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -396,40 +396,458 @@
 </div>
 
 </section>
+<section>
 <section id="learning-objectives" class="title-slide slide level1 center">
 <h1>️✅ Learning objectives</h1>
 <div>
 <ul>
-<li>Use an API’s OpenAPI description to learn about the API.</li>
 <li>Parse nested lists with {tibblify}.</li>
+<li>Use an API’s OpenAPI description to learn about the API.</li>
 <li>Parse API responses with {tibblify} and the response description.</li>
 </ul>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(yaml)</span>
-<span id="cb1-2"><a></a><span class="fu">library</span>(tibblify)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(jsonlite)</span>
+<span id="cb1-2"><a></a><span class="fu">library</span>(tidyr)</span>
 <span id="cb1-3"><a></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-4"><a></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a></a><span class="fu">library</span>(tibblify)</span>
+<span id="cb1-5"><a></a><span class="fu">library</span>(yaml)</span>
+<span id="cb1-6"><a></a><span class="fu">library</span>(waldo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+<section id="why-rectangle" class="slide level2">
+<h2>Why rectangle?</h2>
+<ul>
+<li class="fragment">Apps usually “think” in objects
+<ul>
+<li class="fragment">Preferred data: Objects-with-properties (<a href="openapi/demo_json.json">example json</a>)</li>
+</ul></li>
+<li class="fragment">Data scientists usually compare many objects at once
+<ul>
+<li class="fragment">Preferred data: data frames
+<ul>
+<li class="fragment">Columns of variables (of same class)</li>
+<li class="fragment">Rows of observations (~objects)</li>
+</ul></li>
+</ul></li>
+<li class="fragment">APIs are usually designed for the first model</li>
+<li class="fragment">Even data APIs tend to “think” in objects
+<ul>
+<li class="fragment">Because most programmers do</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>This really belongs in the previous chapter or maybe intro, but I’m putting it here for this cohort.</li>
+<li>Apps and thus most programmers.
+<ul>
+<li>Even when you get a list of things, like on Amazon, each of those product blocks in the list is an html div object. It’s rarely really columns of similar data.</li>
+</ul></li>
+<li>Maybe this is obvious to some, but this felt like an epiphany to me.</li>
+<li>Fundamental difference between R and everything else.
+<ul>
+<li>Things like pandas/polars are attempts to make Python think like R.</li>
+</ul></li>
+<li>Really pause to discuss.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="the-tibblify-package" class="title-slide slide level1 center">
+<h1>The tibblify package</h1>
 
+</section>
+<section id="typical-json-data" class="slide level2">
+<h2>Typical JSON data</h2>
+<p><a href="openapi/demo_json.json">demo_json.json</a></p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>url <span class="ot">&lt;-</span> <span class="st">"https://r4ds.github.io/bookclub-wapir/slides/httr2/openapi/demo_json.json"</span></span>
+<span id="cb2-2"><a></a>demo_json <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(url)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>When you click through, point out that the object-per-api is a perfectly reasonable standard, but that this data makes way more sense in R with a row per api, but a standardized column for each variable, like we saw in the last chapter &amp; last slide</li>
+<li>Note that sometimes <code>jsonlite::fromJSON()</code> mangles data, <code>jsonlite::read_json()</code> is same thing without auto-parsing.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="unnesting-demo_json-manually" class="slide level2">
+<h2>Unnesting demo_json manually</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>demo_json <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="st">"api_id"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_longer</span>(value, <span class="at">indices_include =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_longer</span>(value, <span class="at">indices_to =</span> <span class="st">"version"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-5"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 3 × 8
+#&gt;   api_id        added updated swaggerUrl swaggerYamlUrl openapiVer link  version
+#&gt;   &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;          &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  
+#&gt; 1 apis.guru     2015… 2023-0… https://a… https://api.a… 3.0.0      http… 2.2.0  
+#&gt; 2 fec.gov       2018… 2023-0… https://a… https://api.a… 3.0.0      http… 1.0    
+#&gt; 3 googleapis.c… 2020… 2023-0… https://a… https://api.a… 3.0.0      http… v3</code></pre>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Wouldn’t it be nice if we could do all of that automatically?</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="introducing-tibblify" class="slide level2">
+<h2>Introducing tibblify</h2>
+<ul>
+<li class="fragment">{tibblify} 📦 to auto-convert hierarchical data to tibbles</li>
+<li class="fragment">Super-charged <code>tidyr::unnest_auto()</code></li>
+<li class="fragment">Tibbles all the way down</li>
+<li class="fragment">Experimental functionality for APIs</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>(bullet 4): This probably belongs in a separate package, but for now it’s in a dev branch of tibblify.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="unnesting-demo_json-with-tibblify" class="slide level2">
+<h2>Unnesting demo_json with tibblify</h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>dj_tibblified <span class="ot">&lt;-</span> tibblify<span class="sc">::</span><span class="fu">tibblify</span>(demo_json)</span>
+<span id="cb5-2"><a></a>dj_tibblified</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 3 × 2
+#&gt;   .names                           versions
+#&gt;   &lt;chr&gt;                  &lt;list&lt;tibble[,7]&gt;&gt;
+#&gt; 1 apis.guru                         [1 × 7]
+#&gt; 2 fec.gov                           [1 × 7]
+#&gt; 3 googleapis.com:youtube            [1 × 7]</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>dj_tibblified <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">api_id =</span> <span class="st">".names"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-3"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 3 × 8
+#&gt;   api_id         .names added updated swaggerUrl swaggerYamlUrl openapiVer link 
+#&gt;   &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;          &lt;chr&gt;      &lt;chr&gt;
+#&gt; 1 apis.guru      2.2.0  2015… 2023-0… https://a… https://api.a… 3.0.0      http…
+#&gt; 2 fec.gov        1.0    2018… 2023-0… https://a… https://api.a… 3.0.0      http…
+#&gt; 3 googleapis.co… v3     2020… 2023-0… https://a… https://api.a… 3.0.0      http…</code></pre>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>At first tibblified looks similar to result of <code>enframe()</code>.</li>
+<li>By default anything it has to name gets <code>.names</code>
+<ul>
+<li>We’ll see how to clean that up later.</li>
+</ul></li>
+<li>But the nested things are tibbles, so we can use <code>tidyr::unnest()</code></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="unnesting-manually-vs-tibblify" class="slide level2">
+<h2>Unnesting manually vs tibblify</h2>
+<div class="columns">
+<div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>dj_tidyr <span class="ot">&lt;-</span> </span>
+<span id="cb9-2"><a></a>  demo_json <span class="sc">|&gt;</span> </span>
+<span id="cb9-3"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="st">"api_id"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_longer</span>(</span>
+<span id="cb9-5"><a></a>    value, <span class="at">indices_include =</span> <span class="cn">FALSE</span></span>
+<span id="cb9-6"><a></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb9-7"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_longer</span>(</span>
+<span id="cb9-8"><a></a>    value, <span class="at">indices_to =</span> <span class="st">"version"</span></span>
+<span id="cb9-9"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-10"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>dj_tibblify <span class="ot">&lt;-</span> </span>
+<span id="cb10-2"><a></a>  demo_json <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a></a>  tibblify<span class="sc">::</span><span class="fu">tibblify</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb10-4"><a></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">api_id =</span> <span class="st">".names"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-5"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(versions) <span class="sc">|&gt;</span> </span>
+<span id="cb10-6"><a></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">version =</span> <span class="st">".names"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<p><br></p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>waldo<span class="sc">::</span><span class="fu">compare</span>(</span>
+<span id="cb11-2"><a></a>  dj_tibblify, dj_tidyr, </span>
+<span id="cb11-3"><a></a>  <span class="at">list_as_map =</span> <span class="cn">TRUE</span> <span class="co"># Ignore column order</span></span>
+<span id="cb11-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; ✔ No differences</code></pre>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>{waldo} is a package for finding differences.</li>
+<li><code>list_as_map = TRUE</code> means “ignore column order” here.</li>
+<li>What did tibblify do to figure out how to rectangle the data?</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="tspec_guess" class="slide level2">
+<h2>tspec_guess()</h2>
+<ul>
+<li class="fragment"><code>tibblify::tibblify()</code> <code>spec</code> argument
+<ul>
+<li class="fragment">“What should this look like?”</li>
+</ul></li>
+<li class="fragment">Guessed by default with <code>tibblify::guess_tspec()</code></li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>tibblify<span class="sc">::</span><span class="fu">guess_tspec</span>(demo_json)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; tspec_df(
+#&gt;   .names_to = ".names",
+#&gt;   tib_df(
+#&gt;     "versions",
+#&gt;     .names_to = ".names",
+#&gt;     tib_chr("added"),
+#&gt;     tib_chr("updated"),
+#&gt;     tib_chr("swaggerUrl"),
+#&gt;     tib_chr("swaggerYamlUrl"),
+#&gt;     tib_chr("openapiVer"),
+#&gt;     tib_chr("link"),
+#&gt;   ),
+#&gt; )</code></pre>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Point out <code>.names_to</code>.</li>
+<li>Point out date columns (“added” and “updated”).</li>
+<li>It would be nice if we had a way to tell it what to expect.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
 <section>
 <section id="the-openapi-specification" class="title-slide slide level1 center">
 <h1>The OpenAPI Specification</h1>
 
 </section>
-<section id="exploring-api-descriptions" class="slide level2">
-<h2>Exploring API Descriptions</h2>
+<section id="multiple-standards" class="slide level2">
+<h2>Multiple Standards</h2>
 <ul>
-<li class="fragment"><a href="https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.json">APIs.guru</a></li>
-<li class="fragment"><a href="https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json">OpenFEC</a></li>
-<li class="fragment"><a href="https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.json">YouTube Data API v3</a></li>
+<li class="fragment">Swagger 2.0 ➡️ OpenAPI 2.0</li>
+<li class="fragment"><strong>OpenAPI 3.x</strong></li>
+<li class="fragment">OpenAPI 4.0 (in development)</li>
+<li class="fragment">Postman Collection</li>
+<li class="fragment">API Blueprint</li>
+<li class="fragment">Web Application Description Language (WADL)</li>
 </ul>
+<aside class="notes">
+<ul>
+<li>Swagger was created by wordnik.com, free online dictionary that compiles a bunch of sources (and wanted a way to store API info consistently).</li>
+<li>Swagger specification &amp; tools bought by SmartBear, spec donated to OpenAPI Initiative to make it officially open forever.</li>
+<li>Swagger now technically means the tools, OpenAPI is the spec.
+<ul>
+<li>But people talk about “swagger specs” all the time.</li>
+</ul></li>
+<li>We’ll focus on OpenAPI 3</li>
+<li>We might talk about tools to convert others to OpenAPI 3.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="yaml" class="slide level2">
+<h2>YAML</h2>
+<p>“Yet Another Markup Language” ➡️ “YAML Ain’t Markup Language”</p>
+<div class="columns">
+<div class="column fragment">
+<p>JSON</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource json number-lines code-with-copy"><code class="sourceCode json"><span id="cb15-1"><a></a><span class="fu">{</span></span>
+<span id="cb15-2"><a></a>  <span class="dt">"info"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb15-3"><a></a>    <span class="dt">"contact"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb15-4"><a></a>      <span class="dt">"email"</span><span class="fu">:</span> <span class="st">"mike.ralphson@gmail.com"</span><span class="fu">,</span></span>
+<span id="cb15-5"><a></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"APIs.guru"</span><span class="fu">,</span></span>
+<span id="cb15-6"><a></a>      <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"https://APIs.guru"</span></span>
+<span id="cb15-7"><a></a>    <span class="fu">},</span></span>
+<span id="cb15-8"><a></a>    <span class="dt">"title"</span><span class="fu">:</span> <span class="st">"APIs.guru"</span><span class="fu">,</span></span>
+<span id="cb15-9"><a></a>    <span class="dt">"version"</span><span class="fu">:</span> <span class="st">"2.2.0"</span><span class="fu">,</span></span>
+<span id="cb15-10"><a></a>    <span class="dt">"x-apisguru-categories"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb15-11"><a></a>      <span class="st">"open_data"</span><span class="ot">,</span></span>
+<span id="cb15-12"><a></a>      <span class="st">"developer_tools"</span></span>
+<span id="cb15-13"><a></a>    <span class="ot">]</span></span>
+<span id="cb15-14"><a></a>  <span class="fu">},</span></span>
+<span id="cb15-15"><a></a>    <span class="dt">"security"</span><span class="fu">:</span> <span class="ot">[]</span></span>
+<span id="cb15-16"><a></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column fragment">
+<p>YAML</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb16-1"><a></a><span class="fu">info</span><span class="kw">:</span></span>
+<span id="cb16-2"><a></a><span class="at">  </span><span class="fu">contact</span><span class="kw">:</span></span>
+<span id="cb16-3"><a></a><span class="at">    </span><span class="fu">email</span><span class="kw">:</span><span class="at"> mike.ralphson@gmail.com</span></span>
+<span id="cb16-4"><a></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> APIs.guru</span></span>
+<span id="cb16-5"><a></a><span class="at">    </span><span class="fu">url</span><span class="kw">:</span><span class="at"> https://APIs.guru</span></span>
+<span id="cb16-6"><a></a><span class="at">  </span><span class="fu">title</span><span class="kw">:</span><span class="at"> APIs.guru</span></span>
+<span id="cb16-7"><a></a><span class="at">  </span><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="fl">2.2.0</span></span>
+<span id="cb16-8"><a></a><span class="at">  </span><span class="fu">x-apisguru-categories</span><span class="kw">:</span></span>
+<span id="cb16-9"><a></a><span class="at">    </span><span class="kw">-</span><span class="at"> open_data</span></span>
+<span id="cb16-10"><a></a><span class="at">    </span><span class="kw">-</span><span class="at"> developer_tools</span></span>
+<span id="cb16-11"><a></a><span class="fu">security</span><span class="kw">:</span><span class="at"> </span><span class="kw">[]</span><span class="co"> # No security needed</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Originally “Yet Another Markup Language”
+<ul>
+<li>Meaning of name changed because they wanted to stress it’s for data, not documents per se.</li>
+<li>“YAML Ain’t Markup Language”</li>
+</ul></li>
+<li>YAML adds comments, readability
+<ul>
+<li>Quoting optional for strings</li>
+<li>Indentation for children, rather than brackets</li>
+</ul></li>
+<li>All JSON strings are valid YAML, not all YAML is valid JSON.</li>
+<li>.yaml or .yml</li>
+<li>You might have seen it:
+<ul>
+<li>RMarkdown/Quarto headers &amp; config</li>
+<li>Package configuration files (<code>_pkgdown.yml</code>, <code>codecov.yml</code>)</li>
+<li>GitHub Actions</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="exploring-an-api-description" class="slide level2">
+<h2>Exploring an API Description</h2>
+<ul>
+<li class="fragment"><a href="https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.yaml">APIs.guru</a></li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17" data-code-line-numbers="1|2-5|6|7|8-10|11"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb17-1"><a></a><span class="fu">openapi</span><span class="kw">:</span><span class="at"> </span><span class="fl">3.0.0</span><span class="co"> # Specification version number</span></span>
+<span id="cb17-2"><a></a><span class="fu">info</span><span class="kw">:</span><span class="co"> # title, version, description, contact, license</span></span>
+<span id="cb17-3"><a></a><span class="fu">servers</span><span class="kw">:</span><span class="co"> # One or more URLs + optional descriptions</span></span>
+<span id="cb17-4"><a></a><span class="fu">tags</span><span class="kw">:</span><span class="co"> # Optional name, description, externalDocs of endpoint categories</span></span>
+<span id="cb17-5"><a></a><span class="fu">externalDocs</span><span class="kw">:</span><span class="co"> # Optional url &amp; description of additional documentation</span></span>
+<span id="cb17-6"><a></a><span class="fu">security</span><span class="kw">:</span><span class="co"> # Optional list of named default security schemes</span></span>
+<span id="cb17-7"><a></a><span class="fu">paths</span><span class="kw">:</span><span class="co"> # Endpoints of the API</span></span>
+<span id="cb17-8"><a></a><span class="fu">webhooks</span><span class="kw">:</span><span class="co"> # Description of endpoints YOU can specify for API to SEND to</span></span>
+<span id="cb17-9"><a></a><span class="fu">jsonSchemaDialect</span><span class="kw">:</span><span class="co"> # URI to extend components/schemas</span></span>
+<span id="cb17-10"><a></a><span class="fu">x-whatever</span><span class="kw">:</span><span class="co"> # Extend with additional properties</span></span>
+<span id="cb17-11"><a></a><span class="fu">components</span><span class="kw">:</span><span class="co"> # Reusable schemas, securitySchemes, reusable pieces of everything above</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
 <aside class="notes">
 <ul>
 <li>Technically the OpenAPI specification is the standard, and each API has a “description” that’s defined in a “document” (which can be a composite of multiple files).</li>
-<li>Still some confusing bits, such as <code>security</code> vs <code>components$securitySchemas</code></li>
 <li>People can and will do things wrong/weird.</li>
+<li>openapi = Spec version number, not API</li>
+<li>Info, servers, tags, externalDocs = Info about the API.</li>
+<li>security = default schemes to use, schemes are described in components/securitySchemes</li>
+<li>paths = the things the API can do, detailed in later chapter(s)</li>
+<li>webhooks, jsonSchemaDialect, extensions = we won’t talk about these much if at all</li>
+<li>Components is for storing reusable pieces of info about the API.</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -443,134 +861,88 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="swagger-vs-openapi" class="slide level2">
-<h2>Swagger vs OpenAPI</h2>
-<ul>
-<li class="fragment">2011: <a href="https://www.wordnik.com/">Wordnik</a> created Swagger API format + tools</li>
-<li class="fragment">2015: SmartBear Software acquired Swagger project</li>
-<li class="fragment">2015: Swagger API specification donated to newly founded OpenAPI Initiative</li>
-<li class="fragment">2016: Swagger Spec 2.0 ➡️ OpenAPI Specification (OAS) 2.0.</li>
-<li class="fragment"><strong><em>Officially:</em></strong> OAS = format, Swagger = tools</li>
-</ul>
-<aside class="notes">
-<ul>
-<li>Wordnik is a nonprofit organization with a free online English dictionary, compiles a bunch of sources, so they wanted a way to standardize all those APIs.</li>
-<li>They open-sourced the project shortly after creating it.</li>
-<li>SmartBear makes tools for making and using APIs.</li>
-<li>OpenAPI Initiative is part of the Linux Foundation. Founding members include Google, IBM, and Microsoft.</li>
-<li>People still call the format “swagger” all the time.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="read-api-descriptions" class="slide level2">
-<h2>Read API Descriptions</h2>
+<section id="apis.guru-apis-schema" class="slide level2">
+<h2>apis.guru APIs Schema</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>apisguru_spec <span class="ot">&lt;-</span> yaml<span class="sc">::</span><span class="fu">read_yaml</span>(<span class="st">"https://api.apis.guru/v2/specs/apis.guru/2.2.0/openapi.yaml"</span>)</span>
-<span id="cb2-2"><a></a>youtube_spec <span class="ot">&lt;-</span> yaml<span class="sc">::</span><span class="fu">read_yaml</span>(<span class="st">"https://api.apis.guru/v2/specs/googleapis.com/youtube/v3/openapi.yaml"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18" data-code-line-numbers="1-10|1-2|3|6-8|10|9|4-5|3-10"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb18-1"><a></a><span class="fu">components</span><span class="kw">:</span></span>
+<span id="cb18-2"><a></a><span class="at">  </span><span class="fu">schemas</span><span class="kw">:</span></span>
+<span id="cb18-3"><a></a><span class="at">    </span><span class="fu">APIs</span><span class="kw">:</span></span>
+<span id="cb18-4"><a></a><span class="at">      </span><span class="fu">additionalProperties</span><span class="kw">:</span></span>
+<span id="cb18-5"><a></a><span class="at">        </span><span class="fu">$ref</span><span class="kw">:</span><span class="at"> </span><span class="st">"#/components/schemas/API"</span></span>
+<span id="cb18-6"><a></a><span class="fu">      description</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb18-7"><a></a>        List of API details.</span>
+<span id="cb18-8"><a></a>        It is a JSON object with API IDs(`&lt;provider&gt;[:&lt;service&gt;]`) as keys.</span>
+<span id="cb18-9"><a></a><span class="at">      </span><span class="fu">minProperties</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb18-10"><a></a><span class="at">      </span><span class="fu">type</span><span class="kw">:</span><span class="at"> object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">names</span>(apisguru_spec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt;  [1] "openapi"          "servers"          "info"             "externalDocs"    
-#&gt;  [5] "security"         "tags"             "paths"            "components"      
-#&gt;  [9] "x-optic-standard" "x-optic-url"</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">names</span>(youtube_spec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; [1] "openapi"      "servers"      "info"         "externalDocs" "tags"        
-#&gt; [6] "paths"        "components"</code></pre>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>tspec_apis <span class="ot">&lt;-</span> <span class="fu">tspec_df</span>(</span>
+<span id="cb19-2"><a></a>  <span class="at">.names_to =</span> <span class="st">"api_id"</span>,</span>
+<span id="cb19-3"><a></a>  tspec_api</span>
+<span id="cb19-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</div>
+<aside class="notes">
+<ul>
+<li>The thing we’re loading is described in APIs schema</li>
+<li>I’ve simplified this slightly from the full openapi object.</li>
+<li>JSON doesn’t require a name for the names, so we need to pick something (“api_id”)</li>
+<li>additionalProperties –&gt; tspec_, properties –&gt; tib_</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="introduction-to-tibblify" class="slide level2">
-<h2>Introduction to tibblify</h2>
-<p>TODO: Use tibblify to get response specs, and then use that to tibblify responses. Show without the spec (messy) and then in theory it SHOULD get the ~same result as previous slides <em>with</em> spec.</p>
+<section id="apis.guru-api-schema" class="slide level2">
+<h2>apis.guru API Schema</h2>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>youtube_paths <span class="ot">&lt;-</span> tibblify<span class="sc">::</span><span class="fu">tibblify</span>(youtube_spec<span class="sc">$</span>paths) <span class="sc">|&gt;</span> </span>
-<span id="cb7-2"><a></a>  dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; Rows: 39
-#&gt; Columns: 6
-#&gt; $ .names     &lt;chr&gt; "/youtube/v3/abuseReports", "/youtube/v3/activities", "/you…
-#&gt; $ parameters &lt;list&lt;tibble[,1]&gt;&gt; [&lt;tbl_df[11 x 1]&gt;], [&lt;tbl_df[11 x 1]&gt;], [&lt;tbl_…
-#&gt; $ post       &lt;tibble[,7]&gt; &lt;tbl_df[26 x 7]&gt;
-#&gt; $ get        &lt;tibble[,6]&gt; &lt;tbl_df[26 x 6]&gt;
-#&gt; $ delete     &lt;tibble[,6]&gt; &lt;tbl_df[26 x 6]&gt;
-#&gt; $ put        &lt;tibble[,7]&gt; &lt;tbl_df[26 x 7]&gt;</code></pre>
+<div class="sourceCode cell-code" id="cb20" data-code-line-numbers="1-15|3|5|15|4|13-14|6-12|12|10|11|8-9|3-15"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb20-1"><a></a><span class="fu">components</span><span class="kw">:</span></span>
+<span id="cb20-2"><a></a><span class="at">  </span><span class="fu">schemas</span><span class="kw">:</span></span>
+<span id="cb20-3"><a></a><span class="at">    </span><span class="fu">API</span><span class="kw">:</span></span>
+<span id="cb20-4"><a></a><span class="at">      </span><span class="fu">additionalProperties</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb20-5"><a></a><span class="at">      </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Meta information about API</span></span>
+<span id="cb20-6"><a></a><span class="at">      </span><span class="fu">properties</span><span class="kw">:</span></span>
+<span id="cb20-7"><a></a><span class="at">        </span><span class="fu">versions</span><span class="kw">:</span></span>
+<span id="cb20-8"><a></a><span class="at">          </span><span class="fu">additionalProperties</span><span class="kw">:</span></span>
+<span id="cb20-9"><a></a><span class="at">            </span><span class="fu">$ref</span><span class="kw">:</span><span class="at"> </span><span class="st">"#/components/schemas/ApiVersion"</span></span>
+<span id="cb20-10"><a></a><span class="at">          </span><span class="fu">description</span><span class="kw">:</span><span class="at"> List of supported versions of the API</span></span>
+<span id="cb20-11"><a></a><span class="at">          </span><span class="fu">minProperties</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb20-12"><a></a><span class="at">          </span><span class="fu">type</span><span class="kw">:</span><span class="at"> object</span></span>
+<span id="cb20-13"><a></a><span class="at">      </span><span class="fu">required</span><span class="kw">:</span></span>
+<span id="cb20-14"><a></a><span class="at">        </span><span class="kw">-</span><span class="at"> versions</span></span>
+<span id="cb20-15"><a></a><span class="at">      </span><span class="fu">type</span><span class="kw">:</span><span class="at"> object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-</section>
-<section id="openapi-references" class="slide level2">
-<h2>OpenAPI References</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>youtube_paths<span class="sc">$</span>parameters[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 11 × 1
-#&gt;    `$ref`                                 
-#&gt;    &lt;chr&gt;                                  
-#&gt;  1 #/components/parameters/_.xgafv        
-#&gt;  2 #/components/parameters/access_token   
-#&gt;  3 #/components/parameters/alt            
-#&gt;  4 #/components/parameters/callback       
-#&gt;  5 #/components/parameters/fields         
-#&gt;  6 #/components/parameters/key            
-#&gt;  7 #/components/parameters/oauth_token    
-#&gt;  8 #/components/parameters/prettyPrint    
-#&gt;  9 #/components/parameters/quotaUser      
-#&gt; 10 #/components/parameters/upload_protocol
-#&gt; 11 #/components/parameters/uploadType</code></pre>
-</div>
-</div>
-</section>
-<section id="parse_openapi_spec" class="slide level2">
-<h2>parse_openapi_spec()</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>youtube_paths <span class="ot">&lt;-</span> tibblify<span class="sc">::</span><span class="fu">parse_openapi_spec</span>(youtube_spec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>youtube_paths</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 39 × 2
-#&gt;    endpoint                          operations       
-#&gt;    &lt;chr&gt;                             &lt;list&gt;           
-#&gt;  1 /youtube/v3/abuseReports          &lt;tibble [1 × 10]&gt;
-#&gt;  2 /youtube/v3/activities            &lt;tibble [1 × 10]&gt;
-#&gt;  3 /youtube/v3/captions              &lt;tibble [4 × 10]&gt;
-#&gt;  4 /youtube/v3/captions/{id}         &lt;tibble [1 × 10]&gt;
-#&gt;  5 /youtube/v3/channelBanners/insert &lt;tibble [1 × 10]&gt;
-#&gt;  6 /youtube/v3/channelSections       &lt;tibble [4 × 10]&gt;
-#&gt;  7 /youtube/v3/channels              &lt;tibble [2 × 10]&gt;
-#&gt;  8 /youtube/v3/commentThreads        &lt;tibble [3 × 10]&gt;
-#&gt;  9 /youtube/v3/comments              &lt;tibble [4 × 10]&gt;
-#&gt; 10 /youtube/v3/comments/markAsSpam   &lt;tibble [1 × 10]&gt;
-#&gt; # ℹ 29 more rows</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>tspec_api <span class="ot">&lt;-</span> <span class="fu">tspec_row</span>(</span>
+<span id="cb21-2"><a></a>  <span class="fu">tib_df</span>(</span>
+<span id="cb21-3"><a></a>    <span class="st">"versions"</span>, </span>
+<span id="cb21-4"><a></a>    <span class="at">.names_to =</span> <span class="st">"version"</span>, </span>
+<span id="cb21-5"><a></a>    tspec_api_version</span>
+<span id="cb21-6"><a></a>  )</span>
+<span id="cb21-7"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <aside class="notes">
 <ul>
-<li>We’re looking at a dev version of tibblify which I plan to push through
-<ul>
-<li><code>pak::pak("mgirlich/tibblify#191")</code></li>
-</ul></li>
-<li>“endpoint” is another term for “path” – a url in the API</li>
-<li>Deals with references from paths to components &gt; schemas</li>
-<li>Captions has 4 different methods, so its tibble has 4 rows.</li>
+<li><code>additionalProperties: false</code> means <code>tspec_row()</code></li>
+<li><code>versions</code> property needs a <code>tib_</code> function.</li>
+<li><code>versions</code> is an <code>object</code>, so <code>tib_df</code> (or <code>tib_row</code>)</li>
+<li><code>versions</code> has <code>additionalProperties</code>, so defined in <code>tspec_df()</code>.</li>
+<li></li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -584,95 +956,109 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="unnesting-paths" class="slide level2">
-<h2>Unnesting paths</h2>
+<section id="apis.guru-apiversion-schema" class="slide level2">
+<h2>apis.guru ApiVersion Schema</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>youtube_paths <span class="sc">|&gt;</span> tidyr<span class="sc">::</span><span class="fu">unnest</span>(operations)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 76 × 11
-#&gt;    endpoint          operation summary description operation_id tags  parameters
-#&gt;    &lt;chr&gt;             &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt; &lt;list&gt;    
-#&gt;  1 /youtube/v3/abus… post      &lt;NA&gt;    Inserts a … youtube.abu… abus… &lt;tibble&gt;  
-#&gt;  2 /youtube/v3/acti… get       &lt;NA&gt;    Retrieves … youtube.act… acti… &lt;tibble&gt;  
-#&gt;  3 /youtube/v3/capt… delete    &lt;NA&gt;    Deletes a … youtube.cap… capt… &lt;tibble&gt;  
-#&gt;  4 /youtube/v3/capt… get       &lt;NA&gt;    Retrieves … youtube.cap… capt… &lt;tibble&gt;  
-#&gt;  5 /youtube/v3/capt… post      &lt;NA&gt;    Inserts a … youtube.cap… capt… &lt;tibble&gt;  
-#&gt;  6 /youtube/v3/capt… put       &lt;NA&gt;    Updates an… youtube.cap… capt… &lt;tibble&gt;  
-#&gt;  7 /youtube/v3/capt… get       &lt;NA&gt;    Downloads … youtube.cap… capt… &lt;tibble&gt;  
-#&gt;  8 /youtube/v3/chan… post      &lt;NA&gt;    Inserts a … youtube.cha… chan… &lt;tibble&gt;  
-#&gt;  9 /youtube/v3/chan… delete    &lt;NA&gt;    Deletes a … youtube.cha… chan… &lt;tibble&gt;  
-#&gt; 10 /youtube/v3/chan… get       &lt;NA&gt;    Retrieves … youtube.cha… chan… &lt;tibble&gt;  
-#&gt; # ℹ 66 more rows
-#&gt; # ℹ 4 more variables: request_body &lt;list&gt;, responses &lt;list&gt;, deprecated &lt;lgl&gt;,
-#&gt; #   global_parameters &lt;list&gt;</code></pre>
+<div class="sourceCode cell-code" id="cb22" data-code-line-numbers="1-35|3|35|4|29-34|5-28"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb22-1"><a></a><span class="fu">components</span><span class="kw">:</span></span>
+<span id="cb22-2"><a></a><span class="at">  </span><span class="fu">schemas</span><span class="kw">:</span></span>
+<span id="cb22-3"><a></a><span class="at">    </span><span class="fu">ApiVersion</span><span class="kw">:</span></span>
+<span id="cb22-4"><a></a><span class="at">      </span><span class="fu">additionalProperties</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb22-5"><a></a><span class="at">      </span><span class="fu">properties</span><span class="kw">:</span></span>
+<span id="cb22-6"><a></a><span class="at">        </span><span class="fu">added</span><span class="kw">:</span></span>
+<span id="cb22-7"><a></a><span class="at">          </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Timestamp when the version was added</span></span>
+<span id="cb22-8"><a></a><span class="at">          </span><span class="fu">format</span><span class="kw">:</span><span class="at"> date-time</span></span>
+<span id="cb22-9"><a></a><span class="at">          </span><span class="fu">type</span><span class="kw">:</span><span class="at"> string</span></span>
+<span id="cb22-10"><a></a><span class="at">        </span><span class="fu">link</span><span class="kw">:</span></span>
+<span id="cb22-11"><a></a><span class="at">          </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Link to the individual API entry for this API</span></span>
+<span id="cb22-12"><a></a><span class="at">          </span><span class="fu">format</span><span class="kw">:</span><span class="at"> url</span></span>
+<span id="cb22-13"><a></a><span class="at">          </span><span class="fu">type</span><span class="kw">:</span><span class="at"> string</span></span>
+<span id="cb22-14"><a></a><span class="at">        </span><span class="fu">openapiVer</span><span class="kw">:</span></span>
+<span id="cb22-15"><a></a><span class="at">          </span><span class="fu">description</span><span class="kw">:</span><span class="at"> The value of the `openapi` or `swagger` property of the source definition</span></span>
+<span id="cb22-16"><a></a><span class="at">          </span><span class="fu">type</span><span class="kw">:</span><span class="at"> string</span></span>
+<span id="cb22-17"><a></a><span class="at">        </span><span class="fu">swaggerUrl</span><span class="kw">:</span></span>
+<span id="cb22-18"><a></a><span class="at">          </span><span class="fu">description</span><span class="kw">:</span><span class="at"> URL to OpenAPI definition in JSON format</span></span>
+<span id="cb22-19"><a></a><span class="at">          </span><span class="fu">format</span><span class="kw">:</span><span class="at"> url</span></span>
+<span id="cb22-20"><a></a><span class="at">          </span><span class="fu">type</span><span class="kw">:</span><span class="at"> string</span></span>
+<span id="cb22-21"><a></a><span class="at">        </span><span class="fu">swaggerYamlUrl</span><span class="kw">:</span></span>
+<span id="cb22-22"><a></a><span class="at">          </span><span class="fu">description</span><span class="kw">:</span><span class="at"> URL to OpenAPI definition in YAML format</span></span>
+<span id="cb22-23"><a></a><span class="at">          </span><span class="fu">format</span><span class="kw">:</span><span class="at"> url</span></span>
+<span id="cb22-24"><a></a><span class="at">          </span><span class="fu">type</span><span class="kw">:</span><span class="at"> string</span></span>
+<span id="cb22-25"><a></a><span class="at">        </span><span class="fu">updated</span><span class="kw">:</span></span>
+<span id="cb22-26"><a></a><span class="at">          </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Timestamp when the version was updated</span></span>
+<span id="cb22-27"><a></a><span class="at">          </span><span class="fu">format</span><span class="kw">:</span><span class="at"> date-time</span></span>
+<span id="cb22-28"><a></a><span class="at">          </span><span class="fu">type</span><span class="kw">:</span><span class="at"> string</span></span>
+<span id="cb22-29"><a></a><span class="at">      </span><span class="fu">required</span><span class="kw">:</span></span>
+<span id="cb22-30"><a></a><span class="at">        </span><span class="kw">-</span><span class="at"> added</span></span>
+<span id="cb22-31"><a></a><span class="at">        </span><span class="kw">-</span><span class="at"> updated</span></span>
+<span id="cb22-32"><a></a><span class="at">        </span><span class="kw">-</span><span class="at"> swaggerUrl</span></span>
+<span id="cb22-33"><a></a><span class="at">        </span><span class="kw">-</span><span class="at"> swaggerYamlUrl</span></span>
+<span id="cb22-34"><a></a><span class="at">        </span><span class="kw">-</span><span class="at"> openapiVer</span></span>
+<span id="cb22-35"><a></a><span class="at">      </span><span class="fu">type</span><span class="kw">:</span><span class="at"> object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<aside class="notes">
-<ul>
-<li><code>operation</code> aka method, we’ll discuss these more later; GET means you can load it like a web page</li>
-<li>Note rows 3-6 are that <code>captions</code> endpoint, and then 7 is <code>captions/{id}</code></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section>
-<section id="path-details" class="slide level2">
-<h2>Path details</h2>
+<section id="apis.guru-apiversion-tspec" class="slide level2">
+<h2>apis.guru ApiVersion tspec</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>youtube_paths <span class="sc">|&gt;</span> tidyr<span class="sc">::</span><span class="fu">unnest</span>(operations) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23" data-code-line-numbers="1-10|11-18|12-13|14-16|17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>tib_chr_datetime <span class="ot">&lt;-</span> <span class="cf">function</span>(key, ..., <span class="at">required =</span> <span class="cn">TRUE</span>) {</span>
+<span id="cb23-2"><a></a>  tibblify<span class="sc">::</span><span class="fu">tib_scalar</span>(</span>
+<span id="cb23-3"><a></a>    <span class="at">key =</span> key,</span>
+<span id="cb23-4"><a></a>    <span class="at">ptype =</span> vctrs<span class="sc">::</span><span class="fu">new_datetime</span>(<span class="at">tzone =</span> <span class="st">"UTC"</span>),</span>
+<span id="cb23-5"><a></a>    <span class="at">required =</span> required,</span>
+<span id="cb23-6"><a></a>    <span class="at">ptype_inner =</span> <span class="fu">character</span>(),</span>
+<span id="cb23-7"><a></a>    <span class="at">transform =</span> \(x) <span class="fu">as.POSIXct</span>(x, <span class="at">format =</span> <span class="st">"%Y-%m-%dT%H:%M:%OSZ"</span>, <span class="at">tz =</span> <span class="st">"UTC"</span>),</span>
+<span id="cb23-8"><a></a>    ...</span>
+<span id="cb23-9"><a></a>  )</span>
+<span id="cb23-10"><a></a>}</span>
+<span id="cb23-11"><a></a>tspec_api_version <span class="ot">&lt;-</span> <span class="fu">tspec_row</span>(</span>
+<span id="cb23-12"><a></a>  <span class="fu">tib_chr_datetime</span>(<span class="st">"added"</span>),</span>
+<span id="cb23-13"><a></a>  <span class="fu">tib_chr_datetime</span>(<span class="st">"updated"</span>),</span>
+<span id="cb23-14"><a></a>  <span class="fu">tib_chr</span>(<span class="st">"openapiVer"</span>),</span>
+<span id="cb23-15"><a></a>  <span class="fu">tib_chr</span>(<span class="st">"swaggerUrl"</span>),</span>
+<span id="cb23-16"><a></a>  <span class="fu">tib_chr</span>(<span class="st">"swaggerYamlUrl"</span>),</span>
+<span id="cb23-17"><a></a>  <span class="fu">tib_chr</span>(<span class="st">"link"</span>, <span class="at">required =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb23-18"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="using-tspecs-version" class="slide level2">
+<h2>Using tspecs: version</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a><span class="fu">tibblify</span>(demo_json<span class="sc">$</span>apis.guru<span class="sc">$</span>versions<span class="sc">$</span><span class="st">`</span><span class="at">2.2.0</span><span class="st">`</span>, tspec_api_version)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt; Rows: 76
-#&gt; Columns: 11
-#&gt; $ endpoint          &lt;chr&gt; "/youtube/v3/abuseReports", "/youtube/v3/activities"…
-#&gt; $ operation         &lt;chr&gt; "post", "get", "delete", "get", "post", "put", "get"…
-#&gt; $ summary           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
-#&gt; $ description       &lt;chr&gt; "Inserts a new resource into this collection.", "Ret…
-#&gt; $ operation_id      &lt;chr&gt; "youtube.abuseReports.insert", "youtube.activities.l…
-#&gt; $ tags              &lt;chr&gt; "abuseReports", "activities", "captions", "captions"…
-#&gt; $ parameters        &lt;list&gt; [&lt;tbl_df[1 x 9]&gt;], [&lt;tbl_df[9 x 9]&gt;], [&lt;tbl_df[3 x …
-#&gt; $ request_body      &lt;list&gt; [&lt;tbl_df[1 x 3]&gt;], &lt;NULL&gt;, &lt;NULL&gt;, &lt;NULL&gt;, [&lt;tbl_df…
-#&gt; $ responses         &lt;list&gt; [&lt;tbl_df[1 x 5]&gt;], [&lt;tbl_df[1 x 5]&gt;], [&lt;tbl_df[1 x …
-#&gt; $ deprecated        &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FAL…
-#&gt; $ global_parameters &lt;list&gt; [&lt;tbl_df[11 x 9]&gt;], [&lt;tbl_df[11 x 9]&gt;], [&lt;tbl_df[11…</code></pre>
+<pre><code>#&gt; # A tibble: 1 × 6
+#&gt;   added               updated             openapiVer swaggerUrl   swaggerYamlUrl
+#&gt;   &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;      &lt;chr&gt;        &lt;chr&gt;         
+#&gt; 1 2015-11-26 17:52:26 2023-04-05 13:10:14 3.0.0      https://api… https://api.a…
+#&gt; # ℹ 1 more variable: link &lt;chr&gt;</code></pre>
 </div>
 </div>
-<aside class="notes">
-<ul>
-<li>(<code>endpoint</code> = path)</li>
-<li>(<code>operation</code> = <code>method</code> = more details in a few chapters)</li>
-<li><code>summary</code> is meant for a very brief description, not often used</li>
-<li><code>description</code> can have markdown</li>
-<li><code>operation_id</code> = unique string for this operation, meant for tools to use as a function name</li>
-<li><code>tags</code> = Categories; can have more than one per endpoint, but often just one</li>
-<li><code>parameters</code> = tibble of inputs</li>
-<li><code>request_body</code> = tibble of a fancier type of input (later chapter)</li>
-<li><code>responses</code> = tibble of expected output</li>
-<li><code>deprecated</code> = is this endpoint no longer intended to be used</li>
-<li><code>global_parameters</code> = tibble of shared inputs</li>
-<li>This tibble contains MOST of the useful information about the API
-<ul>
-<li>We’ll dig into this tibble for a simple API in the next chapter</li>
-</ul></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
+</section>
+<section id="using-tspecs-api" class="slide level2">
+<h2>Using tspecs: api</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a><span class="fu">tibblify</span>(demo_json<span class="sc">$</span>apis.guru, tspec_api) <span class="sc">|&gt;</span> tidyr<span class="sc">::</span><span class="fu">unnest</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 1 × 7
+#&gt;   version added               updated             openapiVer swaggerUrl         
+#&gt;   &lt;chr&gt;   &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;      &lt;chr&gt;              
+#&gt; 1 2.2.0   2015-11-26 17:52:26 2023-04-05 13:10:14 3.0.0      https://api.apis.g…
+#&gt; # ℹ 2 more variables: swaggerYamlUrl &lt;chr&gt;, link &lt;chr&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="using-tspecs-apis" class="slide level2">
+<h2>Using tspecs: apis</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a><span class="fu">tibblify</span>(demo_json, tspec_apis) <span class="sc">|&gt;</span> tidyr<span class="sc">::</span><span class="fu">unnest</span>(versions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 3 × 8
+#&gt;   api_id   version added               updated             openapiVer swaggerUrl
+#&gt;   &lt;chr&gt;    &lt;chr&gt;   &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;      &lt;chr&gt;     
+#&gt; 1 apis.gu… 2.2.0   2015-11-26 17:52:26 2023-04-05 13:10:14 3.0.0      https://a…
+#&gt; 2 fec.gov  1.0     2018-11-20 00:04:28 2023-03-06 07:12:59 3.0.0      https://a…
+#&gt; 3 googlea… v3      2020-11-02 10:32:34 2023-04-21 23:09:23 3.0.0      https://a…
+#&gt; # ℹ 2 more variables: swaggerYamlUrl &lt;chr&gt;, link &lt;chr&gt;</code></pre>
+</div>
+</div>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
@@ -1015,6 +1401,11 @@
         for (var i=0; i<links.length; i++) {
           const link = links[i];
           if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
               // target, if specified
               link.setAttribute("target", "_blank");
               if (link.getAttribute("rel") === null) {
@@ -1058,7 +1449,11 @@
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
-          return note.innerHTML;
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
         });
       }
       const findCites = (el) => {
