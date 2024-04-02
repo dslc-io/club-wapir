@@ -22,6 +22,7 @@ library(tidyr)
 library(dplyr)
 library(tibblify)
 library(yaml)
+library(waldo)
 ```
 
 ## Why rectangle?
@@ -515,23 +516,24 @@ tspec_apis <- tspec_df(
 )
 ```
 
-## Using tspecs
+## Using tspecs: version
 
-::: fragment
 ```{r}
 #| eval: true
 tibblify(demo_json$apis.guru$versions$`2.2.0`, tspec_api_version)
 ```
-:::
-::: fragment
+
+
+## Using tspecs: api
+
 ```{r}
 #| eval: true
-tibblify(demo_json$apis.guru, tspec_api)
+tibblify(demo_json$apis.guru, tspec_api) |> tidyr::unnest(versions)
 ```
-:::
-::: fragment
+
+## Using tspecs: apis
+
 ```{r}
 #| eval: true
-tibblify(demo_json, tspec_apis)
+tibblify(demo_json, tspec_apis) |> tidyr::unnest(versions)
 ```
-:::
