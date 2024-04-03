@@ -8,6 +8,7 @@ title: How can I access APIs from R?
 ::: nonincremental
 -   Fetch data from an API with {httr2}.
 -   Build a {httr2} request piece-by-piece.
+-   Use API docs and OpenAPI descriptions to explore available endpoints.
 :::
 
 ```{r}

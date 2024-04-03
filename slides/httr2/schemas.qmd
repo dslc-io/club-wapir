@@ -1,20 +1,20 @@
 ---
 engine: knitr
-title: How can I use an API description?
+title: How can I quickly parse API responses?
 resources:
-  - "openapi/gh_users.json"
+  - "schemas/demo_json.json"
 ---
 
 # ️✅ Learning objectives
 
 ::: nonincremental
 -   Parse nested lists with {tibblify}.
--   Use an API's OpenAPI description to learn about the API.
+-   Use an API's OpenAPI description to determine the expected format of responses.
 -   Parse API responses with {tibblify} and the response description.
 :::
 
 ```{r}
-#| label: openapi-packages-used
+#| label: schemas-packages-used
 #| eval: true
 #| warning: false
 library(jsonlite)
@@ -25,10 +25,10 @@ library(yaml)
 library(waldo)
 ```
 
-## Why rectangle?
+## Aside: Why rectangle?
 
 -   Apps usually "think" in objects
-    -   Preferred data: Objects-with-properties ([example json](openapi/demo_json.json))
+    -   Preferred data: Objects-with-properties ([example json](schemas/demo_json.json))
 -   Data scientists usually compare many objects at once
     -   Preferred data: data frames
         -   Columns of variables (of same class)
@@ -52,7 +52,7 @@ library(waldo)
 ## Typical JSON data
 
 ```{r}
-#| label: openapi-write_demo_json
+#| label: schemas-write_demo_json
 #| include: false
 #| eval: false
 all_apis <- jsonlite::fromJSON(here::here("slides", "httr2", "apis-start", "list.json"))
@@ -93,26 +93,26 @@ demo_json2 <- purrr::map(
 names(demo_json2) <- demo_json$api_id
 jsonlite::write_json(
   demo_json2, 
-  "slides/httr2/openapi/demo_json.json", 
+  "slides/httr2/schemas/demo_json.json", 
   auto_unbox = TRUE
 )
 ```
 
-[demo_json.json](openapi/demo_json.json)
+[demo_json.json](schemas/demo_json.json)
 
 ```{r}
-#| label: openapi-read_demo_json
+#| label: schemas-read_demo_json
 #| include: false
 #| eval: true
 demo_json <- jsonlite::fromJSON(
-  here::here("slides", "httr2", "openapi", "demo_json.json")
+  here::here("slides", "httr2", "schemas", "demo_json.json")
 )
 ```
 
 ::: fragment
 ```{r}
-#| label: openapi-read_demo_json-url
-url <- "https://r4ds.github.io/bookclub-wapir/slides/httr2/openapi/demo_json.json"
+#| label: schemas-read_demo_json-url
+url <- "https://r4ds.github.io/bookclub-wapir/slides/httr2/schemas/demo_json.json"
 demo_json <- jsonlite::fromJSON(url)
 ```
 :::
@@ -122,10 +122,10 @@ demo_json <- jsonlite::fromJSON(url)
 -   Note that sometimes `jsonlite::fromJSON()` mangles data, `jsonlite::read_json()` is same thing without auto-parsing.
 :::
 
-## Unnesting demo_json manually
+## Rectangling demo_json manually
 
 ```{r}
-#| label: openapi-rectangle_demo_json-manual
+#| label: schemas-rectangle_demo_json-manual
 #| eval: true
 demo_json |> 
   tibble::enframe(name = "api_id") |>
@@ -149,11 +149,11 @@ demo_json |>
 -   (bullet 4): This probably belongs in a separate package, but for now it's in a dev branch of tibblify.
 :::
 
-## Unnesting demo_json with tibblify
+## Rectangling demo_json with tibblify
 
 ::: fragment
 ```{r}
-#| label: openapi-rectangle_demo_json-tibblify_auto
+#| label: schemas-rectangle_demo_json-tibblify_auto
 #| eval: true
 dj_tibblified <- tibblify::tibblify(demo_json)
 dj_tibblified
@@ -161,7 +161,7 @@ dj_tibblified
 :::
 ::: fragment
 ```{r}
-#| label: openapi-rectangle_demo_json-tibblify_auto-unnest
+#| label: schemas-rectangle_demo_json-tibblify_auto-unnest
 #| eval: true
 dj_tibblified |> 
   dplyr::rename(api_id = ".names") |> 
@@ -176,12 +176,12 @@ dj_tibblified |>
 -   But the nested things are tibbles, so we can use `tidyr::unnest()`
 :::
 
-## Unnesting manually vs tibblify
+## Rectangling manually vs tibblify
 
 :::: columns
 ::: {.column .fragment}
 ```{r}
-#| label: openapi-rectangle_demo_json-manual-side_by_side
+#| label: schemas-rectangle_demo_json-manual-side_by_side
 #| eval: true
 dj_tidyr <- 
   demo_json |> 
@@ -197,7 +197,7 @@ dj_tidyr <-
 :::
 ::: {.column .fragment}
 ```{r}
-#| label: openapi-rectangle_demo_json-tibblify_auto-side_by_side
+#| label: schemas-rectangle_demo_json-tibblify_auto-side_by_side
 #| eval: true
 dj_tibblify <- 
   demo_json |>
@@ -213,7 +213,7 @@ dj_tibblify <-
 
 ::: fragment
 ```{r}
-#| label: openapi-rectangle_demo_json-tibblify_auto-compare
+#| label: schemas-rectangle_demo_json-tibblify_auto-compare
 #| eval: true
 waldo::compare(
   dj_tibblify, dj_tidyr, 
@@ -236,7 +236,7 @@ waldo::compare(
 
 ::: fragment
 ```{r}
-#| label: openapi-tibblify-tspec_guess
+#| label: schemas-tibblify-tspec_guess
 #| eval: true
 tibblify::guess_tspec(demo_json)
 ```
@@ -270,11 +270,10 @@ tibblify::guess_tspec(demo_json)
 
 ## YAML
 
-"Yet Another Markup Language" ➡️ "YAML Ain't Markup Language"
-
 :::: columns
 ::: {.column .fragment}
-JSON
+JSON <br>
+(`jsonlite::read_json()`)
 ```{json}
 {
   "info": {
@@ -295,7 +294,8 @@ JSON
 ```
 :::
 ::: {.column .fragment}
-YAML
+YAML <br>
+(`yaml::read_yaml()`)
 ```{yaml}
 info:
   contact:
@@ -333,7 +333,7 @@ security: [] # No security needed
 
 ::: fragment
 ```{yaml}
-#| label: openapi-api_desc_yaml-specification
+#| label: schemas-api_desc_yaml-specification
 #| code-line-numbers: 1|2-5|6|7|8-10|11
 openapi: 3.0.0 # Specification version number
 info: # title, version, description, contact, license
@@ -364,7 +364,7 @@ components: # Reusable schemas, securitySchemes, reusable pieces of everything a
 
 ::: fragment
 ```{yaml}
-#| label: openapi-apis_schema_yaml
+#| label: schemas-apis_schema_yaml
 #| code-line-numbers: 1-10|1-2|3|6-8|10|9|4-5|3-10
 components:
   schemas:
@@ -398,7 +398,7 @@ tspec_apis <- tspec_df(
 
 ::: fragment
 ```{yaml}
-#| label: openapi-api_schema_yaml
+#| label: schemas-api_schema_yaml
 #| code-line-numbers: 1-15|3|5|15|4|13-14|6-12|12|10|11|8-9|3-15
 components:
   schemas:
@@ -441,7 +441,7 @@ tspec_api <- tspec_row(
 ## apis.guru ApiVersion Schema
 
 ```{yaml}
-#| label: openapi-api_version_schema_yaml
+#| label: schemas-api_version_schema_yaml
 #| code-line-numbers: 1-35|3|35|4|29-34|5-28
 components:
   schemas:

@@ -27,7 +27,42 @@ engine: knitr
 -   (Eventually want to also auto-map questions to them)
 :::
 
-# Part 1: How can I interact with the web from R?
+# Learning Objectives
+
+## Introduction
+
+After you read this chapter, you will be able to...
+
+-   Explain what an API is.
+-   Decide whether this book is for you.
+
+## Part 1: How can I interact with the web from R?
+
+:::: columns
+::: column
+-   Fetch json-formatted data from the web.
+-   Parse nested lists with the {tidyverse}.
+
+-   Parse nested lists with {tibblify}.
+-   Use an API's OpenAPI description to determine the expected format of responses.
+-   Parse API responses with {tibblify} and the response description.
+:::
+::: column
+-   *Fetch data from an API with {httr2}.*
+-   *Build a {httr2} request piece-by-piece.*
+-   *Use API docs and OpenAPI descriptions to explore available endpoints.*
+
+-   *Find authentication information in API docs.*
+-   *Authenticate a request with a username and password.*
+-   *Authenticate a request with an API key.*
+-   *Authenticate a request with OAuth.*
+:::
+::::
+
+::: notes
+-   I'm adding to these as I actually present a "v1" (since reorg).
+-   Italics = planned soon but not finalized/presented.
+:::
 
 ## Part 1 Learning Objectives Brain Dump
 
@@ -35,10 +70,7 @@ engine: knitr
 
 ::: column
 -   Discover useful APIs
--   Process web data into R-standard formats
--   Fetch data with simple APIs
 -   Fetch *lots* of data from APIs
--   Authenticate with APIs
 -   Find specific APIs
 :::
 ::: column
@@ -51,12 +83,10 @@ engine: knitr
 ::::
 
 ::: notes
+-   I'm deleting from these as they're covered or eliminated
+    -   Moving to previous slide.
 -   Discover: Just vaguely via apis.guru or similar.
--   Process: This isn't API-specific, but APIs often have deeply nested data
--   Fetch data: No auth. Very basic parsing of the return
 -   Fetch lots: Important concept regardless of whether it's "simple"
--   Authenticate: Complicated (see Slack), I want to make it as clear as possible
-    -   In part 2 we'll build the complicated thing, I think.
 -   Find specific: Shoved this way down the list because it will be hard to have examples that aren't easy. I think I'll replace apis.guru with a true wiki.
 -   Do other: `curl_translate()` deep dive here.
 -   Find R packages: I want it late so you can tell if it's a bad package
@@ -68,11 +98,3 @@ engine: knitr
 # Part 2: How can I create my own APIs with R?
 
 (not filling this out yet)
-
-# What do you think?
-
-Please complete this [survey](https://forms.gle/HWUEsQ34vtuGKuu19)!
-
-::: notes
--   https://forms.gle/HWUEsQ34vtuGKuu19
-:::

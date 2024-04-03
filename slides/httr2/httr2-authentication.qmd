@@ -1,22 +1,28 @@
 ---
 engine: knitr
+title: How do I tell the API who I am?
 ---
 
-# How do I tell the API who I am?
+# ️✅ Learning objectives
 
-Cover req_user_agent() & req_proxy() in here somewhere! And req_headers()!
-
-**Learning objectives:**
-
--   Compare and contrast authentication schemes.
--   Describe the dangers associated with "leaking" credentials.
+::: nonincremental
 -   Find authentication information in API docs.
 -   Authenticate a request with a username and password.
 -   Authenticate a request with an API key.
--   Authenticate a request with the "OAuth dance."
--   Re-authenticate OAuth requests.
--   Authenticate with browser cookies.
--   TODO: LOs about other schemes?
+-   Authenticate a request with OAuth.
+:::
+
+```{r}
+#| label: authentication-packages-used
+#| eval: true
+#| warning: false
+library(httr2)
+```
+
+::: notes
+-   Mention cookies (and other schemes) as an online-only/advanced reference.
+-   Cover req_user_agent() & req_proxy() in here somewhere! And req_headers()!
+:::
 
 ## What are HTTP request headers?
 
@@ -32,10 +38,6 @@ Metadata about the request
 
 ::: fragment
 Names are case-insensitive!
-:::
-
-::: fragment
-Much more in Chapter 3: "How do I tell the API who I am?"
 :::
 
 ## `req_headers()`
