@@ -8,9 +8,9 @@
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.552">
+  <meta name="generator" content="quarto-1.4.553">
 
-  <title>Web APIs with R Book Club - How can I use an API description?</title>
+  <title>Web APIs with R Book Club - How can I quickly parse API responses?</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -390,7 +390,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">How can I use an API description?</h1>
+  <h1 class="title">How can I quickly parse API responses?</h1>
 
 <div class="quarto-title-authors">
 </div>
@@ -402,7 +402,7 @@
 <div>
 <ul>
 <li>Parse nested lists with {tibblify}.</li>
-<li>Use an API’s OpenAPI description to learn about the API.</li>
+<li>Use an API’s OpenAPI description to determine the expected format of responses.</li>
 <li>Parse API responses with {tibblify} and the response description.</li>
 </ul>
 </div>
@@ -415,12 +415,12 @@
 <span id="cb1-6"><a></a><span class="fu">library</span>(waldo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="why-rectangle" class="slide level2">
-<h2>Why rectangle?</h2>
+<section id="aside-why-rectangle" class="slide level2">
+<h2>Aside: Why rectangle?</h2>
 <ul>
 <li class="fragment">Apps usually “think” in objects
 <ul>
-<li class="fragment">Preferred data: Objects-with-properties (<a href="openapi/demo_json.json">example json</a>)</li>
+<li class="fragment">Preferred data: Objects-with-properties (<a href="schemas/demo_json.json">example json</a>)</li>
 </ul></li>
 <li class="fragment">Data scientists usually compare many objects at once
 <ul>
@@ -469,10 +469,10 @@
 </section>
 <section id="typical-json-data" class="slide level2">
 <h2>Typical JSON data</h2>
-<p><a href="openapi/demo_json.json">demo_json.json</a></p>
+<p><a href="schemas/demo_json.json">demo_json.json</a></p>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>url <span class="ot">&lt;-</span> <span class="st">"https://r4ds.github.io/bookclub-wapir/slides/httr2/openapi/demo_json.json"</span></span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>url <span class="ot">&lt;-</span> <span class="st">"https://r4ds.github.io/bookclub-wapir/slides/httr2/schemas/demo_json.json"</span></span>
 <span id="cb2-2"><a></a>demo_json <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(url)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
@@ -493,8 +493,8 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="unnesting-demo_json-manually" class="slide level2">
-<h2>Unnesting demo_json manually</h2>
+<section id="rectangling-demo_json-manually" class="slide level2">
+<h2>Rectangling demo_json manually</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>demo_json <span class="sc">|&gt;</span> </span>
 <span id="cb3-2"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="st">"api_id"</span>) <span class="sc">|&gt;</span></span>
@@ -550,8 +550,8 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="unnesting-demo_json-with-tibblify" class="slide level2">
-<h2>Unnesting demo_json with tibblify</h2>
+<section id="rectangling-demo_json-with-tibblify" class="slide level2">
+<h2>Rectangling demo_json with tibblify</h2>
 <div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>dj_tibblified <span class="ot">&lt;-</span> tibblify<span class="sc">::</span><span class="fu">tibblify</span>(demo_json)</span>
@@ -602,8 +602,8 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="unnesting-manually-vs-tibblify" class="slide level2">
-<h2>Unnesting manually vs tibblify</h2>
+<section id="rectangling-manually-vs-tibblify" class="slide level2">
+<h2>Rectangling manually vs tibblify</h2>
 <div class="columns">
 <div class="column fragment">
 <div class="cell">
@@ -746,10 +746,9 @@
 </section>
 <section id="yaml" class="slide level2">
 <h2>YAML</h2>
-<p>“Yet Another Markup Language” ➡️ “YAML Ain’t Markup Language”</p>
 <div class="columns">
 <div class="column fragment">
-<p>JSON</p>
+<p>JSON <br> (<code>jsonlite::read_json()</code>)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource json number-lines code-with-copy"><code class="sourceCode json"><span id="cb15-1"><a></a><span class="fu">{</span></span>
 <span id="cb15-2"><a></a>  <span class="dt">"info"</span><span class="fu">:</span> <span class="fu">{</span></span>
@@ -769,7 +768,7 @@
 <span id="cb15-16"><a></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column fragment">
-<p>YAML</p>
+<p>YAML <br> (<code>yaml::read_yaml()</code>)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb16-1"><a></a><span class="fu">info</span><span class="kw">:</span></span>
 <span id="cb16-2"><a></a><span class="at">  </span><span class="fu">contact</span><span class="kw">:</span></span>

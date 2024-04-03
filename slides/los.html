@@ -8,7 +8,7 @@
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.552">
+  <meta name="generator" content="quarto-1.4.553">
 
   <title>Web APIs with R Book Club - Learning Objectives</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -387,9 +387,57 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="part-1-how-can-i-interact-with-the-web-from-r" class="title-slide slide level1 center">
-<h1>Part 1: How can I interact with the web from R?</h1>
+<section id="learning-objectives" class="title-slide slide level1 center">
+<h1>Learning Objectives</h1>
 
+</section>
+<section id="introduction" class="slide level2">
+<h2>Introduction</h2>
+<p>After you read this chapter, you will be able to…</p>
+<ul>
+<li class="fragment">Explain what an API is.</li>
+<li class="fragment">Decide whether this book is for you.</li>
+</ul>
+</section>
+<section id="part-1-how-can-i-interact-with-the-web-from-r" class="slide level2">
+<h2>Part 1: How can I interact with the web from R?</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li class="fragment"><p>Fetch json-formatted data from the web.</p></li>
+<li class="fragment"><p>Parse nested lists with the {tidyverse}.</p></li>
+<li class="fragment"><p>Parse nested lists with {tibblify}.</p></li>
+<li class="fragment"><p>Use an API’s OpenAPI description to determine the expected format of responses.</p></li>
+<li class="fragment"><p>Parse API responses with {tibblify} and the response description.</p></li>
+</ul>
+</div><div class="column">
+<ul>
+<li class="fragment"><p><em>Fetch data from an API with {httr2}.</em></p></li>
+<li class="fragment"><p><em>Build a {httr2} request piece-by-piece.</em></p></li>
+<li class="fragment"><p><em>Use API docs and OpenAPI descriptions to explore available endpoints.</em></p></li>
+<li class="fragment"><p><em>Find authentication information in API docs.</em></p></li>
+<li class="fragment"><p><em>Authenticate a request with a username and password.</em></p></li>
+<li class="fragment"><p><em>Authenticate a request with an API key.</em></p></li>
+<li class="fragment"><p><em>Authenticate a request with OAuth.</em></p></li>
+</ul>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>I’m adding to these as I actually present a “v1” (since reorg).</li>
+<li>Italics = planned soon but not finalized/presented.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="part-1-learning-objectives-brain-dump" class="slide level2">
 <h2>Part 1 Learning Objectives Brain Dump</h2>
@@ -397,10 +445,7 @@
 <div class="column">
 <ul>
 <li class="fragment">Discover useful APIs</li>
-<li class="fragment">Process web data into R-standard formats</li>
-<li class="fragment">Fetch data with simple APIs</li>
 <li class="fragment">Fetch <em>lots</em> of data from APIs</li>
-<li class="fragment">Authenticate with APIs</li>
 <li class="fragment">Find specific APIs</li>
 </ul>
 </div><div class="column">
@@ -415,14 +460,12 @@
 </div>
 <aside class="notes">
 <ul>
-<li>Discover: Just vaguely via apis.guru or similar.</li>
-<li>Process: This isn’t API-specific, but APIs often have deeply nested data</li>
-<li>Fetch data: No auth. Very basic parsing of the return</li>
-<li>Fetch lots: Important concept regardless of whether it’s “simple”</li>
-<li>Authenticate: Complicated (see Slack), I want to make it as clear as possible
+<li>I’m deleting from these as they’re covered or eliminated
 <ul>
-<li>In part 2 we’ll build the complicated thing, I think.</li>
+<li>Moving to previous slide.</li>
 </ul></li>
+<li>Discover: Just vaguely via apis.guru or similar.</li>
+<li>Fetch lots: Important concept regardless of whether it’s “simple”</li>
 <li>Find specific: Shoved this way down the list because it will be hard to have examples that aren’t easy. I think I’ll replace apis.guru with a true wiki.</li>
 <li>Do other: <code>curl_translate()</code> deep dive here.</li>
 <li>Find R packages: I want it late so you can tell if it’s a bad package</li>
@@ -445,26 +488,6 @@
 <section id="part-2-how-can-i-create-my-own-apis-with-r" class="title-slide slide level1 center">
 <h1>Part 2: How can I create my own APIs with R?</h1>
 <p>(not filling this out yet)</p>
-</section>
-
-<section id="what-do-you-think" class="title-slide slide level1 center">
-<h1>What do you think?</h1>
-<p>Please complete this <a href="https://forms.gle/HWUEsQ34vtuGKuu19">survey</a>!</p>
-<aside class="notes">
-<ul>
-<li>https://forms.gle/HWUEsQ34vtuGKuu19</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
