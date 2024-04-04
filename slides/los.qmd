@@ -19,11 +19,11 @@ engine: knitr
 
 -   Students learn more when they have clear objectives.
 -   Lends structure to my process.
--   Eventually: Lends structure to R4DS
+-   Eventually: Lends structure to DSLC
 
 ::: notes
 -   I like having a process!
--   Aiming to implement these across all of R4DS
+-   Aiming to implement these across all of DSLC
 -   (Eventually want to also auto-map questions to them)
 :::
 

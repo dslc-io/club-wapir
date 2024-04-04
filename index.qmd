@@ -10,6 +10,6 @@ Each chapter title to the left is a link to a slide deck.
 
 -   These slides are being developed *as I write the book.*
 -   Each deck will open in its own tab.
--   [Join the R4DS Learning Community](https://r4ds.io/join) to participate.
+-   [Join the Data Science Learning Community](https://dslc.io/join) to participate.
     
-We follow the [R4DS Learning Community Code of Conduct](https://r4ds.io/conduct).
+We follow the [Data Science Learning Community Code of Conduct](https://dslc.io/conduct).
