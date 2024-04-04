@@ -35,7 +35,7 @@ See [How do computers communicate?](httr2/apis.html){target="wapir-club_apis"}
 -   Please speak up or type ideas in the chat!
 -   More examples if people need prompting:
     -   "Login with" google, apple, facebook, etc.
-    -   Slack API used for various R4DS management tasks.
+    -   Slack API used for various DSLC management tasks.
     -   Sunrise/sunset (etc) from lat/long/date
     -   `all_apis <- apisguru::list_apis()`
     -   `all_apis |> dplyr::slice_sample(n = 5)`
@@ -95,7 +95,7 @@ See [How do computers communicate?](httr2/apis.html){target="wapir-club_apis"}
 # Want to learn about WAPIR?
 
 ::: {.incremental}
--   [r4ds.io/bookclubber/?bookname=Web APIs with R](https://r4ds.io/bookclubber/?bookname=Web%20APIs%20with%20R)
+-   [dslc.io/bookclubber/?bookname=Web APIs with R](https://dslc.io/bookclubber/?bookname=Web%20APIs%20with%20R)
 -   Weekly like normal?
 :::
 
@@ -107,8 +107,8 @@ See [How do computers communicate?](httr2/apis.html){target="wapir-club_apis"}
 
 # New Club Site Format
 
--   Old: [R Packages](https://r4ds.io/rpkgs){target="rpkgs-club_index"}
--   New: [This site](https://r4ds.io/wapir){target="wapir-club_index"}
+-   Old: [R Packages](https://dslc.io/rpkgs){target="rpkgs-club_index"}
+-   New: [This site](https://dslc.io/wapir){target="wapir-club_index"}
     -   Lots to do style-wise!
     -   Numbered chapters?
     -   Will update other clubs if this isn't broken

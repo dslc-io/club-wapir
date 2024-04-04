@@ -10,7 +10,7 @@ engine: knitr
 -   🧑‍🏫 Jon leads a *discussion* of a chapter
     -   🙋‍♀️ **IMPORTANT:** You ask questions!
     -   ️✅ Goal: Revise/finalize learning objectives
-    -   📺 Recordings on [R4DS YouTube](https://r4ds.io/youtube)
+    -   📺 Recordings on [DSLC YouTube](https://dslc.io/youtube)
 -   🔄️ Jon revises slides
 -   ❓Jon writes "test yourself" questions
     -   🧵 Discuss in channel?
@@ -18,7 +18,7 @@ engine: knitr
 -   📝 Jon writes chapter
 
 ::: notes
--   Talked about this writing process in project club, r4ds.io/youtube
+-   Talked about this writing process in project club, dslc.io/youtube
 -   Meet *every* week... unless I need a break to catch up.
 -   Discussion even more important than in a normal club
 -   Review revised slides? Maybe spend 2 weeks per chapter?

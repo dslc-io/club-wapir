@@ -1,6 +1,6 @@
-# R4DS Web APIs with R Book Club
+# DSLC Web APIs with R Book Club
 
-Welcome to the R4DS Web APIs with R Book Club!
+Welcome to the DSLC Web APIs with R Book Club!
 
 *I'm including the standard text below from our other clubs for easier editing later, but this one is different!*
 *I'm actively writing this book, and gathering feedback as I go.*
@@ -8,8 +8,8 @@ Welcome to the R4DS Web APIs with R Book Club!
 
 We are working together to read [_Web APIs with R_](https://wapir.io/) by Jon Harmon (copyright 2024).
 
-Join the [#book_club-wapir](https://rfordatascience.slack.com/archives/C05MYSD1PEV) channel on the [R4DS Slack](https://r4ds.io/join) to participate.
-As we read, we are producing [notes about the book](https://r4ds.io/wapir).
+Join the [#book_club-wapir](https://dslcio.slack.com/archives/C05MYSD1PEV) channel on the [DSLC Slack](https://dslc.io/join) to participate.
+As we read, we are producing [notes about the book](https://dslc.io/wapir).
 
 ## Meeting Schedule
 
@@ -42,7 +42,7 @@ Do these steps each time you present another chapter:
 10. When your PR has been accepted ("merged"), `usethis::pr_finish()` to close out your branch and prepare your local repository for future work.
 11. Now that your local copy is up-to-date with the main repo, you need to update your remote fork. Run `gert::git_push("origin")` or click the `Push` button on the `Git` tab of Rstudio.
 
-When your PR is checked into the main branch, the bookdown site will rebuild, adding your slides to [this site](https://r4ds.io/wapir).
+When your PR is checked into the main branch, the bookdown site will rebuild, adding your slides to [this site](https://dslc.io/wapir).
 
 
 ## Code of Conduct
