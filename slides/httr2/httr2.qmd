@@ -1,28 +1,121 @@
 ---
 engine: knitr
-title: How can I access APIs from R?
+title: How can I more easily access APIs from R?
+resources:
+  - "httr2/openfec_response.json"
 ---
 
 # ️✅ Learning objectives
 
 ::: nonincremental
+-   Use API docs to explore available endpoints.
 -   Fetch data from an API with {httr2}.
 -   Build a {httr2} request piece-by-piece.
--   Use API docs and OpenAPI descriptions to explore available endpoints.
 :::
 
 ```{r}
 #| label: httr2-packages-used
 #| eval: true
+library(jsonlite)
+library(tibblify)
+library(tidyr)
+library(dplyr)
 library(httr2)
 ```
 
 ::: notes
 "After we finish this chapter, we'll be able to..." (objectives)
-
 -   Not every possible API, but we'll get the basics.
--   I'm having trouble deciding on order of this chapter
-    -   Let me know if you get lost.
+-   I'm also hoping to make it clear why httr2 is useful!
+:::
+
+## What can we do so far?
+
+:::: columns
+::: {.column .fragment}
+We can:
+
+-   Access APIs that can be accessed in a web browser
+-   Copy/paste or manually build URLs
+-   Pass an authentication key as part of a URL
+-   Fetch JSON data with {jsonlite}
+-   Fetch YAML data with {yaml}
+:::
+::: {.column .fragment}
+We can't *yet*:
+
+-   Access APIs that can't be accessed in a web browser
+-   Build API requests systematically
+-   Access APIs that require authentication
+-   Fetch other types of data (raw text, images, videos, etc)
+:::
+::::
+
+::: notes
+-   Browser: As long as it isn't using our login information without us realizing it.
+
+-   No browser: There are technically 9 types of requests (HTTP methods), we can do 1 of them so far.
+-   A lot of APIs use something called "oauth", can be really confusing
+-   The endpoints we've hit haven't had arguments, but almost all do
+-   We can get some specific things with download.file, but need to parse each with different packages
+-   ...and other things we don't yet know that we wish we could do
+-   We'll use httr2 to deal with all of these things
+:::
+
+# How can I learn about API endpoints?
+
+## Motivating Example: OpenFEC
+
+-   [OpenFEC: Federal Election Commission API](https://api.open.fec.gov/developers)
+-   API documentation usually describes ***endpoints***
+    -   endpoint: URL for specific API function
+
+## 2020 Presidential Candidates
+
+-   We'll focus on the [`/candidates/` endpoint](https://api.open.fec.gov/developers#/candidate/get_v1_candidates_)
+-   [https://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_key=DEMO_KEY](httr2/openfec_response.json)
+
+```{r}
+#| label: httr2-motivating-download
+#| eval: false
+#| include: false
+url <- "https://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_key=DEMO_KEY"
+openfec_response <- jsonlite::read_json(url)
+saveRDS(
+  openfec_response, 
+  here::here("slides", "httr2", "httr2", "openfec_response.rds")
+)
+jsonlite::write_json(
+  openfec_response, 
+  here::here("slides", "httr2", "httr2", "openfec_response.json"),
+  auto_unbox = TRUE,
+  null = "null"
+)
+```
+```{r}
+#| label: httr2-motivating-read
+#| eval: true
+#| include: false
+openfec_response <- readRDS(here::here("slides", "httr2", "httr2", "openfec_response.rds"))
+```
+::: fragment
+```{r}
+#| label: httr2-motivating-example
+openfec_response <- jsonlite::read_json("https://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_key=DEMO_KEY")
+```
+:::
+::: fragment
+```{r}
+#| label: httr2-motivating-tibblify
+#| eval: true
+tibblify(openfec_response$results) |> 
+  select(name, party_full, has_raised_funds) |> 
+  head()
+```
+:::
+
+::: notes
+-   What if we want a different year? Or a different office? Or any of the other 20 or so available parameters?
 :::
 
 # What is {httr2}?
@@ -42,36 +135,45 @@ Pipe-based API calls
 ::: fragment
 ```{r}
 #| label: httr2-demo
-#| code-line-numbers: "1-10|2|3-5|6|7-9"
+#| code-line-numbers: "1-10|2|3-8|9|10|1-10"
 candidates <- 
   request("https://api.open.fec.gov/v1") |> 
   req_url_path_append("candidates") |> 
   req_url_query(api_key = "DEMO_KEY") |> 
-  req_url_query(election_year = 2024) |> 
-  req_perform() |> 
-  resp_body_json()
-candidates$results[[1]]$candidate_id
-#> [1] "P40014052"
+  req_url_query(
+    election_year = 2020,
+    office = "P"
+  ) |> 
+  req_perform() |> # Chapter 5 (next)
+  resp_body_json() # Chapter 7
+```
+:::
+::: fragment
+```{r}
+waldo::compare(candidates, openfec_response)
+```
+```{r}
+#| label: httr2-demo-eval
+#| eval: true
+#| echo: false
+waldo::compare(openfec_response, openfec_response)
 ```
 :::
 
 ::: notes
--   httr2 is a rewrite of httr specifically to use the concept of the pipe.
-    -   I'll add a brief intro to the pipe in the Introduction chapter under prereqs!
-    -   I use |> base R pipe here. Pronounce it "and then".
+-   I use |> base R pipe here. Pronounce it "and then".
 -   httr2 calls usually involve a request, which you perform, and then you parse the response.
 -   We're hitting the free, open api from the Federal Elections Commission.
-    -   I'm thinking about building a Shiny app related to this API, and using it as a case study throughout the book, but I also need to find stable APIs with more options
-    -   Stable API ideas? Ideally free. I also might host something for people to use.
 -   (step through)
 -   Here we build the request piece-wise
     -   We'll get into details of the functions in a few slides
 -   Then we perform the request. This actually hits the server.
 -   Then we parse what we get back with a resp_body function.
--   This returns a larger object in a format called JSON, will talk about it more in a later chapter
+-   Same result as the thing we got using jsonlite.
+    -   Because resp_body_json uses jsonlite.
 :::
 
-## Why "httr"?
+## Why "httr2"?
 
 ::: fragment
 HTTP = HyperText Transfer Protocol
@@ -91,22 +193,7 @@ HTTP = HyperText Transfer Protocol
 -   "exchange" or "move"
 -   "S" means "secure"
 -   If anyone asks: 1.1 = most, 2.0 = 2-way
-:::
-
-## Why "httr2"?
-
-::: fragment
-"HTTP in R, take 2"
-:::
-::: fragment
-![](/images/httr-reverse-depends.png){width="75%"}
-:::
-
-::: notes
--   Both packages by Hadley Wickham (R4DS and other books, tidyverse, Chief Scientist at Posit)
--   Complete rewrite. Why? Guesses?
--   Things that depend on httr as of January 22, 2024 (Monday)
--   Couldn't fundamentally change, or these package would all break
+-   2 = he rewrote it for piping
 :::
 
 ## How do I use {httr2}?
@@ -117,14 +204,27 @@ HTTP = HyperText Transfer Protocol
 
 ::: fragment
 ```{r}
-#| code-line-numbers: "1|1-2|2-3|3-5|3,6-7|2,8|1-8"
+#| code-line-numbers: "1|1-2|2-3|3-4|1-4"
 req_fec <- request("https://api.open.fec.gov/v1")
 req_fec_auth <- req_url_query(req_fec, api_key = "DEMO_KEY")
 req_candidates <- req_url_path_append(req_fec_auth, "candidates")
-candidates_2024 <- req_url_query(req_candidates, election_year = 2024) |> 
+req_candidates_president <- req_url_query(req_candidates, office = "P")
+```
+:::
+::: fragment
+```{r}
+pres_2024 <- req_url_query(req_candidates_president, election_year = 2024) |> 
   req_perform() |> resp_body_json()
+```
+:::
+::: fragment
+```{r}
 candidates_2022 <- req_url_query(req_candidates, election_year = 2022) |> 
   req_perform() |> resp_body_json()
+```
+:::
+::: fragment
+```{r}
 req_calendar <- req_url_path_append(req_fec_auth, "calendar-dates")
 ```
 :::
@@ -137,58 +237,12 @@ req_calendar <- req_url_path_append(req_fec_auth, "calendar-dates")
 -   I'm going to drink some water while you make sure you have that.
 :::
 
-# How do I fetch data with {httr2}?
-
-::: notes
-We'll dig into functions to fetch data from an API.
-:::
-
-## How can I quickly translate API docs?
-
--   Docs often have "Try it out" option
-    -   [https://api.open.fec.gov/developers/](https://api.open.fec.gov/developers/)
--   Copy the "Curl" block
-
-::: fragment
-```{r}
-curl_translate(
-  "curl -X 'GET' \
-  'https://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=H'"
-)
-```
-:::
-
-::: fragment
-```
-request("https://api.open.fec.gov/v1/candidates/") |> 
-  req_method("GET") |> 
-  req_url_query(
-    api_key = "DEMO_KEY",
-    office = "H"
-  ) |> 
-  req_perform()
-```
-:::
-
-::: notes
--   If you want to use this API, sign up for your own key at that same URL.
--   I edited the given curl to fit
--   This code will usually get you started
--   Now let's clean it up and understand it!
--   Extra: OpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json
-:::
+# How do I build {httr2} requests?
 
 ## `request()` & `req_path_append()`
 
 ```{r}
-#| code-line-numbers: "1"
-request("https://api.open.fec.gov/v1/candidates/") |> 
-  req_method("GET") |> 
-  req_url_query(
-    api_key = "DEMO_KEY",
-    office = "H"
-  ) |> 
-  req_perform()
+request("https://api.open.fec.gov/v1/candidates/")
 ```
 
 ::: fragment
@@ -240,38 +294,19 @@ req_candidates$url
 -   Notably the help docs don't show an example for this one
 :::
 
-## `req_method()`: more later!
-
-```{r}
-#| code-line-numbers: "2"
-request("https://api.open.fec.gov/v1/candidates/") |> 
-  req_method("GET") |> 
-  req_url_query(
-    api_key = "DEMO_KEY",
-    office = "H"
-  ) |> 
-  req_perform()
-```
-
-::: notes
--   "GET" is default for what we're doing, so we can leave this part out.
--   We don't have to think about it until what's now Chapter 6!
-:::
-
-
 ## `req_url_query()`
 
 ::: {style="font-size:0.9em;"}
-https://api.open.fec.gov/v1/candidates/***?api_key=DEMO_KEY&office=H***
+https://api.open.fec.gov/v1/candidates/***?api_key=DEMO_KEY&office=P***
 :::
 ::: fragment
 ```{r}
 #| eval: true
 #| code-line-numbers: "1|1-5"
-req_house <- req_candidates |> 
+req_pres <- req_candidates |> 
   req_url_query(
     api_key = "DEMO_KEY",
-    office = "H"
+    office = "P"
   )
 ```
 :::
@@ -286,23 +321,20 @@ req_fec_auth <- req_fec |>
   req_url_query(api_key = "DEMO_KEY")
 req_candidates_auth <- req_fec_auth |> 
   req_url_path_append("candidates")
-req_house2 <- req_candidates_auth |> 
-  req_url_query(office = "H")
+req_pres2 <- req_candidates_auth |> 
+  req_url_query(office = "P")
 ```
 :::
 ::: fragment
 ```{r}
 #| eval: true
-identical(req_house$url, req_house2$url)
+identical(req_pres$url, req_pres2$url)
 ```
 :::
 
 ::: notes
--   This is the URL that was in the Curl call
 -   "Query" = stuff after "?"
 -   Arguments for the endpoint
--   1st req_url_query() call is what curl_translate gave us
--   Doesn't automatically set order, so watch out for that.
 :::
 
 ## `req_url_query(.multi)`
@@ -349,15 +381,16 @@ req_url_query(req_candidates, office = c("H", "S"), .multi = "explode")$url
 
 # More httr2 to come!
 
--   Chapter 3 "How do I tell the API who I am?
--   Chapter 4 = "How can I process API responses?"
+-   *Chapter 4 = you are here*
 -   Chapter 5 = "How can I get a lot of data from an API?"
--   Chapter 6 = "How can I do other things with APIs?"
+-   Chapter 6 = "How do I tell the API who I am?
+-   Chapter 7 = "How can I process API responses?"
+-   Chapter 8 = "How can I do other things with APIs?"
 
 ::: notes
--   3 = Authentication & other headers
--   4 = Parsing responses
--   5 = Pagination (and other strategies for big responses)
+-   5 = Pagination, retries, throttling, parallelization, etc
+-   6 = Authentication & other headers
+-   7 = Parsing responses
 -   6 = Methods (notably POST)
 :::
 
