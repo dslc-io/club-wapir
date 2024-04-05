@@ -21,8 +21,6 @@ website:
         target: wapir-club_club_intro
       - file: slides/intro.qmd
         target: wapir-club_intro
-      - file: slides/los.qmd
-        target: wapir-club_los
 
       - section: "How can I interact with the web from R?"
         contents:
@@ -32,12 +30,12 @@ website:
             target: wapir-club_schemas
           - file: slides/httr2/httr2.qmd
             target: wapir-club_httr2
+          - file: slides/httr2/httr2-perform.qmd
+            target: wapir-club_httr2-perform
           - file: slides/httr2/httr2-authentication.qmd
             target: wapir-club_httr2-authentication
           - file: slides/httr2/httr2-responses.qmd
             target: wapir-club_httr2-responses
-          - file: slides/httr2/httr2-perform.qmd
-            target: wapir-club_httr2-perform
           - file: slides/httr2/httr2-methods.qmd
             target: wapir-club_httr2-methods
           - file: slides/httr2/apis-find.qmd
@@ -69,6 +67,13 @@ website:
             target: wapir-club_plumber-deploy
           - file: slides/plumber/creating-more.qmd
             target: wapir-club_creating-more
+
+      - section: "Appendices"
+        contents:
+          - file: slides/los.qmd
+            target: wapir-club_los
+          - file: slides/leftovers.qmd
+            target: wapir-club_leftovers
 
 format:
   html:

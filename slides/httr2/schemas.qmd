@@ -93,7 +93,7 @@ demo_json2 <- purrr::map(
 names(demo_json2) <- demo_json$api_id
 jsonlite::write_json(
   demo_json2, 
-  "slides/httr2/schemas/demo_json.json", 
+  here::here("slides", "httr2", "schemas", "demo_json.json"), 
   auto_unbox = TRUE
 )
 ```
