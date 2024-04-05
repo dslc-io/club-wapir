@@ -70,7 +70,7 @@ saveRDS(
 ```
 ```{r}
 #| label: httr2-openfec-endpoints-load
-#| eval: true
+#| eval: false
 #| include: false
 openfec_endpoints <- readRDS(
   here::here("slides", "httr2", "httr2", "openfec_endponts.rds")
@@ -86,7 +86,7 @@ openfec_endpoints |>
 ```
 ```{r}
 #| label: httr2-openfec-endpoints-print
-#| eval: true
+#| eval: false
 #| echo: false
 openfec_endpoints |> 
   tidyr::unnest(operations) |> dplyr::select(
@@ -102,7 +102,7 @@ openfec_endpoints |>
 ## Endpoint parameters
 
 ```{r}
-#| eval: true
+#| eval: false
 candidates_endpoint <- openfec_endpoints |> 
   unnest(operations) |> 
   filter(endpoint == "/candidates/")
@@ -114,7 +114,7 @@ candidates_endpoint |>
 ## Endpoint responses
 
 ```{r}
-#| eval: true
+#| eval: false
 candidates_endpoint |> 
   select(responses) |>
   unnest(responses) |> 
