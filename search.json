@@ -1186,6 +1186,61 @@
     ]
   },
   {
+    "objectID": "slides/leftovers.html#how-can-i-quickly-translate-api-docs",
+    "href": "slides/leftovers.html#how-can-i-quickly-translate-api-docs",
+    "title": "Unused Slides from Other Chapters",
+    "section": "How can I quickly translate API docs?",
+    "text": "How can I quickly translate API docs?\n\nDocs often have “Try it out” option\n\nhttps://api.open.fec.gov/developers/\n\nCopy the “Curl” block\n\n\n\ncurl_translate(\n  \"curl -X 'GET' \\\n  'https://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=H'\"\n)\n\n\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\n\nIf you want to use this API, sign up for your own key at that same URL.\nI edited the given curl to fit\nThis code will usually get you started\nNow let’s clean it up and understand it!\nExtra: OpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json",
+    "crumbs": [
+      "Appendices",
+      "Unused Slides from Other Chapters"
+    ]
+  },
+  {
+    "objectID": "slides/leftovers.html#the-pieces-of-a-url",
+    "href": "slides/leftovers.html#the-pieces-of-a-url",
+    "title": "Unused Slides from Other Chapters",
+    "section": "The Pieces of a URL",
+    "text": "The Pieces of a URL\nhttps://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_key=DEMO_KEY\n\nhttps://api.open.fec.gov = “scheme” + “host name”\n/v1/candidates/ = “path”\n?election_year=2020&office=P&api_key=DEMO_KEY = “query”\nNot present:\n\n:1234 = “port”\n#target = “fragment”\nusername:password@",
+    "crumbs": [
+      "Appendices",
+      "Unused Slides from Other Chapters"
+    ]
+  },
+  {
+    "objectID": "slides/leftovers.html#endpoint-info-as-data",
+    "href": "slides/leftovers.html#endpoint-info-as-data",
+    "title": "Unused Slides from Other Chapters",
+    "section": "Endpoint info as data",
+    "text": "Endpoint info as data\n\n{tibblify} can load OpenAPI endpoint data\n\n\n\nopenfec_endpoints &lt;- tibblify::parse_openapi_spec(\"https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json\")\nopenfec_endpoints |&gt; \n  unnest(operations)\n\n\n\n\nThis is a dev version of tibblify, production version only gets some of this data.",
+    "crumbs": [
+      "Appendices",
+      "Unused Slides from Other Chapters"
+    ]
+  },
+  {
+    "objectID": "slides/leftovers.html#endpoint-parameters",
+    "href": "slides/leftovers.html#endpoint-parameters",
+    "title": "Unused Slides from Other Chapters",
+    "section": "Endpoint parameters",
+    "text": "Endpoint parameters\n\ncandidates_endpoint &lt;- openfec_endpoints |&gt; \n  unnest(operations) |&gt; \n  filter(endpoint == \"/candidates/\")\ncandidates_endpoint |&gt; \n  select(parameters) |&gt; \n  unnest(parameters)",
+    "crumbs": [
+      "Appendices",
+      "Unused Slides from Other Chapters"
+    ]
+  },
+  {
+    "objectID": "slides/leftovers.html#endpoint-responses",
+    "href": "slides/leftovers.html#endpoint-responses",
+    "title": "Unused Slides from Other Chapters",
+    "section": "Endpoint responses",
+    "text": "Endpoint responses\n\ncandidates_endpoint |&gt; \n  select(responses) |&gt;\n  unnest(responses) |&gt; \n  unnest(content)\n\n\n\nNote that spec is a tspec!\n\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
+    "crumbs": [
+      "Appendices",
+      "Unused Slides from Other Chapters"
+    ]
+  },
+  {
     "objectID": "slides/plumber/plumber-errors.html#plumbers-default-error-handling",
     "href": "slides/plumber/plumber-errors.html#plumbers-default-error-handling",
     "title": "Web APIs with R Book Club",
@@ -2242,113 +2297,113 @@
     ]
   },
   {
-    "objectID": "slides/httr2/httr2.html#what-do-httr2-calls-look-like",
-    "href": "slides/httr2/httr2.html#what-do-httr2-calls-look-like",
-    "title": "How can I access APIs from R?",
-    "section": "What do {httr2} calls look like?",
-    "text": "What do {httr2} calls look like?\n\nPipe-based API calls\n\n\n\ncandidates &lt;- \n  request(\"https://api.open.fec.gov/v1\") |&gt; \n  req_url_path_append(\"candidates\") |&gt; \n  req_url_query(api_key = \"DEMO_KEY\") |&gt; \n  req_url_query(election_year = 2024) |&gt; \n  req_perform() |&gt; \n  resp_body_json()\ncandidates$results[[1]]$candidate_id\n#&gt; [1] \"P40014052\"\n\n\n\n\nhttr2 is a rewrite of httr specifically to use the concept of the pipe.\n\nI’ll add a brief intro to the pipe in the Introduction chapter under prereqs!\nI use |&gt; base R pipe here. Pronounce it “and then”.\n\nhttr2 calls usually involve a request, which you perform, and then you parse the response.\nWe’re hitting the free, open api from the Federal Elections Commission.\n\nI’m thinking about building a Shiny app related to this API, and using it as a case study throughout the book, but I also need to find stable APIs with more options\nStable API ideas? Ideally free. I also might host something for people to use.\n\n(step through)\nHere we build the request piece-wise\n\nWe’ll get into details of the functions in a few slides\n\nThen we perform the request. This actually hits the server.\nThen we parse what we get back with a resp_body function.\nThis returns a larger object in a format called JSON, will talk about it more in a later chapter",
+    "objectID": "slides/httr2/httr2.html#what-can-we-do-so-far",
+    "href": "slides/httr2/httr2.html#what-can-we-do-so-far",
+    "title": "How can I more easily access APIs from R?",
+    "section": "What can we do so far?",
+    "text": "What can we do so far?\n\n\nWe can:\n\nAccess APIs that can be accessed in a web browser\nCopy/paste or manually build URLs\nPass an authentication key as part of a URL\nFetch JSON data with {jsonlite}\nFetch YAML data with {yaml}\n\n\nWe can’t yet:\n\nAccess APIs that can’t be accessed in a web browser\nBuild API requests systematically\nAccess APIs that require authentication\nFetch other types of data (raw text, images, videos, etc)\n\n\n\n\n\nBrowser: As long as it isn’t using our login information without us realizing it.\nNo browser: There are technically 9 types of requests (HTTP methods), we can do 1 of them so far.\nA lot of APIs use something called “oauth”, can be really confusing\nThe endpoints we’ve hit haven’t had arguments, but almost all do\nWe can get some specific things with download.file, but need to parse each with different packages\n…and other things we don’t yet know that we wish we could do\nWe’ll use httr2 to deal with all of these things",
     "crumbs": [
       "How can I interact with the web from R?",
-      "How can I access APIs from R?"
+      "How can I more easily access APIs from R?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2.html#why-httr",
-    "href": "slides/httr2/httr2.html#why-httr",
-    "title": "How can I access APIs from R?",
-    "section": "Why “httr”?",
-    "text": "Why “httr”?\n\nHTTP = HyperText Transfer Protocol\n\n“HyperText” = web content\n“Transfer” = exchange\n“Protocol” = rules\n“rules for exchanging web content”\nHTTP(S) = most of internet communication\n\n\n\n\nYou may have seen http or https at the start of URLs (web addresses)\n“web content” =\n\noriginally text and links (HTML = HyperText Markup Language)\nnow data, images, videos, etc.\n\n“exchange” or “move”\n“S” means “secure”\nIf anyone asks: 1.1 = most, 2.0 = 2-way",
+    "objectID": "slides/httr2/httr2.html#motivating-example-openfec",
+    "href": "slides/httr2/httr2.html#motivating-example-openfec",
+    "title": "How can I more easily access APIs from R?",
+    "section": "Motivating Example: OpenFEC",
+    "text": "Motivating Example: OpenFEC\n\nOpenFEC: Federal Election Commission API\nAPI documentation usually describes endpoints\n\nendpoint: URL for specific API function",
     "crumbs": [
       "How can I interact with the web from R?",
-      "How can I access APIs from R?"
+      "How can I more easily access APIs from R?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2.html#presidential-candidates",
+    "href": "slides/httr2/httr2.html#presidential-candidates",
+    "title": "How can I more easily access APIs from R?",
+    "section": "2020 Presidential Candidates",
+    "text": "2020 Presidential Candidates\n\nWe’ll focus on the /candidates/ endpoint\nhttps://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_key=DEMO_KEY\n\n\n\nopenfec_response &lt;- jsonlite::read_json(\"https://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_key=DEMO_KEY\")\n\n\n\n\ntibblify(openfec_response$results) |&gt; \n  select(name, party_full, has_raised_funds) |&gt; \n  head()\n\n#&gt; # A tibble: 6 × 3\n#&gt;   name                       party_full       has_raised_funds\n#&gt;   &lt;chr&gt;                      &lt;chr&gt;            &lt;lgl&gt;           \n#&gt; 1 753, JO                    NONE             FALSE           \n#&gt; 2 ABRAMSON, MAX              VETERANS PARTY   FALSE           \n#&gt; 3 ABRAUGH, MATTHEW M. MR.    NON-PARTY        FALSE           \n#&gt; 4 ACKER, BRANDON W           DEMOCRATIC PARTY FALSE           \n#&gt; 5 ACKER, RYAN                NON-PARTY        TRUE            \n#&gt; 6 ACORD, ROBERT BRADFORD LEE DEMOCRATIC PARTY FALSE\n\n\n\n\n\nWhat if we want a different year? Or a different office? Or any of the other 20 or so available parameters?",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I more easily access APIs from R?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2.html#what-do-httr2-calls-look-like",
+    "href": "slides/httr2/httr2.html#what-do-httr2-calls-look-like",
+    "title": "How can I more easily access APIs from R?",
+    "section": "What do {httr2} calls look like?",
+    "text": "What do {httr2} calls look like?\n\nPipe-based API calls\n\n\n\ncandidates &lt;- \n  request(\"https://api.open.fec.gov/v1\") |&gt; \n  req_url_path_append(\"candidates\") |&gt; \n  req_url_query(api_key = \"DEMO_KEY\") |&gt; \n  req_url_query(\n    election_year = 2020,\n    office = \"P\"\n  ) |&gt; \n  req_perform() |&gt; # Chapter 5 (next)\n  resp_body_json() # Chapter 7\n\n\n\n\nwaldo::compare(candidates, openfec_response)\n\n\n\n#&gt; ✔ No differences\n\n\n\n\n\nI use |&gt; base R pipe here. Pronounce it “and then”.\nhttr2 calls usually involve a request, which you perform, and then you parse the response.\nWe’re hitting the free, open api from the Federal Elections Commission.\n(step through)\nHere we build the request piece-wise\n\nWe’ll get into details of the functions in a few slides\n\nThen we perform the request. This actually hits the server.\nThen we parse what we get back with a resp_body function.\nSame result as the thing we got using jsonlite.\n\nBecause resp_body_json uses jsonlite.",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I more easily access APIs from R?"
     ]
   },
   {
     "objectID": "slides/httr2/httr2.html#why-httr2",
     "href": "slides/httr2/httr2.html#why-httr2",
-    "title": "How can I access APIs from R?",
+    "title": "How can I more easily access APIs from R?",
     "section": "Why “httr2”?",
-    "text": "Why “httr2”?\n\n“HTTP in R, take 2”\n\n\n\n\n\n\nBoth packages by Hadley Wickham (R4DS and other books, tidyverse, Chief Scientist at Posit)\nComplete rewrite. Why? Guesses?\nThings that depend on httr as of January 22, 2024 (Monday)\nCouldn’t fundamentally change, or these package would all break",
+    "text": "Why “httr2”?\n\nHTTP = HyperText Transfer Protocol\n\n“HyperText” = web content\n“Transfer” = exchange\n“Protocol” = rules\n“rules for exchanging web content”\nHTTP(S) = most of internet communication\n\n\n\n\nYou may have seen http or https at the start of URLs (web addresses)\n“web content” =\n\noriginally text and links (HTML = HyperText Markup Language)\nnow data, images, videos, etc.\n\n“exchange” or “move”\n“S” means “secure”\nIf anyone asks: 1.1 = most, 2.0 = 2-way\n2 = he rewrote it for piping",
     "crumbs": [
       "How can I interact with the web from R?",
-      "How can I access APIs from R?"
+      "How can I more easily access APIs from R?"
     ]
   },
   {
     "objectID": "slides/httr2/httr2.html#how-do-i-use-httr2",
     "href": "slides/httr2/httr2.html#how-do-i-use-httr2",
-    "title": "How can I access APIs from R?",
+    "title": "How can I more easily access APIs from R?",
     "section": "How do I use {httr2}?",
-    "text": "How do I use {httr2}?\n\nreq_*() functions return httr2_request objects\n\n\n\nreq_fec &lt;- request(\"https://api.open.fec.gov/v1\")\nreq_fec_auth &lt;- req_url_query(req_fec, api_key = \"DEMO_KEY\")\nreq_candidates &lt;- req_url_path_append(req_fec_auth, \"candidates\")\ncandidates_2024 &lt;- req_url_query(req_candidates, election_year = 2024) |&gt; \n  req_perform() |&gt; resp_body_json()\ncandidates_2022 &lt;- req_url_query(req_candidates, election_year = 2022) |&gt; \n  req_perform() |&gt; resp_body_json()\nreq_calendar &lt;- req_url_path_append(req_fec_auth, \"calendar-dates\")\n\n\n\n\nImagine you’re working with an API, like the FEC API\n\nWhat you’ll very often do.\n\nWe’ll go through function specifics in a moment, just soak in the utility of separate objects\nThis is super important, so let’s pause to sink this in\nI’m going to drink some water while you make sure you have that.",
+    "text": "How do I use {httr2}?\n\nreq_*() functions return httr2_request objects\n\n\n\nreq_fec &lt;- request(\"https://api.open.fec.gov/v1\")\nreq_fec_auth &lt;- req_url_query(req_fec, api_key = \"DEMO_KEY\")\nreq_candidates &lt;- req_url_path_append(req_fec_auth, \"candidates\")\nreq_candidates_president &lt;- req_url_query(req_candidates, office = \"P\")\n\n\n\n\npres_2024 &lt;- req_url_query(req_candidates_president, election_year = 2024) |&gt; \n  req_perform() |&gt; resp_body_json()\n\n\n\n\ncandidates_2022 &lt;- req_url_query(req_candidates, election_year = 2022) |&gt; \n  req_perform() |&gt; resp_body_json()\n\n\n\n\nreq_calendar &lt;- req_url_path_append(req_fec_auth, \"calendar-dates\")\n\n\n\n\nImagine you’re working with an API, like the FEC API\n\nWhat you’ll very often do.\n\nWe’ll go through function specifics in a moment, just soak in the utility of separate objects\nThis is super important, so let’s pause to sink this in\nI’m going to drink some water while you make sure you have that.",
     "crumbs": [
       "How can I interact with the web from R?",
-      "How can I access APIs from R?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2.html#how-can-i-quickly-translate-api-docs",
-    "href": "slides/httr2/httr2.html#how-can-i-quickly-translate-api-docs",
-    "title": "How can I access APIs from R?",
-    "section": "How can I quickly translate API docs?",
-    "text": "How can I quickly translate API docs?\n\nDocs often have “Try it out” option\n\nhttps://api.open.fec.gov/developers/\n\nCopy the “Curl” block\n\n\n\ncurl_translate(\n  \"curl -X 'GET' \\\n  'https://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=H'\"\n)\n\n\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\n\nIf you want to use this API, sign up for your own key at that same URL.\nI edited the given curl to fit\nThis code will usually get you started\nNow let’s clean it up and understand it!\nExtra: OpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How can I access APIs from R?"
+      "How can I more easily access APIs from R?"
     ]
   },
   {
     "objectID": "slides/httr2/httr2.html#request-req_path_append",
     "href": "slides/httr2/httr2.html#request-req_path_append",
-    "title": "How can I access APIs from R?",
+    "title": "How can I more easily access APIs from R?",
     "section": "request() & req_path_append()",
-    "text": "request() & req_path_append()\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\nCleaner: “main” request object + specific path\n\nreq_fec &lt;- request(\"https://api.open.fec.gov/v1\")\nreq_candidates &lt;- req_fec |&gt; \n  req_url_path_append(\"candidates\")\n\n\n\n\nreq_candidates$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates\"\n\n\n\n\n\nhttr2 “thinks” in pieces\nYou don’t have to think about the /\nWe have to be careful about the “v1” in our request, though!\n\nMore on next slide.",
+    "text": "request() & req_path_append()\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\")\n\n\nCleaner: “main” request object + specific path\n\nreq_fec &lt;- request(\"https://api.open.fec.gov/v1\")\nreq_candidates &lt;- req_fec |&gt; \n  req_url_path_append(\"candidates\")\n\n\n\n\nreq_candidates$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates\"\n\n\n\n\n\nhttr2 “thinks” in pieces\nYou don’t have to think about the /\nWe have to be careful about the “v1” in our request, though!\n\nMore on next slide.",
     "crumbs": [
       "How can I interact with the web from R?",
-      "How can I access APIs from R?"
+      "How can I more easily access APIs from R?"
     ]
   },
   {
     "objectID": "slides/httr2/httr2.html#dont-use-req_url_path",
     "href": "slides/httr2/httr2.html#dont-use-req_url_path",
-    "title": "How can I access APIs from R?",
+    "title": "How can I more easily access APIs from R?",
     "section": "Don’t use req_url_path()!",
     "text": "Don’t use req_url_path()!\n\n\nreq_path_bad &lt;- req_fec |&gt; \n  req_url_path(\"candidates\")\nreq_path_bad$url\n\n#&gt; [1] \"https://api.open.fec.gov/candidates\"\n\n\n\n\n\nreq_candidates$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates\"\n\n\n\n\n\nYou probably never want req_url_path()\nNotably the help docs don’t show an example for this one",
     "crumbs": [
       "How can I interact with the web from R?",
-      "How can I access APIs from R?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2.html#req_method-more-later",
-    "href": "slides/httr2/httr2.html#req_method-more-later",
-    "title": "How can I access APIs from R?",
-    "section": "req_method(): more later!",
-    "text": "req_method(): more later!\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\n\n“GET” is default for what we’re doing, so we can leave this part out.\nWe don’t have to think about it until what’s now Chapter 6!",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How can I access APIs from R?"
+      "How can I more easily access APIs from R?"
     ]
   },
   {
     "objectID": "slides/httr2/httr2.html#req_url_query",
     "href": "slides/httr2/httr2.html#req_url_query",
-    "title": "How can I access APIs from R?",
+    "title": "How can I more easily access APIs from R?",
     "section": "req_url_query()",
-    "text": "req_url_query()\n\nhttps://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=H\n\n\n\nreq_house &lt;- req_candidates |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  )\n\n\n\nCan add query parameters piecewise, even before path!\n\n\n\nreq_fec_auth &lt;- req_fec |&gt; \n  req_url_query(api_key = \"DEMO_KEY\")\nreq_candidates_auth &lt;- req_fec_auth |&gt; \n  req_url_path_append(\"candidates\")\nreq_house2 &lt;- req_candidates_auth |&gt; \n  req_url_query(office = \"H\")\n\n\n\n\nidentical(req_house$url, req_house2$url)\n\n#&gt; [1] TRUE\n\n\n\n\n\nThis is the URL that was in the Curl call\n“Query” = stuff after “?”\nArguments for the endpoint\n1st req_url_query() call is what curl_translate gave us\nDoesn’t automatically set order, so watch out for that.",
+    "text": "req_url_query()\n\nhttps://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=P\n\n\n\nreq_pres &lt;- req_candidates |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"P\"\n  )\n\n\n\nCan add query parameters piecewise, even before path!\n\n\n\nreq_fec_auth &lt;- req_fec |&gt; \n  req_url_query(api_key = \"DEMO_KEY\")\nreq_candidates_auth &lt;- req_fec_auth |&gt; \n  req_url_path_append(\"candidates\")\nreq_pres2 &lt;- req_candidates_auth |&gt; \n  req_url_query(office = \"P\")\n\n\n\n\nidentical(req_pres$url, req_pres2$url)\n\n#&gt; [1] TRUE\n\n\n\n\n\n“Query” = stuff after “?”\nArguments for the endpoint",
     "crumbs": [
       "How can I interact with the web from R?",
-      "How can I access APIs from R?"
+      "How can I more easily access APIs from R?"
     ]
   },
   {
     "objectID": "slides/httr2/httr2.html#req_url_query.multi",
     "href": "slides/httr2/httr2.html#req_url_query.multi",
-    "title": "How can I access APIs from R?",
+    "title": "How can I more easily access APIs from R?",
     "section": "req_url_query(.multi)",
     "text": "req_url_query(.multi)\n\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"))\n\n#&gt; Error in `req_url_query()`:\n#&gt; ! All vector elements of `...` must be length 1.\n#&gt; ℹ Use `.multi` to choose a strategy for handling vectors.\n\n\n\n\n.multi = \"pipe\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"pipe\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H|S\"\n\n\n\n\n.multi = \"comma\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"comma\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H,S\"\n\n\n\n\n.multi = \"explode\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"explode\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H&office=S\"\n\n\n\n\n\nAPIs often can’t handle multiple params with same name\ndefault = “error”\n. in .multi so it doesn’t collide with a parameter named “multi”\n“pipe” or “comma” to list them out in same parameter\n“explode” to separate them as separate copies of that parameter (what this API actually wants)",
     "crumbs": [
       "How can I interact with the web from R?",
-      "How can I access APIs from R?"
+      "How can I more easily access APIs from R?"
     ]
   },
   {
@@ -2589,6 +2644,7 @@
     "section": "What type of LOs are we focusing on?",
     "text": "What type of LOs are we focusing on?\n\nReaders probably solving semi-specific problems, so…\nSkill-based learning objectives\n\n“After you read this chapter, you will be able to…”\n\n\n\n\nAny disagreement with that first bullet?",
     "crumbs": [
+      "Appendices",
       "Learning Objectives"
     ]
   },
@@ -2599,6 +2655,7 @@
     "section": "Why do they matter?",
     "text": "Why do they matter?\n\nStudents learn more when they have clear objectives.\nLends structure to my process.\nEventually: Lends structure to DSLC\n\n\n\nI like having a process!\nAiming to implement these across all of DSLC\n(Eventually want to also auto-map questions to them)",
     "crumbs": [
+      "Appendices",
       "Learning Objectives"
     ]
   },
@@ -2609,6 +2666,7 @@
     "section": "Introduction",
     "text": "Introduction\nAfter you read this chapter, you will be able to…\n\nExplain what an API is.\nDecide whether this book is for you.",
     "crumbs": [
+      "Appendices",
       "Learning Objectives"
     ]
   },
@@ -2619,6 +2677,7 @@
     "section": "Part 1: How can I interact with the web from R?",
     "text": "Part 1: How can I interact with the web from R?\n\n\n\nFetch json-formatted data from the web.\nParse nested lists with the {tidyverse}.\nParse nested lists with {tibblify}.\nUse an API’s OpenAPI description to determine the expected format of responses.\nParse API responses with {tibblify} and the response description.\n\n\n\nFetch data from an API with {httr2}.\nBuild a {httr2} request piece-by-piece.\nUse API docs and OpenAPI descriptions to explore available endpoints.\nFind authentication information in API docs.\nAuthenticate a request with a username and password.\nAuthenticate a request with an API key.\nAuthenticate a request with OAuth.\n\n\n\n\n\nI’m adding to these as I actually present a “v1” (since reorg).\nItalics = planned soon but not finalized/presented.",
     "crumbs": [
+      "Appendices",
       "Learning Objectives"
     ]
   },
@@ -2629,6 +2688,7 @@
     "section": "Part 1 Learning Objectives Brain Dump",
     "text": "Part 1 Learning Objectives Brain Dump\n\n\n\nDiscover useful APIs\nFetch lots of data from APIs\nFind specific APIs\n\n\n\nDo other things (send/update/delete data) with APIs\nFind R packages that wrap APIs\n(Use other forms of APIs?)\nGet web data without APIs ({rvest})\nLearn more about accessing APIs\n\n\n\n\n\nI’m deleting from these as they’re covered or eliminated\n\nMoving to previous slide.\n\nDiscover: Just vaguely via apis.guru or similar.\nFetch lots: Important concept regardless of whether it’s “simple”\nFind specific: Shoved this way down the list because it will be hard to have examples that aren’t easy. I think I’ll replace apis.guru with a true wiki.\nDo other: curl_translate() deep dive here.\nFind R packages: I want it late so you can tell if it’s a bad package\nOthers: gRPC, GraphQL, Websockets\nrvest: Technically could skip?\nLearn more: Book recommendations, blogs, etc.",
     "crumbs": [
+      "Appendices",
       "Learning Objectives"
     ]
   }
