@@ -1,30 +1,35 @@
 ---
 engine: knitr
+title: What LOs are missing a home
 ---
 
-# How can I get a lot of data from an API?
+# ️✅ Learning objectives
 
-```{r 04-setup, include = FALSE}
+Cover req_throttle() & req_timeout() in here
+
+::: nonincremental
+-   Perform a list of {httr2} requests in sequence.
+-   Perform a list of {httr2} requests in parallel.
+-   Stream data from an API. `r lifecycle::badge("questioning")`
+:::
+
+```{r}
+#| label: httr2-misc-packages-used
+#| eval: true
 library(httr2)
 ```
 
-Cover req_throttle() & req_timeout() in here!
+::: notes
+"After we finish this chapter, we'll be able to..." (objectives)
+:::
 
-**Learning objectives:**
-
--   Control the behavior of large requests.
--   Deal with errors in api calls.
--   Request paginated data.
--   Perform multiple requests.
--   Stream data from an API.
-
-## Controlling large requests {-}
+## Controlling large requests
 
 -   `httr2::req_progress()` adds a progress bar for requests that transfer a lot of data.
 -   `httr2::req_timeout()` to add a maximum wait time in seconds
 -   `httr2::req_cache()` to avoid re-calling slow calls
 
-## Throttling and retries {-}
+## Throttling and retries
 
 -   APIs often throw errors if hit too fast
 -   `httr2::req_throttle()` to slow down
@@ -34,7 +39,7 @@ Cover req_throttle() & req_timeout() in here!
     -   (optional) `is_transient` function to override
     -   (optional) `after` function to extract wait from response
 
-## Dealing with errors {-}
+## Dealing with errors
 
 -   `httr2::req_error()` to handle errors
     -   `is_error` function to escalate something to an error
@@ -42,45 +47,7 @@ Cover req_throttle() & req_timeout() in here!
     -   `body` function to parse response into `rlang::abort()` message.
         -   *Eg: API description gives details of an error code's meaning*
 
-## Pagination {-}
-
--   `httr2::req_perform_iterative()`
--   `next_req` = function
-    -   `iterate_with_offset()` to increment query parameter (`?page=1`, `?page=2`)
-    -   `iterate_with_cursor()` to extract next page from response
-    -   `iterate_with_link_url()` to follow Link in resp header
-
-## Pagination: FEC {-}
-
-```{r 04-pagination-fec, eval = FALSE}
-resps <- request("https://api.open.fec.gov/v1/candidates") |> 
-  req_headers("X-Api-Key" = "DEMO_KEY") |> 
-  req_url_query(office = "H", per_page = 100, election_year = 2020) |> 
-  req_perform_iterative(
-    iterate_with_offset(
-      "page",
-      resp_pages = \(resp) resp_body_json(resp)$pagination$pages # Check once
-    ),
-    max_reqs = Inf # Important! Default = 20
-  )
-```
-
-## Pagination: YouTube {-}
-
-```{r 04-pagination-youtube, eval = FALSE}
-resps <- request("https://youtube.googleapis.com/youtube/v3") |> 
-  req_url_path_append("playlists") |> 
-  req_url_query(part = "snippet", mine = TRUE, maxResults = 50) |> 
-  req_auth_bearer_token(IGNORE_FOR_NOW) |> 
-  req_perform_iteratively(
-    iterate_with_cursor(
-      "pageToken",
-      function(resp) resp_body_json(resp)$nextPageToken
-    )
-  )
-```
-
-## Multiple requests {-}
+## Multiple requests
 
 -   Manually create list of separate requests
 -   Perform all:
@@ -89,11 +56,12 @@ resps <- request("https://youtube.googleapis.com/youtube/v3") |>
     -   `httr2::req_perform_sequential()` serially
         -   Slower but can use other settings
 
-## Multiple requests: YouTube {-}
+## Multiple requests: YouTube
 
 Get 10 most recent videos from list of playlists.
 
-```{r 04-multiple-requests, eval = FALSE}
+```{r}
+#| label: httr2-misc-multiple-requests
 base_req <- request("https://youtube.googleapis.com/youtube/v3") |> 
   req_url_path_append("playlistItems") |> 
   req_url_query(part = "contentDetails", maxResults = 10) |> 
@@ -105,22 +73,17 @@ resps <- purrr::map(
   req_perform_parallel() # or req_perform_sequential()
 ```
 
-## Parsing multiple responses {-}
-
--   `httr2::resps_data()` to combine responses from `req_perform_*()`
--   Provide function to extract data from single resp as vector or df.
--   More details in Chapter 6.
-
-## Streaming {-}
+## Streaming
 
 -   `httr2::req_perform_stream()` to stream data from API
 -   Blocks R session (see Chapter 10 for alternative)
 -   Call function every `buffer_kb` kilobytes
 -   *Eg: Save to file, different process could read that file from Shiny*
 
-## Streaming: Simple example {-}
+## Streaming: Simple example
 
-```{r 04-streaming}
+```{r}
+#| label: httr2-misc-streaming
 show_bytes <- function(x) {
   cli::cli_inform("Got {length(x)} bytes at {Sys.time()}.")
   TRUE
@@ -130,21 +93,7 @@ resp <- httr2::request(httr2::example_url()) |>
   httr2::req_perform_stream(show_bytes, buffer_kb = 32)
 ```
 
-## Is this interesting? {-}
+## Is this interesting?
 
 -   `req_options()` lets you directly set libcurl options not available in {httr2}
 -   Should I dig through and find what's available but not implemented?
-
-## Meeting Videos {-}
-
-### Cohort 1 {-}
-
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
-
-<details>
-<summary> Meeting chat log </summary>
-
-```
-LOG
-```
-</details>
