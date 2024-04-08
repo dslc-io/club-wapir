@@ -379,42 +379,152 @@
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-perform.html#controlling-large-requests",
-    "href": "slides/httr2/httr2-perform.html#controlling-large-requests",
-    "title": "Web APIs with R Book Club",
-    "section": "Controlling large requests",
-    "text": "Controlling large requests\n\nhttr2::req_progress() adds a progress bar for requests that transfer a lot of data.\nhttr2::req_timeout() to add a maximum wait time in seconds\nhttr2::req_cache() to avoid re-calling slow calls",
+    "objectID": "slides/httr2/httr2-pagination.html#req_retry",
+    "href": "slides/httr2/httr2-pagination.html#req_retry",
+    "title": "How can I get a lot of data from an API?",
+    "section": "req_retry()",
+    "text": "req_retry()",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-perform.html#throttling-and-retries",
-    "href": "slides/httr2/httr2-perform.html#throttling-and-retries",
-    "title": "Web APIs with R Book Club",
-    "section": "Throttling and retries",
-    "text": "Throttling and retries\n\nAPIs often throw errors if hit too fast\nhttr2::req_throttle() to slow down\n\nrealm when endpoints have different limits (“Tier 1” vs “Tier 2”)\n\nhttr2::req_retry() to try again for transient failures\n\nDefault: Statuses 429 & 503 = transient\n(optional) is_transient function to override\n(optional) after function to extract wait from response",
+    "objectID": "slides/httr2/httr2-pagination.html#req_perform_iterative",
+    "href": "slides/httr2/httr2-pagination.html#req_perform_iterative",
+    "title": "How can I get a lot of data from an API?",
+    "section": "req_perform_iterative()",
+    "text": "req_perform_iterative()",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-perform.html#dealing-with-errors",
-    "href": "slides/httr2/httr2-perform.html#dealing-with-errors",
-    "title": "Web APIs with R Book Club",
-    "section": "Dealing with errors",
-    "text": "Dealing with errors\n\nhttr2::req_error() to handle errors\n\nis_error function to escalate something to an error\n\nEg: Empty response you know isn’t really empty\n\nbody function to parse response into rlang::abort() message.\n\nEg: API description gives details of an error code’s meaning",
+    "objectID": "slides/httr2/httr2-pagination.html#iteration-helpers-iterate_with_offset",
+    "href": "slides/httr2/httr2-pagination.html#iteration-helpers-iterate_with_offset",
+    "title": "How can I get a lot of data from an API?",
+    "section": "Iteration helpers: iterate_with_offset()",
+    "text": "Iteration helpers: iterate_with_offset()",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-perform.html#pagination",
-    "href": "slides/httr2/httr2-perform.html#pagination",
-    "title": "Web APIs with R Book Club",
+    "objectID": "slides/httr2/httr2-pagination.html#offset-example-fec-or-crossref",
+    "href": "slides/httr2/httr2-pagination.html#offset-example-fec-or-crossref",
+    "title": "How can I get a lot of data from an API?",
+    "section": "Offset example: FEC (or crossref?)",
+    "text": "Offset example: FEC (or crossref?)",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get a lot of data from an API?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-pagination.html#iteration-helpers-iterate_with_cursor",
+    "href": "slides/httr2/httr2-pagination.html#iteration-helpers-iterate_with_cursor",
+    "title": "How can I get a lot of data from an API?",
+    "section": "Iteration helpers: iterate_with_cursor()",
+    "text": "Iteration helpers: iterate_with_cursor()",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get a lot of data from an API?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-pagination.html#cursor-example-crossref",
+    "href": "slides/httr2/httr2-pagination.html#cursor-example-crossref",
+    "title": "How can I get a lot of data from an API?",
+    "section": "Cursor example: Crossref",
+    "text": "Cursor example: Crossref",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get a lot of data from an API?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-pagination.html#iteration-helpers-iterate_with_link_url",
+    "href": "slides/httr2/httr2-pagination.html#iteration-helpers-iterate_with_link_url",
+    "title": "How can I get a lot of data from an API?",
+    "section": "Iteration helpers: iterate_with_link_url()",
+    "text": "Iteration helpers: iterate_with_link_url()",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get a lot of data from an API?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-pagination.html#link-url-example-mtg",
+    "href": "slides/httr2/httr2-pagination.html#link-url-example-mtg",
+    "title": "How can I get a lot of data from an API?",
+    "section": "Link-URL example: MTG",
+    "text": "Link-URL example: MTG",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get a lot of data from an API?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-pagination.html#roll-your-own-iteration",
+    "href": "slides/httr2/httr2-pagination.html#roll-your-own-iteration",
+    "title": "How can I get a lot of data from an API?",
+    "section": "Roll-your-own iteration",
+    "text": "Roll-your-own iteration",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get a lot of data from an API?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-pagination.html#roll-your-own-example-disney-dnd",
+    "href": "slides/httr2/httr2-pagination.html#roll-your-own-example-disney-dnd",
+    "title": "How can I get a lot of data from an API?",
+    "section": "Roll-your-own example: Disney? DnD?",
+    "text": "Roll-your-own example: Disney? DnD?\nhttps://api.disneyapi.dev/character\nhttps://api.open5e.com/monsters/?limit=100\n(consider submitting that to httr2 as an iteration helper, it’s pretty common)",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get a lot of data from an API?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-pagination.html#resps_data",
+    "href": "slides/httr2/httr2-pagination.html#resps_data",
+    "title": "How can I get a lot of data from an API?",
+    "section": "resps_data()",
+    "text": "resps_data()",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get a lot of data from an API?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-pagination.html#resps_data-examples",
+    "href": "slides/httr2/httr2-pagination.html#resps_data-examples",
+    "title": "How can I get a lot of data from an API?",
+    "section": "resps_data() example(s)",
+    "text": "resps_data() example(s)",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get a lot of data from an API?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-pagination.html#resps_data-friends",
+    "href": "slides/httr2/httr2-pagination.html#resps_data-friends",
+    "title": "How can I get a lot of data from an API?",
+    "section": "resps_data() friends",
+    "text": "resps_data() friends",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get a lot of data from an API?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-pagination.html#pagination",
+    "href": "slides/httr2/httr2-pagination.html#pagination",
+    "title": "How can I get a lot of data from an API?",
     "section": "Pagination",
     "text": "Pagination\n\nhttr2::req_perform_iterative()\nnext_req = function\n\niterate_with_offset() to increment query parameter (?page=1, ?page=2)\niterate_with_cursor() to extract next page from response\niterate_with_link_url() to follow Link in resp header",
     "crumbs": [
@@ -423,9 +533,9 @@
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-perform.html#pagination-fec",
-    "href": "slides/httr2/httr2-perform.html#pagination-fec",
-    "title": "Web APIs with R Book Club",
+    "objectID": "slides/httr2/httr2-pagination.html#pagination-fec",
+    "href": "slides/httr2/httr2-pagination.html#pagination-fec",
+    "title": "How can I get a lot of data from an API?",
     "section": "Pagination: FEC",
     "text": "Pagination: FEC\n\nresps &lt;- request(\"https://api.open.fec.gov/v1/candidates\") |&gt; \n  req_headers(\"X-Api-Key\" = \"DEMO_KEY\") |&gt; \n  req_url_query(office = \"H\", per_page = 100, election_year = 2020) |&gt; \n  req_perform_iterative(\n    iterate_with_offset(\n      \"page\",\n      resp_pages = \\(resp) resp_body_json(resp)$pagination$pages # Check once\n    ),\n    max_reqs = Inf # Important! Default = 20\n  )",
     "crumbs": [
@@ -434,9 +544,9 @@
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-perform.html#pagination-youtube",
-    "href": "slides/httr2/httr2-perform.html#pagination-youtube",
-    "title": "Web APIs with R Book Club",
+    "objectID": "slides/httr2/httr2-pagination.html#pagination-youtube",
+    "href": "slides/httr2/httr2-pagination.html#pagination-youtube",
+    "title": "How can I get a lot of data from an API?",
     "section": "Pagination: YouTube",
     "text": "Pagination: YouTube\n\nresps &lt;- request(\"https://youtube.googleapis.com/youtube/v3\") |&gt; \n  req_url_path_append(\"playlists\") |&gt; \n  req_url_query(part = \"snippet\", mine = TRUE, maxResults = 50) |&gt; \n  req_auth_bearer_token(IGNORE_FOR_NOW) |&gt; \n  req_perform_iteratively(\n    iterate_with_cursor(\n      \"pageToken\",\n      function(resp) resp_body_json(resp)$nextPageToken\n    )\n  )",
     "crumbs": [
@@ -445,77 +555,11 @@
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-perform.html#multiple-requests",
-    "href": "slides/httr2/httr2-perform.html#multiple-requests",
-    "title": "Web APIs with R Book Club",
-    "section": "Multiple requests",
-    "text": "Multiple requests\n\nManually create list of separate requests\nPerform all:\n\nhttr2::req_perform_parallel() all at once\n\nNo reauth, no throttle, no retry, no cache\n\nhttr2::req_perform_sequential() serially\n\nSlower but can use other settings",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How can I get a lot of data from an API?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-perform.html#multiple-requests-youtube",
-    "href": "slides/httr2/httr2-perform.html#multiple-requests-youtube",
-    "title": "Web APIs with R Book Club",
-    "section": "Multiple requests: YouTube",
-    "text": "Multiple requests: YouTube\nGet 10 most recent videos from list of playlists.\n\nbase_req &lt;- request(\"https://youtube.googleapis.com/youtube/v3\") |&gt; \n  req_url_path_append(\"playlistItems\") |&gt; \n  req_url_query(part = \"contentDetails\", maxResults = 10) |&gt; \n  req_auth_bearer_token(IGNORE_FOR_NOW)\n\nresps &lt;- purrr::map(\n  playlists, \\(playlist) req_url_query(base_req, playlistId = playlist)\n) |&gt; \n  req_perform_parallel() # or req_perform_sequential()",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How can I get a lot of data from an API?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-perform.html#parsing-multiple-responses",
-    "href": "slides/httr2/httr2-perform.html#parsing-multiple-responses",
-    "title": "Web APIs with R Book Club",
+    "objectID": "slides/httr2/httr2-pagination.html#parsing-multiple-responses",
+    "href": "slides/httr2/httr2-pagination.html#parsing-multiple-responses",
+    "title": "How can I get a lot of data from an API?",
     "section": "Parsing multiple responses",
-    "text": "Parsing multiple responses\n\nhttr2::resps_data() to combine responses from req_perform_*()\nProvide function to extract data from single resp as vector or df.\nMore details in Chapter 6.",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How can I get a lot of data from an API?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-perform.html#streaming",
-    "href": "slides/httr2/httr2-perform.html#streaming",
-    "title": "Web APIs with R Book Club",
-    "section": "Streaming",
-    "text": "Streaming\n\nhttr2::req_perform_stream() to stream data from API\nBlocks R session (see Chapter 10 for alternative)\nCall function every buffer_kb kilobytes\nEg: Save to file, different process could read that file from Shiny",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How can I get a lot of data from an API?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-perform.html#streaming-simple-example",
-    "href": "slides/httr2/httr2-perform.html#streaming-simple-example",
-    "title": "Web APIs with R Book Club",
-    "section": "Streaming: Simple example",
-    "text": "Streaming: Simple example\n\nshow_bytes &lt;- function(x) {\n  cli::cli_inform(\"Got {length(x)} bytes at {Sys.time()}.\")\n  TRUE\n}\nresp &lt;- httr2::request(httr2::example_url()) |&gt;\n  httr2::req_url_path(\"/stream-bytes/100000\") |&gt;\n  httr2::req_perform_stream(show_bytes, buffer_kb = 32)",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How can I get a lot of data from an API?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-perform.html#is-this-interesting",
-    "href": "slides/httr2/httr2-perform.html#is-this-interesting",
-    "title": "Web APIs with R Book Club",
-    "section": "Is this interesting?",
-    "text": "Is this interesting?\n\nreq_options() lets you directly set libcurl options not available in {httr2}\nShould I dig through and find what’s available but not implemented?",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How can I get a lot of data from an API?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-perform.html#meeting-videos",
-    "href": "slides/httr2/httr2-perform.html#meeting-videos",
-    "title": "Web APIs with R Book Club",
-    "section": "Meeting Videos",
-    "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
+    "text": "Parsing multiple responses\n\nhttr2::resps_data() to combine responses from req_perform_*()\nProvide function to extract data from single resp as vector or df.\nMore details in Chapter 6.\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
@@ -836,507 +880,300 @@
     "text": "Other API Frameworks\n\nwebsocket\n\nws:// or wss:// vs http:// or https://\n2-way communication\n{websocket} package\n\ngRPC = Google RPC\n\nGood for real-time, 2-way communication\nUses HTTP/2 (more socket-like)\n\n\nDeeper dive coming in “How else can I communicate with APIs from R?”!\n\n\nShiny is websocket between server (R) and ui (JS)\ngRPC best for tightly coupled microservices\n\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io"
   },
   {
-    "objectID": "slides/club-intro.html#process",
-    "href": "slides/club-intro.html#process",
-    "title": "Club Meetings",
-    "section": "️✅ Process",
-    "text": "️✅ Process\nMeetings = weekly\n\n🧑‍🏫 Jon leads a discussion of a chapter\n\n🙋‍♀️ IMPORTANT: You ask questions!\n️✅ Goal: Revise/finalize learning objectives\n📺 Recordings on DSLC YouTube\n\n🔄️ Jon revises slides\n❓Jon writes “test yourself” questions\n\n🧵 Discuss in channel?\n\n(revisions, maybe future cohorts)\n📝 Jon writes chapter\n\n\n\nTalked about this writing process in project club, dslc.io/youtube\nMeet every week… unless I need a break to catch up.\nDiscussion even more important than in a normal club\nReview revised slides? Maybe spend 2 weeks per chapter?\nWould formal survey of some sort help?\nNot 100% certain about question structure yet (whether “homeworky” or “think about it”).\nHoping to write as we go, but definitely won’t keep up.\n\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
+    "objectID": "slides/httr2/httr2-misc.html#controlling-large-requests",
+    "href": "slides/httr2/httr2-misc.html#controlling-large-requests",
+    "title": "What LOs are missing a home",
+    "section": "Controlling large requests",
+    "text": "Controlling large requests\n\nhttr2::req_progress() adds a progress bar for requests that transfer a lot of data.\nhttr2::req_timeout() to add a maximum wait time in seconds\nhttr2::req_cache() to avoid re-calling slow calls",
     "crumbs": [
-      "Club Meetings"
+      "How can I interact with the web from R?",
+      "What LOs are missing a home"
     ]
   },
   {
-    "objectID": "slides/plumber/creating-more.html#slide-1",
-    "href": "slides/plumber/creating-more.html#slide-1",
+    "objectID": "slides/httr2/httr2-misc.html#throttling-and-retries",
+    "href": "slides/httr2/httr2-misc.html#throttling-and-retries",
+    "title": "What LOs are missing a home",
+    "section": "Throttling and retries",
+    "text": "Throttling and retries\n\nAPIs often throw errors if hit too fast\nhttr2::req_throttle() to slow down\n\nrealm when endpoints have different limits (“Tier 1” vs “Tier 2”)\n\nhttr2::req_retry() to try again for transient failures\n\nDefault: Statuses 429 & 503 = transient\n(optional) is_transient function to override\n(optional) after function to extract wait from response",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "What LOs are missing a home"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-misc.html#dealing-with-errors",
+    "href": "slides/httr2/httr2-misc.html#dealing-with-errors",
+    "title": "What LOs are missing a home",
+    "section": "Dealing with errors",
+    "text": "Dealing with errors\n\nhttr2::req_error() to handle errors\n\nis_error function to escalate something to an error\n\nEg: Empty response you know isn’t really empty\n\nbody function to parse response into rlang::abort() message.\n\nEg: API description gives details of an error code’s meaning",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "What LOs are missing a home"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-misc.html#multiple-requests",
+    "href": "slides/httr2/httr2-misc.html#multiple-requests",
+    "title": "What LOs are missing a home",
+    "section": "Multiple requests",
+    "text": "Multiple requests\n\nManually create list of separate requests\nPerform all:\n\nhttr2::req_perform_parallel() all at once\n\nNo reauth, no throttle, no retry, no cache\n\nhttr2::req_perform_sequential() serially\n\nSlower but can use other settings",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "What LOs are missing a home"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-misc.html#multiple-requests-youtube",
+    "href": "slides/httr2/httr2-misc.html#multiple-requests-youtube",
+    "title": "What LOs are missing a home",
+    "section": "Multiple requests: YouTube",
+    "text": "Multiple requests: YouTube\nGet 10 most recent videos from list of playlists.\n\nbase_req &lt;- request(\"https://youtube.googleapis.com/youtube/v3\") |&gt; \n  req_url_path_append(\"playlistItems\") |&gt; \n  req_url_query(part = \"contentDetails\", maxResults = 10) |&gt; \n  req_auth_bearer_token(IGNORE_FOR_NOW)\n\nresps &lt;- purrr::map(\n  playlists, \\(playlist) req_url_query(base_req, playlistId = playlist)\n) |&gt; \n  req_perform_parallel() # or req_perform_sequential()",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "What LOs are missing a home"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-misc.html#streaming",
+    "href": "slides/httr2/httr2-misc.html#streaming",
+    "title": "What LOs are missing a home",
+    "section": "Streaming",
+    "text": "Streaming\n\nhttr2::req_perform_stream() to stream data from API\nBlocks R session (see Chapter 10 for alternative)\nCall function every buffer_kb kilobytes\nEg: Save to file, different process could read that file from Shiny",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "What LOs are missing a home"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-misc.html#streaming-simple-example",
+    "href": "slides/httr2/httr2-misc.html#streaming-simple-example",
+    "title": "What LOs are missing a home",
+    "section": "Streaming: Simple example",
+    "text": "Streaming: Simple example\n\nshow_bytes &lt;- function(x) {\n  cli::cli_inform(\"Got {length(x)} bytes at {Sys.time()}.\")\n  TRUE\n}\nresp &lt;- httr2::request(httr2::example_url()) |&gt;\n  httr2::req_url_path(\"/stream-bytes/100000\") |&gt;\n  httr2::req_perform_stream(show_bytes, buffer_kb = 32)",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "What LOs are missing a home"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-misc.html#is-this-interesting",
+    "href": "slides/httr2/httr2-misc.html#is-this-interesting",
+    "title": "What LOs are missing a home",
+    "section": "Is this interesting?",
+    "text": "Is this interesting?\n\nreq_options() lets you directly set libcurl options not available in {httr2}\nShould I dig through and find what’s available but not implemented?\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "What LOs are missing a home"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-output.html#serializers",
+    "href": "slides/plumber/plumber-output.html#serializers",
     "title": "Web APIs with R Book Club",
-    "section": "SLIDE 1",
-    "text": "SLIDE 1\n\nADD SLIDES AS SECTIONS (##).\nTRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.",
+    "section": "Serializers",
+    "text": "Serializers\n\nVocab: “Serialize” = “translate into a format for storage or transmission”\nDefault = json via jsonlite::toJSON()\n#* @serializer NAME list(ARGS)\n\neg, #* @serializer json list(na = \"string\")\n\nImpacts behavior AND Swagger docs",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I learn more about creating APIs?"
+      "How can I control API output?"
     ]
   },
   {
-    "objectID": "slides/plumber/creating-more.html#notes",
-    "href": "slides/plumber/creating-more.html#notes",
+    "objectID": "slides/plumber/plumber-output.html#structured-text",
+    "href": "slides/plumber/plumber-output.html#structured-text",
     "title": "Web APIs with R Book Club",
-    "section": "Notes",
-    "text": "Notes\n\nLink to lambdr site.\nMention Shiny options for POST, etc?\nAlmost definitely link to OpenAPI book\nMaybe discuss a little bit about digging through (plumber) code to learn",
+    "section": "Structured text",
+    "text": "Structured text\n\n\n\n\n\n\n\n\n@serializer\nprocessed with\ncontent type\n\n\n\n\njson (default)\njsonlite::toJSON()\napplication/json\n\n\nunboxedJSON\njsonlite::toJSON(  auto_unbox = TRUE)\napplication/json\n\n\ngeojson\ngeojsonsf::sfc_geojson() or geojsonsf::sf_geojson()\napplication/json\n\n\nyaml\nyaml::as_yaml()\ntext/x-yaml\n\n\ncsv\nreadr::format_csv\ntext/csv\n\n\ntsv\nreadr::format_tsv\ntext/tab-separated-values",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I learn more about creating APIs?"
+      "How can I control API output?"
     ]
   },
   {
-    "objectID": "slides/plumber/creating-more.html#meeting-videos",
-    "href": "slides/plumber/creating-more.html#meeting-videos",
+    "objectID": "slides/plumber/plumber-output.html#larger-data",
+    "href": "slides/plumber/plumber-output.html#larger-data",
     "title": "Web APIs with R Book Club",
-    "section": "Meeting Videos",
-    "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
+    "section": "Larger data",
+    "text": "Larger data\n\n\n\n@serializer\nprocessed with\ncontent type\n\n\n\n\nrds\nbase::serialize()\napplication/rds\n\n\nfeather\narrow::write_feather()\napplication/vnd.apache.arrow.file\n\n\nparquet\narrow::write_parquet()\napplication/parquet",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I learn more about creating APIs?"
+      "How can I control API output?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-security.html#review-of-authentication-schemes",
-    "href": "slides/plumber/plumber-security.html#review-of-authentication-schemes",
+    "objectID": "slides/plumber/plumber-output.html#html-xml",
+    "href": "slides/plumber/plumber-output.html#html-xml",
     "title": "Web APIs with R Book Club",
-    "section": "Review of authentication schemes",
-    "text": "Review of authentication schemes\n(FROM httr2-authentication.Rmd once that’s edited)",
+    "section": "HTML & XML",
+    "text": "HTML & XML\n\n\n\n@serializer\nprocessed with\ncontent type\n\n\n\n\nhtml\n(unprocessed)\ntext/html; charset=UTF-8\n\n\nhtmlwidget\nhtmlwidgets::saveWidget()\ntext/html; charset=UTF-8\n\n\n\nUse html for xml-structured data, too",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I authenticate API users?"
+      "How can I control API output?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-security.html#api-key-considerations",
-    "href": "slides/plumber/plumber-security.html#api-key-considerations",
+    "objectID": "slides/plumber/plumber-output.html#plain-text",
+    "href": "slides/plumber/plumber-output.html#plain-text",
     "title": "Web APIs with R Book Club",
-    "section": "API key considerations",
-    "text": "API key considerations\n\nAccept in URL query?\n\nMay be easier for user (eg, purely in-browser)\nLess secure than header\n\nCookies? {-}\n\nIf you set cookie, you need to read it (see later slide)\nProbably also accept header",
+    "section": "Plain text",
+    "text": "Plain text\n\n\n\n@serializer\nprocessed with\ncontent type\n\n\n\n\ntext\nas.character()\ntext/plain\n\n\nformat\nformat()\ntext/plain\n\n\nprint\nprint()\ntext/plain\n\n\ncat\ncat()\ntext/plain",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I authenticate API users?"
+      "How can I control API output?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-security.html#api-keys-with-plumber-process-keys",
-    "href": "slides/plumber/plumber-security.html#api-keys-with-plumber-process-keys",
+    "objectID": "slides/plumber/plumber-output.html#devices-images-pdfs",
+    "href": "slides/plumber/plumber-output.html#devices-images-pdfs",
     "title": "Web APIs with R Book Club",
-    "section": "API keys with plumber: Process Keys",
-    "text": "API keys with plumber: Process Keys\n\n#* Authorize user\n#* @filter authorize_api_key\nfunction(req) {\n  api_key &lt;- req$HTTP_AUTHORIZATION %||%            # Header\n    req$session$api_key %||% req$cookies$api_key    # Cookies\n  # Code to validate and process the API key.\n  req$authorized &lt;- TRUE # Or FALSE, set in auth section\n  plumber::forward()\n}\n\n\n#* @preempt authorize_api_key if endpoint doesn’t use auth",
+    "section": "Devices (images & PDFs)",
+    "text": "Devices (images & PDFs)\n\n\n\n@serializer\nprocessed with\ncontent type\n\n\n\n\njpeg\njpeg()\nimage/jpeg\n\n\npng\npng()\nimage/png\n\n\nsvg\nsvg()\nimage/svg+xml\n\n\ntiff\ntiff()\nimage/tiff\n\n\nbmp\nbmp()\nimage/bmp\n\n\npdf\npdf()\napplication/pdf\n\n\n\nCan define new image serializers with serializer_device()",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I authenticate API users?"
+      "How can I control API output?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-security.html#api-keys-with-plumber-error",
-    "href": "slides/plumber/plumber-security.html#api-keys-with-plumber-error",
+    "objectID": "slides/plumber/plumber-output.html#other-things",
+    "href": "slides/plumber/plumber-output.html#other-things",
     "title": "Web APIs with R Book Club",
-    "section": "API keys with plumber: Error",
-    "text": "API keys with plumber: Error\n\n#* Error: Unauthorized\n#* @filter stop_unauthorized\nfunction(req) {\n  if (req$authorized) {\n    plumber::forward()\n  }\n  res$status &lt;- 401L\n  # TODO: do_the_log_thing() per plumber-errors.Rmd\n  res$serializer &lt;- plumber::serializer_json\n  res$body &lt;- list(\n    error = \"Unauthorized\",\n    message = \"Obtain an API key at https://your_key_process.html\"\n  )\n}\n\n\n#* @preempt stop_unauthorized if endpoint doesn’t require auth\n\nIn addition to authorize_api_key if not used at all",
+    "section": "Other things",
+    "text": "Other things\n\n\n\n@serializer\nprocessed with\ncontent type\n\n\n\n\ncontentType\n(user-specified)\n(user-specified)\n\n\noctet\n(as is, must be raw)\napplication/octet-stream\n\n\n\n\n#* @serializer contentType list(type = \"application/protobuf\", serialize_fn = protolite::serialize_pb)\n\n\noctet is contentType with a serialize_fn that checks is.raw()",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I authenticate API users?"
+      "How can I control API output?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-security.html#oauth2-with-plumber",
-    "href": "slides/plumber/plumber-security.html#oauth2-with-plumber",
-    "title": "Web APIs with R Book Club",
-    "section": "OAuth2 with plumber",
-    "text": "OAuth2 with plumber\n\nEndpoint for user to initiate Oauth2 dance\n\nWill launch browser for interaction with OAuth2 provider\n\nEndpoint for provider to send code\nUse state params to keep track of user\nEnd result is a bearer token (+ possibly other pieces)\n\nTODO: Actually implement this and make sure it works how you think!",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I authenticate API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-security.html#using-cookies-for-user-state",
-    "href": "slides/plumber/plumber-security.html#using-cookies-for-user-state",
-    "title": "Web APIs with R Book Club",
-    "section": "Using cookies for user state",
-    "text": "Using cookies for user state\n\nClient controls cookies, so don’t store anything you “own”\n\nEg, store a key, not a user ID\nSafer: Store preferences\nGeneral rule: things you’d accept as user input\n\nres$setCookie() for unencrypted data",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I authenticate API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-security.html#encrypted-cookies",
-    "href": "slides/plumber/plumber-security.html#encrypted-cookies",
-    "title": "Web APIs with R Book Club",
-    "section": "Encrypted cookies",
-    "text": "Encrypted cookies\n\npr_cookie(pr, key, name) in router\n\nTells plumber to read/write that cookie.\nEncrypts with key\nBy default name = \"plumber\"\n\nAll stored in req$session$plumber\n\n\nCan include lists (ends up as json)\nTODO: Add details about env vars and/or keyring (probably same as httr2 slides)",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I authenticate API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-security.html#meeting-videos",
-    "href": "slides/plumber/plumber-security.html#meeting-videos",
-    "title": "Web APIs with R Book Club",
-    "section": "Meeting Videos",
-    "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I authenticate API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-input.html#path-vs-other",
-    "href": "slides/plumber/plumber-input.html#path-vs-other",
-    "title": "Web APIs with R Book Club",
-    "section": "Path vs Other",
-    "text": "Path vs Other\n\nPath for main noun (the thing you’re acting on)\nQuery/body for arguments\nCookies/header for metadata, auth, etc",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I get inputs from API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-input.html#types-of-inputs",
-    "href": "slides/plumber/plumber-input.html#types-of-inputs",
-    "title": "Web APIs with R Book Club",
-    "section": "Types of inputs",
-    "text": "Types of inputs\nHow will your API be used?\n\nDirectly in browser (Are you sure?)\n\nGET\nQuery for things user decides\nCookies for state, etc\n\nMostly programmatic (including from Shiny, etc)\n\nPOST, PUT, PATCH, DELETE\nBody for things related to this specific request\nHeader for things that aren’t function arguments\nPossibly cookies for state still",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I get inputs from API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-input.html#api-function-arguments",
-    "href": "slides/plumber/plumber-input.html#api-function-arguments",
-    "title": "Web APIs with R Book Club",
-    "section": "API function arguments",
-    "text": "API function arguments\n\nCan expect named arguments, BUT\nBetter: Accept req (request object)\nSpecify priority (or only accept certain ones)\n\nGood documentation MUCH better than flexibility!\nBy default: argsQuery &gt; argsPath &gt; argsBody\n\n\n\nfunction(req) {\n  x &lt;- req$argsPath$x %||% req$argsBody$x %||% req$argsQuery$x %||% \n    req$cookies$x %||% req$HTTP_X\n}",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I get inputs from API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-input.html#parameter-types",
-    "href": "slides/plumber/plumber-input.html#parameter-types",
-    "title": "Web APIs with R Book Club",
-    "section": "Parameter types",
-    "text": "Parameter types\n\nOptionally specify type (~class) in API definition\n\n@param x:int (more details later)\n\nEnclose in [] to allow length &gt; 1 (array)\n\n@param x:[int]",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I get inputs from API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-input.html#parameter-types-table",
-    "href": "slides/plumber/plumber-input.html#parameter-types-table",
-    "title": "Web APIs with R Book Club",
-    "section": "Parameter types table",
-    "text": "Parameter types table\n\n\n\ntype\nR class\nin\n\n\n\n\n“boolean”\nlogical\nquery, path\n\n\n“number”\nnumeric\nquery, path\n\n\n“integer”\ninteger\nquery, path\n\n\n“string”\ncharacter\nquery, path\n\n\n“object”\nlist\nbody\n\n\n“file”\nraw\nbody\n\n\n\n\nAll of these have other aliases (eg int for integer)\nStick with these for smooth experience",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I get inputs from API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-input.html#path-parameters",
-    "href": "slides/plumber/plumber-input.html#path-parameters",
-    "title": "Web APIs with R Book Club",
-    "section": "Path parameters",
-    "text": "Path parameters\n\n#* @get /users/&lt;id&gt;\nfunction(id) {...} # better: use req$argsPath$id\n\nOptional: only route certain types\n\n#* @get /users/&lt;id:int&gt;\nfunction(id) {...} # better: use req$argsPath$id\n\n{plumber} casts typed path input",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I get inputs from API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-input.html#query-parameters",
-    "href": "slides/plumber/plumber-input.html#query-parameters",
-    "title": "Web APIs with R Book Club",
-    "section": "Query parameters",
-    "text": "Query parameters\nhttps://example.com/api/repeat?letter=x&number=1\n\n#* @get repeat\n#* @param letter:string The letter.\n#* @param number:integer The number of times to repeat it.\n\n{plumber} does not cast query input!",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I get inputs from API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-input.html#request-bodies",
-    "href": "slides/plumber/plumber-input.html#request-bodies",
-    "title": "Web APIs with R Book Club",
-    "section": "Request bodies",
-    "text": "Request bodies\n\nreq$body ≈ req$bodyArgs\n\nbody sometimes has raw value + parsed, other details\n\nParsers can prepare body\n\nSpecify as #* @parser PARSER (json, csv, rds, etc)\nArgs in list: #* @parser json list(simplifyVector = FALSE)\n\n\n\n#* @param df:object The input data.frame. Must contain columns \"first_name\" \n#*        and \"city\".\n#* @parser feather list(col_select = c(\"first_name\", \"city\"))",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I get inputs from API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-input.html#stabilizing-input",
-    "href": "slides/plumber/plumber-input.html#stabilizing-input",
-    "title": "Web APIs with R Book Club",
-    "section": "Stabilizing input",
-    "text": "Stabilizing input\nTODO: {stbl} package introduction once it’s stable.\nTODO: Also talk about DoS avoidance (input limits) + Sanitation",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I get inputs from API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-input.html#http-headers",
-    "href": "slides/plumber/plumber-input.html#http-headers",
-    "title": "Web APIs with R Book Club",
-    "section": "HTTP headers",
-    "text": "HTTP headers\nHeaders are processed and included in req object:\n\n- replaced with _\nUPPERCASE\nHTTP_ prefix\n\nX-custom-header → req$HTTP_X_CUSTOM_HEADER",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I get inputs from API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-input.html#inputs-in-cookies",
-    "href": "slides/plumber/plumber-input.html#inputs-in-cookies",
-    "title": "Web APIs with R Book Club",
-    "section": "Inputs in Cookies",
-    "text": "Inputs in Cookies\n\nreq$cookies = named list of (unencrypted) cookies\nreq$session = named list from encrypted cookies\n\nMuch more info when we save cookies",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I get inputs from API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-input.html#remember-filters",
-    "href": "slides/plumber/plumber-input.html#remember-filters",
-    "title": "Web APIs with R Book Club",
-    "section": "Remember filters",
-    "text": "Remember filters\nTODO: Add slide about dealing with things that aren’t specific to a given function via filters (eg, for auth).",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I get inputs from API users?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-input.html#meeting-videos",
-    "href": "slides/plumber/plumber-input.html#meeting-videos",
+    "objectID": "slides/plumber/plumber-output.html#meeting-videos",
+    "href": "slides/plumber/plumber-output.html#meeting-videos",
     "title": "Web APIs with R Book Club",
     "section": "Meeting Videos",
     "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I get inputs from API users?"
+      "How can I control API output?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-deploy.html#posit-cloud",
-    "href": "slides/plumber/plumber-deploy.html#posit-cloud",
+    "objectID": "slides/plumber/plumber-test.html#pure-functions",
+    "href": "slides/plumber/plumber-test.html#pure-functions",
     "title": "Web APIs with R Book Club",
-    "section": "Posit Cloud",
-    "text": "Posit Cloud\n\nFree tier available\nDeploying: (relatively) Easy & Free\nUsing: Difficult\n\nLoad API in browser\n\nLogin to posit.cloud\n\nCopy cookie (see How do I tell the API who I am)\nPaste cookie into file\nUse file with httr2::req_cookie_preserve()",
+    "section": "Pure Functions",
+    "text": "Pure Functions\n\nNo hidden inputs\nNo side effects\nGiven inputs, always return same output.\n\nAbstract pure functions out of endpoint functions for easier testing.",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How do I deploy my plumber API?"
+      "How can I test my plumber API?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-deploy.html#posit-cloud-demo",
-    "href": "slides/plumber/plumber-deploy.html#posit-cloud-demo",
+    "objectID": "slides/plumber/plumber-test.html#example-example-name",
+    "href": "slides/plumber/plumber-test.html#example-example-name",
     "title": "Web APIs with R Book Club",
-    "section": "Posit Cloud: Demo",
-    "text": "Posit Cloud: Demo\n\ndeploy_api &lt;- function(package, name, appName = name, ...) {\n  api_dir &lt;- withr::local_tempdir(\"api\")\n  file_path &lt;- paste0(api_dir, \"/entrypoint.R\")\n  entrypoint_text &lt;- glue::glue(\n    'library({package})',\n    'plumber::plumb_api(\"{package}\", \"{name}\")',\n    .sep = \"\\n\"\n  )\n  writeLines(entrypoint_text, file_path)\n  rsconnect::deployAPI(api_dir, appName = appName, ...)\n}\n# Login to posit.cloud; click your name, then Account, then Tokens\n# + New Token, or Copy existing token, and follow instructions\ndeploy_api(\"yourPackage\", \"yourAPI\")",
+    "section": "Example: EXAMPLE NAME",
+    "text": "Example: EXAMPLE NAME\nTODO: Create a simple API. First show as one function, then abstract out pure functions.",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How do I deploy my plumber API?"
+      "How can I test my plumber API?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-deploy.html#posit-connect",
-    "href": "slides/plumber/plumber-deploy.html#posit-connect",
+    "objectID": "slides/plumber/plumber-test.html#plumber-apis-as-packages",
+    "href": "slides/plumber/plumber-test.html#plumber-apis-as-packages",
     "title": "Web APIs with R Book Club",
-    "section": "Posit Connect",
-    "text": "Posit Connect\n\nPosit Connect = paid enterprise service\nDeploying: Identical to Posit Cloud (just different token)\nUsing: Easy\n\nNo hurdles other than what your IT creates",
+    "section": "plumber APIs as packages",
+    "text": "plumber APIs as packages\n\nR Packages book for intro to R packages\nFunctions in R/\nAPIs in inst/plumber/API_NAME/\n\nRecommended: Use entrypoint.R to build router programmatically\n\nLaunch with plumber::plumb_api(\"yourpkg\", \"API_NAME\")",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How do I deploy my plumber API?"
+      "How can I test my plumber API?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-deploy.html#plumberdeploy",
-    "href": "slides/plumber/plumber-deploy.html#plumberdeploy",
+    "objectID": "slides/plumber/plumber-test.html#brief-intro-to-testthat",
+    "href": "slides/plumber/plumber-test.html#brief-intro-to-testthat",
     "title": "Web APIs with R Book Club",
-    "section": "plumberDeploy",
-    "text": "plumberDeploy\nTODO: Does this still work? No updates in 2.5 years",
+    "section": "Brief Intro to testthat",
+    "text": "Brief Intro to testthat\nMuch more in R Packages!\n\nusethis::use_testthat() in package\nTests in tests/testthat/test-filename.R\ntest_that(\"What you expected\", { code to test that })\nPure functions are relatively easy to test!",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How do I deploy my plumber API?"
+      "How can I test my plumber API?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-deploy.html#others",
-    "href": "slides/plumber/plumber-deploy.html#others",
+    "objectID": "slides/plumber/plumber-test.html#example-example-from-above-in-a-package",
+    "href": "slides/plumber/plumber-test.html#example-example-from-above-in-a-package",
     "title": "Web APIs with R Book Club",
-    "section": "Others",
-    "text": "Others\nTODO: Add the hard things. The free/“easy” ones ate the day!",
+    "section": "Example: EXAMPLE FROM ABOVE IN A PACKAGE",
+    "text": "Example: EXAMPLE FROM ABOVE IN A PACKAGE\nTODO: Fill this in, describing where the bits from above go inside a package.",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How do I deploy my plumber API?"
+      "How can I test my plumber API?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-deploy.html#meeting-videos",
-    "href": "slides/plumber/plumber-deploy.html#meeting-videos",
+    "objectID": "slides/plumber/plumber-test.html#req-helper",
+    "href": "slides/plumber/plumber-test.html#req-helper",
     "title": "Web APIs with R Book Club",
-    "section": "Meeting Videos",
-    "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
+    "section": "req helper",
+    "text": "req helper\n\n# tests/testthat/helper-req.R\nas_mock_req &lt;- function(...,\n                        body = list(), \n                        path = list(), \n                        query = list(),\n                        cookies = list()) {\n  list2env(c(\n    list(...), \n    argsBody = body, argsPath = path, argsQuery = query,  cookies = cookies\n  ))\n}",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How do I deploy my plumber API?"
+      "How can I test my plumber API?"
     ]
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Welcome",
-    "section": "",
-    "text": "This is a companion for the book Web APIs with R by Jon Harmon (in progress, aiming for publication in 2024).\nEach chapter title to the left is a link to a slide deck.\n\nThese slides are being developed as I write the book.\nEach deck will open in its own tab.\nJoin the Data Science Learning Community to participate.\n\nWe follow the Data Science Learning Community Code of Conduct.",
-    "crumbs": [
-      "Welcome"
-    ]
-  },
-  {
-    "objectID": "slides/leftovers.html#how-can-i-quickly-translate-api-docs",
-    "href": "slides/leftovers.html#how-can-i-quickly-translate-api-docs",
-    "title": "Unused Slides from Other Chapters",
-    "section": "How can I quickly translate API docs?",
-    "text": "How can I quickly translate API docs?\n\nDocs often have “Try it out” option\n\nhttps://api.open.fec.gov/developers/\n\nCopy the “Curl” block\n\n\n\ncurl_translate(\n  \"curl -X 'GET' \\\n  'https://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=H'\"\n)\n\n\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\n\nIf you want to use this API, sign up for your own key at that same URL.\nI edited the given curl to fit\nThis code will usually get you started\nNow let’s clean it up and understand it!\nExtra: OpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json",
-    "crumbs": [
-      "Appendices",
-      "Unused Slides from Other Chapters"
-    ]
-  },
-  {
-    "objectID": "slides/leftovers.html#the-pieces-of-a-url",
-    "href": "slides/leftovers.html#the-pieces-of-a-url",
-    "title": "Unused Slides from Other Chapters",
-    "section": "The Pieces of a URL",
-    "text": "The Pieces of a URL\nhttps://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_key=DEMO_KEY\n\nhttps://api.open.fec.gov = “scheme” + “host name”\n/v1/candidates/ = “path”\n?election_year=2020&office=P&api_key=DEMO_KEY = “query”\nNot present:\n\n:1234 = “port”\n#target = “fragment”\nusername:password@",
-    "crumbs": [
-      "Appendices",
-      "Unused Slides from Other Chapters"
-    ]
-  },
-  {
-    "objectID": "slides/leftovers.html#endpoint-info-as-data",
-    "href": "slides/leftovers.html#endpoint-info-as-data",
-    "title": "Unused Slides from Other Chapters",
-    "section": "Endpoint info as data",
-    "text": "Endpoint info as data\n\n{tibblify} can load OpenAPI endpoint data\n\n\n\nopenfec_endpoints &lt;- tibblify::parse_openapi_spec(\"https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json\")\nopenfec_endpoints |&gt; \n  unnest(operations)\n\n\n\n\nThis is a dev version of tibblify, production version only gets some of this data.",
-    "crumbs": [
-      "Appendices",
-      "Unused Slides from Other Chapters"
-    ]
-  },
-  {
-    "objectID": "slides/leftovers.html#endpoint-parameters",
-    "href": "slides/leftovers.html#endpoint-parameters",
-    "title": "Unused Slides from Other Chapters",
-    "section": "Endpoint parameters",
-    "text": "Endpoint parameters\n\ncandidates_endpoint &lt;- openfec_endpoints |&gt; \n  unnest(operations) |&gt; \n  filter(endpoint == \"/candidates/\")\ncandidates_endpoint |&gt; \n  select(parameters) |&gt; \n  unnest(parameters)",
-    "crumbs": [
-      "Appendices",
-      "Unused Slides from Other Chapters"
-    ]
-  },
-  {
-    "objectID": "slides/leftovers.html#endpoint-responses",
-    "href": "slides/leftovers.html#endpoint-responses",
-    "title": "Unused Slides from Other Chapters",
-    "section": "Endpoint responses",
-    "text": "Endpoint responses\n\ncandidates_endpoint |&gt; \n  select(responses) |&gt;\n  unnest(responses) |&gt; \n  unnest(content)\n\n\n\nNote that spec is a tspec!\n\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
-    "crumbs": [
-      "Appendices",
-      "Unused Slides from Other Chapters"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-errors.html#plumbers-default-error-handling",
-    "href": "slides/plumber/plumber-errors.html#plumbers-default-error-handling",
+    "objectID": "slides/plumber/plumber-test.html#testing-api-specific-functions",
+    "href": "slides/plumber/plumber-test.html#testing-api-specific-functions",
     "title": "Web APIs with R Book Club",
-    "section": "Plumber’s default error handling",
-    "text": "Plumber’s default error handling\n\n#* @get /simple\nfunction(){\n  stop(\"I'm an error!\")\n}\n\n#&gt; {\"error\":[\"500 - Internal server error\"],\"message\":[\"Error in (function () : \n#&gt; I'm an error!\\n\"]}\n\n\nHTTP status code 500 for all errors\nError sent to client\nError also printed in terminal",
+    "section": "Testing API-specific functions",
+    "text": "Testing API-specific functions\nTODO: FILL THIS IN WITH SPECIFICS\n\ntest_that(\"THE THING WORKS\", {\n  req &lt;- as_mock_req(body = list(whatever = 1))\n  expect_equal(function_to_test(req), expected_result)\n})",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I handle API errors?"
+      "How can I test my plumber API?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-errors.html#custom-error-handling-basics",
-    "href": "slides/plumber/plumber-errors.html#custom-error-handling-basics",
+    "objectID": "slides/plumber/plumber-test.html#local_api",
+    "href": "slides/plumber/plumber-test.html#local_api",
     "title": "Web APIs with R Book Club",
-    "section": "Custom error handling: basics",
-    "text": "Custom error handling: basics\n\nmy_error_handler &lt;- function(req, res, err) {\n  res$status &lt;- 500 # Or something else, see below.\n  \n  # Do something server-side (logs)\n  print(err)\n  \n  # Return an error JSON object.\n  list(error = \"An error occurred. Please contact your administrator.\")\n}\n\npr(\"plumber.R\") |&gt; \n  pr_set_error(my_error_handler) |&gt; \n  pr_run()",
+    "section": "local_api()",
+    "text": "local_api()\n\n# tests/testthat/helper-plumber.R\npr_run_bg &lt;- function(pr, port) {\n  callr::r_bg(\n    plumber::pr_run,\n    list(pr = pr, port = port),\n    package = \"plumber\"\n  )\n}\nlocal_api &lt;- function(pr, port, env = parent.frame()) {\n  bg_api &lt;- pr_run_bg(pr, port)\n  # Sys.sleep(2) # TODO: Test whether this is necessary!\n  withr::defer(bg_api$kill(), envir = env)\n}\nreq_local_api &lt;- function(endpoint, port) {\n  httr2::request(glue::glue(\"http://127.0.0.1:{port}\")) |&gt; \n    httr2::req_url_path_append(endpoint)\n}",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I handle API errors?"
+      "How can I test my plumber API?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-errors.html#logging-strategies",
-    "href": "slides/plumber/plumber-errors.html#logging-strategies",
+    "objectID": "slides/plumber/plumber-test.html#testing-plumber-routers",
+    "href": "slides/plumber/plumber-test.html#testing-plumber-routers",
     "title": "Web APIs with R Book Club",
-    "section": "Logging strategies",
-    "text": "Logging strategies\n\nprint() for function output\ncat() for messages\ncli::cli_inform() for formatted messages\n{log4r} package for neater logs\nSee DevOps for Data Science: Logging and Monitoring for more",
+    "section": "Testing plumber routers",
+    "text": "Testing plumber routers\nUse these for auth, errors, etc\n\n# test/testthat/test-router.R\ntest_that(\"My router does an expected thing\", {\n  api &lt;- plumber::plumb_api(\"mypackage\", \"target_api\")\n  port &lt;- httpuv::randomPort()\n  local_api(api, port)\n  # TODO: Update this with auth failure.\n  req &lt;- req_local_api(\"predict/x\", port)\n  expect_error(\n    httr2::req_perform(req),\n    class = \"mypkg_error_auth\"\n  )\n})",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I handle API errors?"
+      "How can I test my plumber API?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-errors.html#error-responses",
-    "href": "slides/plumber/plumber-errors.html#error-responses",
+    "objectID": "slides/plumber/plumber-test.html#random-notes",
+    "href": "slides/plumber/plumber-test.html#random-notes",
     "title": "Web APIs with R Book Club",
-    "section": "Error responses",
-    "text": "Error responses\nAPI errors are still responses\n\nStatus code specifies broad error category (see next slide)\n\n400 to 499 = Client errors (user did something wrong)\n500 to 599 = Server errors (something is broken)\nReminder: By default, {plumber} uses 500\n\nBest practice: Error format same as successful response\n\nBe careful about this, don’t make silent errors easy!\n\nNeed plumber::pr_handle() family for advanced options",
+    "section": "random notes",
+    "text": "random notes\nInclude ideas from these plumber articles:\n\nRuntime\n\nJumpingRivers had a blog about this!",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I handle API errors?"
+      "How can I test my plumber API?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-errors.html#http-error-status-codes",
-    "href": "slides/plumber/plumber-errors.html#http-error-status-codes",
-    "title": "Web APIs with R Book Club",
-    "section": "HTTP error status codes",
-    "text": "HTTP error status codes\n\n\n\ncode\ntitle\nusage\n\n\n\n\n400\nBad Request\nMissing or bad argument, etc\n\n\n401\nUnauthorized\nNo or invalid authentication\n\n\n403\nForbidden\nKnown user can’t do that\n\n\n404\nNot Found\npath arg doesn’t exist\n\n\n502\nBad Gateway\nYour api hits another api, got error\n\n\n504\nGateway Timeout\nYour api hits another api, timed out\n\n\n500\nInternal Server Error\nCatch-all for other errors\n\n\n\nSee MDN HTTP response status codes for more options and further details",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I handle API errors?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-errors.html#error-descriptions-in-plumber-block",
-    "href": "slides/plumber/plumber-errors.html#error-descriptions-in-plumber-block",
-    "title": "Web APIs with R Book Club",
-    "section": "Error descriptions in plumber block",
-    "text": "Error descriptions in plumber block\n\n#* @response 400 Bad request. This usually occurs because of a missing or \n#*   malformed parameter.\n#* @response 401 Unauthorized. A valid API token was not provided.\n#* @response 403 Forbidden. This user cannot access that file.\n\n\n@response Status Code Description\nCan only give description (not object details)\nThis is a promise, but isn’t validated by {plumber}",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I handle API errors?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-errors.html#recommended-error_handler",
-    "href": "slides/plumber/plumber-errors.html#recommended-error_handler",
-    "title": "Web APIs with R Book Club",
-    "section": "Recommended error_handler",
-    "text": "Recommended error_handler\n\n# TODO: Finish working this out!\nerror_handler &lt;- function(req, res, err) {\n  res$status &lt;- attr(err, \"status_code\") %||% 500L\n  \n  # TODO: Better understanding of log4r or another option.\n  do_the_log_thing(err)\n\n  # Skip serialization to always return JSON  \n  res$headers &lt;- list(\"Content-type\" = \"application/json\")\n  res$body &lt;- jsonlite::toJSON(unclass(err))\n  return(res) \n}",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I handle API errors?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-errors.html#programmatic-responses",
-    "href": "slides/plumber/plumber-errors.html#programmatic-responses",
-    "title": "Web APIs with R Book Club",
-    "section": "Programmatic responses",
-    "text": "Programmatic responses\nTODO: Adapt/finish this slide. And probably add one more about the internal error handling in plumber.R.\n\nCan specify full OpenAPI Response Object programmatically\nImpacts auto-generated Swagger documentation\nNot well documented (outside of this book)\n\n\npr_get(\n  \"/pathToEndpoint\", function(res, req) { ... },\n  responses = list(\n    \"403\" = list(\n      description = \"Forbidden\",\n      content = list(\"application/json\" = list())\n    )\n  )\n)",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I handle API errors?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-errors.html#meeting-videos",
-    "href": "slides/plumber/plumber-errors.html#meeting-videos",
+    "objectID": "slides/plumber/plumber-test.html#meeting-videos",
+    "href": "slides/plumber/plumber-test.html#meeting-videos",
     "title": "Web APIs with R Book Club",
     "section": "Meeting Videos",
     "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I handle API errors?"
+      "How can I test my plumber API?"
     ]
   },
   {
@@ -1527,212 +1364,507 @@
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-test.html#pure-functions",
-    "href": "slides/plumber/plumber-test.html#pure-functions",
+    "objectID": "slides/plumber/plumber-errors.html#plumbers-default-error-handling",
+    "href": "slides/plumber/plumber-errors.html#plumbers-default-error-handling",
     "title": "Web APIs with R Book Club",
-    "section": "Pure Functions",
-    "text": "Pure Functions\n\nNo hidden inputs\nNo side effects\nGiven inputs, always return same output.\n\nAbstract pure functions out of endpoint functions for easier testing.",
+    "section": "Plumber’s default error handling",
+    "text": "Plumber’s default error handling\n\n#* @get /simple\nfunction(){\n  stop(\"I'm an error!\")\n}\n\n#&gt; {\"error\":[\"500 - Internal server error\"],\"message\":[\"Error in (function () : \n#&gt; I'm an error!\\n\"]}\n\n\nHTTP status code 500 for all errors\nError sent to client\nError also printed in terminal",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I test my plumber API?"
+      "How can I handle API errors?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-test.html#example-example-name",
-    "href": "slides/plumber/plumber-test.html#example-example-name",
+    "objectID": "slides/plumber/plumber-errors.html#custom-error-handling-basics",
+    "href": "slides/plumber/plumber-errors.html#custom-error-handling-basics",
     "title": "Web APIs with R Book Club",
-    "section": "Example: EXAMPLE NAME",
-    "text": "Example: EXAMPLE NAME\nTODO: Create a simple API. First show as one function, then abstract out pure functions.",
+    "section": "Custom error handling: basics",
+    "text": "Custom error handling: basics\n\nmy_error_handler &lt;- function(req, res, err) {\n  res$status &lt;- 500 # Or something else, see below.\n  \n  # Do something server-side (logs)\n  print(err)\n  \n  # Return an error JSON object.\n  list(error = \"An error occurred. Please contact your administrator.\")\n}\n\npr(\"plumber.R\") |&gt; \n  pr_set_error(my_error_handler) |&gt; \n  pr_run()",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I test my plumber API?"
+      "How can I handle API errors?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-test.html#plumber-apis-as-packages",
-    "href": "slides/plumber/plumber-test.html#plumber-apis-as-packages",
+    "objectID": "slides/plumber/plumber-errors.html#logging-strategies",
+    "href": "slides/plumber/plumber-errors.html#logging-strategies",
     "title": "Web APIs with R Book Club",
-    "section": "plumber APIs as packages",
-    "text": "plumber APIs as packages\n\nR Packages book for intro to R packages\nFunctions in R/\nAPIs in inst/plumber/API_NAME/\n\nRecommended: Use entrypoint.R to build router programmatically\n\nLaunch with plumber::plumb_api(\"yourpkg\", \"API_NAME\")",
+    "section": "Logging strategies",
+    "text": "Logging strategies\n\nprint() for function output\ncat() for messages\ncli::cli_inform() for formatted messages\n{log4r} package for neater logs\nSee DevOps for Data Science: Logging and Monitoring for more",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I test my plumber API?"
+      "How can I handle API errors?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-test.html#brief-intro-to-testthat",
-    "href": "slides/plumber/plumber-test.html#brief-intro-to-testthat",
+    "objectID": "slides/plumber/plumber-errors.html#error-responses",
+    "href": "slides/plumber/plumber-errors.html#error-responses",
     "title": "Web APIs with R Book Club",
-    "section": "Brief Intro to testthat",
-    "text": "Brief Intro to testthat\nMuch more in R Packages!\n\nusethis::use_testthat() in package\nTests in tests/testthat/test-filename.R\ntest_that(\"What you expected\", { code to test that })\nPure functions are relatively easy to test!",
+    "section": "Error responses",
+    "text": "Error responses\nAPI errors are still responses\n\nStatus code specifies broad error category (see next slide)\n\n400 to 499 = Client errors (user did something wrong)\n500 to 599 = Server errors (something is broken)\nReminder: By default, {plumber} uses 500\n\nBest practice: Error format same as successful response\n\nBe careful about this, don’t make silent errors easy!\n\nNeed plumber::pr_handle() family for advanced options",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I test my plumber API?"
+      "How can I handle API errors?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-test.html#example-example-from-above-in-a-package",
-    "href": "slides/plumber/plumber-test.html#example-example-from-above-in-a-package",
+    "objectID": "slides/plumber/plumber-errors.html#http-error-status-codes",
+    "href": "slides/plumber/plumber-errors.html#http-error-status-codes",
     "title": "Web APIs with R Book Club",
-    "section": "Example: EXAMPLE FROM ABOVE IN A PACKAGE",
-    "text": "Example: EXAMPLE FROM ABOVE IN A PACKAGE\nTODO: Fill this in, describing where the bits from above go inside a package.",
+    "section": "HTTP error status codes",
+    "text": "HTTP error status codes\n\n\n\ncode\ntitle\nusage\n\n\n\n\n400\nBad Request\nMissing or bad argument, etc\n\n\n401\nUnauthorized\nNo or invalid authentication\n\n\n403\nForbidden\nKnown user can’t do that\n\n\n404\nNot Found\npath arg doesn’t exist\n\n\n502\nBad Gateway\nYour api hits another api, got error\n\n\n504\nGateway Timeout\nYour api hits another api, timed out\n\n\n500\nInternal Server Error\nCatch-all for other errors\n\n\n\nSee MDN HTTP response status codes for more options and further details",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I test my plumber API?"
+      "How can I handle API errors?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-test.html#req-helper",
-    "href": "slides/plumber/plumber-test.html#req-helper",
+    "objectID": "slides/plumber/plumber-errors.html#error-descriptions-in-plumber-block",
+    "href": "slides/plumber/plumber-errors.html#error-descriptions-in-plumber-block",
     "title": "Web APIs with R Book Club",
-    "section": "req helper",
-    "text": "req helper\n\n# tests/testthat/helper-req.R\nas_mock_req &lt;- function(...,\n                        body = list(), \n                        path = list(), \n                        query = list(),\n                        cookies = list()) {\n  list2env(c(\n    list(...), \n    argsBody = body, argsPath = path, argsQuery = query,  cookies = cookies\n  ))\n}",
+    "section": "Error descriptions in plumber block",
+    "text": "Error descriptions in plumber block\n\n#* @response 400 Bad request. This usually occurs because of a missing or \n#*   malformed parameter.\n#* @response 401 Unauthorized. A valid API token was not provided.\n#* @response 403 Forbidden. This user cannot access that file.\n\n\n@response Status Code Description\nCan only give description (not object details)\nThis is a promise, but isn’t validated by {plumber}",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I test my plumber API?"
+      "How can I handle API errors?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-test.html#testing-api-specific-functions",
-    "href": "slides/plumber/plumber-test.html#testing-api-specific-functions",
+    "objectID": "slides/plumber/plumber-errors.html#recommended-error_handler",
+    "href": "slides/plumber/plumber-errors.html#recommended-error_handler",
     "title": "Web APIs with R Book Club",
-    "section": "Testing API-specific functions",
-    "text": "Testing API-specific functions\nTODO: FILL THIS IN WITH SPECIFICS\n\ntest_that(\"THE THING WORKS\", {\n  req &lt;- as_mock_req(body = list(whatever = 1))\n  expect_equal(function_to_test(req), expected_result)\n})",
+    "section": "Recommended error_handler",
+    "text": "Recommended error_handler\n\n# TODO: Finish working this out!\nerror_handler &lt;- function(req, res, err) {\n  res$status &lt;- attr(err, \"status_code\") %||% 500L\n  \n  # TODO: Better understanding of log4r or another option.\n  do_the_log_thing(err)\n\n  # Skip serialization to always return JSON  \n  res$headers &lt;- list(\"Content-type\" = \"application/json\")\n  res$body &lt;- jsonlite::toJSON(unclass(err))\n  return(res) \n}",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I test my plumber API?"
+      "How can I handle API errors?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-test.html#local_api",
-    "href": "slides/plumber/plumber-test.html#local_api",
+    "objectID": "slides/plumber/plumber-errors.html#programmatic-responses",
+    "href": "slides/plumber/plumber-errors.html#programmatic-responses",
     "title": "Web APIs with R Book Club",
-    "section": "local_api()",
-    "text": "local_api()\n\n# tests/testthat/helper-plumber.R\npr_run_bg &lt;- function(pr, port) {\n  callr::r_bg(\n    plumber::pr_run,\n    list(pr = pr, port = port),\n    package = \"plumber\"\n  )\n}\nlocal_api &lt;- function(pr, port, env = parent.frame()) {\n  bg_api &lt;- pr_run_bg(pr, port)\n  # Sys.sleep(2) # TODO: Test whether this is necessary!\n  withr::defer(bg_api$kill(), envir = env)\n}\nreq_local_api &lt;- function(endpoint, port) {\n  httr2::request(glue::glue(\"http://127.0.0.1:{port}\")) |&gt; \n    httr2::req_url_path_append(endpoint)\n}",
+    "section": "Programmatic responses",
+    "text": "Programmatic responses\nTODO: Adapt/finish this slide. And probably add one more about the internal error handling in plumber.R.\n\nCan specify full OpenAPI Response Object programmatically\nImpacts auto-generated Swagger documentation\nNot well documented (outside of this book)\n\n\npr_get(\n  \"/pathToEndpoint\", function(res, req) { ... },\n  responses = list(\n    \"403\" = list(\n      description = \"Forbidden\",\n      content = list(\"application/json\" = list())\n    )\n  )\n)",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I test my plumber API?"
+      "How can I handle API errors?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-test.html#testing-plumber-routers",
-    "href": "slides/plumber/plumber-test.html#testing-plumber-routers",
-    "title": "Web APIs with R Book Club",
-    "section": "Testing plumber routers",
-    "text": "Testing plumber routers\nUse these for auth, errors, etc\n\n# test/testthat/test-router.R\ntest_that(\"My router does an expected thing\", {\n  api &lt;- plumber::plumb_api(\"mypackage\", \"target_api\")\n  port &lt;- httpuv::randomPort()\n  local_api(api, port)\n  # TODO: Update this with auth failure.\n  req &lt;- req_local_api(\"predict/x\", port)\n  expect_error(\n    httr2::req_perform(req),\n    class = \"mypkg_error_auth\"\n  )\n})",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I test my plumber API?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-test.html#random-notes",
-    "href": "slides/plumber/plumber-test.html#random-notes",
-    "title": "Web APIs with R Book Club",
-    "section": "random notes",
-    "text": "random notes\nInclude ideas from these plumber articles:\n\nRuntime\n\nJumpingRivers had a blog about this!",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I test my plumber API?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-test.html#meeting-videos",
-    "href": "slides/plumber/plumber-test.html#meeting-videos",
+    "objectID": "slides/plumber/plumber-errors.html#meeting-videos",
+    "href": "slides/plumber/plumber-errors.html#meeting-videos",
     "title": "Web APIs with R Book Club",
     "section": "Meeting Videos",
     "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I test my plumber API?"
+      "How can I handle API errors?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-output.html#serializers",
-    "href": "slides/plumber/plumber-output.html#serializers",
+    "objectID": "slides/leftovers.html#how-can-i-quickly-translate-api-docs",
+    "href": "slides/leftovers.html#how-can-i-quickly-translate-api-docs",
+    "title": "Unused Slides from Other Chapters",
+    "section": "How can I quickly translate API docs?",
+    "text": "How can I quickly translate API docs?\n\nDocs often have “Try it out” option\n\nhttps://api.open.fec.gov/developers/\n\nCopy the “Curl” block\n\n\n\ncurl_translate(\n  \"curl -X 'GET' \\\n  'https://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=H'\"\n)\n\n\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\") |&gt; \n  req_method(\"GET\") |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"H\"\n  ) |&gt; \n  req_perform()\n\n\n\nIf you want to use this API, sign up for your own key at that same URL.\nI edited the given curl to fit\nThis code will usually get you started\nNow let’s clean it up and understand it!\nExtra: OpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json",
+    "crumbs": [
+      "Appendices",
+      "Unused Slides from Other Chapters"
+    ]
+  },
+  {
+    "objectID": "slides/leftovers.html#the-pieces-of-a-url",
+    "href": "slides/leftovers.html#the-pieces-of-a-url",
+    "title": "Unused Slides from Other Chapters",
+    "section": "The Pieces of a URL",
+    "text": "The Pieces of a URL\nhttps://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_key=DEMO_KEY\n\nhttps://api.open.fec.gov = “scheme” + “host name”\n/v1/candidates/ = “path”\n?election_year=2020&office=P&api_key=DEMO_KEY = “query”\nNot present:\n\n:1234 = “port”\n#target = “fragment”\nusername:password@",
+    "crumbs": [
+      "Appendices",
+      "Unused Slides from Other Chapters"
+    ]
+  },
+  {
+    "objectID": "slides/leftovers.html#endpoint-info-as-data",
+    "href": "slides/leftovers.html#endpoint-info-as-data",
+    "title": "Unused Slides from Other Chapters",
+    "section": "Endpoint info as data",
+    "text": "Endpoint info as data\n\n{tibblify} can load OpenAPI endpoint data\n\n\n\nopenfec_endpoints &lt;- tibblify::parse_openapi_spec(\"https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json\")\nopenfec_endpoints |&gt; \n  unnest(operations)\n\n\n\n\nThis is a dev version of tibblify, production version only gets some of this data.",
+    "crumbs": [
+      "Appendices",
+      "Unused Slides from Other Chapters"
+    ]
+  },
+  {
+    "objectID": "slides/leftovers.html#endpoint-parameters",
+    "href": "slides/leftovers.html#endpoint-parameters",
+    "title": "Unused Slides from Other Chapters",
+    "section": "Endpoint parameters",
+    "text": "Endpoint parameters\n\ncandidates_endpoint &lt;- openfec_endpoints |&gt; \n  unnest(operations) |&gt; \n  filter(endpoint == \"/candidates/\")\ncandidates_endpoint |&gt; \n  select(parameters) |&gt; \n  unnest(parameters)",
+    "crumbs": [
+      "Appendices",
+      "Unused Slides from Other Chapters"
+    ]
+  },
+  {
+    "objectID": "slides/leftovers.html#endpoint-responses",
+    "href": "slides/leftovers.html#endpoint-responses",
+    "title": "Unused Slides from Other Chapters",
+    "section": "Endpoint responses",
+    "text": "Endpoint responses\n\ncandidates_endpoint |&gt; \n  select(responses) |&gt;\n  unnest(responses) |&gt; \n  unnest(content)\n\n\n\nNote that spec is a tspec!\n\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
+    "crumbs": [
+      "Appendices",
+      "Unused Slides from Other Chapters"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Welcome",
+    "section": "",
+    "text": "This is a companion for the book Web APIs with R by Jon Harmon (in progress, aiming for publication in 2024).\nEach chapter title to the left is a link to a slide deck.\n\nThese slides are being developed as I write the book.\nEach deck will open in its own tab.\nJoin the Data Science Learning Community to participate.\n\nWe follow the Data Science Learning Community Code of Conduct.",
+    "crumbs": [
+      "Welcome"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-deploy.html#posit-cloud",
+    "href": "slides/plumber/plumber-deploy.html#posit-cloud",
     "title": "Web APIs with R Book Club",
-    "section": "Serializers",
-    "text": "Serializers\n\nVocab: “Serialize” = “translate into a format for storage or transmission”\nDefault = json via jsonlite::toJSON()\n#* @serializer NAME list(ARGS)\n\neg, #* @serializer json list(na = \"string\")\n\nImpacts behavior AND Swagger docs",
+    "section": "Posit Cloud",
+    "text": "Posit Cloud\n\nFree tier available\nDeploying: (relatively) Easy & Free\nUsing: Difficult\n\nLoad API in browser\n\nLogin to posit.cloud\n\nCopy cookie (see How do I tell the API who I am)\nPaste cookie into file\nUse file with httr2::req_cookie_preserve()",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I control API output?"
+      "How do I deploy my plumber API?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-output.html#structured-text",
-    "href": "slides/plumber/plumber-output.html#structured-text",
+    "objectID": "slides/plumber/plumber-deploy.html#posit-cloud-demo",
+    "href": "slides/plumber/plumber-deploy.html#posit-cloud-demo",
     "title": "Web APIs with R Book Club",
-    "section": "Structured text",
-    "text": "Structured text\n\n\n\n\n\n\n\n\n@serializer\nprocessed with\ncontent type\n\n\n\n\njson (default)\njsonlite::toJSON()\napplication/json\n\n\nunboxedJSON\njsonlite::toJSON(  auto_unbox = TRUE)\napplication/json\n\n\ngeojson\ngeojsonsf::sfc_geojson() or geojsonsf::sf_geojson()\napplication/json\n\n\nyaml\nyaml::as_yaml()\ntext/x-yaml\n\n\ncsv\nreadr::format_csv\ntext/csv\n\n\ntsv\nreadr::format_tsv\ntext/tab-separated-values",
+    "section": "Posit Cloud: Demo",
+    "text": "Posit Cloud: Demo\n\ndeploy_api &lt;- function(package, name, appName = name, ...) {\n  api_dir &lt;- withr::local_tempdir(\"api\")\n  file_path &lt;- paste0(api_dir, \"/entrypoint.R\")\n  entrypoint_text &lt;- glue::glue(\n    'library({package})',\n    'plumber::plumb_api(\"{package}\", \"{name}\")',\n    .sep = \"\\n\"\n  )\n  writeLines(entrypoint_text, file_path)\n  rsconnect::deployAPI(api_dir, appName = appName, ...)\n}\n# Login to posit.cloud; click your name, then Account, then Tokens\n# + New Token, or Copy existing token, and follow instructions\ndeploy_api(\"yourPackage\", \"yourAPI\")",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I control API output?"
+      "How do I deploy my plumber API?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-output.html#larger-data",
-    "href": "slides/plumber/plumber-output.html#larger-data",
+    "objectID": "slides/plumber/plumber-deploy.html#posit-connect",
+    "href": "slides/plumber/plumber-deploy.html#posit-connect",
     "title": "Web APIs with R Book Club",
-    "section": "Larger data",
-    "text": "Larger data\n\n\n\n@serializer\nprocessed with\ncontent type\n\n\n\n\nrds\nbase::serialize()\napplication/rds\n\n\nfeather\narrow::write_feather()\napplication/vnd.apache.arrow.file\n\n\nparquet\narrow::write_parquet()\napplication/parquet",
+    "section": "Posit Connect",
+    "text": "Posit Connect\n\nPosit Connect = paid enterprise service\nDeploying: Identical to Posit Cloud (just different token)\nUsing: Easy\n\nNo hurdles other than what your IT creates",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I control API output?"
+      "How do I deploy my plumber API?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-output.html#html-xml",
-    "href": "slides/plumber/plumber-output.html#html-xml",
+    "objectID": "slides/plumber/plumber-deploy.html#plumberdeploy",
+    "href": "slides/plumber/plumber-deploy.html#plumberdeploy",
     "title": "Web APIs with R Book Club",
-    "section": "HTML & XML",
-    "text": "HTML & XML\n\n\n\n@serializer\nprocessed with\ncontent type\n\n\n\n\nhtml\n(unprocessed)\ntext/html; charset=UTF-8\n\n\nhtmlwidget\nhtmlwidgets::saveWidget()\ntext/html; charset=UTF-8\n\n\n\nUse html for xml-structured data, too",
+    "section": "plumberDeploy",
+    "text": "plumberDeploy\nTODO: Does this still work? No updates in 2.5 years",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I control API output?"
+      "How do I deploy my plumber API?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-output.html#plain-text",
-    "href": "slides/plumber/plumber-output.html#plain-text",
+    "objectID": "slides/plumber/plumber-deploy.html#others",
+    "href": "slides/plumber/plumber-deploy.html#others",
     "title": "Web APIs with R Book Club",
-    "section": "Plain text",
-    "text": "Plain text\n\n\n\n@serializer\nprocessed with\ncontent type\n\n\n\n\ntext\nas.character()\ntext/plain\n\n\nformat\nformat()\ntext/plain\n\n\nprint\nprint()\ntext/plain\n\n\ncat\ncat()\ntext/plain",
+    "section": "Others",
+    "text": "Others\nTODO: Add the hard things. The free/“easy” ones ate the day!",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I control API output?"
+      "How do I deploy my plumber API?"
     ]
   },
   {
-    "objectID": "slides/plumber/plumber-output.html#devices-images-pdfs",
-    "href": "slides/plumber/plumber-output.html#devices-images-pdfs",
-    "title": "Web APIs with R Book Club",
-    "section": "Devices (images & PDFs)",
-    "text": "Devices (images & PDFs)\n\n\n\n@serializer\nprocessed with\ncontent type\n\n\n\n\njpeg\njpeg()\nimage/jpeg\n\n\npng\npng()\nimage/png\n\n\nsvg\nsvg()\nimage/svg+xml\n\n\ntiff\ntiff()\nimage/tiff\n\n\nbmp\nbmp()\nimage/bmp\n\n\npdf\npdf()\napplication/pdf\n\n\n\nCan define new image serializers with serializer_device()",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I control API output?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-output.html#other-things",
-    "href": "slides/plumber/plumber-output.html#other-things",
-    "title": "Web APIs with R Book Club",
-    "section": "Other things",
-    "text": "Other things\n\n\n\n@serializer\nprocessed with\ncontent type\n\n\n\n\ncontentType\n(user-specified)\n(user-specified)\n\n\noctet\n(as is, must be raw)\napplication/octet-stream\n\n\n\n\n#* @serializer contentType list(type = \"application/protobuf\", serialize_fn = protolite::serialize_pb)\n\n\noctet is contentType with a serialize_fn that checks is.raw()",
-    "crumbs": [
-      "How can I create my own APIs with R?",
-      "How can I control API output?"
-    ]
-  },
-  {
-    "objectID": "slides/plumber/plumber-output.html#meeting-videos",
-    "href": "slides/plumber/plumber-output.html#meeting-videos",
+    "objectID": "slides/plumber/plumber-deploy.html#meeting-videos",
+    "href": "slides/plumber/plumber-deploy.html#meeting-videos",
     "title": "Web APIs with R Book Club",
     "section": "Meeting Videos",
     "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
       "How can I create my own APIs with R?",
-      "How can I control API output?"
+      "How do I deploy my plumber API?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-input.html#path-vs-other",
+    "href": "slides/plumber/plumber-input.html#path-vs-other",
+    "title": "Web APIs with R Book Club",
+    "section": "Path vs Other",
+    "text": "Path vs Other\n\nPath for main noun (the thing you’re acting on)\nQuery/body for arguments\nCookies/header for metadata, auth, etc",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I get inputs from API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-input.html#types-of-inputs",
+    "href": "slides/plumber/plumber-input.html#types-of-inputs",
+    "title": "Web APIs with R Book Club",
+    "section": "Types of inputs",
+    "text": "Types of inputs\nHow will your API be used?\n\nDirectly in browser (Are you sure?)\n\nGET\nQuery for things user decides\nCookies for state, etc\n\nMostly programmatic (including from Shiny, etc)\n\nPOST, PUT, PATCH, DELETE\nBody for things related to this specific request\nHeader for things that aren’t function arguments\nPossibly cookies for state still",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I get inputs from API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-input.html#api-function-arguments",
+    "href": "slides/plumber/plumber-input.html#api-function-arguments",
+    "title": "Web APIs with R Book Club",
+    "section": "API function arguments",
+    "text": "API function arguments\n\nCan expect named arguments, BUT\nBetter: Accept req (request object)\nSpecify priority (or only accept certain ones)\n\nGood documentation MUCH better than flexibility!\nBy default: argsQuery &gt; argsPath &gt; argsBody\n\n\n\nfunction(req) {\n  x &lt;- req$argsPath$x %||% req$argsBody$x %||% req$argsQuery$x %||% \n    req$cookies$x %||% req$HTTP_X\n}",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I get inputs from API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-input.html#parameter-types",
+    "href": "slides/plumber/plumber-input.html#parameter-types",
+    "title": "Web APIs with R Book Club",
+    "section": "Parameter types",
+    "text": "Parameter types\n\nOptionally specify type (~class) in API definition\n\n@param x:int (more details later)\n\nEnclose in [] to allow length &gt; 1 (array)\n\n@param x:[int]",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I get inputs from API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-input.html#parameter-types-table",
+    "href": "slides/plumber/plumber-input.html#parameter-types-table",
+    "title": "Web APIs with R Book Club",
+    "section": "Parameter types table",
+    "text": "Parameter types table\n\n\n\ntype\nR class\nin\n\n\n\n\n“boolean”\nlogical\nquery, path\n\n\n“number”\nnumeric\nquery, path\n\n\n“integer”\ninteger\nquery, path\n\n\n“string”\ncharacter\nquery, path\n\n\n“object”\nlist\nbody\n\n\n“file”\nraw\nbody\n\n\n\n\nAll of these have other aliases (eg int for integer)\nStick with these for smooth experience",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I get inputs from API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-input.html#path-parameters",
+    "href": "slides/plumber/plumber-input.html#path-parameters",
+    "title": "Web APIs with R Book Club",
+    "section": "Path parameters",
+    "text": "Path parameters\n\n#* @get /users/&lt;id&gt;\nfunction(id) {...} # better: use req$argsPath$id\n\nOptional: only route certain types\n\n#* @get /users/&lt;id:int&gt;\nfunction(id) {...} # better: use req$argsPath$id\n\n{plumber} casts typed path input",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I get inputs from API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-input.html#query-parameters",
+    "href": "slides/plumber/plumber-input.html#query-parameters",
+    "title": "Web APIs with R Book Club",
+    "section": "Query parameters",
+    "text": "Query parameters\nhttps://example.com/api/repeat?letter=x&number=1\n\n#* @get repeat\n#* @param letter:string The letter.\n#* @param number:integer The number of times to repeat it.\n\n{plumber} does not cast query input!",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I get inputs from API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-input.html#request-bodies",
+    "href": "slides/plumber/plumber-input.html#request-bodies",
+    "title": "Web APIs with R Book Club",
+    "section": "Request bodies",
+    "text": "Request bodies\n\nreq$body ≈ req$bodyArgs\n\nbody sometimes has raw value + parsed, other details\n\nParsers can prepare body\n\nSpecify as #* @parser PARSER (json, csv, rds, etc)\nArgs in list: #* @parser json list(simplifyVector = FALSE)\n\n\n\n#* @param df:object The input data.frame. Must contain columns \"first_name\" \n#*        and \"city\".\n#* @parser feather list(col_select = c(\"first_name\", \"city\"))",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I get inputs from API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-input.html#stabilizing-input",
+    "href": "slides/plumber/plumber-input.html#stabilizing-input",
+    "title": "Web APIs with R Book Club",
+    "section": "Stabilizing input",
+    "text": "Stabilizing input\nTODO: {stbl} package introduction once it’s stable.\nTODO: Also talk about DoS avoidance (input limits) + Sanitation",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I get inputs from API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-input.html#http-headers",
+    "href": "slides/plumber/plumber-input.html#http-headers",
+    "title": "Web APIs with R Book Club",
+    "section": "HTTP headers",
+    "text": "HTTP headers\nHeaders are processed and included in req object:\n\n- replaced with _\nUPPERCASE\nHTTP_ prefix\n\nX-custom-header → req$HTTP_X_CUSTOM_HEADER",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I get inputs from API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-input.html#inputs-in-cookies",
+    "href": "slides/plumber/plumber-input.html#inputs-in-cookies",
+    "title": "Web APIs with R Book Club",
+    "section": "Inputs in Cookies",
+    "text": "Inputs in Cookies\n\nreq$cookies = named list of (unencrypted) cookies\nreq$session = named list from encrypted cookies\n\nMuch more info when we save cookies",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I get inputs from API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-input.html#remember-filters",
+    "href": "slides/plumber/plumber-input.html#remember-filters",
+    "title": "Web APIs with R Book Club",
+    "section": "Remember filters",
+    "text": "Remember filters\nTODO: Add slide about dealing with things that aren’t specific to a given function via filters (eg, for auth).",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I get inputs from API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-input.html#meeting-videos",
+    "href": "slides/plumber/plumber-input.html#meeting-videos",
+    "title": "Web APIs with R Book Club",
+    "section": "Meeting Videos",
+    "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I get inputs from API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-security.html#review-of-authentication-schemes",
+    "href": "slides/plumber/plumber-security.html#review-of-authentication-schemes",
+    "title": "Web APIs with R Book Club",
+    "section": "Review of authentication schemes",
+    "text": "Review of authentication schemes\n(FROM httr2-authentication.Rmd once that’s edited)",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I authenticate API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-security.html#api-key-considerations",
+    "href": "slides/plumber/plumber-security.html#api-key-considerations",
+    "title": "Web APIs with R Book Club",
+    "section": "API key considerations",
+    "text": "API key considerations\n\nAccept in URL query?\n\nMay be easier for user (eg, purely in-browser)\nLess secure than header\n\nCookies? {-}\n\nIf you set cookie, you need to read it (see later slide)\nProbably also accept header",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I authenticate API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-security.html#api-keys-with-plumber-process-keys",
+    "href": "slides/plumber/plumber-security.html#api-keys-with-plumber-process-keys",
+    "title": "Web APIs with R Book Club",
+    "section": "API keys with plumber: Process Keys",
+    "text": "API keys with plumber: Process Keys\n\n#* Authorize user\n#* @filter authorize_api_key\nfunction(req) {\n  api_key &lt;- req$HTTP_AUTHORIZATION %||%            # Header\n    req$session$api_key %||% req$cookies$api_key    # Cookies\n  # Code to validate and process the API key.\n  req$authorized &lt;- TRUE # Or FALSE, set in auth section\n  plumber::forward()\n}\n\n\n#* @preempt authorize_api_key if endpoint doesn’t use auth",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I authenticate API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-security.html#api-keys-with-plumber-error",
+    "href": "slides/plumber/plumber-security.html#api-keys-with-plumber-error",
+    "title": "Web APIs with R Book Club",
+    "section": "API keys with plumber: Error",
+    "text": "API keys with plumber: Error\n\n#* Error: Unauthorized\n#* @filter stop_unauthorized\nfunction(req) {\n  if (req$authorized) {\n    plumber::forward()\n  }\n  res$status &lt;- 401L\n  # TODO: do_the_log_thing() per plumber-errors.Rmd\n  res$serializer &lt;- plumber::serializer_json\n  res$body &lt;- list(\n    error = \"Unauthorized\",\n    message = \"Obtain an API key at https://your_key_process.html\"\n  )\n}\n\n\n#* @preempt stop_unauthorized if endpoint doesn’t require auth\n\nIn addition to authorize_api_key if not used at all",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I authenticate API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-security.html#oauth2-with-plumber",
+    "href": "slides/plumber/plumber-security.html#oauth2-with-plumber",
+    "title": "Web APIs with R Book Club",
+    "section": "OAuth2 with plumber",
+    "text": "OAuth2 with plumber\n\nEndpoint for user to initiate Oauth2 dance\n\nWill launch browser for interaction with OAuth2 provider\n\nEndpoint for provider to send code\nUse state params to keep track of user\nEnd result is a bearer token (+ possibly other pieces)\n\nTODO: Actually implement this and make sure it works how you think!",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I authenticate API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-security.html#using-cookies-for-user-state",
+    "href": "slides/plumber/plumber-security.html#using-cookies-for-user-state",
+    "title": "Web APIs with R Book Club",
+    "section": "Using cookies for user state",
+    "text": "Using cookies for user state\n\nClient controls cookies, so don’t store anything you “own”\n\nEg, store a key, not a user ID\nSafer: Store preferences\nGeneral rule: things you’d accept as user input\n\nres$setCookie() for unencrypted data",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I authenticate API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-security.html#encrypted-cookies",
+    "href": "slides/plumber/plumber-security.html#encrypted-cookies",
+    "title": "Web APIs with R Book Club",
+    "section": "Encrypted cookies",
+    "text": "Encrypted cookies\n\npr_cookie(pr, key, name) in router\n\nTells plumber to read/write that cookie.\nEncrypts with key\nBy default name = \"plumber\"\n\nAll stored in req$session$plumber\n\n\nCan include lists (ends up as json)\nTODO: Add details about env vars and/or keyring (probably same as httr2 slides)",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I authenticate API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-security.html#meeting-videos",
+    "href": "slides/plumber/plumber-security.html#meeting-videos",
+    "title": "Web APIs with R Book Club",
+    "section": "Meeting Videos",
+    "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I authenticate API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/creating-more.html#slide-1",
+    "href": "slides/plumber/creating-more.html#slide-1",
+    "title": "Web APIs with R Book Club",
+    "section": "SLIDE 1",
+    "text": "SLIDE 1\n\nADD SLIDES AS SECTIONS (##).\nTRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I learn more about creating APIs?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/creating-more.html#notes",
+    "href": "slides/plumber/creating-more.html#notes",
+    "title": "Web APIs with R Book Club",
+    "section": "Notes",
+    "text": "Notes\n\nLink to lambdr site.\nMention Shiny options for POST, etc?\nAlmost definitely link to OpenAPI book\nMaybe discuss a little bit about digging through (plumber) code to learn",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I learn more about creating APIs?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/creating-more.html#meeting-videos",
+    "href": "slides/plumber/creating-more.html#meeting-videos",
+    "title": "Web APIs with R Book Club",
+    "section": "Meeting Videos",
+    "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I learn more about creating APIs?"
+    ]
+  },
+  {
+    "objectID": "slides/club-intro.html#process",
+    "href": "slides/club-intro.html#process",
+    "title": "Club Meetings",
+    "section": "️✅ Process",
+    "text": "️✅ Process\nMeetings = weekly\n\n🧑‍🏫 Jon leads a discussion of a chapter\n\n🙋‍♀️ IMPORTANT: You ask questions!\n️✅ Goal: Revise/finalize learning objectives\n📺 Recordings on DSLC YouTube\n\n🔄️ Jon revises slides\n❓Jon writes “test yourself” questions\n\n🧵 Discuss in channel?\n\n(revisions, maybe future cohorts)\n📝 Jon writes chapter\n\n\n\nTalked about this writing process in project club, dslc.io/youtube\nMeet every week… unless I need a break to catch up.\nDiscussion even more important than in a normal club\nReview revised slides? Maybe spend 2 weeks per chapter?\nWould formal survey of some sort help?\nNot 100% certain about question structure yet (whether “homeworky” or “think about it”).\nHoping to write as we go, but definitely won’t keep up.\n\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
+    "crumbs": [
+      "Club Meetings"
     ]
   },
   {

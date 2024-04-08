@@ -10,7 +10,7 @@
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.553">
 
-  <title>Web APIs with R Book Club</title>
+  <title>Web APIs with R Book Club - What LOs are missing a home</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -389,21 +389,42 @@
   <div class="reveal">
     <div class="slides">
 
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">What LOs are missing a home</h1>
 
-<section>
-<section id="how-can-i-get-a-lot-of-data-from-an-api" class="title-slide slide level1 center">
-<h1>How can I get a lot of data from an API?</h1>
-<p>Cover req_throttle() &amp; req_timeout() in here!</p>
-<p><strong>Learning objectives:</strong></p>
-<ul>
-<li class="fragment">Control the behavior of large requests.</li>
-<li class="fragment">Deal with errors in api calls.</li>
-<li class="fragment">Request paginated data.</li>
-<li class="fragment">Perform multiple requests.</li>
-<li class="fragment">Stream data from an API.</li>
-</ul>
+<div class="quarto-title-authors">
+</div>
+
 </section>
-<section id="controlling-large-requests" class="slide level2 unnumbered">
+<section>
+<section id="learning-objectives" class="title-slide slide level1 center">
+<h1>️✅ Learning objectives</h1>
+<p>Cover req_throttle() &amp; req_timeout() in here</p>
+<div>
+<ul>
+<li>Perform a list of {httr2} requests in sequence.</li>
+<li>Perform a list of {httr2} requests in parallel.</li>
+<li>Stream data from an API. </li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(httr2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<aside class="notes">
+<p>“After we finish this chapter, we’ll be able to…” (objectives)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="controlling-large-requests" class="slide level2">
 <h2>Controlling large requests</h2>
 <ul>
 <li class="fragment"><code>httr2::req_progress()</code> adds a progress bar for requests that transfer a lot of data.</li>
@@ -411,7 +432,7 @@
 <li class="fragment"><code>httr2::req_cache()</code> to avoid re-calling slow calls</li>
 </ul>
 </section>
-<section id="throttling-and-retries" class="slide level2 unnumbered">
+<section id="throttling-and-retries" class="slide level2">
 <h2>Throttling and retries</h2>
 <ul>
 <li class="fragment">APIs often throw errors if hit too fast</li>
@@ -427,7 +448,7 @@
 </ul></li>
 </ul>
 </section>
-<section id="dealing-with-errors" class="slide level2 unnumbered">
+<section id="dealing-with-errors" class="slide level2">
 <h2>Dealing with errors</h2>
 <ul>
 <li class="fragment"><code>httr2::req_error()</code> to handle errors
@@ -443,49 +464,7 @@
 </ul></li>
 </ul>
 </section>
-<section id="pagination" class="slide level2 unnumbered">
-<h2>Pagination</h2>
-<ul>
-<li class="fragment"><code>httr2::req_perform_iterative()</code></li>
-<li class="fragment"><code>next_req</code> = function
-<ul>
-<li class="fragment"><code>iterate_with_offset()</code> to increment query parameter (<code>?page=1</code>, <code>?page=2</code>)</li>
-<li class="fragment"><code>iterate_with_cursor()</code> to extract next page from response</li>
-<li class="fragment"><code>iterate_with_link_url()</code> to follow Link in resp header</li>
-</ul></li>
-</ul>
-</section>
-<section id="pagination-fec" class="slide level2 unnumbered">
-<h2>Pagination: FEC</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>resps <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1/candidates"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-2"><a></a>  <span class="fu">req_headers</span>(<span class="st">"X-Api-Key"</span> <span class="ot">=</span> <span class="st">"DEMO_KEY"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">office =</span> <span class="st">"H"</span>, <span class="at">per_page =</span> <span class="dv">100</span>, <span class="at">election_year =</span> <span class="dv">2020</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
-<span id="cb1-5"><a></a>    <span class="fu">iterate_with_offset</span>(</span>
-<span id="cb1-6"><a></a>      <span class="st">"page"</span>,</span>
-<span id="cb1-7"><a></a>      <span class="at">resp_pages =</span> \(resp) <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>pagination<span class="sc">$</span>pages <span class="co"># Check once</span></span>
-<span id="cb1-8"><a></a>    ),</span>
-<span id="cb1-9"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span> <span class="co"># Important! Default = 20</span></span>
-<span id="cb1-10"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="pagination-youtube" class="slide level2 unnumbered">
-<h2>Pagination: YouTube</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>resps <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://youtube.googleapis.com/youtube/v3"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-2"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"playlists"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">part =</span> <span class="st">"snippet"</span>, <span class="at">mine =</span> <span class="cn">TRUE</span>, <span class="at">maxResults =</span> <span class="dv">50</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-4"><a></a>  <span class="fu">req_auth_bearer_token</span>(IGNORE_FOR_NOW) <span class="sc">|&gt;</span> </span>
-<span id="cb2-5"><a></a>  <span class="fu">req_perform_iteratively</span>(</span>
-<span id="cb2-6"><a></a>    <span class="fu">iterate_with_cursor</span>(</span>
-<span id="cb2-7"><a></a>      <span class="st">"pageToken"</span>,</span>
-<span id="cb2-8"><a></a>      <span class="cf">function</span>(resp) <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>nextPageToken</span>
-<span id="cb2-9"><a></a>    )</span>
-<span id="cb2-10"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="multiple-requests" class="slide level2 unnumbered">
+<section id="multiple-requests" class="slide level2">
 <h2>Multiple requests</h2>
 <ul>
 <li class="fragment">Manually create list of separate requests</li>
@@ -502,30 +481,22 @@
 </ul></li>
 </ul>
 </section>
-<section id="multiple-requests-youtube" class="slide level2 unnumbered">
+<section id="multiple-requests-youtube" class="slide level2">
 <h2>Multiple requests: YouTube</h2>
 <p>Get 10 most recent videos from list of playlists.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>base_req <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://youtube.googleapis.com/youtube/v3"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"playlistItems"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">part =</span> <span class="st">"contentDetails"</span>, <span class="at">maxResults =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a></a>  <span class="fu">req_auth_bearer_token</span>(IGNORE_FOR_NOW)</span>
-<span id="cb3-5"><a></a></span>
-<span id="cb3-6"><a></a>resps <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
-<span id="cb3-7"><a></a>  playlists, \(playlist) <span class="fu">req_url_query</span>(base_req, <span class="at">playlistId =</span> playlist)</span>
-<span id="cb3-8"><a></a>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-9"><a></a>  <span class="fu">req_perform_parallel</span>() <span class="co"># or req_perform_sequential()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>base_req <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://youtube.googleapis.com/youtube/v3"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"playlistItems"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">part =</span> <span class="st">"contentDetails"</span>, <span class="at">maxResults =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-4"><a></a>  <span class="fu">req_auth_bearer_token</span>(IGNORE_FOR_NOW)</span>
+<span id="cb2-5"><a></a></span>
+<span id="cb2-6"><a></a>resps <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
+<span id="cb2-7"><a></a>  playlists, \(playlist) <span class="fu">req_url_query</span>(base_req, <span class="at">playlistId =</span> playlist)</span>
+<span id="cb2-8"><a></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-9"><a></a>  <span class="fu">req_perform_parallel</span>() <span class="co"># or req_perform_sequential()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="parsing-multiple-responses" class="slide level2 unnumbered">
-<h2>Parsing multiple responses</h2>
-<ul>
-<li class="fragment"><code>httr2::resps_data()</code> to combine responses from <code>req_perform_*()</code></li>
-<li class="fragment">Provide function to extract data from single resp as vector or df.</li>
-<li class="fragment">More details in Chapter 6.</li>
-</ul>
-</section>
-<section id="streaming" class="slide level2 unnumbered">
+<section id="streaming" class="slide level2">
 <h2>Streaming</h2>
 <ul>
 <li class="fragment"><code>httr2::req_perform_stream()</code> to stream data from API</li>
@@ -534,36 +505,24 @@
 <li class="fragment"><em>Eg: Save to file, different process could read that file from Shiny</em></li>
 </ul>
 </section>
-<section id="streaming-simple-example" class="slide level2 unnumbered">
+<section id="streaming-simple-example" class="slide level2">
 <h2>Streaming: Simple example</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>show_bytes <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb4-2"><a></a>  cli<span class="sc">::</span><span class="fu">cli_inform</span>(<span class="st">"Got {length(x)} bytes at {Sys.time()}."</span>)</span>
-<span id="cb4-3"><a></a>  <span class="cn">TRUE</span></span>
-<span id="cb4-4"><a></a>}</span>
-<span id="cb4-5"><a></a>resp <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(httr2<span class="sc">::</span><span class="fu">example_url</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb4-6"><a></a>  httr2<span class="sc">::</span><span class="fu">req_url_path</span>(<span class="st">"/stream-bytes/100000"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-7"><a></a>  httr2<span class="sc">::</span><span class="fu">req_perform_stream</span>(show_bytes, <span class="at">buffer_kb =</span> <span class="dv">32</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>show_bytes <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb3-2"><a></a>  cli<span class="sc">::</span><span class="fu">cli_inform</span>(<span class="st">"Got {length(x)} bytes at {Sys.time()}."</span>)</span>
+<span id="cb3-3"><a></a>  <span class="cn">TRUE</span></span>
+<span id="cb3-4"><a></a>}</span>
+<span id="cb3-5"><a></a>resp <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(httr2<span class="sc">::</span><span class="fu">example_url</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a></a>  httr2<span class="sc">::</span><span class="fu">req_url_path</span>(<span class="st">"/stream-bytes/100000"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-7"><a></a>  httr2<span class="sc">::</span><span class="fu">req_perform_stream</span>(show_bytes, <span class="at">buffer_kb =</span> <span class="dv">32</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="is-this-interesting" class="slide level2 unnumbered">
+<section id="is-this-interesting" class="slide level2">
 <h2>Is this interesting?</h2>
 <ul>
 <li class="fragment"><code>req_options()</code> lets you directly set libcurl options not available in {httr2}</li>
 <li class="fragment">Should I dig through and find what’s available but not implemented?</li>
 </ul>
-</section>
-<section id="meeting-videos" class="slide level2 unnumbered">
-<h2>Meeting Videos</h2>
-<h3 class="unnumbered" id="cohort-1">Cohort 1</h3>
-<iframe src="https://www.youtube.com/embed/URL" width="100%" height="400px" data-external="1">
-</iframe>
-<details>
-<summary>
-Meeting chat log
-</summary>
-<pre><code>LOG</code></pre>
-</details>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
