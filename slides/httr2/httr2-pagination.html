@@ -424,53 +424,518 @@
       }</style></aside>
 </section>
 
+<section>
 <section id="what-is-pagination" class="title-slide slide level1 center">
 <h1>What is pagination?</h1>
 
 </section>
-
-<section id="how-can-i-determine-how-an-api-handles-pagination" class="title-slide slide level1 center">
-<h1>How can I determine how an API handles pagination?</h1>
-
+<section id="why-paginate" class="slide level2">
+<h2>Why paginate?</h2>
+<ul>
+<li class="fragment">Network traffic is slow &amp; expensive</li>
+<li class="fragment">Bigger transfers ➡️ more corruption chance ➡️ resends</li>
+<li class="fragment">So APIs often limit results per call</li>
+<li class="fragment">1 set of results = 1 page</li>
+</ul>
 </section>
-
+<section id="what-are-some-pagination-strategies" class="slide level2">
+<h2>What are some pagination strategies?</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li class="fragment"><strong>Offset:</strong> <code>page</code> param
+<ul>
+<li class="fragment"><a href="https://api.open.fec.gov/developers/#/candidate/get_v1_candidates_">OpenFEC</a></li>
+<li class="fragment"><a href="https://api.crossref.org/swagger-ui/index.html">Crossref.org</a></li>
+</ul></li>
+<li class="fragment"><strong>Cursor:</strong> <code>cursor</code> or <code>token</code> param
+<ul>
+<li class="fragment"><a href="https://api.crossref.org/swagger-ui/index.html">Crossref.org “deep paging”</a></li>
+</ul></li>
+</ul>
+</div><div class="column">
+<ul>
+<li class="fragment"><strong>Header link:</strong> <code>Link:</code> to <code>next</code> in response <code>header</code>
+<ul>
+<li class="fragment"><a href="https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api?apiVersion=2022-11-28#using-link-headers">GitHub</a></li>
+<li class="fragment"><a href="https://docs.magicthegathering.io/#documentationheaders">MTG cars</a></li>
+</ul></li>
+<li class="fragment"><strong>Body link:</strong> <code>nextUrl</code> in response <code>body</code>
+<ul>
+<li class="fragment"><a href="https://api.open5e.com/monsters/?limit=100">open5e.com monsters</a></li>
+</ul></li>
+</ul>
+</div>
+</div>
+<ul>
+<li class="fragment">shared: Most offer <code>perPage</code> or <code>pageSize</code> param</li>
+</ul>
+</section>
+<section id="how-can-i-determine-how-an-api-handles-pagination" class="slide level2">
+<h2>How can I determine how an API handles pagination?</h2>
+<p>Unfortunately, no standard.</p>
+<ul>
+<li class="fragment">Almost always: Mentioned in relevant paths</li>
+<li class="fragment">Often: Separate “pagination” section near top of docs</li>
+<li class="fragment">Fall-throughs:
+<ul>
+<li class="fragment"><code>page</code>, <code>perPage</code>, <code>cursor</code> parameters</li>
+<li class="fragment">Look at a response</li>
+</ul></li>
+</ul>
+</section></section>
 <section>
 <section id="how-do-i-perform-pagination" class="title-slide slide level1 center">
 <h1>How do I perform pagination?</h1>
 
 </section>
-<section id="req_retry" class="slide level2">
-<h2>req_retry()</h2>
+<section id="aside-retries-and-api-consumer-etiquette" class="slide level2">
+<h2>Aside: Retries and API consumer etiquette</h2>
+<ul>
+<li class="fragment">Pagination ➡️ repeated API calls</li>
+<li class="fragment">Be nice!</li>
+<li class="fragment"><code>httr2::req_retry()</code>
+<ul>
+<li class="fragment"><strong><em>Must</em></strong> set <code>max_tries</code> or <code>max_seconds</code></li>
+<li class="fragment">Other options usually ok as-is</li>
+</ul></li>
+<li class="fragment">More in (chapter TBD)</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>If neither <code>max_tries</code> nor <code>max_seconds</code> set, silently ignored</li>
+<li>Other things: <code>req_throttle()</code> limits calls/second, <code>req_timeout()</code> to set a time limit for single big calls</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="req_perform_iterative" class="slide level2">
 <h2>req_perform_iterative()</h2>
+<ul>
+<li class="fragment"><img data-src="https://img.shields.io/badge/lifecycle-experimental-orange.svg"> Added in {httr2} 1.0.0.</li>
+<li class="fragment">Replaces <code>req_perform()</code></li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>normal_request <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="co"># Tries *per page*</span></span>
+<span id="cb2-3"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb2-4"><a></a>    <span class="at">next_req =</span> function_to_choose_next_req,</span>
+<span id="cb2-5"><a></a>    <span class="at">max_reqs =</span> <span class="dv">20</span> <span class="co"># Maximum separate page calls</span></span>
+<span id="cb2-6"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<ul>
+<li class="fragment">“Iteration helpers” = built-in <code>next_req</code> functions</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Usually include retry, because API might yell at you for multiple calls</li>
+<li><code>max_reqs</code> default is 20. Start low when experimenting, <code>Inf</code> when solid</li>
+<li>Each iteration helper gets a slide</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="iteration-helpers-iterate_with_offset" class="slide level2">
 <h2>Iteration helpers: iterate_with_offset()</h2>
+<ul>
+<li class="fragment"><code>param_name</code> = <code>"page"</code> or whatever API calls it</li>
+<li class="fragment"><code>start</code>, <code>offset</code> = almost always leave as-is</li>
+<li class="fragment"><code>resp_pages</code> = function to convert <code>resp</code> to page count
+<ul>
+<li class="fragment"><code>max_reqs &lt;- min(max_reqs, total_pages)</code></li>
+</ul></li>
+<li class="fragment"><code>resp_complete</code> = function to check if <code>resp</code> is last page
+<ul>
+<li class="fragment">Eg: <code>\(resp) !length(resp_body_json(resp))</code></li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Almost always “page”.</li>
+<li><code>resp_pages</code> called 1st response. Optional.
+<ul>
+<li>Help says it’s called once, but, if it fails to find total, it will be called for each response.</li>
+</ul></li>
+<li><code>resp_complete</code> usually not needed
+<ul>
+<li>Example is shorthand for “Did we get an empty body?”</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="offset-example-fec-or-crossref" class="slide level2">
-<h2>Offset example: FEC (or crossref?)</h2>
+<section id="offset-example-openfec" class="slide level2">
+<h2>Offset example: OpenFEC</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>candidates_request <span class="ot">&lt;-</span> </span>
+<span id="cb3-2"><a></a>  <span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1/candidates"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">api_key =</span> <span class="st">"DEMO_KEY"</span>, <span class="at">election_year =</span> <span class="dv">2020</span>, <span class="at">office =</span> <span class="st">"P"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a></a>  <span class="fu">req_url_query</span>(<span class="at">has_raised_funds =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="columns">
+<div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>candidates_single <span class="ot">&lt;-</span> </span>
+<span id="cb4-2"><a></a>  candidates_request <span class="sc">|&gt;</span> </span>
+<span id="cb4-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
+<span id="cb4-5"><a></a><span class="fu">length</span>(candidates_single<span class="sc">$</span>results)</span>
+<span id="cb4-6"><a></a><span class="co">#&gt; [1] 20</span></span>
+<span id="cb4-7"><a></a>candidates_single<span class="sc">$</span>pagination<span class="sc">$</span>count</span>
+<span id="cb4-8"><a></a><span class="co">#&gt; [1] 173</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>candidates_multi <span class="ot">&lt;-</span> </span>
+<span id="cb5-2"><a></a>  candidates_request <span class="sc">|&gt;</span> </span>
+<span id="cb5-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb5-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_offset</span>(</span>
+<span id="cb5-6"><a></a>      <span class="st">"page"</span>,</span>
+<span id="cb5-7"><a></a>      <span class="at">resp_pages =</span> \(resp) {</span>
+<span id="cb5-8"><a></a>        content <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)</span>
+<span id="cb5-9"><a></a>        content<span class="sc">$</span>pagination<span class="sc">$</span>pages</span>
+<span id="cb5-10"><a></a>      }</span>
+<span id="cb5-11"><a></a>    ),</span>
+<span id="cb5-12"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb5-13"><a></a>  )</span>
+<span id="cb5-14"><a></a><span class="fu">length</span>(candidates_multi)</span>
+<span id="cb5-15"><a></a><span class="co">#&gt; [1] 9</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Warning: This might take a while with the DEMO_KEY</li>
+<li>We’ll see how to extract data from the pages shortly</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="offset-example-crossref.org" class="slide level2">
+<h2>Offset example: crossref.org</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>crossref_request <span class="ot">&lt;-</span> </span>
+<span id="cb6-2"><a></a>  <span class="fu">request</span>(<span class="st">"https://api.crossref.org/works"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">query =</span> <span class="st">"apis"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="columns">
+<div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>crossref_single <span class="ot">&lt;-</span> </span>
+<span id="cb7-2"><a></a>  crossref_request <span class="sc">|&gt;</span> </span>
+<span id="cb7-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb7-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
+<span id="cb7-5"><a></a><span class="fu">length</span>(crossref_single<span class="sc">$</span>message<span class="sc">$</span>items)</span>
+<span id="cb7-6"><a></a><span class="co">#&gt; [1] 20</span></span>
+<span id="cb7-7"><a></a>crossref_single<span class="sc">$</span>message<span class="sc">$</span><span class="st">`</span><span class="at">total-results</span><span class="st">`</span></span>
+<span id="cb7-8"><a></a><span class="co">#&gt; [1] 14114</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>crossref_multi <span class="ot">&lt;-</span> </span>
+<span id="cb8-2"><a></a>  crossref_request <span class="sc">|&gt;</span> </span>
+<span id="cb8-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb8-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_offset</span>(</span>
+<span id="cb8-6"><a></a>      <span class="st">"offset"</span>,</span>
+<span id="cb8-7"><a></a>      <span class="at">resp_pages =</span> \(resp) {</span>
+<span id="cb8-8"><a></a>        content <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)</span>
+<span id="cb8-9"><a></a>        content<span class="sc">$</span>pagination<span class="sc">$</span>message<span class="sc">$</span><span class="st">`</span><span class="at">total-results</span><span class="st">`</span></span>
+<span id="cb8-10"><a></a>      }</span>
+<span id="cb8-11"><a></a>    ),</span>
+<span id="cb8-12"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb8-13"><a></a>  )</span>
+<span id="cb8-14"><a></a><span class="fu">length</span>(crossref_multi)</span>
+<span id="cb8-15"><a></a><span class="co">#&gt; [1] 706</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Warning: This takes a long time, probably don’t actually run it!</li>
+<li>This one has a faster (?) method that we’ll check in a sec.</li>
+<li>We’ll see how to extract data from the pages shortly</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="iteration-helpers-iterate_with_cursor" class="slide level2">
 <h2>Iteration helpers: iterate_with_cursor()</h2>
+<ul>
+<li class="fragment"><code>param_name</code> = <code>"cursor"</code> or whatever API calls it</li>
+<li class="fragment"><code>resp_param_value</code> = function to convert <code>resp</code> to next cursor
+<ul>
+<li class="fragment"><code>NULL</code> if no more pages</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>I’ve seen “cursor”, “token” and variations, like “nextPageToken”.</li>
+<li>Single function because usually this style ends with an empty <code>nextCursor</code>.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="cursor-example-crossref" class="slide level2">
 <h2>Cursor example: Crossref</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>crossref_request_cursor <span class="ot">&lt;-</span> </span>
+<span id="cb9-2"><a></a>  crossref_request <span class="sc">|&gt;</span> </span>
+<span id="cb9-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">cursor =</span> <span class="st">"*"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="columns">
+<div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>crossref_single <span class="ot">&lt;-</span> </span>
+<span id="cb10-2"><a></a>  crossref_request_cursor <span class="sc">|&gt;</span> </span>
+<span id="cb10-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb10-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
+<span id="cb10-5"><a></a><span class="fu">names</span>(crossref_single<span class="sc">$</span>message)</span>
+<span id="cb10-6"><a></a><span class="co">#&gt; [1] "facets"         "next-cursor"    "total-results"  "items"          "items-per-page"</span></span>
+<span id="cb10-7"><a></a><span class="co">#&gt; [6] "query" </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>crossref_multi <span class="ot">&lt;-</span> </span>
+<span id="cb11-2"><a></a>  crossref_request_cursor <span class="sc">|&gt;</span> </span>
+<span id="cb11-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb11-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb11-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_cursor</span>(</span>
+<span id="cb11-6"><a></a>      <span class="st">"cursor"</span>,</span>
+<span id="cb11-7"><a></a>      <span class="at">resp_param_value =</span> \(resp) {</span>
+<span id="cb11-8"><a></a>        content <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)</span>
+<span id="cb11-9"><a></a>        <span class="cf">if</span> (<span class="sc">!</span><span class="fu">length</span>(content<span class="sc">$</span>message<span class="sc">$</span>items)) {</span>
+<span id="cb11-10"><a></a>          <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb11-11"><a></a>        }</span>
+<span id="cb11-12"><a></a>        content<span class="sc">$</span>message<span class="sc">$</span><span class="st">`</span><span class="at">next-cursor</span><span class="st">`</span></span>
+<span id="cb11-13"><a></a>      }</span>
+<span id="cb11-14"><a></a>    ),</span>
+<span id="cb11-15"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb11-16"><a></a>  )</span>
+<span id="cb11-17"><a></a><span class="fu">length</span>(crossref_multi)</span>
+<span id="cb11-18"><a></a><span class="co">#&gt; [1] 706</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Warning: This takes a long time, probably don’t actually run it!</li>
+<li>Not noticeably faster, but this API limits total results from normal pagination, unlimited for cursor-based</li>
+<li>In this case they keep sending next-cursors even when results are empty, so we need to tell it to stop when no results</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="iteration-helpers-iterate_with_link_url" class="slide level2">
 <h2>Iteration helpers: iterate_with_link_url()</h2>
+<ul>
+<li class="fragment"><code>rel</code> = <code>"next"</code> or whatever API calls it</li>
+<li class="fragment"><code>resp_param_value</code> = function to convert <code>resp</code> to next cursor
+<ul>
+<li class="fragment"><code>NULL</code> if no more pages</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>This really should always be “next”, but it isn’t required</li>
+<li>Canonical example is the GitHub API, but I’m showing a demo that doesn’t require any setup by you</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="link-url-example-mtg" class="slide level2">
 <h2>Link-URL example: MTG</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>mtg_cards_request <span class="ot">&lt;-</span> </span>
+<span id="cb12-2"><a></a>  <span class="fu">request</span>(<span class="st">"http://api.magicthegathering.io/v1"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"cards"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a></a>  <span class="fu">req_url_query</span>(<span class="at">name =</span> <span class="st">"bee"</span>, <span class="at">pageSize =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="columns">
+<div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>mtg_cards_single <span class="ot">&lt;-</span> </span>
+<span id="cb13-2"><a></a>  mtg_cards_request <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a></a>  <span class="fu">req_perform</span>()</span>
+<span id="cb13-4"><a></a><span class="fu">resp_header</span>(mtg_cards_single, <span class="st">"link"</span>)</span>
+<span id="cb13-5"><a></a><span class="co">#&gt; &lt;https://api.magicthegathering.io/v1/cards?name=bee&amp;page=5&amp;pageSize=20&gt;; rel="last", </span></span>
+<span id="cb13-6"><a></a><span class="co">#&gt; &lt;https://api.magicthegathering.io/v1/cards?name=bee&amp;page=2&amp;pageSize=20&gt;; rel="next"</span></span>
+<span id="cb13-7"><a></a>mtg_cards_content <span class="ot">&lt;-</span> mtg_cards_single <span class="sc">|&gt;</span> </span>
+<span id="cb13-8"><a></a>  <span class="fu">resp_body_json</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>mtg_cards_multi <span class="ot">&lt;-</span> </span>
+<span id="cb14-2"><a></a>  mtg_cards_request <span class="sc">|&gt;</span> </span>
+<span id="cb14-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb14-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_link_url</span>(),</span>
+<span id="cb14-6"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb14-7"><a></a>  )</span>
+<span id="cb14-8"><a></a><span class="fu">length</span>(mtg_cards_multi)</span>
+<span id="cb14-9"><a></a><span class="co">#&gt; [1] 5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>If I were working with this one a lot, I’d probably actually use offset pagination.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="roll-your-own-iteration" class="slide level2">
 <h2>Roll-your-own iteration</h2>
+<ul>
+<li class="fragment">People love to reinvent this wheel.</li>
+<li class="fragment"><strong>Body link:</strong> <code>nextUrl</code> in response <code>body</code>
+<ul>
+<li class="fragment"><a href="https://api.open5e.com/monsters/?limit=100">open5e.com monsters</a></li>
+</ul></li>
+</ul>
 </section>
-<section id="roll-your-own-example-disney-dnd" class="slide level2">
-<h2>Roll-your-own example: Disney? DnD?</h2>
-<p>https://api.disneyapi.dev/character</p>
-<p>https://api.open5e.com/monsters/?limit=100</p>
-<p>(consider submitting that to httr2 as an iteration helper, it’s pretty common)</p>
+<section id="roll-your-own-example-dnd-monsters" class="slide level2">
+<h2>Roll-your-own example: DnD Monsters</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>dnd_request <span class="ot">&lt;-</span> </span>
+<span id="cb15-2"><a></a>  <span class="fu">request</span>(<span class="st">"https://api.open5e.com/monsters/?limit=100"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="columns">
+<div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>dnd_single <span class="ot">&lt;-</span> </span>
+<span id="cb16-2"><a></a>  dnd_request <span class="sc">|&gt;</span> </span>
+<span id="cb16-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb16-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
+<span id="cb16-5"><a></a><span class="fu">length</span>(dnd_single<span class="sc">$</span>results)</span>
+<span id="cb16-6"><a></a><span class="co">#&gt; [1] 100</span></span>
+<span id="cb16-7"><a></a>dnd_single<span class="sc">$</span>count</span>
+<span id="cb16-8"><a></a><span class="co">#&gt; [1] 2439</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>dnd_multi <span class="ot">&lt;-</span> </span>
+<span id="cb17-2"><a></a>  dnd_request <span class="sc">|&gt;</span> </span>
+<span id="cb17-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb17-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb17-5"><a></a>    <span class="at">next_req =</span> <span class="cf">function</span>(resp, req) {</span>
+<span id="cb17-6"><a></a>      url <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span><span class="st">`</span><span class="at">next</span><span class="st">`</span></span>
+<span id="cb17-7"><a></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(url)) {</span>
+<span id="cb17-8"><a></a>        <span class="fu">req_url</span>(req, url)</span>
+<span id="cb17-9"><a></a>      }</span>
+<span id="cb17-10"><a></a>    },</span>
+<span id="cb17-11"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb17-12"><a></a>  )</span>
+<span id="cb17-13"><a></a><span class="fu">length</span>(dnd_multi)</span>
+<span id="cb17-14"><a></a><span class="co">#&gt; [1] 25</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Used code returned by <code>iterate_with_link_url()</code> as template</li>
+<li>Be sure to keep all the non-URL bits of the req!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
 <section id="how-do-i-parse-paginated-responses" class="title-slide slide level1 center">
@@ -479,67 +944,80 @@
 </section>
 <section id="resps_data" class="slide level2">
 <h2>resps_data()</h2>
-</section>
-<section id="resps_data-examples" class="slide level2">
-<h2>resps_data() example(s)</h2>
-</section>
-<section id="resps_data-friends" class="slide level2">
-<h2>resps_data() friends</h2>
-</section></section>
-<section>
-<section id="old-slides" class="title-slide slide level1 center">
-<h1>Old slides</h1>
-
-</section>
-<section id="pagination" class="slide level2">
-<h2>Pagination</h2>
 <ul>
-<li class="fragment"><code>httr2::req_perform_iterative()</code></li>
-<li class="fragment"><code>next_req</code> = function
+<li class="fragment"><code>req_perform_iterative()</code> returns <em>list</em> of responses</li>
+<li class="fragment"><code>resps_data()</code> takes that list + <code>resp_data()</code> parsing function and merges</li>
+<li class="fragment">Usually you need more than just something like <code>resp_body_json</code>
 <ul>
-<li class="fragment"><code>iterate_with_offset()</code> to increment query parameter (<code>?page=1</code>, <code>?page=2</code>)</li>
-<li class="fragment"><code>iterate_with_cursor()</code> to extract next page from response</li>
-<li class="fragment"><code>iterate_with_link_url()</code> to follow Link in resp header</li>
+<li class="fragment">Grab just the actual results</li>
 </ul></li>
 </ul>
 </section>
-<section id="pagination-fec" class="slide level2">
-<h2>Pagination: FEC</h2>
+<section id="resps_data-example-openfec" class="slide level2">
+<h2>resps_data() example: OpenFEC</h2>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>resps <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1/candidates"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-2"><a></a>  <span class="fu">req_headers</span>(<span class="st">"X-Api-Key"</span> <span class="ot">=</span> <span class="st">"DEMO_KEY"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">office =</span> <span class="st">"H"</span>, <span class="at">per_page =</span> <span class="dv">100</span>, <span class="at">election_year =</span> <span class="dv">2020</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
-<span id="cb2-5"><a></a>    <span class="fu">iterate_with_offset</span>(</span>
-<span id="cb2-6"><a></a>      <span class="st">"page"</span>,</span>
-<span id="cb2-7"><a></a>      <span class="at">resp_pages =</span> \(resp) <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>pagination<span class="sc">$</span>pages <span class="co"># Check once</span></span>
-<span id="cb2-8"><a></a>    ),</span>
-<span id="cb2-9"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span> <span class="co"># Important! Default = 20</span></span>
-<span id="cb2-10"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>fec_resp_parser <span class="ot">&lt;-</span> <span class="cf">function</span>(resp) {</span>
+<span id="cb18-2"><a></a>  <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>results</span>
+<span id="cb18-3"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>candidates_multi_results <span class="ot">&lt;-</span> <span class="fu">resps_data</span>(</span>
+<span id="cb19-2"><a></a>  candidates_multi, fec_resp_parser</span>
+<span id="cb19-3"><a></a>)</span>
+<span id="cb19-4"><a></a>tibblify<span class="sc">::</span><span class="fu">tibblify</span>(candidates_multi_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 173 × 24
+#&gt;    active_through candidate_id candidate_inactive candidate_status cycles    
+#&gt;             &lt;int&gt; &lt;chr&gt;        &lt;lgl&gt;              &lt;chr&gt;            &lt;list&gt;    
+#&gt;  1           2020 P00014241    FALSE              N                &lt;list [3]&gt;
+#&gt;  2           2024 P00008193    FALSE              N                &lt;list [4]&gt;
+#&gt;  3           2020 P00006296    FALSE              P                &lt;list [4]&gt;
+#&gt;  4           2020 P00010900    FALSE              N                &lt;list [1]&gt;
+#&gt;  5           2020 P00012104    FALSE              P                &lt;list [3]&gt;
+#&gt;  6           2020 P40003170    FALSE              N                &lt;list [5]&gt;
+#&gt;  7           2020 P00008128    FALSE              N                &lt;list [4]&gt;
+#&gt;  8           2020 P80004369    FALSE              N                &lt;list [2]&gt;
+#&gt;  9           2020 P00010090    FALSE              N                &lt;list [3]&gt;
+#&gt; 10           2024 P00015297    FALSE              N                &lt;list [3]&gt;
+#&gt; # ℹ 163 more rows
+#&gt; # ℹ 19 more variables: district &lt;chr&gt;, district_number &lt;int&gt;,
+#&gt; #   election_districts &lt;list&gt;, election_years &lt;list&gt;, federal_funds_flag &lt;lgl&gt;,
+#&gt; #   first_file_date &lt;chr&gt;, has_raised_funds &lt;lgl&gt;,
+#&gt; #   inactive_election_years &lt;list&gt;, incumbent_challenge &lt;chr&gt;,
+#&gt; #   incumbent_challenge_full &lt;chr&gt;, last_f2_date &lt;chr&gt;, last_file_date &lt;chr&gt;,
+#&gt; #   load_date &lt;chr&gt;, name &lt;chr&gt;, office &lt;chr&gt;, office_full &lt;chr&gt;, …</code></pre>
+</div>
+</div>
 </div>
 </section>
-<section id="pagination-youtube" class="slide level2">
-<h2>Pagination: YouTube</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>resps <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://youtube.googleapis.com/youtube/v3"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"playlists"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">part =</span> <span class="st">"snippet"</span>, <span class="at">mine =</span> <span class="cn">TRUE</span>, <span class="at">maxResults =</span> <span class="dv">50</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a></a>  <span class="fu">req_auth_bearer_token</span>(IGNORE_FOR_NOW) <span class="sc">|&gt;</span> </span>
-<span id="cb3-5"><a></a>  <span class="fu">req_perform_iteratively</span>(</span>
-<span id="cb3-6"><a></a>    <span class="fu">iterate_with_cursor</span>(</span>
-<span id="cb3-7"><a></a>      <span class="st">"pageToken"</span>,</span>
-<span id="cb3-8"><a></a>      <span class="cf">function</span>(resp) <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>nextPageToken</span>
-<span id="cb3-9"><a></a>    )</span>
-<span id="cb3-10"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="parsing-multiple-responses" class="slide level2">
-<h2>Parsing multiple responses</h2>
+<section id="resps_data-friends" class="slide level2">
+<h2>resps_data() friends</h2>
 <ul>
-<li class="fragment"><code>httr2::resps_data()</code> to combine responses from <code>req_perform_*()</code></li>
-<li class="fragment">Provide function to extract data from single resp as vector or df.</li>
-<li class="fragment">More details in Chapter 6.</li>
+<li class="fragment"><code>req_perform_iterative</code> <code>on_error</code> arg: “stop” or “return”</li>
+<li class="fragment"><code>resps_successes()</code> extracts just successes from <code>resps</code> list</li>
+<li class="fragment"><code>resps_failures()</code> same, but failures</li>
+<li class="fragment"><code>resps_requests()</code> to see how they were called</li>
 </ul>
+<aside class="notes">
+<ul>
+<li>We didn’t dig into it, but <code>req_perform_iterative()</code> has <code>on_error</code> arg</li>
+<li>Common workflow might be to grab the successes, and then pass THAT to <code>resps_data()</code></li>
+<li><code>req_perform_iterative</code> can only have 1 failure, but we’ll see some more multi performs in a later chapter TBD</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">

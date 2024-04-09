@@ -379,11 +379,44 @@
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-pagination.html#req_retry",
-    "href": "slides/httr2/httr2-pagination.html#req_retry",
+    "objectID": "slides/httr2/httr2-pagination.html#why-paginate",
+    "href": "slides/httr2/httr2-pagination.html#why-paginate",
     "title": "How can I get a lot of data from an API?",
-    "section": "req_retry()",
-    "text": "req_retry()",
+    "section": "Why paginate?",
+    "text": "Why paginate?\n\nNetwork traffic is slow & expensive\nBigger transfers ➡️ more corruption chance ➡️ resends\nSo APIs often limit results per call\n1 set of results = 1 page",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get a lot of data from an API?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-pagination.html#what-are-some-pagination-strategies",
+    "href": "slides/httr2/httr2-pagination.html#what-are-some-pagination-strategies",
+    "title": "How can I get a lot of data from an API?",
+    "section": "What are some pagination strategies?",
+    "text": "What are some pagination strategies?\n\n\n\nOffset: page param\n\nOpenFEC\nCrossref.org\n\nCursor: cursor or token param\n\nCrossref.org “deep paging”\n\n\n\n\nHeader link: Link: to next in response header\n\nGitHub\nMTG cars\n\nBody link: nextUrl in response body\n\nopen5e.com monsters\n\n\n\n\n\nshared: Most offer perPage or pageSize param",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get a lot of data from an API?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-pagination.html#how-can-i-determine-how-an-api-handles-pagination",
+    "href": "slides/httr2/httr2-pagination.html#how-can-i-determine-how-an-api-handles-pagination",
+    "title": "How can I get a lot of data from an API?",
+    "section": "How can I determine how an API handles pagination?",
+    "text": "How can I determine how an API handles pagination?\nUnfortunately, no standard.\n\nAlmost always: Mentioned in relevant paths\nOften: Separate “pagination” section near top of docs\nFall-throughs:\n\npage, perPage, cursor parameters\nLook at a response",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get a lot of data from an API?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-pagination.html#aside-retries-and-api-consumer-etiquette",
+    "href": "slides/httr2/httr2-pagination.html#aside-retries-and-api-consumer-etiquette",
+    "title": "How can I get a lot of data from an API?",
+    "section": "Aside: Retries and API consumer etiquette",
+    "text": "Aside: Retries and API consumer etiquette\n\nPagination ➡️ repeated API calls\nBe nice!\nhttr2::req_retry()\n\nMust set max_tries or max_seconds\nOther options usually ok as-is\n\nMore in (chapter TBD)\n\n\n\nIf neither max_tries nor max_seconds set, silently ignored\nOther things: req_throttle() limits calls/second, req_timeout() to set a time limit for single big calls",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
@@ -394,7 +427,7 @@
     "href": "slides/httr2/httr2-pagination.html#req_perform_iterative",
     "title": "How can I get a lot of data from an API?",
     "section": "req_perform_iterative()",
-    "text": "req_perform_iterative()",
+    "text": "req_perform_iterative()\n\n Added in {httr2} 1.0.0.\nReplaces req_perform()\n\n\n\nnormal_request |&gt; \n  req_retry(max_tries = 3) |&gt; # Tries *per page*\n  req_perform_iterative(\n    next_req = function_to_choose_next_req,\n    max_reqs = 20 # Maximum separate page calls\n  )\n\n\n\n“Iteration helpers” = built-in next_req functions\n\n\n\nUsually include retry, because API might yell at you for multiple calls\nmax_reqs default is 20. Start low when experimenting, Inf when solid\nEach iteration helper gets a slide",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
@@ -405,18 +438,29 @@
     "href": "slides/httr2/httr2-pagination.html#iteration-helpers-iterate_with_offset",
     "title": "How can I get a lot of data from an API?",
     "section": "Iteration helpers: iterate_with_offset()",
-    "text": "Iteration helpers: iterate_with_offset()",
+    "text": "Iteration helpers: iterate_with_offset()\n\nparam_name = \"page\" or whatever API calls it\nstart, offset = almost always leave as-is\nresp_pages = function to convert resp to page count\n\nmax_reqs &lt;- min(max_reqs, total_pages)\n\nresp_complete = function to check if resp is last page\n\nEg: \\(resp) !length(resp_body_json(resp))\n\n\n\n\nAlmost always “page”.\nresp_pages called 1st response. Optional.\n\nHelp says it’s called once, but, if it fails to find total, it will be called for each response.\n\nresp_complete usually not needed\n\nExample is shorthand for “Did we get an empty body?”",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-pagination.html#offset-example-fec-or-crossref",
-    "href": "slides/httr2/httr2-pagination.html#offset-example-fec-or-crossref",
+    "objectID": "slides/httr2/httr2-pagination.html#offset-example-openfec",
+    "href": "slides/httr2/httr2-pagination.html#offset-example-openfec",
     "title": "How can I get a lot of data from an API?",
-    "section": "Offset example: FEC (or crossref?)",
-    "text": "Offset example: FEC (or crossref?)",
+    "section": "Offset example: OpenFEC",
+    "text": "Offset example: OpenFEC\n\ncandidates_request &lt;- \n  request(\"https://api.open.fec.gov/v1/candidates\") |&gt; \n  req_url_query(api_key = \"DEMO_KEY\", election_year = 2020, office = \"P\") |&gt; \n  req_url_query(has_raised_funds = TRUE)\n\n\n\n\n\ncandidates_single &lt;- \n  candidates_request |&gt; \n  req_perform() |&gt; \n  resp_body_json()\nlength(candidates_single$results)\n#&gt; [1] 20\ncandidates_single$pagination$count\n#&gt; [1] 173\n\n\n\ncandidates_multi &lt;- \n  candidates_request |&gt; \n  req_retry(max_tries = 3) |&gt; \n  req_perform_iterative(\n    next_req = iterate_with_offset(\n      \"page\",\n      resp_pages = \\(resp) {\n        content &lt;- resp_body_json(resp)\n        content$pagination$pages\n      }\n    ),\n    max_reqs = Inf\n  )\nlength(candidates_multi)\n#&gt; [1] 9\n\n\n\n\n\nWarning: This might take a while with the DEMO_KEY\nWe’ll see how to extract data from the pages shortly",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How can I get a lot of data from an API?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-pagination.html#offset-example-crossref.org",
+    "href": "slides/httr2/httr2-pagination.html#offset-example-crossref.org",
+    "title": "How can I get a lot of data from an API?",
+    "section": "Offset example: crossref.org",
+    "text": "Offset example: crossref.org\n\ncrossref_request &lt;- \n  request(\"https://api.crossref.org/works\") |&gt; \n  req_url_query(query = \"apis\")\n\n\n\n\n\ncrossref_single &lt;- \n  crossref_request |&gt; \n  req_perform() |&gt; \n  resp_body_json()\nlength(crossref_single$message$items)\n#&gt; [1] 20\ncrossref_single$message$`total-results`\n#&gt; [1] 14114\n\n\n\ncrossref_multi &lt;- \n  crossref_request |&gt; \n  req_retry(max_tries = 3) |&gt; \n  req_perform_iterative(\n    next_req = iterate_with_offset(\n      \"offset\",\n      resp_pages = \\(resp) {\n        content &lt;- resp_body_json(resp)\n        content$pagination$message$`total-results`\n      }\n    ),\n    max_reqs = Inf\n  )\nlength(crossref_multi)\n#&gt; [1] 706\n\n\n\n\n\nWarning: This takes a long time, probably don’t actually run it!\nThis one has a faster (?) method that we’ll check in a sec.\nWe’ll see how to extract data from the pages shortly",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
@@ -427,7 +471,7 @@
     "href": "slides/httr2/httr2-pagination.html#iteration-helpers-iterate_with_cursor",
     "title": "How can I get a lot of data from an API?",
     "section": "Iteration helpers: iterate_with_cursor()",
-    "text": "Iteration helpers: iterate_with_cursor()",
+    "text": "Iteration helpers: iterate_with_cursor()\n\nparam_name = \"cursor\" or whatever API calls it\nresp_param_value = function to convert resp to next cursor\n\nNULL if no more pages\n\n\n\n\nI’ve seen “cursor”, “token” and variations, like “nextPageToken”.\nSingle function because usually this style ends with an empty nextCursor.",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
@@ -438,7 +482,7 @@
     "href": "slides/httr2/httr2-pagination.html#cursor-example-crossref",
     "title": "How can I get a lot of data from an API?",
     "section": "Cursor example: Crossref",
-    "text": "Cursor example: Crossref",
+    "text": "Cursor example: Crossref\n\ncrossref_request_cursor &lt;- \n  crossref_request |&gt; \n  req_url_query(cursor = \"*\")\n\n\n\n\n\ncrossref_single &lt;- \n  crossref_request_cursor |&gt; \n  req_perform() |&gt; \n  resp_body_json()\nnames(crossref_single$message)\n#&gt; [1] \"facets\"         \"next-cursor\"    \"total-results\"  \"items\"          \"items-per-page\"\n#&gt; [6] \"query\" \n\n\n\ncrossref_multi &lt;- \n  crossref_request_cursor |&gt; \n  req_retry(max_tries = 3) |&gt; \n  req_perform_iterative(\n    next_req = iterate_with_cursor(\n      \"cursor\",\n      resp_param_value = \\(resp) {\n        content &lt;- resp_body_json(resp)\n        if (!length(content$message$items)) {\n          return(NULL)\n        }\n        content$message$`next-cursor`\n      }\n    ),\n    max_reqs = Inf\n  )\nlength(crossref_multi)\n#&gt; [1] 706\n\n\n\n\n\nWarning: This takes a long time, probably don’t actually run it!\nNot noticeably faster, but this API limits total results from normal pagination, unlimited for cursor-based\nIn this case they keep sending next-cursors even when results are empty, so we need to tell it to stop when no results",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
@@ -449,7 +493,7 @@
     "href": "slides/httr2/httr2-pagination.html#iteration-helpers-iterate_with_link_url",
     "title": "How can I get a lot of data from an API?",
     "section": "Iteration helpers: iterate_with_link_url()",
-    "text": "Iteration helpers: iterate_with_link_url()",
+    "text": "Iteration helpers: iterate_with_link_url()\n\nrel = \"next\" or whatever API calls it\nresp_param_value = function to convert resp to next cursor\n\nNULL if no more pages\n\n\n\n\nThis really should always be “next”, but it isn’t required\nCanonical example is the GitHub API, but I’m showing a demo that doesn’t require any setup by you",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
@@ -460,7 +504,7 @@
     "href": "slides/httr2/httr2-pagination.html#link-url-example-mtg",
     "title": "How can I get a lot of data from an API?",
     "section": "Link-URL example: MTG",
-    "text": "Link-URL example: MTG",
+    "text": "Link-URL example: MTG\n\nmtg_cards_request &lt;- \n  request(\"http://api.magicthegathering.io/v1\") |&gt; \n  req_url_path_append(\"cards\") |&gt; \n  req_url_query(name = \"bee\", pageSize = 20)\n\n\n\n\n\nmtg_cards_single &lt;- \n  mtg_cards_request |&gt; \n  req_perform()\nresp_header(mtg_cards_single, \"link\")\n#&gt; &lt;https://api.magicthegathering.io/v1/cards?name=bee&page=5&pageSize=20&gt;; rel=\"last\", \n#&gt; &lt;https://api.magicthegathering.io/v1/cards?name=bee&page=2&pageSize=20&gt;; rel=\"next\"\nmtg_cards_content &lt;- mtg_cards_single |&gt; \n  resp_body_json()\n\n\n\nmtg_cards_multi &lt;- \n  mtg_cards_request |&gt; \n  req_retry(max_tries = 3) |&gt; \n  req_perform_iterative(\n    next_req = iterate_with_link_url(),\n    max_reqs = Inf\n  )\nlength(mtg_cards_multi)\n#&gt; [1] 5\n\n\n\n\n\nIf I were working with this one a lot, I’d probably actually use offset pagination.",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
@@ -471,18 +515,18 @@
     "href": "slides/httr2/httr2-pagination.html#roll-your-own-iteration",
     "title": "How can I get a lot of data from an API?",
     "section": "Roll-your-own iteration",
-    "text": "Roll-your-own iteration",
+    "text": "Roll-your-own iteration\n\nPeople love to reinvent this wheel.\nBody link: nextUrl in response body\n\nopen5e.com monsters",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-pagination.html#roll-your-own-example-disney-dnd",
-    "href": "slides/httr2/httr2-pagination.html#roll-your-own-example-disney-dnd",
+    "objectID": "slides/httr2/httr2-pagination.html#roll-your-own-example-dnd-monsters",
+    "href": "slides/httr2/httr2-pagination.html#roll-your-own-example-dnd-monsters",
     "title": "How can I get a lot of data from an API?",
-    "section": "Roll-your-own example: Disney? DnD?",
-    "text": "Roll-your-own example: Disney? DnD?\nhttps://api.disneyapi.dev/character\nhttps://api.open5e.com/monsters/?limit=100\n(consider submitting that to httr2 as an iteration helper, it’s pretty common)",
+    "section": "Roll-your-own example: DnD Monsters",
+    "text": "Roll-your-own example: DnD Monsters\n\ndnd_request &lt;- \n  request(\"https://api.open5e.com/monsters/?limit=100\") \n\n\n\n\n\ndnd_single &lt;- \n  dnd_request |&gt; \n  req_perform() |&gt; \n  resp_body_json()\nlength(dnd_single$results)\n#&gt; [1] 100\ndnd_single$count\n#&gt; [1] 2439\n\n\n\ndnd_multi &lt;- \n  dnd_request |&gt; \n  req_retry(max_tries = 3) |&gt; \n  req_perform_iterative(\n    next_req = function(resp, req) {\n      url &lt;- resp_body_json(resp)$`next`\n      if (!is.null(url)) {\n        req_url(req, url)\n      }\n    },\n    max_reqs = Inf\n  )\nlength(dnd_multi)\n#&gt; [1] 25\n\n\n\n\n\nUsed code returned by iterate_with_link_url() as template\nBe sure to keep all the non-URL bits of the req!",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
@@ -493,18 +537,18 @@
     "href": "slides/httr2/httr2-pagination.html#resps_data",
     "title": "How can I get a lot of data from an API?",
     "section": "resps_data()",
-    "text": "resps_data()",
+    "text": "resps_data()\n\nreq_perform_iterative() returns list of responses\nresps_data() takes that list + resp_data() parsing function and merges\nUsually you need more than just something like resp_body_json\n\nGrab just the actual results",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-pagination.html#resps_data-examples",
-    "href": "slides/httr2/httr2-pagination.html#resps_data-examples",
+    "objectID": "slides/httr2/httr2-pagination.html#resps_data-example-openfec",
+    "href": "slides/httr2/httr2-pagination.html#resps_data-example-openfec",
     "title": "How can I get a lot of data from an API?",
-    "section": "resps_data() example(s)",
-    "text": "resps_data() example(s)",
+    "section": "resps_data() example: OpenFEC",
+    "text": "resps_data() example: OpenFEC\n\n\nfec_resp_parser &lt;- function(resp) {\n  resp_body_json(resp)$results\n}\n\n\n\n\ncandidates_multi_results &lt;- resps_data(\n  candidates_multi, fec_resp_parser\n)\ntibblify::tibblify(candidates_multi_results)\n\n#&gt; # A tibble: 173 × 24\n#&gt;    active_through candidate_id candidate_inactive candidate_status cycles    \n#&gt;             &lt;int&gt; &lt;chr&gt;        &lt;lgl&gt;              &lt;chr&gt;            &lt;list&gt;    \n#&gt;  1           2020 P00014241    FALSE              N                &lt;list [3]&gt;\n#&gt;  2           2024 P00008193    FALSE              N                &lt;list [4]&gt;\n#&gt;  3           2020 P00006296    FALSE              P                &lt;list [4]&gt;\n#&gt;  4           2020 P00010900    FALSE              N                &lt;list [1]&gt;\n#&gt;  5           2020 P00012104    FALSE              P                &lt;list [3]&gt;\n#&gt;  6           2020 P40003170    FALSE              N                &lt;list [5]&gt;\n#&gt;  7           2020 P00008128    FALSE              N                &lt;list [4]&gt;\n#&gt;  8           2020 P80004369    FALSE              N                &lt;list [2]&gt;\n#&gt;  9           2020 P00010090    FALSE              N                &lt;list [3]&gt;\n#&gt; 10           2024 P00015297    FALSE              N                &lt;list [3]&gt;\n#&gt; # ℹ 163 more rows\n#&gt; # ℹ 19 more variables: district &lt;chr&gt;, district_number &lt;int&gt;,\n#&gt; #   election_districts &lt;list&gt;, election_years &lt;list&gt;, federal_funds_flag &lt;lgl&gt;,\n#&gt; #   first_file_date &lt;chr&gt;, has_raised_funds &lt;lgl&gt;,\n#&gt; #   inactive_election_years &lt;list&gt;, incumbent_challenge &lt;chr&gt;,\n#&gt; #   incumbent_challenge_full &lt;chr&gt;, last_f2_date &lt;chr&gt;, last_file_date &lt;chr&gt;,\n#&gt; #   load_date &lt;chr&gt;, name &lt;chr&gt;, office &lt;chr&gt;, office_full &lt;chr&gt;, …",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
@@ -515,51 +559,7 @@
     "href": "slides/httr2/httr2-pagination.html#resps_data-friends",
     "title": "How can I get a lot of data from an API?",
     "section": "resps_data() friends",
-    "text": "resps_data() friends",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How can I get a lot of data from an API?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-pagination.html#pagination",
-    "href": "slides/httr2/httr2-pagination.html#pagination",
-    "title": "How can I get a lot of data from an API?",
-    "section": "Pagination",
-    "text": "Pagination\n\nhttr2::req_perform_iterative()\nnext_req = function\n\niterate_with_offset() to increment query parameter (?page=1, ?page=2)\niterate_with_cursor() to extract next page from response\niterate_with_link_url() to follow Link in resp header",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How can I get a lot of data from an API?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-pagination.html#pagination-fec",
-    "href": "slides/httr2/httr2-pagination.html#pagination-fec",
-    "title": "How can I get a lot of data from an API?",
-    "section": "Pagination: FEC",
-    "text": "Pagination: FEC\n\nresps &lt;- request(\"https://api.open.fec.gov/v1/candidates\") |&gt; \n  req_headers(\"X-Api-Key\" = \"DEMO_KEY\") |&gt; \n  req_url_query(office = \"H\", per_page = 100, election_year = 2020) |&gt; \n  req_perform_iterative(\n    iterate_with_offset(\n      \"page\",\n      resp_pages = \\(resp) resp_body_json(resp)$pagination$pages # Check once\n    ),\n    max_reqs = Inf # Important! Default = 20\n  )",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How can I get a lot of data from an API?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-pagination.html#pagination-youtube",
-    "href": "slides/httr2/httr2-pagination.html#pagination-youtube",
-    "title": "How can I get a lot of data from an API?",
-    "section": "Pagination: YouTube",
-    "text": "Pagination: YouTube\n\nresps &lt;- request(\"https://youtube.googleapis.com/youtube/v3\") |&gt; \n  req_url_path_append(\"playlists\") |&gt; \n  req_url_query(part = \"snippet\", mine = TRUE, maxResults = 50) |&gt; \n  req_auth_bearer_token(IGNORE_FOR_NOW) |&gt; \n  req_perform_iteratively(\n    iterate_with_cursor(\n      \"pageToken\",\n      function(resp) resp_body_json(resp)$nextPageToken\n    )\n  )",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How can I get a lot of data from an API?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-pagination.html#parsing-multiple-responses",
-    "href": "slides/httr2/httr2-pagination.html#parsing-multiple-responses",
-    "title": "How can I get a lot of data from an API?",
-    "section": "Parsing multiple responses",
-    "text": "Parsing multiple responses\n\nhttr2::resps_data() to combine responses from req_perform_*()\nProvide function to extract data from single resp as vector or df.\nMore details in Chapter 6.\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
+    "text": "resps_data() friends\n\nreq_perform_iterative on_error arg: “stop” or “return”\nresps_successes() extracts just successes from resps list\nresps_failures() same, but failures\nresps_requests() to see how they were called\n\n\n\nWe didn’t dig into it, but req_perform_iterative() has on_error arg\nCommon workflow might be to grab the successes, and then pass THAT to resps_data()\nreq_perform_iterative can only have 1 failure, but we’ll see some more multi performs in a later chapter TBD\n\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
       "How can I interact with the web from R?",
       "How can I get a lot of data from an API?"
