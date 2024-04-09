@@ -24,89 +24,494 @@ library(httr2)
 
 # What is pagination?
 
-# How can I determine how an API handles pagination?
+## Why paginate?
+
+-   Network traffic is slow & expensive
+-   Bigger transfers ➡️ more corruption chance ➡️ resends
+-   So APIs often limit results per call
+-   1 set of results = 1 page
+
+## What are some pagination strategies?
+
+:::: columns
+::: column
+-   **Offset:** `page` param
+    -   [OpenFEC](https://api.open.fec.gov/developers/#/candidate/get_v1_candidates_)
+    -   [Crossref.org](https://api.crossref.org/swagger-ui/index.html)
+-   **Cursor:** `cursor` or `token` param
+    -   [Crossref.org "deep paging"](https://api.crossref.org/swagger-ui/index.html)
+:::
+::: column
+-   **Header link:** `Link:` to `next` in response `header`
+    -   [GitHub](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api?apiVersion=2022-11-28#using-link-headers)
+    -   [MTG cars](https://docs.magicthegathering.io/#documentationheaders)
+-   **Body link:** `nextUrl` in response `body`
+    -   [open5e.com monsters](https://api.open5e.com/monsters/?limit=100)
+:::
+::::
+-   shared: Most offer `perPage` or `pageSize` param
+
+## How can I determine how an API handles pagination?
+
+Unfortunately, no standard.
+
+-   Almost always: Mentioned in relevant paths
+-   Often: Separate "pagination" section near top of docs
+-   Fall-throughs:
+    -   `page`, `perPage`, `cursor` parameters
+    -   Look at a response
 
 # How do I perform pagination?
 
-## req_retry()
+## Aside: Retries and API consumer etiquette
+
+-   Pagination ➡️ repeated API calls
+-   Be nice!
+-   `httr2::req_retry()`
+    -   ***Must*** set `max_tries` or `max_seconds`
+    -   Other options usually ok as-is
+-   More in (chapter TBD)
+
+::: notes
+-   If neither `max_tries` nor `max_seconds` set, silently ignored
+-   Other things: `req_throttle()` limits calls/second, `req_timeout()` to set a time limit for single big calls
+:::
 
 ## req_perform_iterative()
 
+-   ![](https://img.shields.io/badge/lifecycle-experimental-orange.svg) Added in {httr2} 1.0.0.
+-   Replaces `req_perform()`
+
+::: fragment
+```{r}
+#| label: httr2-pagination-req-perform-iterative
+normal_request |> 
+  req_retry(max_tries = 3) |> # Tries *per page*
+  req_perform_iterative(
+    next_req = function_to_choose_next_req,
+    max_reqs = 20 # Maximum separate page calls
+  )
+```
+:::
+
+-   "Iteration helpers" = built-in `next_req` functions
+
+::: notes
+-   Usually include retry, because API might yell at you for multiple calls
+-   `max_reqs` default is 20. Start low when experimenting, `Inf` when solid
+-   Each iteration helper gets a slide
+:::
+
 ## Iteration helpers: iterate_with_offset()
 
-## Offset example: FEC (or crossref?)
+-   `param_name` = `"page"` or whatever API calls it
+-   `start`, `offset` = almost always leave as-is
+-   `resp_pages` = function to convert `resp` to page count
+    -   `max_reqs <- min(max_reqs, total_pages)`
+-   `resp_complete` = function to check if `resp` is last page
+    -   Eg: `\(resp) !length(resp_body_json(resp))`
+
+::: notes
+-   Almost always "page".
+-   `resp_pages` called 1st response. Optional.
+    -   Help says it's called once, but, if it fails to find total, it will be called for each response.
+-   `resp_complete` usually not needed
+    -   Example is shorthand for "Did we get an empty body?"
+:::
+
+## Offset example: OpenFEC
+
+```{r}
+#| label: httr2-pagination-fec-request
+candidates_request <- 
+  request("https://api.open.fec.gov/v1/candidates") |> 
+  req_url_query(api_key = "DEMO_KEY", election_year = 2020, office = "P") |> 
+  req_url_query(has_raised_funds = TRUE)
+```
+
+<br/>
+
+:::: columns
+::: {.column .fragment}
+```{r}
+#| label: httr2-pagination-fec-single
+candidates_single <- 
+  candidates_request |> 
+  req_perform() |> 
+  resp_body_json()
+length(candidates_single$results)
+#> [1] 20
+candidates_single$pagination$count
+#> [1] 173
+```
+:::
+::: {.column .fragment}
+```{r}
+#| label: httr2-pagination-fec-multi
+candidates_multi <- 
+  candidates_request |> 
+  req_retry(max_tries = 3) |> 
+  req_perform_iterative(
+    next_req = iterate_with_offset(
+      "page",
+      resp_pages = \(resp) {
+        content <- resp_body_json(resp)
+        content$pagination$pages
+      }
+    ),
+    max_reqs = Inf
+  )
+length(candidates_multi)
+#> [1] 9
+```
+```{r}
+#| label: httr2-pagination-fec-multi-save-result
+#| eval: false
+#| include: false
+candidates_multi <- 
+  candidates_request |> 
+  req_retry(max_tries = 3) |> 
+  req_perform_iterative(
+    next_req = iterate_with_offset(
+      "page",
+      resp_pages = \(resp) {
+        content <- resp_body_json(resp)
+        content$pagination$pages
+      }
+    ),
+    max_reqs = Inf
+  )
+saveRDS(
+  candidates_multi, 
+  here::here("slides", "httr2", "pagination", "candidates_multi.rds")
+)
+```
+:::
+::::
+
+::: notes
+-   Warning: This might take a while with the DEMO_KEY
+-   We'll see how to extract data from the pages shortly
+:::
+
+## Offset example: crossref.org
+
+```{r}
+#| label: httr2-pagination-crossref-request
+crossref_request <- 
+  request("https://api.crossref.org/works") |> 
+  req_url_query(query = "apis")
+```
+
+<br/>
+
+:::: columns
+::: {.column .fragment}
+```{r}
+#| label: httr2-pagination-crossref-single
+crossref_single <- 
+  crossref_request |> 
+  req_perform() |> 
+  resp_body_json()
+length(crossref_single$message$items)
+#> [1] 20
+crossref_single$message$`total-results`
+#> [1] 14114
+```
+:::
+::: {.column .fragment}
+```{r}
+#| label: httr2-pagination-crossref-multi
+crossref_multi <- 
+  crossref_request |> 
+  req_retry(max_tries = 3) |> 
+  req_perform_iterative(
+    next_req = iterate_with_offset(
+      "offset",
+      resp_pages = \(resp) {
+        content <- resp_body_json(resp)
+        content$pagination$message$`total-results`
+      }
+    ),
+    max_reqs = Inf
+  )
+length(crossref_multi)
+#> [1] 706
+```
+:::
+::::
+
+::: notes
+-   Warning: This takes a long time, probably don't actually run it!
+-   This one has a faster (?) method that we'll check in a sec.
+-   We'll see how to extract data from the pages shortly
+:::
 
 ## Iteration helpers: iterate_with_cursor()
 
+-   `param_name` = `"cursor"` or whatever API calls it
+-   `resp_param_value` = function to convert `resp` to next cursor
+    -   `NULL` if no more pages
+
+::: notes
+-   I've seen "cursor", "token" and variations, like "nextPageToken".
+-   Single function because usually this style ends with an empty `nextCursor`.
+:::
+
 ## Cursor example: Crossref
+
+```{r}
+#| label: httr2-pagination-crossref-request-cursor
+crossref_request_cursor <- 
+  crossref_request |> 
+  req_url_query(cursor = "*")
+```
+
+<br/>
+
+:::: columns
+::: {.column .fragment}
+```{r}
+#| label: httr2-pagination-crossref-single-cursor
+crossref_single <- 
+  crossref_request_cursor |> 
+  req_perform() |> 
+  resp_body_json()
+names(crossref_single$message)
+#> [1] "facets"         "next-cursor"    "total-results"  "items"          "items-per-page"
+#> [6] "query" 
+```
+:::
+::: {.column .fragment}
+```{r}
+#| label: httr2-pagination-crossref-multi-cursor
+crossref_multi <- 
+  crossref_request_cursor |> 
+  req_retry(max_tries = 3) |> 
+  req_perform_iterative(
+    next_req = iterate_with_cursor(
+      "cursor",
+      resp_param_value = \(resp) {
+        content <- resp_body_json(resp)
+        if (!length(content$message$items)) {
+          return(NULL)
+        }
+        content$message$`next-cursor`
+      }
+    ),
+    max_reqs = Inf
+  )
+length(crossref_multi)
+#> [1] 706
+```
+:::
+::::
+
+::: notes
+-   Warning: This takes a long time, probably don't actually run it!
+-   Not noticeably faster, but this API limits total results from normal pagination, unlimited for cursor-based
+-   In this case they keep sending next-cursors even when results are empty, so we need to tell it to stop when no results
+:::
 
 ## Iteration helpers: iterate_with_link_url()
 
+-   `rel` = `"next"` or whatever API calls it
+-   `resp_param_value` = function to convert `resp` to next cursor
+    -   `NULL` if no more pages
+
+::: notes
+-   This really should always be "next", but it isn't required
+-   Canonical example is the GitHub API, but I'm showing a demo that doesn't require any setup by you
+:::
+
 ## Link-URL example: MTG
+
+```{r}
+#| label: httr2-pagination-mtg-request
+mtg_cards_request <- 
+  request("http://api.magicthegathering.io/v1") |> 
+  req_url_path_append("cards") |> 
+  req_url_query(name = "bee", pageSize = 20)
+```
+
+<br/>
+
+:::: columns
+::: {.column .fragment}
+```{r}
+#| label: httr2-pagination-mtg-single
+mtg_cards_single <- 
+  mtg_cards_request |> 
+  req_perform()
+resp_header(mtg_cards_single, "link")
+#> <https://api.magicthegathering.io/v1/cards?name=bee&page=5&pageSize=20>; rel="last", 
+#> <https://api.magicthegathering.io/v1/cards?name=bee&page=2&pageSize=20>; rel="next"
+mtg_cards_content <- mtg_cards_single |> 
+  resp_body_json()
+```
+:::
+::: {.column .fragment}
+```{r}
+#| label: httr2-pagination-mtg-multi
+mtg_cards_multi <- 
+  mtg_cards_request |> 
+  req_retry(max_tries = 3) |> 
+  req_perform_iterative(
+    next_req = iterate_with_link_url(),
+    max_reqs = Inf
+  )
+length(mtg_cards_multi)
+#> [1] 5
+```
+```{r}
+#| label: httr2-pagination-mtg-multi-save-result
+#| eval: false
+#| include: false
+mtg_cards_multi <- 
+  mtg_cards_request |> 
+  req_retry(max_tries = 3) |> 
+  req_perform_iterative(
+    next_req = iterate_with_link_url(),
+    max_reqs = Inf
+  )
+saveRDS(
+  mtg_cards_multi, 
+  here::here("slides", "httr2", "pagination", "mtg_cards_multi.rds")
+)
+```
+:::
+::::
+
+::: notes
+-   If I were working with this one a lot, I'd probably actually use offset pagination.
+:::
 
 ## Roll-your-own iteration
 
-## Roll-your-own example: Disney? DnD?
+-   People love to reinvent this wheel.
+-   **Body link:** `nextUrl` in response `body`
+    -   [open5e.com monsters](https://api.open5e.com/monsters/?limit=100)
 
-https://api.disneyapi.dev/character
+## Roll-your-own example: DnD Monsters
 
-https://api.open5e.com/monsters/?limit=100
+```{r}
+#| label: httr2-pagination-dnd-request
+dnd_request <- 
+  request("https://api.open5e.com/monsters/?limit=100") 
+```
 
-(consider submitting that to httr2 as an iteration helper, it's pretty common)
+<br/>
+
+:::: columns
+::: {.column .fragment}
+```{r}
+#| label: httr2-pagination-dnd-single
+dnd_single <- 
+  dnd_request |> 
+  req_perform() |> 
+  resp_body_json()
+length(dnd_single$results)
+#> [1] 100
+dnd_single$count
+#> [1] 2439
+```
+:::
+::: {.column .fragment}
+```{r}
+#| label: httr2-pagination-dnd-multi
+dnd_multi <- 
+  dnd_request |> 
+  req_retry(max_tries = 3) |> 
+  req_perform_iterative(
+    next_req = function(resp, req) {
+      url <- resp_body_json(resp)$`next`
+      if (!is.null(url)) {
+        req_url(req, url)
+      }
+    },
+    max_reqs = Inf
+  )
+length(dnd_multi)
+#> [1] 25
+```
+```{r}
+#| label: httr2-pagination-dnd-multi-save-result
+#| eval: false
+#| include: false
+dnd_multi <- 
+  dnd_request |> 
+  req_retry(max_tries = 3) |> 
+  req_perform_iterative(
+    next_req = function(resp, req) {
+      url <- resp_body_json(resp)$`next`
+      if (!is.null(url)) {
+        req_url(req, url)
+      }
+    },
+    max_reqs = Inf
+  )
+saveRDS(
+  dnd_multi, 
+  here::here("slides", "httr2", "pagination", "dnd_multi.rds")
+)
+```
+:::
+::::
+
+::: notes
+-   Used code returned by `iterate_with_link_url()` as template
+-   Be sure to keep all the non-URL bits of the req!
+:::
 
 # How do I parse paginated responses?
 
 ## resps_data()
 
-## resps_data() example(s)
+-   `req_perform_iterative()` returns *list* of responses
+-   `resps_data()` takes that list + `resp_data()` parsing function and merges
+-   Usually you need more than just something like `resp_body_json`
+    -   Grab just the actual results
+
+## resps_data() example: OpenFEC
+
+```{r}
+#| label: httr2-pagination-fec-multi-load
+#| eval: true
+#| include: false
+candidates_multi <- readRDS(
+  here::here("slides", "httr2", "pagination", "candidates_multi.rds")
+)
+```
+
+::: fragment
+```{r}
+#| label: httr2-pagination-fec-parser
+#| eval: true
+fec_resp_parser <- function(resp) {
+  resp_body_json(resp)$results
+}
+```
+:::
+::: fragment
+```{r}
+#| label: httr2-pagination-fec-resps_data
+#| eval: true
+candidates_multi_results <- resps_data(
+  candidates_multi, fec_resp_parser
+)
+tibblify::tibblify(candidates_multi_results)
+```
+:::
 
 ## resps_data() friends
 
+-   `req_perform_iterative` `on_error` arg: "stop" or "return"
+-   `resps_successes()` extracts just successes from `resps` list
+-   `resps_failures()` same, but failures
+-   `resps_requests()` to see how they were called
 
-# Old slides
-
-## Pagination
-
--   `httr2::req_perform_iterative()`
--   `next_req` = function
-    -   `iterate_with_offset()` to increment query parameter (`?page=1`, `?page=2`)
-    -   `iterate_with_cursor()` to extract next page from response
-    -   `iterate_with_link_url()` to follow Link in resp header
-
-## Pagination: FEC
-
-```{r}
-#| label: httr2-pagination-fec
-resps <- request("https://api.open.fec.gov/v1/candidates") |> 
-  req_headers("X-Api-Key" = "DEMO_KEY") |> 
-  req_url_query(office = "H", per_page = 100, election_year = 2020) |> 
-  req_perform_iterative(
-    iterate_with_offset(
-      "page",
-      resp_pages = \(resp) resp_body_json(resp)$pagination$pages # Check once
-    ),
-    max_reqs = Inf # Important! Default = 20
-  )
-```
-
-## Pagination: YouTube
-
-```{r}
-#| label: httr2-pagination-youtube
-resps <- request("https://youtube.googleapis.com/youtube/v3") |> 
-  req_url_path_append("playlists") |> 
-  req_url_query(part = "snippet", mine = TRUE, maxResults = 50) |> 
-  req_auth_bearer_token(IGNORE_FOR_NOW) |> 
-  req_perform_iteratively(
-    iterate_with_cursor(
-      "pageToken",
-      function(resp) resp_body_json(resp)$nextPageToken
-    )
-  )
-```
-
-## Parsing multiple responses
-
--   `httr2::resps_data()` to combine responses from `req_perform_*()`
--   Provide function to extract data from single resp as vector or df.
--   More details in Chapter 6.
+::: notes
+-   We didn't dig into it, but `req_perform_iterative()` has `on_error` arg
+-   Common workflow might be to grab the successes, and then pass THAT to `resps_data()`
+-   `req_perform_iterative` can only have 1 failure, but we'll see some more multi performs in a later chapter TBD
+:::
