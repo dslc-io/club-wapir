@@ -7,7 +7,6 @@ title: How do I tell the API who I am?
 
 ::: nonincremental
 -   Find authentication information in API docs.
--   Authenticate a request with a username and password.
 -   Authenticate a request with an API key.
 -   Authenticate a request with OAuth.
 :::
@@ -21,8 +20,89 @@ library(httr2)
 
 ::: notes
 -   Mention cookies (and other schemes) as an online-only/advanced reference.
+    -   Even username + password is rare. Include it here in case?
 -   Cover req_user_agent() & req_proxy() in here somewhere! And req_headers()!
 :::
+
+# What is authentication?
+
+## Authentication vs Authorization
+
+::::: columns
+:::: column
+Authentication
+
+::: fragment
+-   Verifying who you are
+-   Uses some sort of "credentials"
+:::
+::::
+:::: column
+Authorization
+
+::: fragment
+-   Granting access based on who you are
+:::
+::::
+:::::
+
+::: fragment
+-   Both often abbreviated "auth"
+-   Often used interchangeably
+:::
+::: fragment
+
+> The HTTP *Authorization* request header can be used to provide credentials that *authenticate* a user agent with a server, allowing access to a protected resource.
+> — [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization)
+
+:::
+
+::: notes
+-   "TECHNICALLY..."
+-   "Despite what the internet will insist on telling you..."
+-   Mozilla Developer Network (MDN) is pretty much THE reference for these things, and it mixes them.
+-   (Learned there that server is *supposed* to send 401 with info about how to auth in `WWW-Authenticate` header!)
+:::
+
+## Credential dangers
+
+TODO: WORKING HERE. THESE NEXT THREE SLIDES ARE KIND OF A LOT.
+
+-   How much account control does it have?
+    -   Can it lock you out?
+    -   Can it reveal sensitive data?
+-   How long does it last?
+    -   Shorter = safer
+    -   Can you revoke it?
+-   How likely is it to leak?
+    -   When do you send it?
+    -   Where do you send it?
+    -   How often do you send it?
+
+## Authentication schemes overview
+
+-   **HTTP Basic Authentication:** username + password sent with request
+-   **API Keys/Bearer Tokens:** password-like thing sent with request
+    -   Dirty secret: This is what more complex schemes are, eventually
+-   **OAuth:** Multi-step process to generate a key
+    -   Goal: Make the key as short-lived as possible
+    -   Not everyone implements the same way (ie often wrong)
+-   **Other:**
+    -   Cookies
+    -   [Certificates](https://fosstodon.org/deck/@jaredlander/111422477967658857)
+
+## Dangers of leaking credentials
+
+-   🔴 Username + password
+    -   Access entire account
+    -   Often difficult to turn off/recover
+-   🟠 API key
+    -   Can access everything you can access
+    -   Sometimes short-lived
+    -   You can often revoke this
+-   🟡 OAuth exists to minimize these dangers
+
+# Others/Old
 
 ## What are HTTP request headers?
 
@@ -100,45 +180,6 @@ req_dry_run(req_fec_dev_auth)
 
 -   Run `usethis::git_vaccinate()`
 -   Usually ignore project-level `.Renviron`
-
-## Credential dangers {-}
-
--   How much account control does it have?
-    -   Can it lock you out?
-    -   Can it reveal sensitive data?
--   How long does it last?
-    -   Shorter = safer
-    -   Can you revoke it?
--   How likely is it to leak?
-    -   When do you send it?
-    -   Where do you send it?
-    -   How often do you send it?
-
-## Authentication schemes overview {-}
-
--   **HTTP Basic Authentication:** username + password sent with request
--   **API Keys/Bearer Tokens:** password-like thing sent with request
-    -   Dirty secret: This is what more complex schemes are, eventually
-    -   `httr2::req_auth_bearer_token()`
-    -   Sometimes: `httr2::req_headers()`
--   **OAuth:** Multi-step process to generate a key
-    -   Goal: Make the key as short-lived as possible
-    -   Not everyone implements the same way (ie often wrong)
-    -   `httr2::req_oauth_*()`
--   **Other:**
-    -   Cookies
-    -   [Certificates](https://fosstodon.org/deck/@jaredlander/111422477967658857)
-
-## Dangers of leaking credentials {-}
-
--   🔴 Username + password
-    -   Access entire account
-    -   Often difficult to turn off/recover
--   🟠 API key
-    -   Can access everything you can access
-    -   Often short-lived
-    -   You can often revoke this
--   🟡 OAuth exists to minimize these dangers
 
 ## What does this API want? {-}
 
