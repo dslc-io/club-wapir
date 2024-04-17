@@ -16,6 +16,7 @@ title: How can I get a lot of data from an API?
 #| label: httr2-pagination-packages-used
 #| eval: true
 library(httr2)
+library(tibblify)
 ```
 
 ::: notes
