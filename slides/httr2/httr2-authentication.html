@@ -396,13 +396,11 @@
 </div>
 
 </section>
-<section>
 <section id="learning-objectives" class="title-slide slide level1 center">
 <h1>️✅ Learning objectives</h1>
 <div>
 <ul>
 <li>Find authentication information in API docs.</li>
-<li>Authenticate a request with a username and password.</li>
 <li>Authenticate a request with an API key.</li>
 <li>Authenticate a request with OAuth.</li>
 </ul>
@@ -412,7 +410,10 @@
 </div>
 <aside class="notes">
 <ul>
-<li>Mention cookies (and other schemes) as an online-only/advanced reference.</li>
+<li>Mention cookies (and other schemes) as an online-only/advanced reference.
+<ul>
+<li>Even username + password is rare. Include it here in case?</li>
+</ul></li>
 <li>Cover req_user_agent() &amp; req_proxy() in here somewhere! And req_headers()!</li>
 </ul>
 <style type="text/css">
@@ -426,6 +427,126 @@
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+
+<section>
+<section id="what-is-authentication" class="title-slide slide level1 center">
+<h1>What is authentication?</h1>
+
+</section>
+<section id="authentication-vs-authorization" class="slide level2">
+<h2>Authentication vs Authorization</h2>
+<div class="columns">
+<div class="column">
+<p>Authentication</p>
+<div class="fragment">
+<ul>
+<li class="fragment">Verifying who you are</li>
+<li class="fragment">Uses some sort of “credentials”</li>
+</ul>
+</div>
+</div><div class="column">
+<p>Authorization</p>
+<div class="fragment">
+<ul>
+<li class="fragment">Granting access based on who you are</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="fragment">
+<ul>
+<li class="fragment">Both often abbreviated “auth”</li>
+<li class="fragment">Often used interchangeably</li>
+</ul>
+</div>
+<div class="fragment">
+<blockquote>
+<p>The HTTP <em>Authorization</em> request header can be used to provide credentials that <em>authenticate</em> a user agent with a server, allowing access to a protected resource. — <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization">MDN web docs</a></p>
+</blockquote>
+</div>
+<aside class="notes">
+<ul>
+<li>“TECHNICALLY…”</li>
+<li>“Despite what the internet will insist on telling you…”</li>
+<li>Mozilla Developer Network (MDN) is pretty much THE reference for these things, and it mixes them.</li>
+<li>(Learned there that server is <em>supposed</em> to send 401 with info about how to auth in <code>WWW-Authenticate</code> header!)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="credential-dangers" class="slide level2">
+<h2>Credential dangers</h2>
+<p>TODO: WORKING HERE. THESE NEXT THREE SLIDES ARE KIND OF A LOT.</p>
+<ul>
+<li class="fragment">How much account control does it have?
+<ul>
+<li class="fragment">Can it lock you out?</li>
+<li class="fragment">Can it reveal sensitive data?</li>
+</ul></li>
+<li class="fragment">How long does it last?
+<ul>
+<li class="fragment">Shorter = safer</li>
+<li class="fragment">Can you revoke it?</li>
+</ul></li>
+<li class="fragment">How likely is it to leak?
+<ul>
+<li class="fragment">When do you send it?</li>
+<li class="fragment">Where do you send it?</li>
+<li class="fragment">How often do you send it?</li>
+</ul></li>
+</ul>
+</section>
+<section id="authentication-schemes-overview" class="slide level2">
+<h2>Authentication schemes overview</h2>
+<ul>
+<li class="fragment"><strong>HTTP Basic Authentication:</strong> username + password sent with request</li>
+<li class="fragment"><strong>API Keys/Bearer Tokens:</strong> password-like thing sent with request
+<ul>
+<li class="fragment">Dirty secret: This is what more complex schemes are, eventually</li>
+</ul></li>
+<li class="fragment"><strong>OAuth:</strong> Multi-step process to generate a key
+<ul>
+<li class="fragment">Goal: Make the key as short-lived as possible</li>
+<li class="fragment">Not everyone implements the same way (ie often wrong)</li>
+</ul></li>
+<li class="fragment"><strong>Other:</strong>
+<ul>
+<li class="fragment">Cookies</li>
+<li class="fragment"><a href="https://fosstodon.org/deck/@jaredlander/111422477967658857">Certificates</a></li>
+</ul></li>
+</ul>
+</section>
+<section id="dangers-of-leaking-credentials" class="slide level2">
+<h2>Dangers of leaking credentials</h2>
+<ul>
+<li class="fragment">🔴 Username + password
+<ul>
+<li class="fragment">Access entire account</li>
+<li class="fragment">Often difficult to turn off/recover</li>
+</ul></li>
+<li class="fragment">🟠 API key
+<ul>
+<li class="fragment">Can access everything you can access</li>
+<li class="fragment">Sometimes short-lived</li>
+<li class="fragment">You can often revoke this</li>
+</ul></li>
+<li class="fragment">🟡 OAuth exists to minimize these dangers</li>
+</ul>
+</section></section>
+<section>
+<section id="othersold" class="title-slide slide level1 center">
+<h1>Others/Old</h1>
+
 </section>
 <section id="what-are-http-request-headers" class="slide level2">
 <h2>What are HTTP request headers?</h2>
@@ -523,67 +644,6 @@
 <ul>
 <li class="fragment">Run <code>usethis::git_vaccinate()</code></li>
 <li class="fragment">Usually ignore project-level <code>.Renviron</code></li>
-</ul>
-</section>
-<section id="credential-dangers" class="slide level2 unnumbered">
-<h2>Credential dangers</h2>
-<ul>
-<li class="fragment">How much account control does it have?
-<ul>
-<li class="fragment">Can it lock you out?</li>
-<li class="fragment">Can it reveal sensitive data?</li>
-</ul></li>
-<li class="fragment">How long does it last?
-<ul>
-<li class="fragment">Shorter = safer</li>
-<li class="fragment">Can you revoke it?</li>
-</ul></li>
-<li class="fragment">How likely is it to leak?
-<ul>
-<li class="fragment">When do you send it?</li>
-<li class="fragment">Where do you send it?</li>
-<li class="fragment">How often do you send it?</li>
-</ul></li>
-</ul>
-</section>
-<section id="authentication-schemes-overview" class="slide level2 unnumbered">
-<h2>Authentication schemes overview</h2>
-<ul>
-<li class="fragment"><strong>HTTP Basic Authentication:</strong> username + password sent with request</li>
-<li class="fragment"><strong>API Keys/Bearer Tokens:</strong> password-like thing sent with request
-<ul>
-<li class="fragment">Dirty secret: This is what more complex schemes are, eventually</li>
-<li class="fragment"><code>httr2::req_auth_bearer_token()</code></li>
-<li class="fragment">Sometimes: <code>httr2::req_headers()</code></li>
-</ul></li>
-<li class="fragment"><strong>OAuth:</strong> Multi-step process to generate a key
-<ul>
-<li class="fragment">Goal: Make the key as short-lived as possible</li>
-<li class="fragment">Not everyone implements the same way (ie often wrong)</li>
-<li class="fragment"><code>httr2::req_oauth_*()</code></li>
-</ul></li>
-<li class="fragment"><strong>Other:</strong>
-<ul>
-<li class="fragment">Cookies</li>
-<li class="fragment"><a href="https://fosstodon.org/deck/@jaredlander/111422477967658857">Certificates</a></li>
-</ul></li>
-</ul>
-</section>
-<section id="dangers-of-leaking-credentials" class="slide level2 unnumbered">
-<h2>Dangers of leaking credentials</h2>
-<ul>
-<li class="fragment">🔴 Username + password
-<ul>
-<li class="fragment">Access entire account</li>
-<li class="fragment">Often difficult to turn off/recover</li>
-</ul></li>
-<li class="fragment">🟠 API key
-<ul>
-<li class="fragment">Can access everything you can access</li>
-<li class="fragment">Often short-lived</li>
-<li class="fragment">You can often revoke this</li>
-</ul></li>
-<li class="fragment">🟡 OAuth exists to minimize these dangers</li>
 </ul>
 </section>
 <section id="what-does-this-api-want" class="slide level2 unnumbered">
