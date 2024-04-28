@@ -10,6 +10,7 @@ title: How can I get a lot of data from an API?
 -   Retry API requests respectfully.
 -   Retrieve multiple pages of data from an API.
 -   Process lists of {httr2} responses.
+-   TODO: Add argument names in calls, for clarity
 :::
 
 ```{r}
@@ -469,9 +470,13 @@ saveRDS(
 ## resps_data()
 
 -   `req_perform_iterative()` returns *list* of responses
--   `resps_data()` takes that list + `resp_data()` parsing function and merges
+-   `resps_data()` takes that list + `resp_data` parsing function and merges
 -   Usually you need more than just something like `resp_body_json`
     -   Grab just the actual results
+
+::: notes
+-   Clarify that `resp_data` is the function itself, NOT a call to the function.
+:::
 
 ## resps_data() example: OpenFEC
 
@@ -502,6 +507,10 @@ candidates_multi_results <- resps_data(
 )
 tibblify::tibblify(candidates_multi_results)
 ```
+:::
+
+::: notes
+-   Reiterate that fec_resp_parser is the function itself, not a call to the function.
 :::
 
 ## resps_data() friends

@@ -8,6 +8,7 @@ title: How can I get started with APIs?
 ::: nonincremental
 -   Fetch json-formatted data from the web.
 -   Parse nested lists with the {tidyverse}.
+-   TODO: Skip tidyverse, re-integrate schemas?
 :::
 
 ```{r}
