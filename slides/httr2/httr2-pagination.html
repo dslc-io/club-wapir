@@ -404,6 +404,7 @@
 <li>Retry API requests respectfully.</li>
 <li>Retrieve multiple pages of data from an API.</li>
 <li>Process lists of {httr2} responses.</li>
+<li>TODO: Add argument names in calls, for clarity</li>
 </ul>
 </div>
 <div class="cell">
@@ -947,12 +948,27 @@
 <h2>resps_data()</h2>
 <ul>
 <li class="fragment"><code>req_perform_iterative()</code> returns <em>list</em> of responses</li>
-<li class="fragment"><code>resps_data()</code> takes that list + <code>resp_data()</code> parsing function and merges</li>
+<li class="fragment"><code>resps_data()</code> takes that list + <code>resp_data</code> parsing function and merges</li>
 <li class="fragment">Usually you need more than just something like <code>resp_body_json</code>
 <ul>
 <li class="fragment">Grab just the actual results</li>
 </ul></li>
 </ul>
+<aside class="notes">
+<ul>
+<li>Clarify that <code>resp_data</code> is the function itself, NOT a call to the function.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="resps_data-example-openfec" class="slide level2">
 <h2>resps_data() example: OpenFEC</h2>
@@ -993,6 +1009,21 @@
 </div>
 </div>
 </div>
+<aside class="notes">
+<ul>
+<li>Reiterate that fec_resp_parser is the function itself, not a call to the function.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="resps_data-friends" class="slide level2">
 <h2>resps_data() friends</h2>
