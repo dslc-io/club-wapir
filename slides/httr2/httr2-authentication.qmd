@@ -6,6 +6,7 @@ title: How do I tell the API who I am?
 # ️✅ Learning objectives
 
 ::: nonincremental
+-   Identify yourself with a `User-Agent`.
 -   Find authentication information in API docs.
 -   Authenticate a request with an API key.
 -   Authenticate a request with OAuth.
@@ -18,38 +19,120 @@ title: How do I tell the API who I am?
 library(httr2)
 ```
 
+## ❌ Not covered
+
+::: nonincremental
+-   `httr2::req_auth_basic()` (username + password)
+-   `httr2::req_cookie_preserve()` (maintain state)
+-   `httr2::req_options()` (SSH keys, many other options)
+-   `httr2::req_proxy()`
+:::
+
 ::: notes
--   Mention cookies (and other schemes) as an online-only/advanced reference.
-    -   Even username + password is rare. Include it here in case?
--   Cover req_user_agent() & req_proxy() in here somewhere! And req_headers()!
+Is there anything in the "not covered" list that you'd like to see?
+:::
+
+# How can I use a `User-Agent` to be polite?
+
+## What is a user agent?
+
+-   "User agent" = software that accesses the web
+-   `User-Agent` request header = string IDing the "user agent"
+-   {httr2} attaches a default `User-Agent` header
+
+::: fragment
+```{r}
+httr2::request("https://example.com") |> httr2::req_dry_run()
+#> GET / HTTP/1.1
+#> Host: example.com
+#> User-Agent: httr2/1.0.1 r-curl/5.2.1 libcurl/8.3.0
+#> Accept: */*
+#> Accept-Encoding: deflate, gzip
+```
+:::
+
+::: notes
+-   It's arguable whether *your code* is the user agent or *httr2* is.
+-   Headers are the things at the top of a request, outside the request itself
+-   Default is fine almost all the time
+    -   If you write a package, include user-agent settings.
+    -   Documentation might ask for it (like Jim found in api.crossref.org docs)
+:::
+
+## How do I set a `User-Agent` header?
+
+`httr2::req_user_agent(req, string = NULL)`
+
+```{r}
+#| label: httr2-authentication-req_user_agent
+httr2::request("https://example.com") |> 
+  httr2::req_user_agent("MyUserAgent/1.0 (more details; separate with ;)")
+#> <httr2_request>
+#> GET https://example.com
+#> Body: empty
+#> Options:
+#> • useragent: 'MyUserAgent/1.0 (more details; separate with ;)'
+```
+
+## An experimental .Rprofile user agent function
+
+```{r}
+#| label: httr2-authentication-.req_ua
+.httr2_ua <- function() {
+  # Recreate the default httr2 string.
+  versions <- c(
+    httr2 = as.character(utils::packageVersion("httr2")),
+    `r-curl` = as.character(utils::packageVersion("curl")),
+    libcurl = curl::curl_version()$version
+  )
+  paste0(names(versions), "/", versions, collapse = " ")
+}
+.req_ua <- function(req) {
+  httr2_string <- .httr2_ua()
+  me <- "Jon Harmon"
+  url <- "https://wapir.io"
+  email <- "jonthegeek+useragent@gmail.com"
+  string <- glue::glue(
+    "{httr2_string} ({me}; {url}; mailto:{email})"
+  )
+  httr2::req_user_agent(req, string = string)
+}
+```
+
+::: notes
+-   Start with `.` so it doesn't show in my environment.
 :::
 
 # What is authentication?
 
-## Authentication vs Authorization
+::: notes
+-   Before we dive into the how-to, let's try to understand why authentication is complicated.
+:::
+
+
+## The 2 auths
 
 ::::: columns
 :::: column
+::: {.fragment fragment-index=0}
 Authentication
+:::
 
-::: fragment
 -   Verifying who you are
 -   Uses some sort of "credentials"
-:::
 ::::
 :::: column
+::: {.fragment fragment-index=1}
 Authorization
-
-::: fragment
--   Granting access based on who you are
 :::
+
+-   Granting access
 ::::
 :::::
 
-::: fragment
 -   Both often abbreviated "auth"
 -   Often used interchangeably
-:::
+
 ::: fragment
 
 > The HTTP *Authorization* request header can be used to provide credentials that *authenticate* a user agent with a server, allowing access to a protected resource.
@@ -59,48 +142,178 @@ Authorization
 
 ::: notes
 -   "TECHNICALLY..."
--   "Despite what the internet will insist on telling you..."
+-   Credentials = username & password, api key, temporary token...
+-   "Despite what the internet will insist on telling you..." ("Often used")
 -   Mozilla Developer Network (MDN) is pretty much THE reference for these things, and it mixes them.
--   (Learned there that server is *supposed* to send 401 with info about how to auth in `WWW-Authenticate` header!)
+-   (Learned there that server is *supposed* to send 401 with info about how to auth in `WWW-Authenticate` header! Haven't found an API that actually does that.)
 :::
 
-## Credential dangers
+## What are the dangers of leaked creds?
 
-TODO: WORKING HERE. THESE NEXT THREE SLIDES ARE KIND OF A LOT.
+::::: columns
+:::: column
+::: fragment
+How much control does it have?
 
--   How much account control does it have?
-    -   Can it lock you out?
-    -   Can it reveal sensitive data?
--   How long does it last?
-    -   Shorter = safer
-    -   Can you revoke it?
--   How likely is it to leak?
-    -   When do you send it?
-    -   Where do you send it?
-    -   How often do you send it?
+-   Can it lock you out?
+-   Can it reveal sensitive data?
+:::
+::::
+:::: column
+::: fragment
+How long does it last?
 
-## Authentication schemes overview
+-   Shorter = safer
+-   Can you revoke it?
+:::
+::::
+:::::
 
--   **HTTP Basic Authentication:** username + password sent with request
--   **API Keys/Bearer Tokens:** password-like thing sent with request
-    -   Dirty secret: This is what more complex schemes are, eventually
--   **OAuth:** Multi-step process to generate a key
-    -   Goal: Make the key as short-lived as possible
-    -   Not everyone implements the same way (ie often wrong)
--   **Other:**
-    -   Cookies
-    -   [Certificates](https://fosstodon.org/deck/@jaredlander/111422477967658857)
+::: fragment
+How likely is it to leak?
 
-## Dangers of leaking credentials
+-   When do you send it?
+-   Where do you send it?
+-   How often do you send it?
+:::
 
--   🔴 Username + password
-    -   Access entire account
-    -   Often difficult to turn off/recover
--   🟠 API key
-    -   Can access everything you can access
-    -   Sometimes short-lived
-    -   You can often revoke this
--   🟡 OAuth exists to minimize these dangers
+
+## Types of authentication
+
+::::: columns
+:::: column
+::: fragment
+🔴 **HTTP Basic:** username + password sent with request
+
+-   Access entire account
+-   Often difficult to turn off
+:::
+::: fragment
+🟠 **API Key:** password-like thing sent with request
+
+-   Usually key == you
+-   You can often revoke
+:::
+::::
+:::: column
+::: fragment
+🟡 **Bearer Token:** shorter-lived api-key-like thing
+
+-   Different token for different use
+-   Often short-lived
+:::
+::: fragment
+🟢 **OAuth:** Multi-step process to generate a key
+
+-   Exists to minimize dangers
+-   Multiple short-lived pieces
+:::
+::::
+:::::
+
+::: notes
+-   There are other things, but these three cover almost everything.
+-   And almost nobody uses the first one for APIs anymore.
+-   Oauth not always implemented correctly 
+-   Other schemes like api keys in cookies, SSL certs not discussed here
+:::
+
+# How can I find authentication information?
+
+## OpenAPI: securitySchemes
+
+If you have the OpenAPI description, use it!
+
+-   `components$securitySchemes` = ways to auth
+-   `security` (top level) = default schemes
+-   [OpenFEC](https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.yaml)
+-   [Google Calendar](https://api.apis.guru/v2/specs/googleapis.com/calendar/v3/openapi.yaml)
+
+::: notes
+-   Often still necessary to dig through docs for details
+:::
+
+## Documentation
+
+-   Sadly, no standard
+-   [OpenFEC](https://api.open.fec.gov/developers)
+-   [Google Calendar](https://developers.google.com/calendar/api/guides/overview)
+
+# How can I authenticate a request using API keys?
+
+## But first: Practice safe git
+
+-   Run `usethis::git_vaccinate()`
+-   Often `usethis::use_git_ignore(".Renviron")`
+
+## What are HTTP request headers?
+
+-   Metadata about the request
+-   `httr2::req_headers(.req, ..., .redact = NULL)`
+    -   `.req` = a request
+    -   `...` = name-value pairs for headers (names are case-insensitive)
+    -   `.redact` = character vector of headers to hide in print
+
+## How can I authenticate FECAPI requests?
+
+[OpenFEC OAS](https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.yaml)
+
+```{r}
+request("https://api.open.fec.gov/v1") |> 
+  req_headers("X-Api-Key" = "DEMO_KEY", .redact = "X-Api-Key")
+
+#> <httr2_request>
+#> GET https://api.open.fec.gov/v1
+#> Headers:
+#> • X-Api-Key: '<REDACTED>'
+#> Body: empty
+```
+
+## Authenticating with nectar
+
+[{nectar}](https://nectar.api2r.org) 📦 wraps {httr2} for packages
+
+```{r}
+request("https://api.open.fec.gov/v1") |> 
+  nectar::req_auth_api_key(
+    location = "header", 
+    parameter_name = "X-Api-Key", 
+    api_key = "DEMO_KEY"
+  )
+
+#> <httr2_request>
+#> GET https://api.open.fec.gov/v1
+#> Headers:
+#> • X-Api-Key: '<REDACTED>'
+#> Body: empty
+```
+
+# How can I authenticate a request using OAuth?
+
+-   Next week!
+-   Slides still in progress.
+-   Also see [httr2 OAuth article](https://httr2.r-lib.org/articles/oauth.html)
+
+## Oauth terminology
+
+| term(s)            | meaning                            |
+|--------------------|------------------------------------|
+| oauth host         | the API, or a 3rd party like Google |
+| client, oauth client, oauth application | you create this at oauth host |
+| application | your R code |
+| scope | string(s) describing specific abilities |
+| authorization url | where to send initial request + scopes |
+| authorization code | very temporary key |
+| token url | where to send authorization code |
+| token | the real key, often with accompanying info |
+
+::: notes
+-   Oauth is complicated! Don't feel bad if you're confused!
+-   The point of the multiple steps is to make it hard for attacker to intercept, and minimize what they can do if they do
+-   Auth code can only be sent to specified URLs
+-   Token often includes a "refresh token", longer-lived shortcut around the auth process.
+-   Main piece is a bearer token.
+:::
 
 # Others/Old
 
@@ -176,15 +389,10 @@ req_dry_run(req_fec_dev_auth)
 :::
 
 
-## But first: Practice safe git {-}
-
--   Run `usethis::git_vaccinate()`
--   Usually ignore project-level `.Renviron`
-
 ## What does this API want? {-}
 
 -   Find "OpenAPI" or "Swagger" links (or "API json", "API yaml", etc)
-    -   Search for "secrutitySchemes"
+    -   Search for "securitySchemes"
     -   Often easier-to-understand details than docs!
 -   Might need to do something to "register"
     -   "Request an API key"
@@ -205,18 +413,6 @@ req_dry_run(req_fec_dev_auth)
 -   Catch-all: `httr2::req_headers(.req, ..., .redact = NULL)`
     -   `...` = `token_parameter = Sys.get("API_TOKEN_NAME")`
     -   `.redact = "token_parameter"` to hide in print
-
-## OAuth: Terminology {-}
-
--   **User:** You, or someone using your code
--   **Client:** The thing asking for permission to act as the user
-    -   Your code, but also
-    -   A reusable thing that represents your code
-    -   **Client ID:** Codename
-    -   **Client secret:** Client "password", but often not very secret
--   **Authorization server (auth):** Thing granting permission (usually the API owner)
-    -   Often multiple servers (auth vs auth2 on next slide)
--   **Resource server (API):** Thing user is using (the API)
 
 ## The OAuth "dance" {-}
 

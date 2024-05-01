@@ -11,6 +11,7 @@ title: How can I get a lot of data from an API?
 -   Retrieve multiple pages of data from an API.
 -   Process lists of {httr2} responses.
 -   TODO: Add argument names in calls, for clarity
+-   TODO: Introduce/use `httr2::req_cache()`
 :::
 
 ```{r}
