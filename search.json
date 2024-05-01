@@ -338,44 +338,110 @@
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#authentication-vs-authorization",
-    "href": "slides/httr2/httr2-authentication.html#authentication-vs-authorization",
+    "objectID": "slides/httr2/httr2-authentication.html#not-covered",
+    "href": "slides/httr2/httr2-authentication.html#not-covered",
     "title": "How do I tell the API who I am?",
-    "section": "Authentication vs Authorization",
-    "text": "Authentication vs Authorization\n\n\nAuthentication\n\n\nVerifying who you are\nUses some sort of “credentials”\n\n\n\nAuthorization\n\n\nGranting access based on who you are\n\n\n\n\n\n\nBoth often abbreviated “auth”\nOften used interchangeably\n\n\n\n\nThe HTTP Authorization request header can be used to provide credentials that authenticate a user agent with a server, allowing access to a protected resource. — MDN web docs\n\n\n\n\n“TECHNICALLY…”\n“Despite what the internet will insist on telling you…”\nMozilla Developer Network (MDN) is pretty much THE reference for these things, and it mixes them.\n(Learned there that server is supposed to send 401 with info about how to auth in WWW-Authenticate header!)",
+    "section": "❌ Not covered",
+    "text": "❌ Not covered\n\n\nhttr2::req_auth_basic() (username + password)\nhttr2::req_cookie_preserve() (maintain state)\nhttr2::req_options() (SSH keys, many other options)\nhttr2::req_proxy()\n\n\n\nIs there anything in the “not covered” list that you’d like to see?",
     "crumbs": [
       "How can I interact with the web from R?",
       "How do I tell the API who I am?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#credential-dangers",
-    "href": "slides/httr2/httr2-authentication.html#credential-dangers",
+    "objectID": "slides/httr2/httr2-authentication.html#what-is-a-user-agent",
+    "href": "slides/httr2/httr2-authentication.html#what-is-a-user-agent",
     "title": "How do I tell the API who I am?",
-    "section": "Credential dangers",
-    "text": "Credential dangers\nTODO: WORKING HERE. THESE NEXT THREE SLIDES ARE KIND OF A LOT.\n\nHow much account control does it have?\n\nCan it lock you out?\nCan it reveal sensitive data?\n\nHow long does it last?\n\nShorter = safer\nCan you revoke it?\n\nHow likely is it to leak?\n\nWhen do you send it?\nWhere do you send it?\nHow often do you send it?",
+    "section": "What is a user agent?",
+    "text": "What is a user agent?\n\n“User agent” = software that accesses the web\nUser-Agent request header = string IDing the “user agent”\n{httr2} attaches a default User-Agent header\n\n\n\nhttr2::request(\"https://example.com\") |&gt; httr2::req_dry_run()\n#&gt; GET / HTTP/1.1\n#&gt; Host: example.com\n#&gt; User-Agent: httr2/1.0.1 r-curl/5.2.1 libcurl/8.3.0\n#&gt; Accept: */*\n#&gt; Accept-Encoding: deflate, gzip\n\n\n\n\nIt’s arguable whether your code is the user agent or httr2 is.\nHeaders are the things at the top of a request, outside the request itself\nDefault is fine almost all the time\n\nIf you write a package, include user-agent settings.\nDocumentation might ask for it (like Jim found in api.crossref.org docs)",
     "crumbs": [
       "How can I interact with the web from R?",
       "How do I tell the API who I am?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#authentication-schemes-overview",
-    "href": "slides/httr2/httr2-authentication.html#authentication-schemes-overview",
+    "objectID": "slides/httr2/httr2-authentication.html#how-do-i-set-a-user-agent-header",
+    "href": "slides/httr2/httr2-authentication.html#how-do-i-set-a-user-agent-header",
     "title": "How do I tell the API who I am?",
-    "section": "Authentication schemes overview",
-    "text": "Authentication schemes overview\n\nHTTP Basic Authentication: username + password sent with request\nAPI Keys/Bearer Tokens: password-like thing sent with request\n\nDirty secret: This is what more complex schemes are, eventually\n\nOAuth: Multi-step process to generate a key\n\nGoal: Make the key as short-lived as possible\nNot everyone implements the same way (ie often wrong)\n\nOther:\n\nCookies\nCertificates",
+    "section": "How do I set a User-Agent header?",
+    "text": "How do I set a User-Agent header?\nhttr2::req_user_agent(req, string = NULL)\n\nhttr2::request(\"https://example.com\") |&gt; \n  httr2::req_user_agent(\"MyUserAgent/1.0 (more details; separate with ;)\")\n#&gt; &lt;httr2_request&gt;\n#&gt; GET https://example.com\n#&gt; Body: empty\n#&gt; Options:\n#&gt; • useragent: 'MyUserAgent/1.0 (more details; separate with ;)'",
     "crumbs": [
       "How can I interact with the web from R?",
       "How do I tell the API who I am?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#dangers-of-leaking-credentials",
-    "href": "slides/httr2/httr2-authentication.html#dangers-of-leaking-credentials",
+    "objectID": "slides/httr2/httr2-authentication.html#an-experimental-.rprofile-user-agent-function",
+    "href": "slides/httr2/httr2-authentication.html#an-experimental-.rprofile-user-agent-function",
     "title": "How do I tell the API who I am?",
-    "section": "Dangers of leaking credentials",
-    "text": "Dangers of leaking credentials\n\n🔴 Username + password\n\nAccess entire account\nOften difficult to turn off/recover\n\n🟠 API key\n\nCan access everything you can access\nSometimes short-lived\nYou can often revoke this\n\n🟡 OAuth exists to minimize these dangers",
+    "section": "An experimental .Rprofile user agent function",
+    "text": "An experimental .Rprofile user agent function\n\n.httr2_ua &lt;- function() {\n  # Recreate the default httr2 string.\n  versions &lt;- c(\n    httr2 = as.character(utils::packageVersion(\"httr2\")),\n    `r-curl` = as.character(utils::packageVersion(\"curl\")),\n    libcurl = curl::curl_version()$version\n  )\n  paste0(names(versions), \"/\", versions, collapse = \" \")\n}\n.req_ua &lt;- function(req) {\n  httr2_string &lt;- .httr2_ua()\n  me &lt;- \"Jon Harmon\"\n  url &lt;- \"https://wapir.io\"\n  email &lt;- \"jonthegeek+useragent@gmail.com\"\n  string &lt;- glue::glue(\n    \"{httr2_string} ({me}; {url}; mailto:{email})\"\n  )\n  httr2::req_user_agent(req, string = string)\n}\n\n\n\nStart with . so it doesn’t show in my environment.",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How do I tell the API who I am?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#the-2-auths",
+    "href": "slides/httr2/httr2-authentication.html#the-2-auths",
+    "title": "How do I tell the API who I am?",
+    "section": "The 2 auths",
+    "text": "The 2 auths\n\n\n\nAuthentication\n\n\nVerifying who you are\nUses some sort of “credentials”\n\n\n\nAuthorization\n\n\nGranting access\n\n\n\n\nBoth often abbreviated “auth”\nOften used interchangeably\n\n\n\nThe HTTP Authorization request header can be used to provide credentials that authenticate a user agent with a server, allowing access to a protected resource. — MDN web docs\n\n\n\n\n“TECHNICALLY…”\nCredentials = username & password, api key, temporary token…\n“Despite what the internet will insist on telling you…” (“Often used”)\nMozilla Developer Network (MDN) is pretty much THE reference for these things, and it mixes them.\n(Learned there that server is supposed to send 401 with info about how to auth in WWW-Authenticate header! Haven’t found an API that actually does that.)",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How do I tell the API who I am?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#what-are-the-dangers-of-leaked-creds",
+    "href": "slides/httr2/httr2-authentication.html#what-are-the-dangers-of-leaked-creds",
+    "title": "How do I tell the API who I am?",
+    "section": "What are the dangers of leaked creds?",
+    "text": "What are the dangers of leaked creds?\n\n\n\nHow much control does it have?\n\nCan it lock you out?\nCan it reveal sensitive data?\n\n\n\n\nHow long does it last?\n\nShorter = safer\nCan you revoke it?\n\n\n\n\n\nHow likely is it to leak?\n\nWhen do you send it?\nWhere do you send it?\nHow often do you send it?",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How do I tell the API who I am?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#types-of-authentication",
+    "href": "slides/httr2/httr2-authentication.html#types-of-authentication",
+    "title": "How do I tell the API who I am?",
+    "section": "Types of authentication",
+    "text": "Types of authentication\n\n\n\n🔴 HTTP Basic: username + password sent with request\n\nAccess entire account\nOften difficult to turn off\n\n\n\n🟠 API Key: password-like thing sent with request\n\nUsually key == you\nYou can often revoke\n\n\n\n\n🟡 Bearer Token: shorter-lived api-key-like thing\n\nDifferent token for different use\nOften short-lived\n\n\n\n🟢 OAuth: Multi-step process to generate a key\n\nExists to minimize dangers\nMultiple short-lived pieces\n\n\n\n\n\n\nThere are other things, but these three cover almost everything.\nAnd almost nobody uses the first one for APIs anymore.\nOauth not always implemented correctly\nOther schemes like api keys in cookies, SSL certs not discussed here",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How do I tell the API who I am?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#openapi-securityschemes",
+    "href": "slides/httr2/httr2-authentication.html#openapi-securityschemes",
+    "title": "How do I tell the API who I am?",
+    "section": "OpenAPI: securitySchemes",
+    "text": "OpenAPI: securitySchemes\nIf you have the OpenAPI description, use it!\n\ncomponents$securitySchemes = ways to auth\nsecurity (top level) = default schemes\nOpenFEC\nGoogle Calendar\n\n\n\nOften still necessary to dig through docs for details",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How do I tell the API who I am?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#documentation",
+    "href": "slides/httr2/httr2-authentication.html#documentation",
+    "title": "How do I tell the API who I am?",
+    "section": "Documentation",
+    "text": "Documentation\n\nSadly, no standard\nOpenFEC\nGoogle Calendar",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How do I tell the API who I am?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#but-first-practice-safe-git",
+    "href": "slides/httr2/httr2-authentication.html#but-first-practice-safe-git",
+    "title": "How do I tell the API who I am?",
+    "section": "But first: Practice safe git",
+    "text": "But first: Practice safe git\n\nRun usethis::git_vaccinate()\nOften usethis::use_git_ignore(\".Renviron\")",
     "crumbs": [
       "How can I interact with the web from R?",
       "How do I tell the API who I am?"
@@ -384,6 +450,50 @@
   {
     "objectID": "slides/httr2/httr2-authentication.html#what-are-http-request-headers",
     "href": "slides/httr2/httr2-authentication.html#what-are-http-request-headers",
+    "title": "How do I tell the API who I am?",
+    "section": "What are HTTP request headers?",
+    "text": "What are HTTP request headers?\n\nMetadata about the request\nhttr2::req_headers(.req, ..., .redact = NULL)\n\n.req = a request\n... = name-value pairs for headers (names are case-insensitive)\n.redact = character vector of headers to hide in print",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How do I tell the API who I am?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#how-can-i-authenticate-fecapi-requests",
+    "href": "slides/httr2/httr2-authentication.html#how-can-i-authenticate-fecapi-requests",
+    "title": "How do I tell the API who I am?",
+    "section": "How can I authenticate FECAPI requests?",
+    "text": "How can I authenticate FECAPI requests?\nOpenFEC OAS\n\nrequest(\"https://api.open.fec.gov/v1\") |&gt; \n  req_headers(\"X-Api-Key\" = \"DEMO_KEY\", .redact = \"X-Api-Key\")\n\n#&gt; &lt;httr2_request&gt;\n#&gt; GET https://api.open.fec.gov/v1\n#&gt; Headers:\n#&gt; • X-Api-Key: '&lt;REDACTED&gt;'\n#&gt; Body: empty",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How do I tell the API who I am?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#authenticating-with-nectar",
+    "href": "slides/httr2/httr2-authentication.html#authenticating-with-nectar",
+    "title": "How do I tell the API who I am?",
+    "section": "Authenticating with nectar",
+    "text": "Authenticating with nectar\n{nectar} 📦 wraps {httr2} for packages\n\nrequest(\"https://api.open.fec.gov/v1\") |&gt; \n  nectar::req_auth_api_key(\n    location = \"header\", \n    parameter_name = \"X-Api-Key\", \n    api_key = \"DEMO_KEY\"\n  )\n\n#&gt; &lt;httr2_request&gt;\n#&gt; GET https://api.open.fec.gov/v1\n#&gt; Headers:\n#&gt; • X-Api-Key: '&lt;REDACTED&gt;'\n#&gt; Body: empty",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How do I tell the API who I am?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#oauth-terminology",
+    "href": "slides/httr2/httr2-authentication.html#oauth-terminology",
+    "title": "How do I tell the API who I am?",
+    "section": "Oauth terminology",
+    "text": "Oauth terminology\n\n\n\n\n\n\n\nterm(s)\nmeaning\n\n\n\n\noauth host\nthe API, or a 3rd party like Google\n\n\nclient, oauth client, oauth application\nyou create this at oauth host\n\n\napplication\nyour R code\n\n\nscope\nstring(s) describing specific abilities\n\n\nauthorization url\nwhere to send initial request + scopes\n\n\nauthorization code\nvery temporary key\n\n\ntoken url\nwhere to send authorization code\n\n\ntoken\nthe real key, often with accompanying info\n\n\n\n\n\nOauth is complicated! Don’t feel bad if you’re confused!\nThe point of the multiple steps is to make it hard for attacker to intercept, and minimize what they can do if they do\nAuth code can only be sent to specified URLs\nToken often includes a “refresh token”, longer-lived shortcut around the auth process.\nMain piece is a bearer token.",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How do I tell the API who I am?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#what-are-http-request-headers-1",
+    "href": "slides/httr2/httr2-authentication.html#what-are-http-request-headers-1",
     "title": "How do I tell the API who I am?",
     "section": "What are HTTP request headers?",
     "text": "What are HTTP request headers?\n\nMetadata about the request\n\nAuthentication\nCookies\nCache rules\nExpected response\nEtc\n\n\n\nNames are case-insensitive!",
@@ -415,22 +525,11 @@
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#but-first-practice-safe-git",
-    "href": "slides/httr2/httr2-authentication.html#but-first-practice-safe-git",
-    "title": "How do I tell the API who I am?",
-    "section": "But first: Practice safe git",
-    "text": "But first: Practice safe git\n\nRun usethis::git_vaccinate()\nUsually ignore project-level .Renviron",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How do I tell the API who I am?"
-    ]
-  },
-  {
     "objectID": "slides/httr2/httr2-authentication.html#what-does-this-api-want",
     "href": "slides/httr2/httr2-authentication.html#what-does-this-api-want",
     "title": "How do I tell the API who I am?",
     "section": "What does this API want?",
-    "text": "What does this API want?\n\nFind “OpenAPI” or “Swagger” links (or “API json”, “API yaml”, etc)\n\nSearch for “secrutitySchemes”\nOften easier-to-understand details than docs!\n\nMight need to do something to “register”\n\n“Request an API key”\n“Register your App” (or “Client”) (see OAuth)",
+    "text": "What does this API want?\n\nFind “OpenAPI” or “Swagger” links (or “API json”, “API yaml”, etc)\n\nSearch for “securitySchemes”\nOften easier-to-understand details than docs!\n\nMight need to do something to “register”\n\n“Request an API key”\n“Register your App” (or “Client”) (see OAuth)",
     "crumbs": [
       "How can I interact with the web from R?",
       "How do I tell the API who I am?"
@@ -453,17 +552,6 @@
     "title": "How do I tell the API who I am?",
     "section": "API Keys & Bearer Tokens",
     "text": "API Keys & Bearer Tokens\n\nhttr2::req_auth_bearer_token(req, token) (specific header)\n\nPass token as Sys.get(\"API_TOKEN_NAME\")\nSave token with usethis::edit_r_environ()\n\nCatch-all: httr2::req_headers(.req, ..., .redact = NULL)\n\n... = token_parameter = Sys.get(\"API_TOKEN_NAME\")\n.redact = \"token_parameter\" to hide in print",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How do I tell the API who I am?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-authentication.html#oauth-terminology",
-    "href": "slides/httr2/httr2-authentication.html#oauth-terminology",
-    "title": "How do I tell the API who I am?",
-    "section": "OAuth: Terminology",
-    "text": "OAuth: Terminology\n\nUser: You, or someone using your code\nClient: The thing asking for permission to act as the user\n\nYour code, but also\nA reusable thing that represents your code\nClient ID: Codename\nClient secret: Client “password”, but often not very secret\n\nAuthorization server (auth): Thing granting permission (usually the API owner)\n\nOften multiple servers (auth vs auth2 on next slide)\n\nResource server (API): Thing user is using (the API)",
     "crumbs": [
       "How can I interact with the web from R?",
       "How do I tell the API who I am?"
