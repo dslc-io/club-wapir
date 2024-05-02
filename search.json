@@ -338,33 +338,33 @@
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#not-covered",
-    "href": "slides/httr2/httr2-authentication.html#not-covered",
-    "title": "How do I tell the API who I am?",
-    "section": "❌ Not covered",
-    "text": "❌ Not covered\n\n\nhttr2::req_auth_basic() (username + password)\nhttr2::req_cookie_preserve() (maintain state)\nhttr2::req_options() (SSH keys, many other options)\nhttr2::req_proxy()\n\n\n\nIs there anything in the “not covered” list that you’d like to see?",
-    "crumbs": [
-      "How can I interact with the web from R?",
-      "How do I tell the API who I am?"
-    ]
-  },
-  {
     "objectID": "slides/httr2/httr2-authentication.html#what-is-a-user-agent",
     "href": "slides/httr2/httr2-authentication.html#what-is-a-user-agent",
     "title": "How do I tell the API who I am?",
     "section": "What is a user agent?",
-    "text": "What is a user agent?\n\n“User agent” = software that accesses the web\nUser-Agent request header = string IDing the “user agent”\n{httr2} attaches a default User-Agent header\n\n\n\nhttr2::request(\"https://example.com\") |&gt; httr2::req_dry_run()\n#&gt; GET / HTTP/1.1\n#&gt; Host: example.com\n#&gt; User-Agent: httr2/1.0.1 r-curl/5.2.1 libcurl/8.3.0\n#&gt; Accept: */*\n#&gt; Accept-Encoding: deflate, gzip\n\n\n\n\nIt’s arguable whether your code is the user agent or httr2 is.\nHeaders are the things at the top of a request, outside the request itself\nDefault is fine almost all the time\n\nIf you write a package, include user-agent settings.\nDocumentation might ask for it (like Jim found in api.crossref.org docs)",
+    "text": "What is a user agent?\n\n“User agent” = software that accesses the web\nUser-Agent request header = string IDing the “user agent”\n{httr2} attaches a default User-Agent header\n\n\n\nhttr2::request(\"https://example.com\") |&gt; httr2::req_dry_run()\n#&gt; GET / HTTP/1.1\n#&gt; Host: example.com\n#&gt; User-Agent: httr2/1.0.1 r-curl/5.2.1 libcurl/8.3.0\n#&gt; Accept: */*\n#&gt; Accept-Encoding: deflate, gzip\n\n\n\n\nIt’s arguable whether your code is the user agent or httr2 is.\nHeaders are the things at the top of a request, outside the request itself",
     "crumbs": [
       "How can I interact with the web from R?",
       "How do I tell the API who I am?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#how-do-i-set-a-user-agent-header",
-    "href": "slides/httr2/httr2-authentication.html#how-do-i-set-a-user-agent-header",
+    "objectID": "slides/httr2/httr2-authentication.html#should-i-override-the-default-user-agent",
+    "href": "slides/httr2/httr2-authentication.html#should-i-override-the-default-user-agent",
     "title": "How do I tell the API who I am?",
-    "section": "How do I set a User-Agent header?",
-    "text": "How do I set a User-Agent header?\nhttr2::req_user_agent(req, string = NULL)\n\nhttr2::request(\"https://example.com\") |&gt; \n  httr2::req_user_agent(\"MyUserAgent/1.0 (more details; separate with ;)\")\n#&gt; &lt;httr2_request&gt;\n#&gt; GET https://example.com\n#&gt; Body: empty\n#&gt; Options:\n#&gt; • useragent: 'MyUserAgent/1.0 (more details; separate with ;)'",
+    "section": "Should I override the default user agent?",
+    "text": "Should I override the default user agent?\n\nAre you hitting the API a LOT?\nAre you providing reusable code for others to hit the API?\n\n\n\nDefault is fine almost all the time\nInclude UA in package (with option for user to expand)\nIf you use your code repeatedly/automatically, provide a UA\nDocumentation might ask for it (like Jim found in api.crossref.org docs)",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How do I tell the API who I am?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#how-do-i-override-the-default-user-agent",
+    "href": "slides/httr2/httr2-authentication.html#how-do-i-override-the-default-user-agent",
+    "title": "How do I tell the API who I am?",
+    "section": "How do I override the default user agent?",
+    "text": "How do I override the default user agent?\nhttr2::req_user_agent(req, string = NULL)\n\nhttr2::request(\"https://example.com\") |&gt; \n  httr2::req_user_agent(\"MyUserAgent/1.0 (more details; separate with ;)\") |&gt; \n  httr2::req_dry_run()\n#&gt; GET / HTTP/1.1\n#&gt; Host: example.com\n#&gt; User-Agent: MyUserAgent/1.0 (more details; separate with ;)\n#&gt; Accept: */*\n#&gt; Accept-Encoding: deflate, gzip",
     "crumbs": [
       "How can I interact with the web from R?",
       "How do I tell the API who I am?"
@@ -375,7 +375,7 @@
     "href": "slides/httr2/httr2-authentication.html#an-experimental-.rprofile-user-agent-function",
     "title": "How do I tell the API who I am?",
     "section": "An experimental .Rprofile user agent function",
-    "text": "An experimental .Rprofile user agent function\n\n.httr2_ua &lt;- function() {\n  # Recreate the default httr2 string.\n  versions &lt;- c(\n    httr2 = as.character(utils::packageVersion(\"httr2\")),\n    `r-curl` = as.character(utils::packageVersion(\"curl\")),\n    libcurl = curl::curl_version()$version\n  )\n  paste0(names(versions), \"/\", versions, collapse = \" \")\n}\n.req_ua &lt;- function(req) {\n  httr2_string &lt;- .httr2_ua()\n  me &lt;- \"Jon Harmon\"\n  url &lt;- \"https://wapir.io\"\n  email &lt;- \"jonthegeek+useragent@gmail.com\"\n  string &lt;- glue::glue(\n    \"{httr2_string} ({me}; {url}; mailto:{email})\"\n  )\n  httr2::req_user_agent(req, string = string)\n}\n\n\n\nStart with . so it doesn’t show in my environment.",
+    "text": "An experimental .Rprofile user agent function\n\n.httr2_ua &lt;- function() {\n  # Recreate the default httr2 string.\n  versions &lt;- c(\n    httr2 = as.character(utils::packageVersion(\"httr2\")),\n    `r-curl` = as.character(utils::packageVersion(\"curl\")),\n    libcurl = curl::curl_version()$version\n  )\n  paste0(names(versions), \"/\", versions, collapse = \" \")\n}\n.req_ua &lt;- function(req) {\n  httr2_string &lt;- .httr2_ua()\n  me &lt;- \"Jon Harmon\"\n  url &lt;- \"https://wapir.io\"\n  email &lt;- \"jonthegeek+useragent@gmail.com\"\n  string &lt;- glue::glue(\n    \"{httr2_string} ({me}; {url}; mailto:{email})\"\n  )\n  httr2::req_user_agent(req, string = string)\n}\n\n\n\nStart with . so it doesn’t show in my environment.\nIn general, UA should tell the API how you’re accessing it",
     "crumbs": [
       "How can I interact with the web from R?",
       "How do I tell the API who I am?"
