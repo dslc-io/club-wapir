@@ -6,7 +6,7 @@ title: How do I tell the API who I am?
 # ️✅ Learning objectives
 
 ::: nonincremental
--   Identify yourself with a `User-Agent`.
+-   Provide information in your request about how you're accessing the API. 
 -   Find authentication information in API docs.
 -   Authenticate a request with an API key.
 -   Authenticate a request with OAuth.
@@ -19,20 +19,7 @@ title: How do I tell the API who I am?
 library(httr2)
 ```
 
-## ❌ Not covered
-
-::: nonincremental
--   `httr2::req_auth_basic()` (username + password)
--   `httr2::req_cookie_preserve()` (maintain state)
--   `httr2::req_options()` (SSH keys, many other options)
--   `httr2::req_proxy()`
-:::
-
-::: notes
-Is there anything in the "not covered" list that you'd like to see?
-:::
-
-# How can I use a `User-Agent` to be polite?
+# How can I tell the API how I'm accessing it?
 
 ## What is a user agent?
 
@@ -54,24 +41,34 @@ httr2::request("https://example.com") |> httr2::req_dry_run()
 ::: notes
 -   It's arguable whether *your code* is the user agent or *httr2* is.
 -   Headers are the things at the top of a request, outside the request itself
--   Default is fine almost all the time
-    -   If you write a package, include user-agent settings.
-    -   Documentation might ask for it (like Jim found in api.crossref.org docs)
 :::
 
-## How do I set a `User-Agent` header?
+## Should I override the default user agent?
+
+-   Are you hitting the API a LOT?
+-   Are you providing reusable code for others to hit the API?
+
+::: notes
+-   Default is fine almost all the time
+-   Include UA in package (with option for user to expand)
+-   If you use your code repeatedly/automatically, provide a UA
+-   Documentation might ask for it (like Jim found in api.crossref.org docs)
+:::
+
+## How do I override the default user agent?
 
 `httr2::req_user_agent(req, string = NULL)`
 
 ```{r}
 #| label: httr2-authentication-req_user_agent
 httr2::request("https://example.com") |> 
-  httr2::req_user_agent("MyUserAgent/1.0 (more details; separate with ;)")
-#> <httr2_request>
-#> GET https://example.com
-#> Body: empty
-#> Options:
-#> • useragent: 'MyUserAgent/1.0 (more details; separate with ;)'
+  httr2::req_user_agent("MyUserAgent/1.0 (more details; separate with ;)") |> 
+  httr2::req_dry_run()
+#> GET / HTTP/1.1
+#> Host: example.com
+#> User-Agent: MyUserAgent/1.0 (more details; separate with ;)
+#> Accept: */*
+#> Accept-Encoding: deflate, gzip
 ```
 
 ## An experimental .Rprofile user agent function
@@ -101,7 +98,17 @@ httr2::request("https://example.com") |>
 
 ::: notes
 -   Start with `.` so it doesn't show in my environment.
+-   In general, UA should tell the API how you're accessing it
 :::
+
+# How is this chapter evolving?
+
+-   Slightly less details about why different mechanisms are better/worse
+    -   That's more important for {plumber} half
+-   Consider wrapping those notes entirely in OAuth explanation
+-   Keep the chapter together as a single chapter
+    -   This side should be relatively simple
+    -   Complexity belongs in {plumber} half
 
 # What is authentication?
 
