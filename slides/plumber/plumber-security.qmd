@@ -12,6 +12,124 @@ engine: knitr
 -   Set and read encrypted cookies for API users.
 -   (Something about things like Posit Connect?)
 
+# What did I move here from the httr2 version?
+
+# What is authentication?
+
+::: notes
+-   Before we dive into the how-to, let's try to understand why authentication is complicated.
+:::
+
+
+## The 2 auths
+
+::::: columns
+:::: column
+::: {.fragment fragment-index=0}
+Authentication
+:::
+
+-   Verifying who you are
+-   Uses some sort of "credentials"
+::::
+:::: column
+::: {.fragment fragment-index=1}
+Authorization
+:::
+
+-   Granting access
+::::
+:::::
+
+-   Both often abbreviated "auth"
+-   Often used interchangeably
+
+::: fragment
+
+> The HTTP *Authorization* request header can be used to provide credentials that *authenticate* a user agent with a server, allowing access to a protected resource.
+> — [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization)
+
+:::
+
+::: notes
+-   "TECHNICALLY..."
+-   Credentials = username & password, api key, temporary token...
+-   "Despite what the internet will insist on telling you..." ("Often used")
+-   Mozilla Developer Network (MDN) is pretty much THE reference for these things, and it mixes them.
+-   (Learned there that server is *supposed* to send 401 with info about how to auth in `WWW-Authenticate` header! Haven't found an API that actually does that.)
+:::
+
+## What are the dangers of leaked creds?
+
+::::: columns
+:::: column
+::: fragment
+How much control does it have?
+
+-   Can it lock you out?
+-   Can it reveal sensitive data?
+:::
+::::
+:::: column
+::: fragment
+How long does it last?
+
+-   Shorter = safer
+-   Can you revoke it?
+:::
+::::
+:::::
+
+::: fragment
+How likely is it to leak?
+
+-   When do you send it?
+-   Where do you send it?
+-   How often do you send it?
+:::
+
+
+## Types of authentication
+
+::::: columns
+:::: column
+::: fragment
+🔴 **HTTP Basic:** username + password sent with request
+
+-   Access entire account
+-   Often difficult to turn off
+:::
+::: fragment
+🟠 **API Key:** password-like thing sent with request
+
+-   Usually key == you
+-   You can often revoke
+:::
+::::
+:::: column
+::: fragment
+🟡 **Bearer Token:** shorter-lived api-key-like thing
+
+-   Different token for different use
+-   Often short-lived
+:::
+::: fragment
+🟢 **OAuth:** Multi-step process to generate a key
+
+-   Exists to minimize dangers
+-   Multiple short-lived pieces
+:::
+::::
+:::::
+
+::: notes
+-   There are other things, but these three cover almost everything.
+-   And almost nobody uses the first one for APIs anymore.
+-   Oauth not always implemented correctly 
+-   Other schemes like api keys in cookies, SSL certs not discussed here
+:::
+
+
 ## Review of authentication schemes
 
 (FROM `httr2-authentication.Rmd` once that's edited)
