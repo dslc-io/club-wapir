@@ -382,33 +382,33 @@
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#the-2-auths",
-    "href": "slides/httr2/httr2-authentication.html#the-2-auths",
+    "objectID": "slides/httr2/httr2-authentication.html#what-is-authentication",
+    "href": "slides/httr2/httr2-authentication.html#what-is-authentication",
     "title": "How do I tell the API who I am?",
-    "section": "The 2 auths",
-    "text": "The 2 auths\n\n\n\nAuthentication\n\n\nVerifying who you are\nUses some sort of “credentials”\n\n\n\nAuthorization\n\n\nGranting access\n\n\n\n\nBoth often abbreviated “auth”\nOften used interchangeably\n\n\n\nThe HTTP Authorization request header can be used to provide credentials that authenticate a user agent with a server, allowing access to a protected resource. — MDN web docs\n\n\n\n\n“TECHNICALLY…”\nCredentials = username & password, api key, temporary token…\n“Despite what the internet will insist on telling you…” (“Often used”)\nMozilla Developer Network (MDN) is pretty much THE reference for these things, and it mixes them.\n(Learned there that server is supposed to send 401 with info about how to auth in WWW-Authenticate header! Haven’t found an API that actually does that.)",
+    "section": "What is authentication?",
+    "text": "What is authentication?\n\nAuthentication: Verifying who you are.\nAuthorization: Granting permissions to do things (based on authentication)\nAuth: Used interchangeably for both\n\n\n\nInternet makes a big deal about this distinction if you Google\nFor users, the difference doesn’t matter\n\nYou auth with the server so the server will auth you",
     "crumbs": [
       "How can I interact with the web from R?",
       "How do I tell the API who I am?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#what-are-the-dangers-of-leaked-creds",
-    "href": "slides/httr2/httr2-authentication.html#what-are-the-dangers-of-leaked-creds",
+    "objectID": "slides/httr2/httr2-authentication.html#what-are-some-types-of-authentication",
+    "href": "slides/httr2/httr2-authentication.html#what-are-some-types-of-authentication",
     "title": "How do I tell the API who I am?",
-    "section": "What are the dangers of leaked creds?",
-    "text": "What are the dangers of leaked creds?\n\n\n\nHow much control does it have?\n\nCan it lock you out?\nCan it reveal sensitive data?\n\n\n\n\nHow long does it last?\n\nShorter = safer\nCan you revoke it?\n\n\n\n\n\nHow likely is it to leak?\n\nWhen do you send it?\nWhere do you send it?\nHow often do you send it?",
+    "section": "What are some types of authentication?",
+    "text": "What are some types of authentication?\n\n🔴 HTTP Basic: username + password sent with request\n\n\n        📜 deed to your house\n\n\n🟠 API Key: password-like thing sent with request\n\n\n        🔑 key to your house\n\n\n🟡 Bearer Token: shorter-lived, limited key\n\n\n        💳 keycard\n\n\n🟢 OAuth: multistep process to generate a key\n\n\n        🕵️ background check to issue keycard\n\n\n\nAlmost nobody uses HTTP basic for APIs anymore.\nIf you gave an ex a key to your house, you can change the lock without disrupting your life too much\nKeycard can be limited to open certain doors, not open others\nEnd result of OAuth is a bearer token\nThere are other things, but these four cover almost everything.\nOther schemes like api keys in cookies, SSL certs not discussed here",
     "crumbs": [
       "How can I interact with the web from R?",
       "How do I tell the API who I am?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#types-of-authentication",
-    "href": "slides/httr2/httr2-authentication.html#types-of-authentication",
+    "objectID": "slides/httr2/httr2-authentication.html#documentation",
+    "href": "slides/httr2/httr2-authentication.html#documentation",
     "title": "How do I tell the API who I am?",
-    "section": "Types of authentication",
-    "text": "Types of authentication\n\n\n\n🔴 HTTP Basic: username + password sent with request\n\nAccess entire account\nOften difficult to turn off\n\n\n\n🟠 API Key: password-like thing sent with request\n\nUsually key == you\nYou can often revoke\n\n\n\n\n🟡 Bearer Token: shorter-lived api-key-like thing\n\nDifferent token for different use\nOften short-lived\n\n\n\n🟢 OAuth: Multi-step process to generate a key\n\nExists to minimize dangers\nMultiple short-lived pieces\n\n\n\n\n\n\nThere are other things, but these three cover almost everything.\nAnd almost nobody uses the first one for APIs anymore.\nOauth not always implemented correctly\nOther schemes like api keys in cookies, SSL certs not discussed here",
+    "section": "Documentation",
+    "text": "Documentation\n\nSadly, no standard\nOpenFEC\nGoogle Calendar\n\n\n\nUsually either at top of docs or in each relevant endpoint\nSometimes different endpoints have different requirements (particularly OAuth scopes, more below)\nOften docs give the basics, but might not have all details for actually using OAuth in code, for example.",
     "crumbs": [
       "How can I interact with the web from R?",
       "How do I tell the API who I am?"
@@ -426,11 +426,22 @@
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#documentation",
-    "href": "slides/httr2/httr2-authentication.html#documentation",
+    "objectID": "slides/httr2/httr2-authentication.html#practice-safe-git",
+    "href": "slides/httr2/httr2-authentication.html#practice-safe-git",
     "title": "How do I tell the API who I am?",
-    "section": "Documentation",
-    "text": "Documentation\n\nSadly, no standard\nOpenFEC\nGoogle Calendar",
+    "section": "Practice safe git",
+    "text": "Practice safe git",
+    "crumbs": [
+      "How can I interact with the web from R?",
+      "How do I tell the API who I am?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#use-keyring",
+    "href": "slides/httr2/httr2-authentication.html#use-keyring",
+    "title": "How do I tell the API who I am?",
+    "section": "Use keyring",
+    "text": "Use keyring",
     "crumbs": [
       "How can I interact with the web from R?",
       "How do I tell the API who I am?"
@@ -441,7 +452,7 @@
     "href": "slides/httr2/httr2-authentication.html#but-first-practice-safe-git",
     "title": "How do I tell the API who I am?",
     "section": "But first: Practice safe git",
-    "text": "But first: Practice safe git\n\nRun usethis::git_vaccinate()\nOften usethis::use_git_ignore(\".Renviron\")",
+    "text": "But first: Practice safe git\n\nRun usethis::git_vaccinate()\nOften usethis::use_git_ignore(\".Renviron\")\ninstall.packages(\"keyring\")\n\n\n\nhttr2 actually puts auth info in a more-secure, harder-to-check-in place.\nWe’ll often put keys in personal .Renviron, but you might want a project-specific one for special keys.\nEven better: use {keyring} (TODO: Go down this rabbit hole!)",
     "crumbs": [
       "How can I interact with the web from R?",
       "How do I tell the API who I am?"
@@ -1059,6 +1070,39 @@
     "text": "This is a companion for the book Web APIs with R by Jon Harmon (in progress, aiming for publication in 2024).\nEach chapter title to the left is a link to a slide deck.\n\nThese slides are being developed as I write the book.\nEach deck will open in its own tab.\nJoin the Data Science Learning Community to participate.\n\nWe follow the Data Science Learning Community Code of Conduct.",
     "crumbs": [
       "Welcome"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-security.html#the-2-auths",
+    "href": "slides/plumber/plumber-security.html#the-2-auths",
+    "title": "Web APIs with R Book Club",
+    "section": "The 2 auths",
+    "text": "The 2 auths\n\n\n\nAuthentication\n\n\nVerifying who you are\nUses some sort of “credentials”\n\n\n\nAuthorization\n\n\nGranting access\n\n\n\n\nBoth often abbreviated “auth”\nOften used interchangeably\n\n\n\nThe HTTP Authorization request header can be used to provide credentials that authenticate a user agent with a server, allowing access to a protected resource. — MDN web docs\n\n\n\n\n“TECHNICALLY…”\nCredentials = username & password, api key, temporary token…\n“Despite what the internet will insist on telling you…” (“Often used”)\nMozilla Developer Network (MDN) is pretty much THE reference for these things, and it mixes them.\n(Learned there that server is supposed to send 401 with info about how to auth in WWW-Authenticate header! Haven’t found an API that actually does that.)",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I authenticate API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-security.html#what-are-the-dangers-of-leaked-creds",
+    "href": "slides/plumber/plumber-security.html#what-are-the-dangers-of-leaked-creds",
+    "title": "Web APIs with R Book Club",
+    "section": "What are the dangers of leaked creds?",
+    "text": "What are the dangers of leaked creds?\n\n\n\nHow much control does it have?\n\nCan it lock you out?\nCan it reveal sensitive data?\n\n\n\n\nHow long does it last?\n\nShorter = safer\nCan you revoke it?\n\n\n\n\n\nHow likely is it to leak?\n\nWhen do you send it?\nWhere do you send it?\nHow often do you send it?",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I authenticate API users?"
+    ]
+  },
+  {
+    "objectID": "slides/plumber/plumber-security.html#types-of-authentication",
+    "href": "slides/plumber/plumber-security.html#types-of-authentication",
+    "title": "Web APIs with R Book Club",
+    "section": "Types of authentication",
+    "text": "Types of authentication\n\n\n\n🔴 HTTP Basic: username + password sent with request\n\nAccess entire account\nOften difficult to turn off\n\n\n\n🟠 API Key: password-like thing sent with request\n\nUsually key == you\nYou can often revoke\n\n\n\n\n🟡 Bearer Token: shorter-lived api-key-like thing\n\nDifferent token for different use\nOften short-lived\n\n\n\n🟢 OAuth: Multi-step process to generate a key\n\nExists to minimize dangers\nMultiple short-lived pieces\n\n\n\n\n\n\nThere are other things, but these three cover almost everything.\nAnd almost nobody uses the first one for APIs anymore.\nOauth not always implemented correctly\nOther schemes like api keys in cookies, SSL certs not discussed here",
+    "crumbs": [
+      "How can I create my own APIs with R?",
+      "How can I authenticate API users?"
     ]
   },
   {

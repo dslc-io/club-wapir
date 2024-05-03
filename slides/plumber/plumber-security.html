@@ -390,7 +390,6 @@
     <div class="slides">
 
 
-<section>
 <section id="how-can-i-authenticate-api-users" class="title-slide slide level1 center">
 <h1>How can I authenticate API users?</h1>
 <p><strong>Learning objectives:</strong></p>
@@ -401,6 +400,164 @@
 <li class="fragment">Set and read encrypted cookies for API users.</li>
 <li class="fragment">(Something about things like Posit Connect?)</li>
 </ul>
+</section>
+
+<section id="what-did-i-move-here-from-the-httr2-version" class="title-slide slide level1 center">
+<h1>What did I move here from the httr2 version?</h1>
+
+</section>
+
+<section>
+<section id="what-is-authentication" class="title-slide slide level1 center">
+<h1>What is authentication?</h1>
+<aside class="notes">
+<ul>
+<li>Before we dive into the how-to, let’s try to understand why authentication is complicated.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-2-auths" class="slide level2">
+<h2>The 2 auths</h2>
+<div class="columns">
+<div class="column">
+<div class="fragment" data-fragment-index="0">
+<p>Authentication</p>
+</div>
+<ul>
+<li class="fragment">Verifying who you are</li>
+<li class="fragment">Uses some sort of “credentials”</li>
+</ul>
+</div><div class="column">
+<div class="fragment" data-fragment-index="1">
+<p>Authorization</p>
+</div>
+<ul>
+<li class="fragment">Granting access</li>
+</ul>
+</div>
+</div>
+<ul>
+<li class="fragment">Both often abbreviated “auth”</li>
+<li class="fragment">Often used interchangeably</li>
+</ul>
+<div class="fragment">
+<blockquote>
+<p>The HTTP <em>Authorization</em> request header can be used to provide credentials that <em>authenticate</em> a user agent with a server, allowing access to a protected resource. — <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization">MDN web docs</a></p>
+</blockquote>
+</div>
+<aside class="notes">
+<ul>
+<li>“TECHNICALLY…”</li>
+<li>Credentials = username &amp; password, api key, temporary token…</li>
+<li>“Despite what the internet will insist on telling you…” (“Often used”)</li>
+<li>Mozilla Developer Network (MDN) is pretty much THE reference for these things, and it mixes them.</li>
+<li>(Learned there that server is <em>supposed</em> to send 401 with info about how to auth in <code>WWW-Authenticate</code> header! Haven’t found an API that actually does that.)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="what-are-the-dangers-of-leaked-creds" class="slide level2">
+<h2>What are the dangers of leaked creds?</h2>
+<div class="columns">
+<div class="column">
+<div class="fragment">
+<p>How much control does it have?</p>
+<ul>
+<li class="fragment">Can it lock you out?</li>
+<li class="fragment">Can it reveal sensitive data?</li>
+</ul>
+</div>
+</div><div class="column">
+<div class="fragment">
+<p>How long does it last?</p>
+<ul>
+<li class="fragment">Shorter = safer</li>
+<li class="fragment">Can you revoke it?</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>How likely is it to leak?</p>
+<ul>
+<li class="fragment">When do you send it?</li>
+<li class="fragment">Where do you send it?</li>
+<li class="fragment">How often do you send it?</li>
+</ul>
+</div>
+</section>
+<section id="types-of-authentication" class="slide level2">
+<h2>Types of authentication</h2>
+<div class="columns">
+<div class="column">
+<div class="fragment">
+<p>🔴 <strong>HTTP Basic:</strong> username + password sent with request</p>
+<ul>
+<li class="fragment">Access entire account</li>
+<li class="fragment">Often difficult to turn off</li>
+</ul>
+</div>
+<div class="fragment">
+<p>🟠 <strong>API Key:</strong> password-like thing sent with request</p>
+<ul>
+<li class="fragment">Usually key == you</li>
+<li class="fragment">You can often revoke</li>
+</ul>
+</div>
+</div><div class="column">
+<div class="fragment">
+<p>🟡 <strong>Bearer Token:</strong> shorter-lived api-key-like thing</p>
+<ul>
+<li class="fragment">Different token for different use</li>
+<li class="fragment">Often short-lived</li>
+</ul>
+</div>
+<div class="fragment">
+<p>🟢 <strong>OAuth:</strong> Multi-step process to generate a key</p>
+<ul>
+<li class="fragment">Exists to minimize dangers</li>
+<li class="fragment">Multiple short-lived pieces</li>
+</ul>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>There are other things, but these three cover almost everything.</li>
+<li>And almost nobody uses the first one for APIs anymore.</li>
+<li>Oauth not always implemented correctly</li>
+<li>Other schemes like api keys in cookies, SSL certs not discussed here</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="review-of-authentication-schemes" class="slide level2">
 <h2>Review of authentication schemes</h2>
