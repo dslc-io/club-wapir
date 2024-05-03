@@ -101,131 +101,67 @@ httr2::request("https://example.com") |>
 -   In general, UA should tell the API how you're accessing it
 :::
 
-# How is this chapter evolving?
+# How can I find authentication information?
 
--   Slightly less details about why different mechanisms are better/worse
-    -   That's more important for {plumber} half
--   Consider wrapping those notes entirely in OAuth explanation
--   Keep the chapter together as a single chapter
-    -   This side should be relatively simple
-    -   Complexity belongs in {plumber} half
+## What is authentication?
 
-# What is authentication?
+-   **Authentication:** Verifying who you are.
+-   **Authorization:** Granting permissions to do things (based on authentication)
+-   **Auth:** Used interchangeably for both
 
 ::: notes
--   Before we dive into the how-to, let's try to understand why authentication is complicated.
+-   Internet makes a big deal about this distinction if you Google
+-   For users, the difference doesn't matter
+    -   You auth with the server so the server will auth you
 :::
 
+## What are some types of authentication?
 
-## The 2 auths
-
-::::: columns
-:::: column
-::: {.fragment fragment-index=0}
-Authentication
-:::
-
--   Verifying who you are
--   Uses some sort of "credentials"
-::::
-:::: column
-::: {.fragment fragment-index=1}
-Authorization
-:::
-
--   Granting access
-::::
-:::::
-
--   Both often abbreviated "auth"
--   Often used interchangeably
-
-::: fragment
-
-> The HTTP *Authorization* request header can be used to provide credentials that *authenticate* a user agent with a server, allowing access to a protected resource.
-> — [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization)
-
-:::
-
-::: notes
--   "TECHNICALLY..."
--   Credentials = username & password, api key, temporary token...
--   "Despite what the internet will insist on telling you..." ("Often used")
--   Mozilla Developer Network (MDN) is pretty much THE reference for these things, and it mixes them.
--   (Learned there that server is *supposed* to send 401 with info about how to auth in `WWW-Authenticate` header! Haven't found an API that actually does that.)
-:::
-
-## What are the dangers of leaked creds?
-
-::::: columns
-:::: column
-::: fragment
-How much control does it have?
-
--   Can it lock you out?
--   Can it reveal sensitive data?
-:::
-::::
-:::: column
-::: fragment
-How long does it last?
-
--   Shorter = safer
--   Can you revoke it?
-:::
-::::
-:::::
-
-::: fragment
-How likely is it to leak?
-
--   When do you send it?
--   Where do you send it?
--   How often do you send it?
-:::
-
-
-## Types of authentication
-
-::::: columns
-:::: column
 ::: fragment
 🔴 **HTTP Basic:** username + password sent with request
-
--   Access entire account
--   Often difficult to turn off
+:::
+::: fragment
+|         📜 *deed to your house*
 :::
 ::: fragment
 🟠 **API Key:** password-like thing sent with request
-
--   Usually key == you
--   You can often revoke
-:::
-::::
-:::: column
-::: fragment
-🟡 **Bearer Token:** shorter-lived api-key-like thing
-
--   Different token for different use
--   Often short-lived
 :::
 ::: fragment
-🟢 **OAuth:** Multi-step process to generate a key
-
--   Exists to minimize dangers
--   Multiple short-lived pieces
+|         🔑 *key to your house*
 :::
-::::
-:::::
+::: fragment
+🟡 **Bearer Token:** shorter-lived, limited key
+:::
+::: fragment
+|         💳 *keycard*
+:::
+::: fragment
+🟢 **OAuth:** multistep process to generate a key
+:::
+::: fragment
+|         🕵️ *background check to issue keycard*
+:::
 
 ::: notes
--   There are other things, but these three cover almost everything.
--   And almost nobody uses the first one for APIs anymore.
--   Oauth not always implemented correctly 
+-   Almost nobody uses HTTP basic for APIs anymore.
+-   If you gave an ex a key to your house, you can change the lock without disrupting your life too much
+-   Keycard can be limited to open certain doors, not open others
+-   End result of OAuth is a bearer token
+-   There are other things, but these four cover almost everything.
 -   Other schemes like api keys in cookies, SSL certs not discussed here
 :::
 
-# How can I find authentication information?
+## Documentation
+
+-   Sadly, no standard
+-   [OpenFEC](https://api.open.fec.gov/developers)
+-   [Google Calendar](https://developers.google.com/calendar/api/guides/overview)
+
+::: notes
+-   Usually either at top of docs or in each relevant endpoint
+-   Sometimes different endpoints have different requirements (particularly OAuth scopes, more below)
+-   Often docs give the basics, but might not have all details for actually using OAuth in code, for example.
+:::
 
 ## OpenAPI: securitySchemes
 
@@ -240,11 +176,12 @@ If you have the OpenAPI description, use it!
 -   Often still necessary to dig through docs for details
 :::
 
-## Documentation
+# How can I prepare my system for authentication?
 
--   Sadly, no standard
--   [OpenFEC](https://api.open.fec.gov/developers)
--   [Google Calendar](https://developers.google.com/calendar/api/guides/overview)
+## Practice safe git
+
+## Use keyring
+
 
 # How can I authenticate a request using API keys?
 
@@ -252,6 +189,13 @@ If you have the OpenAPI description, use it!
 
 -   Run `usethis::git_vaccinate()`
 -   Often `usethis::use_git_ignore(".Renviron")`
+-   `install.packages("keyring")`
+
+::: notes
+-   httr2 actually puts auth info in a more-secure, harder-to-check-in place.
+-   We'll often put keys in personal .Renviron, but you might want a project-specific one for special keys.
+-   Even better: use {keyring} (TODO: Go down this rabbit hole!)
+:::
 
 ## What are HTTP request headers?
 
