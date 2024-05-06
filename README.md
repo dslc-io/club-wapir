@@ -9,11 +9,11 @@ Welcome to the DSLC Web APIs with R Book Club!
 We are working together to read [_Web APIs with R_](https://wapir.io/) by Jon Harmon (copyright 2024).
 
 Join the [#book_club-wapir](https://dslcio.slack.com/archives/C05MYSD1PEV) channel on the [DSLC Slack](https://dslc.io/join) to participate.
-As we read, we are producing [notes about the book](https://dslc.io/wapir).
+As we read, we are producing [slides for the book](https://dslc.io/wapir).
 
 ## Meeting Schedule
 
-- Cohort 1 (starts 2024-01-17): [Wednesdays, 13:00 CST/CDT](https://www.timeanddate.com/worldclock/converter.html?iso=20240117T190000&p1=24&p2=1440) | meeting videos (coming soon!)
+- Cohort 1 (started 2024-01-17): [Wednesdays, 13:00 CST/CDT](https://www.timeanddate.com/worldclock/converter.html?iso=20240117T190000&p1=24&p2=1440) | [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGg-zPCeSCSp7tkkQBZNLDzv)
 
 <hr>
 
