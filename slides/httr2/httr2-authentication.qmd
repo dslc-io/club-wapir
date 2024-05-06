@@ -25,6 +25,7 @@ library(httr2)
 
 -   "User agent" = software that accesses the web
 -   `User-Agent` request header = string IDing the "user agent"
+    -   Request header = extra info sent with request
 -   {httr2} attaches a default `User-Agent` header
 
 ::: fragment
@@ -41,6 +42,7 @@ httr2::request("https://example.com") |> httr2::req_dry_run()
 ::: notes
 -   It's arguable whether *your code* is the user agent or *httr2* is.
 -   Headers are the things at the top of a request, outside the request itself
+    -   Usually what you're expecting back + user agent
 :::
 
 ## Should I override the default user agent?
@@ -71,6 +73,13 @@ httr2::request("https://example.com") |>
 #> Accept-Encoding: deflate, gzip
 ```
 
+::: notes
+-   Convention is Software slash version,
+-   Details in parentheses,
+-   Separate with ;
+-   But can be any string
+:::
+
 ## An experimental .Rprofile user agent function
 
 ```{r}
@@ -97,6 +106,7 @@ httr2::request("https://example.com") |>
 ```
 
 ::: notes
+-   usethis::edit_r_profile()
 -   Start with `.` so it doesn't show in my environment.
 -   In general, UA should tell the API how you're accessing it
 :::
