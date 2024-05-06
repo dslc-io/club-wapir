@@ -420,7 +420,10 @@
 <h2>What is a user agent?</h2>
 <ul>
 <li class="fragment">“User agent” = software that accesses the web</li>
-<li class="fragment"><code>User-Agent</code> request header = string IDing the “user agent”</li>
+<li class="fragment"><code>User-Agent</code> request header = string IDing the “user agent”
+<ul>
+<li class="fragment">Request header = extra info sent with request</li>
+</ul></li>
 <li class="fragment">{httr2} attaches a default <code>User-Agent</code> header</li>
 </ul>
 <div class="fragment">
@@ -436,7 +439,10 @@
 <aside class="notes">
 <ul>
 <li>It’s arguable whether <em>your code</em> is the user agent or <em>httr2</em> is.</li>
-<li>Headers are the things at the top of a request, outside the request itself</li>
+<li>Headers are the things at the top of a request, outside the request itself
+<ul>
+<li>Usually what you’re expecting back + user agent</li>
+</ul></li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -488,6 +494,24 @@
 <span id="cb3-7"><a></a><span class="co">#&gt; Accept: */*</span></span>
 <span id="cb3-8"><a></a><span class="co">#&gt; Accept-Encoding: deflate, gzip</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<aside class="notes">
+<ul>
+<li>Convention is Software slash version,</li>
+<li>Details in parentheses,</li>
+<li>Separate with ;</li>
+<li>But can be any string</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="an-experimental-.rprofile-user-agent-function" class="slide level2">
 <h2>An experimental .Rprofile user agent function</h2>
@@ -514,6 +538,7 @@
 </div>
 <aside class="notes">
 <ul>
+<li>usethis::edit_r_profile()</li>
 <li>Start with <code>.</code> so it doesn’t show in my environment.</li>
 <li>In general, UA should tell the API how you’re accessing it</li>
 </ul>
