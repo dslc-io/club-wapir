@@ -353,7 +353,7 @@
     "href": "slides/httr2/httr2-authentication.html#should-i-override-the-default-user-agent",
     "title": "How do I tell the API who I am?",
     "section": "Should I override the default user agent?",
-    "text": "Should I override the default user agent?\n\nAre you hitting the API a LOT?\nAre you providing reusable code for others to hit the API?\n\n\n\nDefault is fine almost all the time\nInclude UA in package (with option for user to expand)\nIf you use your code repeatedly/automatically, provide a UA\nDocumentation might ask for it (like Jim found in api.crossref.org docs)",
+    "text": "Should I override the default user agent?\n\nAre you hitting the API a lot?\nAre you providing reusable code for others to hit the API?\nDoes the API documentation mention it?\n\n\n\nDefault is fine almost all the time\nInclude UA in package (with option for user to expand)\nIf you use your code repeatedly/automatically, provide a UA\nDocumentation might ask for it (like Jim found in api.crossref.org docs)",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -375,7 +375,7 @@
     "href": "slides/httr2/httr2-authentication.html#an-experimental-.rprofile-user-agent-function",
     "title": "How do I tell the API who I am?",
     "section": "An experimental .Rprofile user agent function",
-    "text": "An experimental .Rprofile user agent function\n\n.httr2_ua &lt;- function() {\n  # Recreate the default httr2 string.\n  versions &lt;- c(\n    httr2 = as.character(utils::packageVersion(\"httr2\")),\n    `r-curl` = as.character(utils::packageVersion(\"curl\")),\n    libcurl = curl::curl_version()$version\n  )\n  paste0(names(versions), \"/\", versions, collapse = \" \")\n}\n.req_ua &lt;- function(req) {\n  httr2_string &lt;- .httr2_ua()\n  me &lt;- \"Jon Harmon\"\n  url &lt;- \"https://wapir.io\"\n  email &lt;- \"jonthegeek+useragent@gmail.com\"\n  string &lt;- glue::glue(\n    \"{httr2_string} ({me}; {url}; mailto:{email})\"\n  )\n  httr2::req_user_agent(req, string = string)\n}\n\n\n\nusethis::edit_r_profile()\nStart with . so it doesn’t show in my environment.\nIn general, UA should tell the API how you’re accessing it",
+    "text": "An experimental .Rprofile user agent function\n\n.httr2_ua &lt;- function() {\n  # Recreate the default httr2 string.\n  versions &lt;- c(\n    httr2 = as.character(utils::packageVersion(\"httr2\")),\n    `r-curl` = as.character(utils::packageVersion(\"curl\")),\n    libcurl = curl::curl_version()$version\n  )\n  paste0(names(versions), \"/\", versions, collapse = \" \")\n}\n.req_ua &lt;- function(req) {\n  httr2_string &lt;- .httr2_ua()\n  me &lt;- \"Jon Harmon\"\n  url &lt;- \"https://wapir.io\"\n  email &lt;- \"jonthegeek+useragent@gmail.com\"\n  string &lt;- glue::glue(\n    \"{httr2_string} ({me}; {url}; mailto:{email})\"\n  )\n  httr2::req_user_agent(req, string = string)\n}\n\n\n\nusethis::edit_r_profile()\nStart with . so it doesn’t show in my environment.\nIn general, UA should tell the API how you’re accessing it\nI’ll likely put a version of this into {nectar} soon.",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -397,18 +397,18 @@
     "href": "slides/httr2/httr2-authentication.html#what-are-some-types-of-authentication",
     "title": "How do I tell the API who I am?",
     "section": "What are some types of authentication?",
-    "text": "What are some types of authentication?\n\n🔴 HTTP Basic: username + password sent with request\n\n\n        📜 deed to your house\n\n\n🟠 API Key: password-like thing sent with request\n\n\n        🔑 key to your house\n\n\n🟡 Bearer Token: shorter-lived, limited key\n\n\n        💳 keycard\n\n\n🟢 OAuth: multistep process to generate a key\n\n\n        🕵️ background check to issue keycard\n\n\n\nAlmost nobody uses HTTP basic for APIs anymore.\nIf you gave an ex a key to your house, you can change the lock without disrupting your life too much\nKeycard can be limited to open certain doors, not open others\nEnd result of OAuth is a bearer token\nThere are other things, but these four cover almost everything.\nOther schemes like api keys in cookies, SSL certs not discussed here",
+    "text": "What are some types of authentication?\n\n🔴 HTTP Basic: username + password sent with request\n\n\n        📜 deed to your house\n\n\n🟠 API Key: password-like thing sent with request\n\n\n        🔑 key to your house\n\n\n🟡 Bearer Token: shorter-lived, limited key\n\n\n        💳 keycard\n\n\n🟢 OAuth: multistep process to generate a key\n\n\n        🕵️ background check to issue keycard\n\n\n        🕵️ background check to issue keycard to a friend\n\n\n\nAlmost nobody uses HTTP basic for APIs anymore.\nIf you gave an ex a key to your house, you can change the lock without disrupting your life too much\nNothing enforces difference between bearer tokens and api keys; it’s a vocabulary thing, which API makers might screw up\nKeycard can be limited to open certain doors, not open others\nEnd result of OAuth is a bearer token\nThe “friend” might be you, might be someone else’s package\nA lot of the complexity is making sure you trust the software that’s acting on your behalf\nThere are other things, but these four cover almost everything.\nOther schemes like api keys in cookies, SSL certs not discussed here",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#documentation",
-    "href": "slides/httr2/httr2-authentication.html#documentation",
+    "objectID": "slides/httr2/httr2-authentication.html#api-auth-documentation",
+    "href": "slides/httr2/httr2-authentication.html#api-auth-documentation",
     "title": "How do I tell the API who I am?",
-    "section": "Documentation",
-    "text": "Documentation\n\nSadly, no standard\nOpenFEC\nGoogle Calendar\n\n\n\nUsually either at top of docs or in each relevant endpoint\nSometimes different endpoints have different requirements (particularly OAuth scopes, more below)\nOften docs give the basics, but might not have all details for actually using OAuth in code, for example.",
+    "section": "API Auth Documentation",
+    "text": "API Auth Documentation\n\nSadly, no standard\nOpenFEC\nGoogle Calendar\n\n\n\nUsually either at top of docs or in each relevant endpoint\nSometimes different endpoints have different requirements (particularly OAuth scopes, more below)\n\nThis endpoint only requires read, this one requires read and write\n\nOften docs give the basics, but might not have all details for actually using OAuth in code, for example.",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -419,7 +419,7 @@
     "href": "slides/httr2/httr2-authentication.html#openapi-securityschemes",
     "title": "How do I tell the API who I am?",
     "section": "OpenAPI: securitySchemes",
-    "text": "OpenAPI: securitySchemes\nIf you have the OpenAPI description, use it!\n\ncomponents$securitySchemes = ways to auth\nsecurity (top level) = default schemes\nOpenFEC\nGoogle Calendar\n\n\n\nOften still necessary to dig through docs for details",
+    "text": "OpenAPI: securitySchemes\nIf you have the OpenAPI description, use it!\n\ncomponents$securitySchemes = ways to auth\nsecurity (top level) = default schemes\nOpenFEC\nGoogle Calendar\n\n\n\nOften still necessary to dig through docs for details\nI suspect the 2 “apiKey in query” schemes for OpenFEC are the default key vs a user-specific key, their way of implementing scopes.\nIn your code, if you have option of header vs query, use header (slight more)",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -430,7 +430,7 @@
     "href": "slides/httr2/httr2-authentication.html#practice-safe-git",
     "title": "How do I tell the API who I am?",
     "section": "Practice safe git",
-    "text": "Practice safe git",
+    "text": "Practice safe git\n\nRun usethis::git_vaccinate()\nOften usethis::use_git_ignore(\".Renviron\")\n\n\n\ngit_vaccinate() “Adds Rproj.user, .Rhistory, .Rdata, .httr-oauth, .DS_Store, and .quarto to your global (a.k.a. user-level) .gitignore.”\nhttr2 actually puts auth info in a more-secure, harder-to-check-in place.\nWe’ll often put keys in personal .Renviron, but you might want a project-specific one for special keys.\nEven better: use {keyring} (TODO: Go down this rabbit hole!)",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -441,29 +441,18 @@
     "href": "slides/httr2/httr2-authentication.html#use-keyring",
     "title": "How do I tell the API who I am?",
     "section": "Use keyring",
-    "text": "Use keyring",
+    "text": "Use keyring\n\ninstall.packages(\"keyring\")\nkeyring::key_set(service)\nkeyring::key_set_with_value(service, password = NULL)\nkeyring::key_get(service)\nMay need to copy keyring to env for packages\n\nSys.setenv(FEC_API_KEY = keyring::key_get(\"FEC_API_KEY\"))\n\n\n\n\n{keyring} works with your operating system’s key manager\nkey_set() has you enter the key in a secure password window\nkey_set_with_value() useful if a function fetches a key (you never need to see it)\nkey_get() returns that key",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#but-first-practice-safe-git",
-    "href": "slides/httr2/httr2-authentication.html#but-first-practice-safe-git",
+    "objectID": "slides/httr2/httr2-authentication.html#where-do-i-put-api-keys",
+    "href": "slides/httr2/httr2-authentication.html#where-do-i-put-api-keys",
     "title": "How do I tell the API who I am?",
-    "section": "But first: Practice safe git",
-    "text": "But first: Practice safe git\n\nRun usethis::git_vaccinate()\nOften usethis::use_git_ignore(\".Renviron\")\ninstall.packages(\"keyring\")\n\n\n\nhttr2 actually puts auth info in a more-secure, harder-to-check-in place.\nWe’ll often put keys in personal .Renviron, but you might want a project-specific one for special keys.\nEven better: use {keyring} (TODO: Go down this rabbit hole!)",
-    "crumbs": [
-      "Get more data from APIs",
-      "How do I tell the API who I am?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-authentication.html#what-are-http-request-headers",
-    "href": "slides/httr2/httr2-authentication.html#what-are-http-request-headers",
-    "title": "How do I tell the API who I am?",
-    "section": "What are HTTP request headers?",
-    "text": "What are HTTP request headers?\n\nMetadata about the request\nhttr2::req_headers(.req, ..., .redact = NULL)\n\n.req = a request\n... = name-value pairs for headers (names are case-insensitive)\n.redact = character vector of headers to hide in print",
+    "section": "Where do I put API keys?",
+    "text": "Where do I put API keys?\n\nin: query\n\nhttr2::req_url_query(.req, ...)\n\nin: header\n\nhttr2::req_headers(.req, ..., .redact = NULL)\n.redact = character vector of headers to hide in print\n\nin: cookie\n\nhttr2::req_headers(.req, Cookie = \"name=val1; name2=val2\", .redact = \"Cookie\")\n\n\n\n\nAPID does a good job of describing where these can go.\nHeader more secure than query, so use that when available\n... = name-value pairs, case-insensitive (but usually just copy-paste from docs).\nCookies are meaningful in the browser, but for your code it’s easiest just to think of them as a type of header.",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -485,7 +474,7 @@
     "href": "slides/httr2/httr2-authentication.html#authenticating-with-nectar",
     "title": "How do I tell the API who I am?",
     "section": "Authenticating with nectar",
-    "text": "Authenticating with nectar\n{nectar} 📦 wraps {httr2} for packages\n\nrequest(\"https://api.open.fec.gov/v1\") |&gt; \n  nectar::req_auth_api_key(\n    location = \"header\", \n    parameter_name = \"X-Api-Key\", \n    api_key = \"DEMO_KEY\"\n  )\n\n#&gt; &lt;httr2_request&gt;\n#&gt; GET https://api.open.fec.gov/v1\n#&gt; Headers:\n#&gt; • X-Api-Key: '&lt;REDACTED&gt;'\n#&gt; Body: empty",
+    "text": "Authenticating with nectar\n{nectar} 📦 wraps {httr2} for packages\n\nrequest(\"https://api.open.fec.gov/v1\") |&gt; \n  nectar::req_auth_api_key(\n    location = \"header\", \n    parameter_name = \"X-Api-Key\", \n    api_key = \"DEMO_KEY\"\n  )\n\n#&gt; &lt;httr2_request&gt;\n#&gt; GET https://api.open.fec.gov/v1\n#&gt; Headers:\n#&gt; • X-Api-Key: '&lt;REDACTED&gt;'\n#&gt; Body: empty\n\n\n\nPart of purpose of {nectar} is to translate between APID and {httr2}.",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -496,73 +485,7 @@
     "href": "slides/httr2/httr2-authentication.html#oauth-terminology",
     "title": "How do I tell the API who I am?",
     "section": "Oauth terminology",
-    "text": "Oauth terminology\n\n\n\n\n\n\n\nterm(s)\nmeaning\n\n\n\n\noauth host\nthe API, or a 3rd party like Google\n\n\nclient, oauth client, oauth application\nyou create this at oauth host\n\n\napplication\nyour R code\n\n\nscope\nstring(s) describing specific abilities\n\n\nauthorization url\nwhere to send initial request + scopes\n\n\nauthorization code\nvery temporary key\n\n\ntoken url\nwhere to send authorization code\n\n\ntoken\nthe real key, often with accompanying info\n\n\n\n\n\nOauth is complicated! Don’t feel bad if you’re confused!\nThe point of the multiple steps is to make it hard for attacker to intercept, and minimize what they can do if they do\nAuth code can only be sent to specified URLs\nToken often includes a “refresh token”, longer-lived shortcut around the auth process.\nMain piece is a bearer token.",
-    "crumbs": [
-      "Get more data from APIs",
-      "How do I tell the API who I am?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-authentication.html#what-are-http-request-headers-1",
-    "href": "slides/httr2/httr2-authentication.html#what-are-http-request-headers-1",
-    "title": "How do I tell the API who I am?",
-    "section": "What are HTTP request headers?",
-    "text": "What are HTTP request headers?\n\nMetadata about the request\n\nAuthentication\nCookies\nCache rules\nExpected response\nEtc\n\n\n\nNames are case-insensitive!",
-    "crumbs": [
-      "Get more data from APIs",
-      "How do I tell the API who I am?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-authentication.html#req_headers",
-    "href": "slides/httr2/httr2-authentication.html#req_headers",
-    "title": "How do I tell the API who I am?",
-    "section": "req_headers()",
-    "text": "req_headers()\nTODO: Leftovers from httr2.qmd. Make it fit in this chapter!\n\n\nreq_fec_auth &lt;- req_fec |&gt; \n  req_headers(\"X-Api-Key\" = \"DEMO_KEY\", .redact = \"X-Api-Key\")\n\n\n\n\nreq_dry_run(req_fec_auth)\n\n\n\nBe careful!\n\nreq_fec_auth$headers\n\n\n\n\n.redact arg tells it to hide the value of that argument when it prints to the console.\nreq_dry_run() prints useful info without actually running req_perform()\n\nNormal print of req_fec_auth also works outside of slide context\n\nBe careful: It’s still in the object, just hidden",
-    "crumbs": [
-      "Get more data from APIs",
-      "How do I tell the API who I am?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-authentication.html#req_url",
-    "href": "slides/httr2/httr2-authentication.html#req_url",
-    "title": "How do I tell the API who I am?",
-    "section": "req_url()",
-    "text": "req_url()\n\nReplace entire URL\neg: Same authentication, different base_url\n\n\n\nreq_fec_dev_auth &lt;- req_fec_auth |&gt; \n  req_url(\"https://dev.fec.fake/v1\")\n\n\n\n\nreq_dry_run(req_fec_dev_auth)\n\n\n\n\nAt first I lumped this in same bucket as req_url_path()\nYouTube API: metadata vs upload",
-    "crumbs": [
-      "Get more data from APIs",
-      "How do I tell the API who I am?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-authentication.html#what-does-this-api-want",
-    "href": "slides/httr2/httr2-authentication.html#what-does-this-api-want",
-    "title": "How do I tell the API who I am?",
-    "section": "What does this API want?",
-    "text": "What does this API want?\n\nFind “OpenAPI” or “Swagger” links (or “API json”, “API yaml”, etc)\n\nSearch for “securitySchemes”\nOften easier-to-understand details than docs!\n\nMight need to do something to “register”\n\n“Request an API key”\n“Register your App” (or “Client”) (see OAuth)",
-    "crumbs": [
-      "Get more data from APIs",
-      "How do I tell the API who I am?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-authentication.html#http-basic-authentication",
-    "href": "slides/httr2/httr2-authentication.html#http-basic-authentication",
-    "title": "How do I tell the API who I am?",
-    "section": "HTTP Basic Authentication",
-    "text": "HTTP Basic Authentication\n\nhttr2::req_auth_basic(req, username, password = NULL)\nLeave password blank: Prompt interactive semi-securely\nAvoid using this if you can!\n\nI can’t remember any API that only offers this",
-    "crumbs": [
-      "Get more data from APIs",
-      "How do I tell the API who I am?"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/httr2-authentication.html#api-keys-bearer-tokens",
-    "href": "slides/httr2/httr2-authentication.html#api-keys-bearer-tokens",
-    "title": "How do I tell the API who I am?",
-    "section": "API Keys & Bearer Tokens",
-    "text": "API Keys & Bearer Tokens\n\nhttr2::req_auth_bearer_token(req, token) (specific header)\n\nPass token as Sys.get(\"API_TOKEN_NAME\")\nSave token with usethis::edit_r_environ()\n\nCatch-all: httr2::req_headers(.req, ..., .redact = NULL)\n\n... = token_parameter = Sys.get(\"API_TOKEN_NAME\")\n.redact = \"token_parameter\" to hide in print",
+    "text": "Oauth terminology\n\n\n\nterm(s)\nmeaning\n\n\n\n\nuser\nthe person who you’re acting as\n\n\napplication, app\nyour R code\n\n\nclient, oauth application\nyou create this at oauth host\n\n\noauth host\nthe API, or a 3rd party like Google\n\n\nscope\nstring(s) describing specific abilities\n\n\nauthorization url\nwhere to send initial request + scopes\n\n\nauthorization code\nvery temporary key\n\n\ntoken url\nwhere to send authorization code\n\n\noauth token, token\nthe real key, often with extra info\n\n\n\n\n\nBold = what I’ll call it on other pages\nOauth is complicated! Don’t feel bad if you’re confused!\nThe point of the multiple steps is to make it hard for attacker to intercept, and minimize what they can do if they do\nAuth code can only be sent to specified URLs\nThe “real key” here is a bearer token.\nToken often includes a “refresh token”, longer-lived shortcut around the auth process.",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -573,7 +496,7 @@
     "href": "slides/httr2/httr2-authentication.html#the-oauth-dance",
     "title": "How do I tell the API who I am?",
     "section": "The OAuth “dance”",
-    "text": "The OAuth “dance”\n\nUser to client: Hit this API for me!\nClient (ID) to auth: Can I act as this user and do these things?\nAuth to user: Is this ok?\nUser to auth: Yes\nAuth to client’s home address: Use this to get a key\nClient (ID + secret) to auth2: Turn this into a key (I’m really me!)\nAuth2 to client: Here’s your key (and I’ll log what it can do)\nClient to API: Here’s my key\nAPI to auth: Can this key do this?\nAuth to API: (checks logged scopes) Yes!\nAPI to client: Ok, here’s the info!\n\nTODO: Image of OAuth dance",
+    "text": "The OAuth “dance”\n\nuser to app: Hit this API for me!\napp to host @ auth url (browser): I’m (client). Can I act as user with these scopes?\nhost to user: Is this ok?\nuser to host: Yes\nhost to app (sent to specific address): Your password is auth code\napp directly to host @ token url: Here’s my client + user’s auth code\nhost directly to app: Here’s an oauth token for that user (and I’ll log what it can do)\n\n\nTODO: Image of OAuth dance\n\nThis is sometimes called 3-legged auth\n\nTook me forever to differentiate “app” from “user” to make the 3 legs make sense\nHost is in multiple places but it just counts as one leg\n\nNot covered: Then (not much) later app sends bearer token to host with API requests, and host checks that token can do those things.",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -1067,7 +990,7 @@
     "href": "index.html",
     "title": "Welcome",
     "section": "",
-    "text": "This is a companion for the book Web APIs with R by Jon Harmon (in progress, aiming for publication in 2024).\nEach chapter title to the left is a link to a slide deck.\n\nThese slides are being developed as I write the book.\nEach deck will open in its own tab.\nJoin the Data Science Learning Community to participate.\n\nWe follow the Data Science Learning Community Code of Conduct.",
+    "text": "This is a companion for the book Web APIs with R by Jon Harmon (in progress, aiming for publication in 2024).\nEach chapter title to the left is a link to a slide deck.\n\nThese slides are being developed as I write the book.\nEach deck will open in its own tab.\nYou may want to type “s” at the start of each deck to open the speaker notes. Since these slides are structured like a talk, I tend to make a lot of notes to myself there to expand on the information in the slide.\nJoin the Data Science Learning Community to participate in the discussion!\n\nWe follow the Data Science Learning Community Code of Conduct.",
     "crumbs": [
       "Welcome"
     ]
