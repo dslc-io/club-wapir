@@ -10,6 +10,7 @@ Each chapter title to the left is a link to a slide deck.
 
 -   These slides are being developed *as I write the book.*
 -   Each deck will open in its own tab.
--   [Join the Data Science Learning Community](https://dslc.io/join) to participate.
+-   You may want to type "s" at the start of each deck to open the *s*peaker notes. Since these slides are structured like a talk, I tend to make a lot of notes to myself there to expand on the information in the slide.
+-   [Join the Data Science Learning Community](https://dslc.io/join) to participate in the discussion!
     
 We follow the [Data Science Learning Community Code of Conduct](https://dslc.io/conduct).
