@@ -47,8 +47,9 @@ httr2::request("https://example.com") |> httr2::req_dry_run()
 
 ## Should I override the default user agent?
 
--   Are you hitting the API a LOT?
+-   Are you hitting the API ***a lot?***
 -   Are you providing reusable code for others to hit the API?
+-   Does the API documentation mention it?
 
 ::: notes
 -   Default is fine almost all the time
@@ -109,6 +110,7 @@ httr2::request("https://example.com") |>
 -   usethis::edit_r_profile()
 -   Start with `.` so it doesn't show in my environment.
 -   In general, UA should tell the API how you're accessing it
+-   I'll likely put a version of this into {nectar} soon.
 :::
 
 # How can I find authentication information?
@@ -151,17 +153,23 @@ httr2::request("https://example.com") |>
 ::: fragment
 |         🕵️ *background check to issue keycard*
 :::
+::: fragment
+|         🕵️ *background check to issue keycard **to a friend***
+:::
 
 ::: notes
 -   Almost nobody uses HTTP basic for APIs anymore.
 -   If you gave an ex a key to your house, you can change the lock without disrupting your life too much
+-   Nothing enforces difference between bearer tokens and api keys; it's a vocabulary thing, which API makers might screw up
 -   Keycard can be limited to open certain doors, not open others
 -   End result of OAuth is a bearer token
+-   The "friend" might be you, might be someone else's package
+-   A lot of the complexity is making sure you trust the software that's acting on your behalf
 -   There are other things, but these four cover almost everything.
 -   Other schemes like api keys in cookies, SSL certs not discussed here
 :::
 
-## Documentation
+## API Auth Documentation
 
 -   Sadly, no standard
 -   [OpenFEC](https://api.open.fec.gov/developers)
@@ -170,6 +178,7 @@ httr2::request("https://example.com") |>
 ::: notes
 -   Usually either at top of docs or in each relevant endpoint
 -   Sometimes different endpoints have different requirements (particularly OAuth scopes, more below)
+    -   This endpoint only requires read, this one requires read and write
 -   Often docs give the basics, but might not have all details for actually using OAuth in code, for example.
 :::
 
@@ -184,36 +193,58 @@ If you have the OpenAPI description, use it!
 
 ::: notes
 -   Often still necessary to dig through docs for details
+-   I suspect the 2 "apiKey in query" schemes for OpenFEC are the default key vs a user-specific key, their way of implementing scopes.
+-   In your code, if you have option of header vs query, use header (slight more)
 :::
 
 # How can I prepare my system for authentication?
 
 ## Practice safe git
 
-## Use keyring
-
-
-# How can I authenticate a request using API keys?
-
-## But first: Practice safe git
-
 -   Run `usethis::git_vaccinate()`
 -   Often `usethis::use_git_ignore(".Renviron")`
--   `install.packages("keyring")`
 
 ::: notes
+-   `git_vaccinate()` "Adds `Rproj.user`, `.Rhistory`, `.Rdata`, `.httr-oauth`, `.DS_Store`, and `.quarto` to your global (a.k.a. user-level) `.gitignore`."
 -   httr2 actually puts auth info in a more-secure, harder-to-check-in place.
 -   We'll often put keys in personal .Renviron, but you might want a project-specific one for special keys.
 -   Even better: use {keyring} (TODO: Go down this rabbit hole!)
 :::
 
-## What are HTTP request headers?
+## Use keyring
 
--   Metadata about the request
--   `httr2::req_headers(.req, ..., .redact = NULL)`
-    -   `.req` = a request
-    -   `...` = name-value pairs for headers (names are case-insensitive)
+-   `install.packages("keyring")`
+-   `keyring::key_set(service)`
+-   `keyring::key_set_with_value(service, password = NULL)`
+-   `keyring::key_get(service)`
+-   May need to copy keyring to env for packages
+    -   `Sys.setenv(FEC_API_KEY = keyring::key_get("FEC_API_KEY"))`
+
+::: notes
+-   {keyring} works with your operating system's key manager
+-   `key_set()` has you enter the key in a secure password window
+-   `key_set_with_value()` useful if a function fetches a key (you never need to see it)
+-   `key_get()` returns that key
+:::
+
+# How can I authenticate a request using API keys?
+
+## Where do I put API keys?
+
+-   `in: query`
+    -   `httr2::req_url_query(.req, ...)`
+-   `in: header`
+    -   `httr2::req_headers(.req, ..., .redact = NULL)`
     -   `.redact` = character vector of headers to hide in print
+-   `in: cookie`
+    -   `httr2::req_headers(.req, Cookie = "name=val1; name2=val2", .redact = "Cookie")`
+
+::: notes
+-   APID does a good job of describing where these can go.
+-   Header more secure than query, so use that when available
+-   `...` = name-value pairs, case-insensitive (but usually just copy-paste from docs).
+-   Cookies are meaningful in the browser, but for your code it's easiest just to think of them as a type of header.
+:::
 
 ## How can I authenticate FECAPI requests?
 
@@ -249,6 +280,10 @@ request("https://api.open.fec.gov/v1") |>
 #> Body: empty
 ```
 
+::: notes
+-   Part of purpose of {nectar} is to translate between APID and {httr2}.
+:::
+
 # How can I authenticate a request using OAuth?
 
 -   Next week!
@@ -257,139 +292,48 @@ request("https://api.open.fec.gov/v1") |>
 
 ## Oauth terminology
 
-| term(s)            | meaning                            |
-|--------------------|------------------------------------|
-| oauth host         | the API, or a 3rd party like Google |
-| client, oauth client, oauth application | you create this at oauth host |
-| application | your R code |
-| scope | string(s) describing specific abilities |
-| authorization url | where to send initial request + scopes |
-| authorization code | very temporary key |
-| token url | where to send authorization code |
-| token | the real key, often with accompanying info |
+| term(s)        | meaning                             |
+|----------------|-------------------------------------|
+| **user**       | the person who you're acting as     |
+| application, **app** | your R code |
+| **client**, oauth application | you create this at oauth host |
+| oauth **host** | the API, or a 3rd party like Google |
+| **scope** | string(s) describing specific abilities |
+| **auth**orization **url** | where to send initial request + scopes |
+| **auth**orization **code** | very temporary key |
+| **token url** | where to send authorization code |
+| **oauth token**, token | the real key, often with extra info |
 
 ::: notes
+-   Bold = what I'll call it on other pages
 -   Oauth is complicated! Don't feel bad if you're confused!
 -   The point of the multiple steps is to make it hard for attacker to intercept, and minimize what they can do if they do
 -   Auth code can only be sent to specified URLs
+-   The "real key" here is a bearer token.
 -   Token often includes a "refresh token", longer-lived shortcut around the auth process.
--   Main piece is a bearer token.
+:::
+
+## The OAuth "dance"
+
+-   **user** to **app**: Hit this API for me!
+-   **app** to **host** @ **auth url** (browser): I'm (**client**). Can I act as **user** with these **scopes**?
+-   **host** to **user**: Is this ok?
+-   **user** to **host**: Yes
+-   **host** to **app** (sent to specific address): Your password is **auth code**
+-   **app** directly to **host** @ **token url**: Here's my **client** + user's **auth code**
+-   **host** directly to **app**: Here's an **oauth token** for that user (and I'll log what it can do)
+
+::: notes
+TODO: Image of OAuth dance
+
+-   This is sometimes called 3-legged auth
+    -   Took me forever to differentiate "app" from "user" to make the 3 legs make sense
+    -   Host is in multiple places but it just counts as one leg
+-   Not covered: Then (not much) later app sends bearer token to host with API requests, and host checks that token can do those things.
 :::
 
 # Others/Old
 
-## What are HTTP request headers?
-
-::: fragment
-Metadata about the request
-
--   Authentication
--   Cookies
--   Cache rules
--   Expected response
--   Etc
-:::
-
-::: fragment
-Names are case-insensitive!
-:::
-
-## `req_headers()`
-
-TODO: Leftovers from `httr2.qmd`. Make it fit in this chapter!
-
-::: fragment
-```{r}
-#| code-line-numbers: "1|1-2"
-req_fec_auth <- req_fec |> 
-  req_headers("X-Api-Key" = "DEMO_KEY", .redact = "X-Api-Key")
-```
-:::
-::: fragment
-```{r}
-req_dry_run(req_fec_auth)
-```
-:::
-::: fragment
-Be careful!
-```{r}
-req_fec_auth$headers
-```
-:::
-
-::: notes
--   `.redact` arg tells it to hide the value of that argument when it prints to the console.
--   `req_dry_run()` prints useful info without actually running `req_perform()`
-    -   Normal print of req_fec_auth also works outside of slide context
--   Be careful: It's still in the object, just hidden
-:::
-
-## `req_url()`
-
--   *Replace* entire URL
--   eg: Same authentication, different `base_url` 
-
-::: fragment
-```{r}
-#| code-line-numbers: "1|1-2"
-req_fec_dev_auth <- req_fec_auth |> 
-  req_url("https://dev.fec.fake/v1")
-```
-:::
-
-::: fragment
-```{r}
-req_dry_run(req_fec_dev_auth)
-```
-
-:::
-
-::: notes
--   At first I lumped this in same bucket as req_url_path()
--   YouTube API: metadata vs upload
-:::
-
-
-## What does this API want? {-}
-
--   Find "OpenAPI" or "Swagger" links (or "API json", "API yaml", etc)
-    -   Search for "securitySchemes"
-    -   Often easier-to-understand details than docs!
--   Might need to do something to "register"
-    -   "Request an API key"
-    -   "Register your App" (or "Client") (see OAuth)
-
-## HTTP Basic Authentication {-} 
-
--   `httr2::req_auth_basic(req, username, password = NULL)`
--   Leave password blank: Prompt interactive semi-securely
--   Avoid using this if you can!
-    -   I can't remember any API that only offers this
-
-## API Keys & Bearer Tokens {-}
-
--   `httr2::req_auth_bearer_token(req, token)` (specific header)
-    -   Pass `token` as `Sys.get("API_TOKEN_NAME")`
-    -   Save token with `usethis::edit_r_environ()`
--   Catch-all: `httr2::req_headers(.req, ..., .redact = NULL)`
-    -   `...` = `token_parameter = Sys.get("API_TOKEN_NAME")`
-    -   `.redact = "token_parameter"` to hide in print
-
-## The OAuth "dance" {-}
-
--   User to client: Hit this API for me!
--   Client (ID) to auth: Can I act as this user and do these things?
--   Auth to user: Is this ok?
--   User to auth: Yes
--   Auth to client's home address: Use this to get a key
--   Client (ID + secret) to auth2: Turn this into a key (I'm really me!)
--   Auth2 to client: Here's your key (and I'll log what it can do)
--   Client to API: Here's my key
--   API to auth: Can this key do this?
--   Auth to API: (checks logged scopes) Yes!
--   API to client: Ok, here's the info!
-
-TODO: Image of OAuth dance
 
 ## OAuth credential dangers {-}
 
