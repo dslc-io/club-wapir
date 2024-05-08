@@ -2,7 +2,7 @@
 engine: knitr
 ---
 
-# How can I process API responses?
+# How else can I process API responses?
 
 ```{r responses-load-packages, include = FALSE}
 library(httr2)

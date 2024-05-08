@@ -19,6 +19,7 @@ title: How do I tell the API who I am?
 library(httr2)
 ```
 
+
 # How can I tell the API how I'm accessing it?
 
 ## What is a user agent?
@@ -113,6 +114,7 @@ httr2::request("https://example.com") |>
 -   I'll likely put a version of this into {nectar} soon.
 :::
 
+
 # How can I find authentication information?
 
 ## What is authentication?
@@ -148,23 +150,19 @@ httr2::request("https://example.com") |>
 |         💳 *keycard*
 :::
 ::: fragment
-🟢 **OAuth:** multistep process to generate a key
+🟢 **OAuth:** multistep process to generate a bearer token
 :::
 ::: fragment
 |         🕵️ *background check to issue keycard*
-:::
-::: fragment
-|         🕵️ *background check to issue keycard **to a friend***
 :::
 
 ::: notes
 -   Almost nobody uses HTTP basic for APIs anymore.
 -   If you gave an ex a key to your house, you can change the lock without disrupting your life too much
+-   Name "bearer token" is stupid; anybody can use an API key, too, so the "bearer" part is weird to highlight
 -   Nothing enforces difference between bearer tokens and api keys; it's a vocabulary thing, which API makers might screw up
 -   Keycard can be limited to open certain doors, not open others
 -   End result of OAuth is a bearer token
--   The "friend" might be you, might be someone else's package
--   A lot of the complexity is making sure you trust the software that's acting on your behalf
 -   There are other things, but these four cover almost everything.
 -   Other schemes like api keys in cookies, SSL certs not discussed here
 :::
@@ -184,7 +182,7 @@ httr2::request("https://example.com") |>
 
 ## OpenAPI: securitySchemes
 
-If you have the OpenAPI description, use it!
+If you have the APID, use it!
 
 -   `components$securitySchemes` = ways to auth
 -   `security` (top level) = default schemes
@@ -192,10 +190,11 @@ If you have the OpenAPI description, use it!
 -   [Google Calendar](https://api.apis.guru/v2/specs/googleapis.com/calendar/v3/openapi.yaml)
 
 ::: notes
+-   APID = API description in OpenAPI format
 -   Often still necessary to dig through docs for details
 -   I suspect the 2 "apiKey in query" schemes for OpenFEC are the default key vs a user-specific key, their way of implementing scopes.
--   In your code, if you have option of header vs query, use header (slight more)
 :::
+
 
 # How can I prepare my system for authentication?
 
@@ -215,6 +214,7 @@ If you have the OpenAPI description, use it!
 
 -   `install.packages("keyring")`
 -   `keyring::key_set(service)`
+    -   `keyring::key_set("FEC_API_KEY")`
 -   `keyring::key_set_with_value(service, password = NULL)`
 -   `keyring::key_get(service)`
 -   May need to copy keyring to env for packages
@@ -227,9 +227,10 @@ If you have the OpenAPI description, use it!
 -   `key_get()` returns that key
 :::
 
+
 # How can I authenticate a request using API keys?
 
-## Where do I put API keys?
+## Where do I send API keys?
 
 -   `in: query`
     -   `httr2::req_url_query(.req, ...)`
@@ -248,162 +249,274 @@ If you have the OpenAPI description, use it!
 
 ## How can I authenticate FECAPI requests?
 
-[OpenFEC OAS](https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.yaml)
+[OpenFEC APID](https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.yaml)
 
+::: fragment
 ```{r}
 request("https://api.open.fec.gov/v1") |> 
   req_headers("X-Api-Key" = "DEMO_KEY", .redact = "X-Api-Key")
-
+```
+:::
+::: fragment
+```{r}
 #> <httr2_request>
 #> GET https://api.open.fec.gov/v1
 #> Headers:
 #> • X-Api-Key: '<REDACTED>'
 #> Body: empty
 ```
+:::
+::: fragment
+```{r}
+request("https://api.open.fec.gov/v1") |> 
+  req_headers("X-Api-Key" = keyring::key_get("FEC_API_KEY"), .redact = "X-Api-Key")
+```
+:::
+::: fragment
+```{r}
+#> <httr2_request>
+#> GET https://api.open.fec.gov/v1
+#> Headers:
+#> • X-Api-Key: '<REDACTED>'
+#> Body: empty
+```
+:::
+
+::: notes
+-   Notice that the key never prints anywhere in the keyring version
+-   Sys.getenv() is also an option, but then the key is stored in plain text in your .Renviron file.
+:::
 
 ## Authenticating with nectar
 
-[{nectar}](https://nectar.api2r.org) 📦 wraps {httr2} for packages
+[{nectar}](https://nectar.api2r.org) 📦 translates APID to {httr2}
 
+::: fragment
 ```{r}
 request("https://api.open.fec.gov/v1") |> 
   nectar::req_auth_api_key(
     location = "header", 
     parameter_name = "X-Api-Key", 
-    api_key = "DEMO_KEY"
+    api_key = Sys.getenv("FEC_API_KEY")
   )
-
+```
+:::
+::: fragment
+```{r}
 #> <httr2_request>
 #> GET https://api.open.fec.gov/v1
 #> Headers:
 #> • X-Api-Key: '<REDACTED>'
 #> Body: empty
 ```
+:::
 
 ::: notes
--   Part of purpose of {nectar} is to translate between APID and {httr2}.
+-   Technically only PART of the purpose of {nectar}
+-   Aimed primarily at package authors, but I'm finding more and more use cases
+-   I'll recommend it for book helper functions
 :::
+
 
 # How can I authenticate a request using OAuth?
 
--   Next week!
--   Slides still in progress.
--   Also see [httr2 OAuth article](https://httr2.r-lib.org/articles/oauth.html)
+## Oauth terminology: Participants
 
-## Oauth terminology
-
-| term(s)        | meaning                             |
-|----------------|-------------------------------------|
-| **user**       | the person who you're acting as     |
-| application, **app** | your R code |
-| **client**, oauth application | you create this at oauth host |
-| oauth **host** | the API, or a 3rd party like Google |
-| **scope** | string(s) describing specific abilities |
-| **auth**orization **url** | where to send initial request + scopes |
-| **auth**orization **code** | very temporary key |
-| **token url** | where to send authorization code |
-| **oauth token**, token | the real key, often with extra info |
+| term(s)                       | meaning                         |
+|-------------------------------|---------------------------------|
+| **user**                      | the person who you're acting as |
+| application, **app**          | your R code                     |
+| **client**, oauth application | you create this at oauth host   |
+| oauth **host**                | the API                         |
 
 ::: notes
--   Bold = what I'll call it on other pages
 -   Oauth is complicated! Don't feel bad if you're confused!
+-   We'll go over the "dance" on an upcoming slide
 -   The point of the multiple steps is to make it hard for attacker to intercept, and minimize what they can do if they do
+-   Also to allow third parties to act on your behalf; can be confusing, because we're both the user and the app!
+-   Bold = what I'll call it on other pages
+-   App could be package, could be website, could be a separate API ("login with Google")
+-   Client has an id and a secret, that's how your *app* logs in
+    -   We'll talk more about these in a minute
+-   Client also has settings like valid redirect URLs (next slide)
+:::
+
+## Oauth terminology: Things
+
+| term(s)                    | meaning                                    |
+|----------------------------|--------------------------------------------|
+| **scope**                  | string(s) describing specific capabilities |
+| **auth**orization **code** | very temporary key                         |
+| **oauth token**, token     | the real key, often with extra info        |
+
+::: notes
+-   If app only hits read endpoints, only needs to request read scopes
+    -   Or if this user has only asked to read
 -   Auth code can only be sent to specified URLs
 -   The "real key" here is a bearer token.
 -   Token often includes a "refresh token", longer-lived shortcut around the auth process.
+    -   "This user already gave me permission, I just need an updated keycard."
+:::
+
+## Oauth terminology: Places
+
+| term(s)                   | meaning                                   |
+|---------------------------|-------------------------------------------|
+| **auth**orization **url** | where to send initial request             |
+| **redirect url(s)**       | where **host** can send **auth codes**    |
+| **token url**             | where **app** can exchange **auth codes** |
+
+::: notes
+-   User is sent to auth url in browser, sees authorization request directly from host
+-   Auth code can *only* be sent to redirect URLs
+    -   Often will be localhost, where httr2 sets up a web host to listens for a response
+    -   Isn't default, but you often need to specify a port for host to accept this as a valid redirect
+-   Request from app to token url is sent server-to-server, no user/browser in-between. Auth code in header in this case, generally.
 :::
 
 ## The OAuth "dance"
 
 -   **user** to **app**: Hit this API for me!
--   **app** to **host** @ **auth url** (browser): I'm (**client**). Can I act as **user** with these **scopes**?
--   **host** to **user**: Is this ok?
+-   <**app** sends **user** to **host** @ **auth url** in browser>
+-   **host** to **user**: Can **client** act as you with these **scopes**?
 -   **user** to **host**: Yes
--   **host** to **app** (sent to specific address): Your password is **auth code**
+-   <**host** sends **user** to **app** @ **redirect url** with **auth code**>
 -   **app** directly to **host** @ **token url**: Here's my **client** + user's **auth code**
--   **host** directly to **app**: Here's an **oauth token** for that user (and I'll log what it can do)
+-   **host** directly to **app**: Here's an **oauth token** for that user (with the requested permissions)
 
 ::: notes
 TODO: Image of OAuth dance
 
 -   This is sometimes called 3-legged auth
     -   Took me forever to differentiate "app" from "user" to make the 3 legs make sense
-    -   Host is in multiple places but it just counts as one leg
+    -   Host is at multiple urls but it just counts as one leg
+-   Step 2: App sends client id and permissions as part of that introduction
 -   Not covered: Then (not much) later app sends bearer token to host with API requests, and host checks that token can do those things.
 :::
 
-# Others/Old
+## OAuth credential dangers
 
+-   🟢 Client id: Like knowing package name
+-   🟡 Authorization code: Unlikely to be an issue
+    -   Only sent to provided redirect url
+    -   Extremely short lived (often minutes or less)
+-   🟡 Refresh token:
+    -   This + client secret for access token
+    -   Usually revoked if you auth from scratch
 
-## OAuth credential dangers {-}
+::: notes
+-   Yellows here are light green, really
+-   Auth code: Need client secret for it to do anything
+-   Refresh token: Longer lived, but otherwise similar to auth code
+::: 
 
--   🟢 Client id: Like knowing a package name.
--   🟡 Client secret:
-    -   Can pretend to be your client, but user still needs to say ok
+## OAuth credential dangers (cont)
+
+-   🟡 Client secret: Iffy
+    -   Can pretend to be you (user still needs to say ok)
     -   Can your **client** do anything special?
         -   Installed (e.g. Slack app)?
-        -   API usage limits?
--   🟡 Authorization code: Unlikely to be an issue
-    -   Only sent to provided redirect_uri
-    -   Extremely short lived (often minutes or less)
-
-## OAuth credential dangers (cont) {-}
-
--   🟡 Refresh token: A longer-lived authorization code
-    -   Can be used to get a new access token
-    -   Usually revoked if you auth from scratch
-    -   Also need client secret to refresh
+        -   API usage limits (e.g. YouTube)?
 -   🟠 Access token: The thing we're protecting
     -   Can do whatever it's authorized to do
     -   Usually easy to revoke
 -   🔴 Username + password: We don't want to know these
 
-## httr2::oauth_client() {-}
+::: notes
+-   Hadley says client secrets aren't a big deal, but I disagree in a lot of cases.
+-   Your auth page at host can be copied, so that's not a real concern, but...
+-   If localhost is valid redirect, they can trick user to auth as you
+-   Only matters if client itself can do something
+-   YouTube has client limits in addition to user limits
+::: 
 
--   Almost definitely only need these (from API provider):
-    -   `id` = Client ID
-    -   `token_url` = URL where clients exchange authorization codes for tokens
-    -   `secret` = Client secret
-    -   Often `auth = "header"`
-    -   If this client has multiple uses: `name` = unique for this use case
--   Construct once & reuse
+# How can I use OAuth in R?
 
-## OAuth client demo {-}
+## Configure your client
 
-```{r auth-oauth-youtube-client, eval = FALSE}
-library(httr2)
+Construct one client object for your code
+
+```{r}
+httr2::oauth_client(
+  id, 
+  token_url, 
+  secret = NULL, 
+  key = NULL, 
+  auth = c("body", "header", "jwt_sig"), 
+  auth_params = list(), 
+  name = hash(id)
+)
+```
+
+::: notes
+-   `id` = Client ID
+-   `token_url` = URL where clients exchange authorization codes for tokens
+-   `secret` = Client secret
+-   Often `auth = "header"`
+-   If this client has multiple uses: `name` = unique for this use case
+    -   Defines where tokens are cached
+    -   Eg, Log in once for personal, another time for work (but see cache_key in next function)
+-   I don't know yet why we don't specify `auth_url` here (it's in a later step)
+:::
+
+## OAuth client demo
+
+```{r}
+#| label: httr2-auth-oauth-youtube-client
 yt_client <- oauth_client(
-  Sys.getenv("YOUTUBE_CLIENT_ID"), 
-  "https://oauth2.googleapis.com/token",
+  id = Sys.getenv("YOUTUBE_CLIENT_ID"), 
+  token_url = "https://oauth2.googleapis.com/token",
   secret = Sys.getenv("YOUTUBE_CLIENT_SECRET")
 )
 ```
 
 ## httr2::req_oauth_auth_code() {-}
 
--   `auth_url` = URL to get an authorization code (from API)
--   `scope` = Usually comma-separated string of permissions
--   `pkce` = Good if supported, often have to turn off
--   `redirect_uri` = Where to send response
-    -   Often need specific local port "http://localhost:4242" or "http://127.0.0.1:4242"
-    -   Must be configured as part of client configuration (at API)
+```{r}
+httr2::req_oauth_auth_code(
+  req,
+  client,
+  auth_url,
+  scope = NULL,
+  pkce = TRUE,
+  auth_params = list(),
+  token_params = list(),
+  redirect_uri = oauth_redirect_uri(),
+  cache_disk = FALSE,
+  cache_key = NULL
+)
+```
+
+::: notes
+-   I'm trying to figure out why `auth_url` isn't wrapped in client
+    -   Best guess is there are use cases of same client at different auth urls
+    -   Maybe YouTube does this?
+    -   Dev vs production?
+-   `pkce` = "Proof key for code exchange". Good if API supports it, but I often have to turn it off
+-   I can't think of examples of auth_params or token_params
+    -   would be ~headers required by  host
+    -   auth_params sent to auth_url, token_params sent to token_url
 -   `cache_disk` = Set this `TRUE` if you can
-    -   `cache_key` if you'll use this client for multiple tokens
+    -   `cache_key` = unique name if you'll use this client for multiple tokens
+:::
 
-## Oauth request demo {-}
+## Oauth request demo
 
-```{r auth-oauth-youtube-call, eval = FALSE}
+```{r}
+#| label: httr2-auth-oauth-youtube-call
 playlists <- request("https://youtube.googleapis.com/youtube/v3") |> 
   req_url_path_append("playlists") |> 
   req_url_query(part = "snippet", mine = TRUE, maxResults = 50) |> 
   req_oauth_auth_code(
-    yt_client, 
-    "https://accounts.google.com/o/oauth2/v2/auth",
+    client = yt_client, 
+    auth_url = "https://accounts.google.com/o/oauth2/v2/auth",
     scope = "https://www.googleapis.com/auth/youtube",
     redirect_uri = "http://127.0.0.1:8888"
   ) |> 
   req_perform()
 ```
+
+# Leftovers
 
 ## Automating OAuth {-}
 
@@ -426,6 +539,10 @@ playlists <- request("https://youtube.googleapis.com/youtube/v3") |>
 -   Export
 -   Paste into a file at `path`
 -   `httr2::req_cookie_preserve(req, path)`
+
+::: notes
+-   Or cookie can be used in header
+:::
 
 ## Meeting Videos {-}
 
