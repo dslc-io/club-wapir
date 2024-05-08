@@ -609,23 +609,19 @@
 <div class="line-block">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;💳 <em>keycard</em></div>
 </div>
 <div class="fragment">
-<p>🟢 <strong>OAuth:</strong> multistep process to generate a key</p>
+<p>🟢 <strong>OAuth:</strong> multistep process to generate a bearer token</p>
 </div>
 <div class="fragment">
 <div class="line-block">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🕵️ <em>background check to issue keycard</em></div>
-</div>
-<div class="fragment">
-<div class="line-block">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🕵️ <em>background check to issue keycard <strong>to a friend</strong></em></div>
 </div>
 <aside class="notes">
 <ul>
 <li>Almost nobody uses HTTP basic for APIs anymore.</li>
 <li>If you gave an ex a key to your house, you can change the lock without disrupting your life too much</li>
+<li>Name “bearer token” is stupid; anybody can use an API key, too, so the “bearer” part is weird to highlight</li>
 <li>Nothing enforces difference between bearer tokens and api keys; it’s a vocabulary thing, which API makers might screw up</li>
 <li>Keycard can be limited to open certain doors, not open others</li>
 <li>End result of OAuth is a bearer token</li>
-<li>The “friend” might be you, might be someone else’s package</li>
-<li>A lot of the complexity is making sure you trust the software that’s acting on your behalf</li>
 <li>There are other things, but these four cover almost everything.</li>
 <li>Other schemes like api keys in cookies, SSL certs not discussed here</li>
 </ul>
@@ -671,7 +667,7 @@
 </section>
 <section id="openapi-securityschemes" class="slide level2">
 <h2>OpenAPI: securitySchemes</h2>
-<p>If you have the OpenAPI description, use it!</p>
+<p>If you have the APID, use it!</p>
 <ul>
 <li class="fragment"><code>components$securitySchemes</code> = ways to auth</li>
 <li class="fragment"><code>security</code> (top level) = default schemes</li>
@@ -680,9 +676,9 @@
 </ul>
 <aside class="notes">
 <ul>
+<li>APID = API description in OpenAPI format</li>
 <li>Often still necessary to dig through docs for details</li>
 <li>I suspect the 2 “apiKey in query” schemes for OpenFEC are the default key vs a user-specific key, their way of implementing scopes.</li>
-<li>In your code, if you have option of header vs query, use header (slight more)</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -730,7 +726,10 @@
 <h2>Use keyring</h2>
 <ul>
 <li class="fragment"><code>install.packages("keyring")</code></li>
-<li class="fragment"><code>keyring::key_set(service)</code></li>
+<li class="fragment"><code>keyring::key_set(service)</code>
+<ul>
+<li class="fragment"><code>keyring::key_set("FEC_API_KEY")</code></li>
+</ul></li>
 <li class="fragment"><code>keyring::key_set_with_value(service, password = NULL)</code></li>
 <li class="fragment"><code>keyring::key_get(service)</code></li>
 <li class="fragment">May need to copy keyring to env for packages
@@ -762,8 +761,8 @@
 <h1>How can I authenticate a request using API keys?</h1>
 
 </section>
-<section id="where-do-i-put-api-keys" class="slide level2">
-<h2>Where do I put API keys?</h2>
+<section id="where-do-i-send-api-keys" class="slide level2">
+<h2>Where do I send API keys?</h2>
 <ul>
 <li class="fragment"><code>in: query</code>
 <ul>
@@ -800,38 +799,81 @@
 </section>
 <section id="how-can-i-authenticate-fecapi-requests" class="slide level2">
 <h2>How can I authenticate FECAPI requests?</h2>
-<p><a href="https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.yaml">OpenFEC OAS</a></p>
+<p><a href="https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.yaml">OpenFEC APID</a></p>
+<div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-2"><a></a>  <span class="fu">req_headers</span>(<span class="st">"X-Api-Key"</span> <span class="ot">=</span> <span class="st">"DEMO_KEY"</span>, <span class="at">.redact =</span> <span class="st">"X-Api-Key"</span>)</span>
-<span id="cb5-3"><a></a></span>
-<span id="cb5-4"><a></a><span class="co">#&gt; &lt;httr2_request&gt;</span></span>
-<span id="cb5-5"><a></a><span class="co">#&gt; GET https://api.open.fec.gov/v1</span></span>
-<span id="cb5-6"><a></a><span class="co">#&gt; Headers:</span></span>
-<span id="cb5-7"><a></a><span class="co">#&gt; • X-Api-Key: '&lt;REDACTED&gt;'</span></span>
-<span id="cb5-8"><a></a><span class="co">#&gt; Body: empty</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-2"><a></a>  <span class="fu">req_headers</span>(<span class="st">"X-Api-Key"</span> <span class="ot">=</span> <span class="st">"DEMO_KEY"</span>, <span class="at">.redact =</span> <span class="st">"X-Api-Key"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="authenticating-with-nectar" class="slide level2">
-<h2>Authenticating with nectar</h2>
-<p><a href="https://nectar.api2r.org">{nectar}</a> 📦 wraps {httr2} for packages</p>
+</div>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb6-2"><a></a>  nectar<span class="sc">::</span><span class="fu">req_auth_api_key</span>(</span>
-<span id="cb6-3"><a></a>    <span class="at">location =</span> <span class="st">"header"</span>, </span>
-<span id="cb6-4"><a></a>    <span class="at">parameter_name =</span> <span class="st">"X-Api-Key"</span>, </span>
-<span id="cb6-5"><a></a>    <span class="at">api_key =</span> <span class="st">"DEMO_KEY"</span></span>
-<span id="cb6-6"><a></a>  )</span>
-<span id="cb6-7"><a></a></span>
-<span id="cb6-8"><a></a><span class="co">#&gt; &lt;httr2_request&gt;</span></span>
-<span id="cb6-9"><a></a><span class="co">#&gt; GET https://api.open.fec.gov/v1</span></span>
-<span id="cb6-10"><a></a><span class="co">#&gt; Headers:</span></span>
-<span id="cb6-11"><a></a><span class="co">#&gt; • X-Api-Key: '&lt;REDACTED&gt;'</span></span>
-<span id="cb6-12"><a></a><span class="co">#&gt; Body: empty</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="co">#&gt; &lt;httr2_request&gt;</span></span>
+<span id="cb6-2"><a></a><span class="co">#&gt; GET https://api.open.fec.gov/v1</span></span>
+<span id="cb6-3"><a></a><span class="co">#&gt; Headers:</span></span>
+<span id="cb6-4"><a></a><span class="co">#&gt; • X-Api-Key: '&lt;REDACTED&gt;'</span></span>
+<span id="cb6-5"><a></a><span class="co">#&gt; Body: empty</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a></a>  <span class="fu">req_headers</span>(<span class="st">"X-Api-Key"</span> <span class="ot">=</span> keyring<span class="sc">::</span><span class="fu">key_get</span>(<span class="st">"FEC_API_KEY"</span>), <span class="at">.redact =</span> <span class="st">"X-Api-Key"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="co">#&gt; &lt;httr2_request&gt;</span></span>
+<span id="cb8-2"><a></a><span class="co">#&gt; GET https://api.open.fec.gov/v1</span></span>
+<span id="cb8-3"><a></a><span class="co">#&gt; Headers:</span></span>
+<span id="cb8-4"><a></a><span class="co">#&gt; • X-Api-Key: '&lt;REDACTED&gt;'</span></span>
+<span id="cb8-5"><a></a><span class="co">#&gt; Body: empty</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </div>
 <aside class="notes">
 <ul>
-<li>Part of purpose of {nectar} is to translate between APID and {httr2}.</li>
+<li>Notice that the key never prints anywhere in the keyring version</li>
+<li>Sys.getenv() is also an option, but then the key is stored in plain text in your .Renviron file.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="authenticating-with-nectar" class="slide level2">
+<h2>Authenticating with nectar</h2>
+<p><a href="https://nectar.api2r.org">{nectar}</a> 📦 translates APID to {httr2}</p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a></a>  nectar<span class="sc">::</span><span class="fu">req_auth_api_key</span>(</span>
+<span id="cb9-3"><a></a>    <span class="at">location =</span> <span class="st">"header"</span>, </span>
+<span id="cb9-4"><a></a>    <span class="at">parameter_name =</span> <span class="st">"X-Api-Key"</span>, </span>
+<span id="cb9-5"><a></a>    <span class="at">api_key =</span> <span class="fu">Sys.getenv</span>(<span class="st">"FEC_API_KEY"</span>)</span>
+<span id="cb9-6"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="co">#&gt; &lt;httr2_request&gt;</span></span>
+<span id="cb10-2"><a></a><span class="co">#&gt; GET https://api.open.fec.gov/v1</span></span>
+<span id="cb10-3"><a></a><span class="co">#&gt; Headers:</span></span>
+<span id="cb10-4"><a></a><span class="co">#&gt; • X-Api-Key: '&lt;REDACTED&gt;'</span></span>
+<span id="cb10-5"><a></a><span class="co">#&gt; Body: empty</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Technically only PART of the purpose of {nectar}</li>
+<li>Aimed primarily at package authors, but I’m finding more and more use cases</li>
+<li>I’ll recommend it for book helper functions</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -848,14 +890,10 @@
 <section>
 <section id="how-can-i-authenticate-a-request-using-oauth" class="title-slide slide level1 center">
 <h1>How can I authenticate a request using OAuth?</h1>
-<ul>
-<li class="fragment">Next week!</li>
-<li class="fragment">Slides still in progress.</li>
-<li class="fragment">Also see <a href="https://httr2.r-lib.org/articles/oauth.html">httr2 OAuth article</a></li>
-</ul>
+
 </section>
-<section id="oauth-terminology" class="slide level2">
-<h2>Oauth terminology</h2>
+<section id="oauth-terminology-participants" class="slide level2">
+<h2>Oauth terminology: Participants</h2>
 <table>
 <thead>
 <tr class="header">
@@ -878,23 +916,57 @@
 </tr>
 <tr class="even">
 <td>oauth <strong>host</strong></td>
-<td>the API, or a 3rd party like Google</td>
+<td>the API</td>
 </tr>
+</tbody>
+</table>
+<aside class="notes">
+<ul>
+<li>Oauth is complicated! Don’t feel bad if you’re confused!</li>
+<li>We’ll go over the “dance” on an upcoming slide</li>
+<li>The point of the multiple steps is to make it hard for attacker to intercept, and minimize what they can do if they do</li>
+<li>Also to allow third parties to act on your behalf; can be confusing, because we’re both the user and the app!</li>
+<li>Bold = what I’ll call it on other pages</li>
+<li>App could be package, could be website, could be a separate API (“login with Google”)</li>
+<li>Client has an id and a secret, that’s how your <em>app</em> logs in
+<ul>
+<li>We’ll talk more about these in a minute</li>
+</ul></li>
+<li>Client also has settings like valid redirect URLs (next slide)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="oauth-terminology-things" class="slide level2">
+<h2>Oauth terminology: Things</h2>
+<table>
+<colgroup>
+<col style="width: 38%">
+<col style="width: 61%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>term(s)</th>
+<th>meaning</th>
+</tr>
+</thead>
+<tbody>
 <tr class="odd">
 <td><strong>scope</strong></td>
-<td>string(s) describing specific abilities</td>
+<td>string(s) describing specific capabilities</td>
 </tr>
 <tr class="even">
-<td><strong>auth</strong>orization <strong>url</strong></td>
-<td>where to send initial request + scopes</td>
-</tr>
-<tr class="odd">
 <td><strong>auth</strong>orization <strong>code</strong></td>
 <td>very temporary key</td>
-</tr>
-<tr class="even">
-<td><strong>token url</strong></td>
-<td>where to send authorization code</td>
 </tr>
 <tr class="odd">
 <td><strong>oauth token</strong>, token</td>
@@ -904,12 +976,66 @@
 </table>
 <aside class="notes">
 <ul>
-<li>Bold = what I’ll call it on other pages</li>
-<li>Oauth is complicated! Don’t feel bad if you’re confused!</li>
-<li>The point of the multiple steps is to make it hard for attacker to intercept, and minimize what they can do if they do</li>
+<li>If app only hits read endpoints, only needs to request read scopes
+<ul>
+<li>Or if this user has only asked to read</li>
+</ul></li>
 <li>Auth code can only be sent to specified URLs</li>
 <li>The “real key” here is a bearer token.</li>
-<li>Token often includes a “refresh token”, longer-lived shortcut around the auth process.</li>
+<li>Token often includes a “refresh token”, longer-lived shortcut around the auth process.
+<ul>
+<li>“This user already gave me permission, I just need an updated keycard.”</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="oauth-terminology-places" class="slide level2">
+<h2>Oauth terminology: Places</h2>
+<table>
+<colgroup>
+<col style="width: 38%">
+<col style="width: 61%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>term(s)</th>
+<th>meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>auth</strong>orization <strong>url</strong></td>
+<td>where to send initial request</td>
+</tr>
+<tr class="even">
+<td><strong>redirect url(s)</strong></td>
+<td>where <strong>host</strong> can send <strong>auth codes</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>token url</strong></td>
+<td>where <strong>app</strong> can exchange <strong>auth codes</strong></td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">
+<ul>
+<li>User is sent to auth url in browser, sees authorization request directly from host</li>
+<li>Auth code can <em>only</em> be sent to redirect URLs
+<ul>
+<li>Often will be localhost, where httr2 sets up a web host to listens for a response</li>
+<li>Isn’t default, but you often need to specify a port for host to accept this as a valid redirect</li>
+</ul></li>
+<li>Request from app to token url is sent server-to-server, no user/browser in-between. Auth code in header in this case, generally.</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -927,12 +1053,12 @@
 <h2>The OAuth “dance”</h2>
 <ul>
 <li class="fragment"><strong>user</strong> to <strong>app</strong>: Hit this API for me!</li>
-<li class="fragment"><strong>app</strong> to <strong>host</strong> @ <strong>auth url</strong> (browser): I’m (<strong>client</strong>). Can I act as <strong>user</strong> with these <strong>scopes</strong>?</li>
-<li class="fragment"><strong>host</strong> to <strong>user</strong>: Is this ok?</li>
+<li class="fragment">&lt;<strong>app</strong> sends <strong>user</strong> to <strong>host</strong> @ <strong>auth url</strong> in browser&gt;</li>
+<li class="fragment"><strong>host</strong> to <strong>user</strong>: Can <strong>client</strong> act as you with these <strong>scopes</strong>?</li>
 <li class="fragment"><strong>user</strong> to <strong>host</strong>: Yes</li>
-<li class="fragment"><strong>host</strong> to <strong>app</strong> (sent to specific address): Your password is <strong>auth code</strong></li>
+<li class="fragment">&lt;<strong>host</strong> sends <strong>user</strong> to <strong>app</strong> @ <strong>redirect url</strong> with <strong>auth code</strong>&gt;</li>
 <li class="fragment"><strong>app</strong> directly to <strong>host</strong> @ <strong>token url</strong>: Here’s my <strong>client</strong> + user’s <strong>auth code</strong></li>
-<li class="fragment"><strong>host</strong> directly to <strong>app</strong>: Here’s an <strong>oauth token</strong> for that user (and I’ll log what it can do)</li>
+<li class="fragment"><strong>host</strong> directly to <strong>app</strong>: Here’s an <strong>oauth token</strong> for that user (with the requested permissions)</li>
 </ul>
 <aside class="notes">
 <p>TODO: Image of OAuth dance</p>
@@ -940,9 +1066,82 @@
 <li>This is sometimes called 3-legged auth
 <ul>
 <li>Took me forever to differentiate “app” from “user” to make the 3 legs make sense</li>
-<li>Host is in multiple places but it just counts as one leg</li>
+<li>Host is at multiple urls but it just counts as one leg</li>
 </ul></li>
+<li>Step 2: App sends client id and permissions as part of that introduction</li>
 <li>Not covered: Then (not much) later app sends bearer token to host with API requests, and host checks that token can do those things.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="oauth-credential-dangers" class="slide level2">
+<h2>OAuth credential dangers</h2>
+<ul>
+<li class="fragment">🟢 Client id: Like knowing package name</li>
+<li class="fragment">🟡 Authorization code: Unlikely to be an issue
+<ul>
+<li class="fragment">Only sent to provided redirect url</li>
+<li class="fragment">Extremely short lived (often minutes or less)</li>
+</ul></li>
+<li class="fragment">🟡 Refresh token:
+<ul>
+<li class="fragment">This + client secret for access token</li>
+<li class="fragment">Usually revoked if you auth from scratch</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Yellows here are light green, really</li>
+<li>Auth code: Need client secret for it to do anything</li>
+<li>Refresh token: Longer lived, but otherwise similar to auth code</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="oauth-credential-dangers-cont" class="slide level2">
+<h2>OAuth credential dangers (cont)</h2>
+<ul>
+<li class="fragment">🟡 Client secret: Iffy
+<ul>
+<li class="fragment">Can pretend to be you (user still needs to say ok)</li>
+<li class="fragment">Can your <strong>client</strong> do anything special?
+<ul>
+<li class="fragment">Installed (e.g.&nbsp;Slack app)?</li>
+<li class="fragment">API usage limits (e.g.&nbsp;YouTube)?</li>
+</ul></li>
+</ul></li>
+<li class="fragment">🟠 Access token: The thing we’re protecting
+<ul>
+<li class="fragment">Can do whatever it’s authorized to do</li>
+<li class="fragment">Usually easy to revoke</li>
+</ul></li>
+<li class="fragment">🔴 Username + password: We don’t want to know these</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Hadley says client secrets aren’t a big deal, but I disagree in a lot of cases.</li>
+<li>Your auth page at host can be copied, so that’s not a real concern, but…</li>
+<li>If localhost is valid redirect, they can trick user to auth as you</li>
+<li>Only matters if client itself can do something</li>
+<li>YouTube has client limits in addition to user limits</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -957,103 +1156,125 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="othersold" class="title-slide slide level1 center">
-<h1>Others/Old</h1>
+<section id="how-can-i-use-oauth-in-r" class="title-slide slide level1 center">
+<h1>How can I use OAuth in R?</h1>
 
 </section>
-<section id="oauth-credential-dangers" class="slide level2 unnumbered">
-<h2>OAuth credential dangers</h2>
+<section id="configure-your-client" class="slide level2">
+<h2>Configure your client</h2>
+<p>Construct one client object for your code</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>httr2<span class="sc">::</span><span class="fu">oauth_client</span>(</span>
+<span id="cb11-2"><a></a>  id, </span>
+<span id="cb11-3"><a></a>  token_url, </span>
+<span id="cb11-4"><a></a>  <span class="at">secret =</span> <span class="cn">NULL</span>, </span>
+<span id="cb11-5"><a></a>  <span class="at">key =</span> <span class="cn">NULL</span>, </span>
+<span id="cb11-6"><a></a>  <span class="at">auth =</span> <span class="fu">c</span>(<span class="st">"body"</span>, <span class="st">"header"</span>, <span class="st">"jwt_sig"</span>), </span>
+<span id="cb11-7"><a></a>  <span class="at">auth_params =</span> <span class="fu">list</span>(), </span>
+<span id="cb11-8"><a></a>  <span class="at">name =</span> <span class="fu">hash</span>(id)</span>
+<span id="cb11-9"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<aside class="notes">
 <ul>
-<li class="fragment">🟢 Client id: Like knowing a package name.</li>
-<li class="fragment">🟡 Client secret:
+<li><code>id</code> = Client ID</li>
+<li><code>token_url</code> = URL where clients exchange authorization codes for tokens</li>
+<li><code>secret</code> = Client secret</li>
+<li>Often <code>auth = "header"</code></li>
+<li>If this client has multiple uses: <code>name</code> = unique for this use case
 <ul>
-<li class="fragment">Can pretend to be your client, but user still needs to say ok</li>
-<li class="fragment">Can your <strong>client</strong> do anything special?
-<ul>
-<li class="fragment">Installed (e.g.&nbsp;Slack app)?</li>
-<li class="fragment">API usage limits?</li>
+<li>Defines where tokens are cached</li>
+<li>Eg, Log in once for personal, another time for work (but see cache_key in next function)</li>
 </ul></li>
-</ul></li>
-<li class="fragment">🟡 Authorization code: Unlikely to be an issue
-<ul>
-<li class="fragment">Only sent to provided redirect_uri</li>
-<li class="fragment">Extremely short lived (often minutes or less)</li>
-</ul></li>
+<li>I don’t know yet why we don’t specify <code>auth_url</code> here (it’s in a later step)</li>
 </ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="oauth-credential-dangers-cont" class="slide level2 unnumbered">
-<h2>OAuth credential dangers (cont)</h2>
-<ul>
-<li class="fragment">🟡 Refresh token: A longer-lived authorization code
-<ul>
-<li class="fragment">Can be used to get a new access token</li>
-<li class="fragment">Usually revoked if you auth from scratch</li>
-<li class="fragment">Also need client secret to refresh</li>
-</ul></li>
-<li class="fragment">🟠 Access token: The thing we’re protecting
-<ul>
-<li class="fragment">Can do whatever it’s authorized to do</li>
-<li class="fragment">Usually easy to revoke</li>
-</ul></li>
-<li class="fragment">🔴 Username + password: We don’t want to know these</li>
-</ul>
-</section>
-<section id="httr2oauth_client" class="slide level2 unnumbered">
-<h2>httr2::oauth_client()</h2>
-<ul>
-<li class="fragment">Almost definitely only need these (from API provider):
-<ul>
-<li class="fragment"><code>id</code> = Client ID</li>
-<li class="fragment"><code>token_url</code> = URL where clients exchange authorization codes for tokens</li>
-<li class="fragment"><code>secret</code> = Client secret</li>
-<li class="fragment">Often <code>auth = "header"</code></li>
-<li class="fragment">If this client has multiple uses: <code>name</code> = unique for this use case</li>
-</ul></li>
-<li class="fragment">Construct once &amp; reuse</li>
-</ul>
-</section>
-<section id="oauth-client-demo" class="slide level2 unnumbered">
+<section id="oauth-client-demo" class="slide level2">
 <h2>OAuth client demo</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">library</span>(httr2)</span>
-<span id="cb7-2"><a></a>yt_client <span class="ot">&lt;-</span> <span class="fu">oauth_client</span>(</span>
-<span id="cb7-3"><a></a>  <span class="fu">Sys.getenv</span>(<span class="st">"YOUTUBE_CLIENT_ID"</span>), </span>
-<span id="cb7-4"><a></a>  <span class="st">"https://oauth2.googleapis.com/token"</span>,</span>
-<span id="cb7-5"><a></a>  <span class="at">secret =</span> <span class="fu">Sys.getenv</span>(<span class="st">"YOUTUBE_CLIENT_SECRET"</span>)</span>
-<span id="cb7-6"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>yt_client <span class="ot">&lt;-</span> <span class="fu">oauth_client</span>(</span>
+<span id="cb12-2"><a></a>  <span class="at">id =</span> <span class="fu">Sys.getenv</span>(<span class="st">"YOUTUBE_CLIENT_ID"</span>), </span>
+<span id="cb12-3"><a></a>  <span class="at">token_url =</span> <span class="st">"https://oauth2.googleapis.com/token"</span>,</span>
+<span id="cb12-4"><a></a>  <span class="at">secret =</span> <span class="fu">Sys.getenv</span>(<span class="st">"YOUTUBE_CLIENT_SECRET"</span>)</span>
+<span id="cb12-5"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="httr2req_oauth_auth_code" class="slide level2 unnumbered">
 <h2>httr2::req_oauth_auth_code()</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>httr2<span class="sc">::</span><span class="fu">req_oauth_auth_code</span>(</span>
+<span id="cb13-2"><a></a>  req,</span>
+<span id="cb13-3"><a></a>  client,</span>
+<span id="cb13-4"><a></a>  auth_url,</span>
+<span id="cb13-5"><a></a>  <span class="at">scope =</span> <span class="cn">NULL</span>,</span>
+<span id="cb13-6"><a></a>  <span class="at">pkce =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb13-7"><a></a>  <span class="at">auth_params =</span> <span class="fu">list</span>(),</span>
+<span id="cb13-8"><a></a>  <span class="at">token_params =</span> <span class="fu">list</span>(),</span>
+<span id="cb13-9"><a></a>  <span class="at">redirect_uri =</span> <span class="fu">oauth_redirect_uri</span>(),</span>
+<span id="cb13-10"><a></a>  <span class="at">cache_disk =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb13-11"><a></a>  <span class="at">cache_key =</span> <span class="cn">NULL</span></span>
+<span id="cb13-12"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<aside class="notes">
 <ul>
-<li class="fragment"><code>auth_url</code> = URL to get an authorization code (from API)</li>
-<li class="fragment"><code>scope</code> = Usually comma-separated string of permissions</li>
-<li class="fragment"><code>pkce</code> = Good if supported, often have to turn off</li>
-<li class="fragment"><code>redirect_uri</code> = Where to send response
+<li>I’m trying to figure out why <code>auth_url</code> isn’t wrapped in client
 <ul>
-<li class="fragment">Often need specific local port “http://localhost:4242” or “http://127.0.0.1:4242”</li>
-<li class="fragment">Must be configured as part of client configuration (at API)</li>
+<li>Best guess is there are use cases of same client at different auth urls</li>
+<li>Maybe YouTube does this?</li>
+<li>Dev vs production?</li>
 </ul></li>
-<li class="fragment"><code>cache_disk</code> = Set this <code>TRUE</code> if you can
+<li><code>pkce</code> = “Proof key for code exchange”. Good if API supports it, but I often have to turn it off</li>
+<li>I can’t think of examples of auth_params or token_params
 <ul>
-<li class="fragment"><code>cache_key</code> if you’ll use this client for multiple tokens</li>
+<li>would be ~headers required by host</li>
+<li>auth_params sent to auth_url, token_params sent to token_url</li>
+</ul></li>
+<li><code>cache_disk</code> = Set this <code>TRUE</code> if you can
+<ul>
+<li><code>cache_key</code> = unique name if you’ll use this client for multiple tokens</li>
 </ul></li>
 </ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="oauth-request-demo" class="slide level2 unnumbered">
+<section id="oauth-request-demo" class="slide level2">
 <h2>Oauth request demo</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>playlists <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://youtube.googleapis.com/youtube/v3"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb8-2"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"playlists"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb8-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">part =</span> <span class="st">"snippet"</span>, <span class="at">mine =</span> <span class="cn">TRUE</span>, <span class="at">maxResults =</span> <span class="dv">50</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb8-4"><a></a>  <span class="fu">req_oauth_auth_code</span>(</span>
-<span id="cb8-5"><a></a>    yt_client, </span>
-<span id="cb8-6"><a></a>    <span class="st">"https://accounts.google.com/o/oauth2/v2/auth"</span>,</span>
-<span id="cb8-7"><a></a>    <span class="at">scope =</span> <span class="st">"https://www.googleapis.com/auth/youtube"</span>,</span>
-<span id="cb8-8"><a></a>    <span class="at">redirect_uri =</span> <span class="st">"http://127.0.0.1:8888"</span></span>
-<span id="cb8-9"><a></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb8-10"><a></a>  <span class="fu">req_perform</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>playlists <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://youtube.googleapis.com/youtube/v3"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-2"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"playlists"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">part =</span> <span class="st">"snippet"</span>, <span class="at">mine =</span> <span class="cn">TRUE</span>, <span class="at">maxResults =</span> <span class="dv">50</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-4"><a></a>  <span class="fu">req_oauth_auth_code</span>(</span>
+<span id="cb14-5"><a></a>    <span class="at">client =</span> yt_client, </span>
+<span id="cb14-6"><a></a>    <span class="at">auth_url =</span> <span class="st">"https://accounts.google.com/o/oauth2/v2/auth"</span>,</span>
+<span id="cb14-7"><a></a>    <span class="at">scope =</span> <span class="st">"https://www.googleapis.com/auth/youtube"</span>,</span>
+<span id="cb14-8"><a></a>    <span class="at">redirect_uri =</span> <span class="st">"http://127.0.0.1:8888"</span></span>
+<span id="cb14-9"><a></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb14-10"><a></a>  <span class="fu">req_perform</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section></section>
+<section>
+<section id="leftovers" class="title-slide slide level1 center">
+<h1>Leftovers</h1>
+
 </section>
 <section id="automating-oauth" class="slide level2 unnumbered">
 <h2>Automating OAuth</h2>
@@ -1083,6 +1304,21 @@
 <li class="fragment">Paste into a file at <code>path</code></li>
 <li class="fragment"><code>httr2::req_cookie_preserve(req, path)</code></li>
 </ul>
+<aside class="notes">
+<ul>
+<li>Or cookie can be used in header</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="meeting-videos" class="slide level2 unnumbered">
 <h2>Meeting Videos</h2>

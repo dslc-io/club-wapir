@@ -397,7 +397,7 @@
     "href": "slides/httr2/httr2-authentication.html#what-are-some-types-of-authentication",
     "title": "How do I tell the API who I am?",
     "section": "What are some types of authentication?",
-    "text": "What are some types of authentication?\n\n🔴 HTTP Basic: username + password sent with request\n\n\n        📜 deed to your house\n\n\n🟠 API Key: password-like thing sent with request\n\n\n        🔑 key to your house\n\n\n🟡 Bearer Token: shorter-lived, limited key\n\n\n        💳 keycard\n\n\n🟢 OAuth: multistep process to generate a key\n\n\n        🕵️ background check to issue keycard\n\n\n        🕵️ background check to issue keycard to a friend\n\n\n\nAlmost nobody uses HTTP basic for APIs anymore.\nIf you gave an ex a key to your house, you can change the lock without disrupting your life too much\nNothing enforces difference between bearer tokens and api keys; it’s a vocabulary thing, which API makers might screw up\nKeycard can be limited to open certain doors, not open others\nEnd result of OAuth is a bearer token\nThe “friend” might be you, might be someone else’s package\nA lot of the complexity is making sure you trust the software that’s acting on your behalf\nThere are other things, but these four cover almost everything.\nOther schemes like api keys in cookies, SSL certs not discussed here",
+    "text": "What are some types of authentication?\n\n🔴 HTTP Basic: username + password sent with request\n\n\n        📜 deed to your house\n\n\n🟠 API Key: password-like thing sent with request\n\n\n        🔑 key to your house\n\n\n🟡 Bearer Token: shorter-lived, limited key\n\n\n        💳 keycard\n\n\n🟢 OAuth: multistep process to generate a bearer token\n\n\n        🕵️ background check to issue keycard\n\n\n\nAlmost nobody uses HTTP basic for APIs anymore.\nIf you gave an ex a key to your house, you can change the lock without disrupting your life too much\nName “bearer token” is stupid; anybody can use an API key, too, so the “bearer” part is weird to highlight\nNothing enforces difference between bearer tokens and api keys; it’s a vocabulary thing, which API makers might screw up\nKeycard can be limited to open certain doors, not open others\nEnd result of OAuth is a bearer token\nThere are other things, but these four cover almost everything.\nOther schemes like api keys in cookies, SSL certs not discussed here",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -419,7 +419,7 @@
     "href": "slides/httr2/httr2-authentication.html#openapi-securityschemes",
     "title": "How do I tell the API who I am?",
     "section": "OpenAPI: securitySchemes",
-    "text": "OpenAPI: securitySchemes\nIf you have the OpenAPI description, use it!\n\ncomponents$securitySchemes = ways to auth\nsecurity (top level) = default schemes\nOpenFEC\nGoogle Calendar\n\n\n\nOften still necessary to dig through docs for details\nI suspect the 2 “apiKey in query” schemes for OpenFEC are the default key vs a user-specific key, their way of implementing scopes.\nIn your code, if you have option of header vs query, use header (slight more)",
+    "text": "OpenAPI: securitySchemes\nIf you have the APID, use it!\n\ncomponents$securitySchemes = ways to auth\nsecurity (top level) = default schemes\nOpenFEC\nGoogle Calendar\n\n\n\nAPID = API description in OpenAPI format\nOften still necessary to dig through docs for details\nI suspect the 2 “apiKey in query” schemes for OpenFEC are the default key vs a user-specific key, their way of implementing scopes.",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -441,18 +441,18 @@
     "href": "slides/httr2/httr2-authentication.html#use-keyring",
     "title": "How do I tell the API who I am?",
     "section": "Use keyring",
-    "text": "Use keyring\n\ninstall.packages(\"keyring\")\nkeyring::key_set(service)\nkeyring::key_set_with_value(service, password = NULL)\nkeyring::key_get(service)\nMay need to copy keyring to env for packages\n\nSys.setenv(FEC_API_KEY = keyring::key_get(\"FEC_API_KEY\"))\n\n\n\n\n{keyring} works with your operating system’s key manager\nkey_set() has you enter the key in a secure password window\nkey_set_with_value() useful if a function fetches a key (you never need to see it)\nkey_get() returns that key",
+    "text": "Use keyring\n\ninstall.packages(\"keyring\")\nkeyring::key_set(service)\n\nkeyring::key_set(\"FEC_API_KEY\")\n\nkeyring::key_set_with_value(service, password = NULL)\nkeyring::key_get(service)\nMay need to copy keyring to env for packages\n\nSys.setenv(FEC_API_KEY = keyring::key_get(\"FEC_API_KEY\"))\n\n\n\n\n{keyring} works with your operating system’s key manager\nkey_set() has you enter the key in a secure password window\nkey_set_with_value() useful if a function fetches a key (you never need to see it)\nkey_get() returns that key",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#where-do-i-put-api-keys",
-    "href": "slides/httr2/httr2-authentication.html#where-do-i-put-api-keys",
+    "objectID": "slides/httr2/httr2-authentication.html#where-do-i-send-api-keys",
+    "href": "slides/httr2/httr2-authentication.html#where-do-i-send-api-keys",
     "title": "How do I tell the API who I am?",
-    "section": "Where do I put API keys?",
-    "text": "Where do I put API keys?\n\nin: query\n\nhttr2::req_url_query(.req, ...)\n\nin: header\n\nhttr2::req_headers(.req, ..., .redact = NULL)\n.redact = character vector of headers to hide in print\n\nin: cookie\n\nhttr2::req_headers(.req, Cookie = \"name=val1; name2=val2\", .redact = \"Cookie\")\n\n\n\n\nAPID does a good job of describing where these can go.\nHeader more secure than query, so use that when available\n... = name-value pairs, case-insensitive (but usually just copy-paste from docs).\nCookies are meaningful in the browser, but for your code it’s easiest just to think of them as a type of header.",
+    "section": "Where do I send API keys?",
+    "text": "Where do I send API keys?\n\nin: query\n\nhttr2::req_url_query(.req, ...)\n\nin: header\n\nhttr2::req_headers(.req, ..., .redact = NULL)\n.redact = character vector of headers to hide in print\n\nin: cookie\n\nhttr2::req_headers(.req, Cookie = \"name=val1; name2=val2\", .redact = \"Cookie\")\n\n\n\n\nAPID does a good job of describing where these can go.\nHeader more secure than query, so use that when available\n... = name-value pairs, case-insensitive (but usually just copy-paste from docs).\nCookies are meaningful in the browser, but for your code it’s easiest just to think of them as a type of header.",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -463,7 +463,7 @@
     "href": "slides/httr2/httr2-authentication.html#how-can-i-authenticate-fecapi-requests",
     "title": "How do I tell the API who I am?",
     "section": "How can I authenticate FECAPI requests?",
-    "text": "How can I authenticate FECAPI requests?\nOpenFEC OAS\n\nrequest(\"https://api.open.fec.gov/v1\") |&gt; \n  req_headers(\"X-Api-Key\" = \"DEMO_KEY\", .redact = \"X-Api-Key\")\n\n#&gt; &lt;httr2_request&gt;\n#&gt; GET https://api.open.fec.gov/v1\n#&gt; Headers:\n#&gt; • X-Api-Key: '&lt;REDACTED&gt;'\n#&gt; Body: empty",
+    "text": "How can I authenticate FECAPI requests?\nOpenFEC APID\n\n\nrequest(\"https://api.open.fec.gov/v1\") |&gt; \n  req_headers(\"X-Api-Key\" = \"DEMO_KEY\", .redact = \"X-Api-Key\")\n\n\n\n\n#&gt; &lt;httr2_request&gt;\n#&gt; GET https://api.open.fec.gov/v1\n#&gt; Headers:\n#&gt; • X-Api-Key: '&lt;REDACTED&gt;'\n#&gt; Body: empty\n\n\n\n\nrequest(\"https://api.open.fec.gov/v1\") |&gt; \n  req_headers(\"X-Api-Key\" = keyring::key_get(\"FEC_API_KEY\"), .redact = \"X-Api-Key\")\n\n\n\n\n#&gt; &lt;httr2_request&gt;\n#&gt; GET https://api.open.fec.gov/v1\n#&gt; Headers:\n#&gt; • X-Api-Key: '&lt;REDACTED&gt;'\n#&gt; Body: empty\n\n\n\n\nNotice that the key never prints anywhere in the keyring version\nSys.getenv() is also an option, but then the key is stored in plain text in your .Renviron file.",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -474,18 +474,40 @@
     "href": "slides/httr2/httr2-authentication.html#authenticating-with-nectar",
     "title": "How do I tell the API who I am?",
     "section": "Authenticating with nectar",
-    "text": "Authenticating with nectar\n{nectar} 📦 wraps {httr2} for packages\n\nrequest(\"https://api.open.fec.gov/v1\") |&gt; \n  nectar::req_auth_api_key(\n    location = \"header\", \n    parameter_name = \"X-Api-Key\", \n    api_key = \"DEMO_KEY\"\n  )\n\n#&gt; &lt;httr2_request&gt;\n#&gt; GET https://api.open.fec.gov/v1\n#&gt; Headers:\n#&gt; • X-Api-Key: '&lt;REDACTED&gt;'\n#&gt; Body: empty\n\n\n\nPart of purpose of {nectar} is to translate between APID and {httr2}.",
+    "text": "Authenticating with nectar\n{nectar} 📦 translates APID to {httr2}\n\n\nrequest(\"https://api.open.fec.gov/v1\") |&gt; \n  nectar::req_auth_api_key(\n    location = \"header\", \n    parameter_name = \"X-Api-Key\", \n    api_key = Sys.getenv(\"FEC_API_KEY\")\n  )\n\n\n\n\n#&gt; &lt;httr2_request&gt;\n#&gt; GET https://api.open.fec.gov/v1\n#&gt; Headers:\n#&gt; • X-Api-Key: '&lt;REDACTED&gt;'\n#&gt; Body: empty\n\n\n\n\nTechnically only PART of the purpose of {nectar}\nAimed primarily at package authors, but I’m finding more and more use cases\nI’ll recommend it for book helper functions",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#oauth-terminology",
-    "href": "slides/httr2/httr2-authentication.html#oauth-terminology",
+    "objectID": "slides/httr2/httr2-authentication.html#oauth-terminology-participants",
+    "href": "slides/httr2/httr2-authentication.html#oauth-terminology-participants",
     "title": "How do I tell the API who I am?",
-    "section": "Oauth terminology",
-    "text": "Oauth terminology\n\n\n\nterm(s)\nmeaning\n\n\n\n\nuser\nthe person who you’re acting as\n\n\napplication, app\nyour R code\n\n\nclient, oauth application\nyou create this at oauth host\n\n\noauth host\nthe API, or a 3rd party like Google\n\n\nscope\nstring(s) describing specific abilities\n\n\nauthorization url\nwhere to send initial request + scopes\n\n\nauthorization code\nvery temporary key\n\n\ntoken url\nwhere to send authorization code\n\n\noauth token, token\nthe real key, often with extra info\n\n\n\n\n\nBold = what I’ll call it on other pages\nOauth is complicated! Don’t feel bad if you’re confused!\nThe point of the multiple steps is to make it hard for attacker to intercept, and minimize what they can do if they do\nAuth code can only be sent to specified URLs\nThe “real key” here is a bearer token.\nToken often includes a “refresh token”, longer-lived shortcut around the auth process.",
+    "section": "Oauth terminology: Participants",
+    "text": "Oauth terminology: Participants\n\n\n\nterm(s)\nmeaning\n\n\n\n\nuser\nthe person who you’re acting as\n\n\napplication, app\nyour R code\n\n\nclient, oauth application\nyou create this at oauth host\n\n\noauth host\nthe API\n\n\n\n\n\nOauth is complicated! Don’t feel bad if you’re confused!\nWe’ll go over the “dance” on an upcoming slide\nThe point of the multiple steps is to make it hard for attacker to intercept, and minimize what they can do if they do\nAlso to allow third parties to act on your behalf; can be confusing, because we’re both the user and the app!\nBold = what I’ll call it on other pages\nApp could be package, could be website, could be a separate API (“login with Google”)\nClient has an id and a secret, that’s how your app logs in\n\nWe’ll talk more about these in a minute\n\nClient also has settings like valid redirect URLs (next slide)",
+    "crumbs": [
+      "Get more data from APIs",
+      "How do I tell the API who I am?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#oauth-terminology-things",
+    "href": "slides/httr2/httr2-authentication.html#oauth-terminology-things",
+    "title": "How do I tell the API who I am?",
+    "section": "Oauth terminology: Things",
+    "text": "Oauth terminology: Things\n\n\n\n\n\n\n\nterm(s)\nmeaning\n\n\n\n\nscope\nstring(s) describing specific capabilities\n\n\nauthorization code\nvery temporary key\n\n\noauth token, token\nthe real key, often with extra info\n\n\n\n\n\nIf app only hits read endpoints, only needs to request read scopes\n\nOr if this user has only asked to read\n\nAuth code can only be sent to specified URLs\nThe “real key” here is a bearer token.\nToken often includes a “refresh token”, longer-lived shortcut around the auth process.\n\n“This user already gave me permission, I just need an updated keycard.”",
+    "crumbs": [
+      "Get more data from APIs",
+      "How do I tell the API who I am?"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-authentication.html#oauth-terminology-places",
+    "href": "slides/httr2/httr2-authentication.html#oauth-terminology-places",
+    "title": "How do I tell the API who I am?",
+    "section": "Oauth terminology: Places",
+    "text": "Oauth terminology: Places\n\n\n\n\n\n\n\nterm(s)\nmeaning\n\n\n\n\nauthorization url\nwhere to send initial request\n\n\nredirect url(s)\nwhere host can send auth codes\n\n\ntoken url\nwhere app can exchange auth codes\n\n\n\n\n\nUser is sent to auth url in browser, sees authorization request directly from host\nAuth code can only be sent to redirect URLs\n\nOften will be localhost, where httr2 sets up a web host to listens for a response\nIsn’t default, but you often need to specify a port for host to accept this as a valid redirect\n\nRequest from app to token url is sent server-to-server, no user/browser in-between. Auth code in header in this case, generally.",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -496,7 +518,7 @@
     "href": "slides/httr2/httr2-authentication.html#the-oauth-dance",
     "title": "How do I tell the API who I am?",
     "section": "The OAuth “dance”",
-    "text": "The OAuth “dance”\n\nuser to app: Hit this API for me!\napp to host @ auth url (browser): I’m (client). Can I act as user with these scopes?\nhost to user: Is this ok?\nuser to host: Yes\nhost to app (sent to specific address): Your password is auth code\napp directly to host @ token url: Here’s my client + user’s auth code\nhost directly to app: Here’s an oauth token for that user (and I’ll log what it can do)\n\n\nTODO: Image of OAuth dance\n\nThis is sometimes called 3-legged auth\n\nTook me forever to differentiate “app” from “user” to make the 3 legs make sense\nHost is in multiple places but it just counts as one leg\n\nNot covered: Then (not much) later app sends bearer token to host with API requests, and host checks that token can do those things.",
+    "text": "The OAuth “dance”\n\nuser to app: Hit this API for me!\n&lt;app sends user to host @ auth url in browser&gt;\nhost to user: Can client act as you with these scopes?\nuser to host: Yes\n&lt;host sends user to app @ redirect url with auth code&gt;\napp directly to host @ token url: Here’s my client + user’s auth code\nhost directly to app: Here’s an oauth token for that user (with the requested permissions)\n\n\nTODO: Image of OAuth dance\n\nThis is sometimes called 3-legged auth\n\nTook me forever to differentiate “app” from “user” to make the 3 legs make sense\nHost is at multiple urls but it just counts as one leg\n\nStep 2: App sends client id and permissions as part of that introduction\nNot covered: Then (not much) later app sends bearer token to host with API requests, and host checks that token can do those things.",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -507,7 +529,7 @@
     "href": "slides/httr2/httr2-authentication.html#oauth-credential-dangers",
     "title": "How do I tell the API who I am?",
     "section": "OAuth credential dangers",
-    "text": "OAuth credential dangers\n\n🟢 Client id: Like knowing a package name.\n🟡 Client secret:\n\nCan pretend to be your client, but user still needs to say ok\nCan your client do anything special?\n\nInstalled (e.g. Slack app)?\nAPI usage limits?\n\n\n🟡 Authorization code: Unlikely to be an issue\n\nOnly sent to provided redirect_uri\nExtremely short lived (often minutes or less)",
+    "text": "OAuth credential dangers\n\n🟢 Client id: Like knowing package name\n🟡 Authorization code: Unlikely to be an issue\n\nOnly sent to provided redirect url\nExtremely short lived (often minutes or less)\n\n🟡 Refresh token:\n\nThis + client secret for access token\nUsually revoked if you auth from scratch\n\n\n\n\nYellows here are light green, really\nAuth code: Need client secret for it to do anything\nRefresh token: Longer lived, but otherwise similar to auth code",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -518,18 +540,18 @@
     "href": "slides/httr2/httr2-authentication.html#oauth-credential-dangers-cont",
     "title": "How do I tell the API who I am?",
     "section": "OAuth credential dangers (cont)",
-    "text": "OAuth credential dangers (cont)\n\n🟡 Refresh token: A longer-lived authorization code\n\nCan be used to get a new access token\nUsually revoked if you auth from scratch\nAlso need client secret to refresh\n\n🟠 Access token: The thing we’re protecting\n\nCan do whatever it’s authorized to do\nUsually easy to revoke\n\n🔴 Username + password: We don’t want to know these",
+    "text": "OAuth credential dangers (cont)\n\n🟡 Client secret: Iffy\n\nCan pretend to be you (user still needs to say ok)\nCan your client do anything special?\n\nInstalled (e.g. Slack app)?\nAPI usage limits (e.g. YouTube)?\n\n\n🟠 Access token: The thing we’re protecting\n\nCan do whatever it’s authorized to do\nUsually easy to revoke\n\n🔴 Username + password: We don’t want to know these\n\n\n\nHadley says client secrets aren’t a big deal, but I disagree in a lot of cases.\nYour auth page at host can be copied, so that’s not a real concern, but…\nIf localhost is valid redirect, they can trick user to auth as you\nOnly matters if client itself can do something\nYouTube has client limits in addition to user limits",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-authentication.html#httr2oauth_client",
-    "href": "slides/httr2/httr2-authentication.html#httr2oauth_client",
+    "objectID": "slides/httr2/httr2-authentication.html#configure-your-client",
+    "href": "slides/httr2/httr2-authentication.html#configure-your-client",
     "title": "How do I tell the API who I am?",
-    "section": "httr2::oauth_client()",
-    "text": "httr2::oauth_client()\n\nAlmost definitely only need these (from API provider):\n\nid = Client ID\ntoken_url = URL where clients exchange authorization codes for tokens\nsecret = Client secret\nOften auth = \"header\"\nIf this client has multiple uses: name = unique for this use case\n\nConstruct once & reuse",
+    "section": "Configure your client",
+    "text": "Configure your client\nConstruct one client object for your code\n\nhttr2::oauth_client(\n  id, \n  token_url, \n  secret = NULL, \n  key = NULL, \n  auth = c(\"body\", \"header\", \"jwt_sig\"), \n  auth_params = list(), \n  name = hash(id)\n)\n\n\n\nid = Client ID\ntoken_url = URL where clients exchange authorization codes for tokens\nsecret = Client secret\nOften auth = \"header\"\nIf this client has multiple uses: name = unique for this use case\n\nDefines where tokens are cached\nEg, Log in once for personal, another time for work (but see cache_key in next function)\n\nI don’t know yet why we don’t specify auth_url here (it’s in a later step)",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -540,7 +562,7 @@
     "href": "slides/httr2/httr2-authentication.html#oauth-client-demo",
     "title": "How do I tell the API who I am?",
     "section": "OAuth client demo",
-    "text": "OAuth client demo\n\nlibrary(httr2)\nyt_client &lt;- oauth_client(\n  Sys.getenv(\"YOUTUBE_CLIENT_ID\"), \n  \"https://oauth2.googleapis.com/token\",\n  secret = Sys.getenv(\"YOUTUBE_CLIENT_SECRET\")\n)",
+    "text": "OAuth client demo\n\nyt_client &lt;- oauth_client(\n  id = Sys.getenv(\"YOUTUBE_CLIENT_ID\"), \n  token_url = \"https://oauth2.googleapis.com/token\",\n  secret = Sys.getenv(\"YOUTUBE_CLIENT_SECRET\")\n)",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -551,7 +573,7 @@
     "href": "slides/httr2/httr2-authentication.html#httr2req_oauth_auth_code",
     "title": "How do I tell the API who I am?",
     "section": "httr2::req_oauth_auth_code()",
-    "text": "httr2::req_oauth_auth_code()\n\nauth_url = URL to get an authorization code (from API)\nscope = Usually comma-separated string of permissions\npkce = Good if supported, often have to turn off\nredirect_uri = Where to send response\n\nOften need specific local port “http://localhost:4242” or “http://127.0.0.1:4242”\nMust be configured as part of client configuration (at API)\n\ncache_disk = Set this TRUE if you can\n\ncache_key if you’ll use this client for multiple tokens",
+    "text": "httr2::req_oauth_auth_code()\n\nhttr2::req_oauth_auth_code(\n  req,\n  client,\n  auth_url,\n  scope = NULL,\n  pkce = TRUE,\n  auth_params = list(),\n  token_params = list(),\n  redirect_uri = oauth_redirect_uri(),\n  cache_disk = FALSE,\n  cache_key = NULL\n)\n\n\n\nI’m trying to figure out why auth_url isn’t wrapped in client\n\nBest guess is there are use cases of same client at different auth urls\nMaybe YouTube does this?\nDev vs production?\n\npkce = “Proof key for code exchange”. Good if API supports it, but I often have to turn it off\nI can’t think of examples of auth_params or token_params\n\nwould be ~headers required by host\nauth_params sent to auth_url, token_params sent to token_url\n\ncache_disk = Set this TRUE if you can\n\ncache_key = unique name if you’ll use this client for multiple tokens",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -562,7 +584,7 @@
     "href": "slides/httr2/httr2-authentication.html#oauth-request-demo",
     "title": "How do I tell the API who I am?",
     "section": "Oauth request demo",
-    "text": "Oauth request demo\n\nplaylists &lt;- request(\"https://youtube.googleapis.com/youtube/v3\") |&gt; \n  req_url_path_append(\"playlists\") |&gt; \n  req_url_query(part = \"snippet\", mine = TRUE, maxResults = 50) |&gt; \n  req_oauth_auth_code(\n    yt_client, \n    \"https://accounts.google.com/o/oauth2/v2/auth\",\n    scope = \"https://www.googleapis.com/auth/youtube\",\n    redirect_uri = \"http://127.0.0.1:8888\"\n  ) |&gt; \n  req_perform()",
+    "text": "Oauth request demo\n\nplaylists &lt;- request(\"https://youtube.googleapis.com/youtube/v3\") |&gt; \n  req_url_path_append(\"playlists\") |&gt; \n  req_url_query(part = \"snippet\", mine = TRUE, maxResults = 50) |&gt; \n  req_oauth_auth_code(\n    client = yt_client, \n    auth_url = \"https://accounts.google.com/o/oauth2/v2/auth\",\n    scope = \"https://www.googleapis.com/auth/youtube\",\n    redirect_uri = \"http://127.0.0.1:8888\"\n  ) |&gt; \n  req_perform()",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -584,7 +606,7 @@
     "href": "slides/httr2/httr2-authentication.html#browser-cookies",
     "title": "How do I tell the API who I am?",
     "section": "Browser cookies",
-    "text": "Browser cookies\nThis will feel hacky because it is hacky.\n\nInstall EditThisCookie browser extension\nUse API in browser\nOpen EditThisCookie extension\nOptions &gt; “Choose the preferred export format for cookies” &gt; Netscape HTTP Cookie File\nOpen EditThisCookie extension\nExport\nPaste into a file at path\nhttr2::req_cookie_preserve(req, path)",
+    "text": "Browser cookies\nThis will feel hacky because it is hacky.\n\nInstall EditThisCookie browser extension\nUse API in browser\nOpen EditThisCookie extension\nOptions &gt; “Choose the preferred export format for cookies” &gt; Netscape HTTP Cookie File\nOpen EditThisCookie extension\nExport\nPaste into a file at path\nhttr2::req_cookie_preserve(req, path)\n\n\n\nOr cookie can be used in header",
     "crumbs": [
       "Get more data from APIs",
       "How do I tell the API who I am?"
@@ -1894,7 +1916,7 @@
     "text": "Content-Type\n\nContent-Type = “MIME type”\n\n“Multipurpose Internet Mail Extensions”\n\ntype/subtype;parameter=value\nhttr2::resp_content_type() gets type/subtype\nhttr2::resp_encoding() gets charset parameter\nMore at MDN MIME types",
     "crumbs": [
       "Get more data from APIs",
-      "How can I process API responses?"
+      "How else can I process API responses?"
     ]
   },
   {
@@ -1905,7 +1927,7 @@
     "text": "Common text content types\n\n\n\nMIME type\nhttr2 function\nDescription\n\n\n\n\napplication/json\nresp_body_json()\nBy far most common\n\n\napplication/xml\nresp_body_xml()\nBriefly most common\n\n\ntext/html\nresp_body_html()\nSee later chapter on scraping\n\n\ntext/plain\nresp_body_string()\nText wildcard",
     "crumbs": [
       "Get more data from APIs",
-      "How can I process API responses?"
+      "How else can I process API responses?"
     ]
   },
   {
@@ -1916,7 +1938,7 @@
     "text": "JSON\n\napplication/json or */json\n4 scalars (length-1 vectors)\n\nnull ≈ NA\nstring ≈ character(1), always \" (not ')\nnumber ≈ numeric(1), no Inf/-Inf/NaN\nboolean ≈ logical(1), true = TRUE, false = FALSE\n\narray ≈ unnamed list()\n\n[]: [null, \"a\", 1, true] ≈ list(NULL, \"a\", 1, TRUE)\n\nobject ≈ named list()\n\n{}: {\"a\": 1, \"b\": [1, 2]} ≈ list(a = 1, b = list(1, 2))\n\nhttr2::resp_body_json() uses jsonlite::fromJSON()",
     "crumbs": [
       "Get more data from APIs",
-      "How can I process API responses?"
+      "How else can I process API responses?"
     ]
   },
   {
@@ -1927,7 +1949,7 @@
     "text": "JSON Example\n\nresp_json &lt;- req_template(request(example_url()), \"/json\") |&gt;\n  req_perform()\nresp_json |&gt; resp_body_string() |&gt; jsonlite::prettify(indent = 2)\nextracted_json &lt;- resp_body_json(resp_json)\nclass(extracted_json)\nnames(extracted_json)",
     "crumbs": [
       "Get more data from APIs",
-      "How can I process API responses?"
+      "How else can I process API responses?"
     ]
   },
   {
@@ -1938,7 +1960,7 @@
     "text": "XML\neXtensible Markup Language\n\napplication/xml, text/xml, or */xml)\nTags as &lt;tagname attribute=\"a\"&gt;contents&lt;/tagname&gt;\nEverything nestable\nhttr2::resp_body_xml() uses xml2::read_xml()",
     "crumbs": [
       "Get more data from APIs",
-      "How can I process API responses?"
+      "How else can I process API responses?"
     ]
   },
   {
@@ -1949,7 +1971,7 @@
     "text": "XML Example\n\nresp_xml &lt;- req_template(request(example_url()), \"/xml\") |&gt;\n  req_perform()\nresp_xml |&gt; resp_body_string() |&gt; cat()\nextracted_xml &lt;-  resp_body_xml(resp_xml)\nclass(extracted_xml)\n# We'll see other ways to parse this in a later chapter.\nxml2::as_list(extracted_xml) |&gt; names()\nxml2::as_list(extracted_xml)$root |&gt; names()",
     "crumbs": [
       "Get more data from APIs",
-      "How can I process API responses?"
+      "How else can I process API responses?"
     ]
   },
   {
@@ -1960,7 +1982,7 @@
     "text": "Nested lists: tidyverse\n\ntibble::enframe() to tibble-ify the list()\ntidyr::unnest_wider() and/or tidyr::unnest_longer()\n\nSometimes tidyr::unnest() but it can hide layers\n\n\n\nlist(root = extracted_json) |&gt; \n  tibble::enframe(name = NULL) |&gt; \n  tidyr::unnest_wider(value)\n\nxml2::as_list(extracted_xml) |&gt; \n  tibble::enframe(name = NULL) |&gt; \n  tidyr::unnest_wider(value)",
     "crumbs": [
       "Get more data from APIs",
-      "How can I process API responses?"
+      "How else can I process API responses?"
     ]
   },
   {
@@ -1971,7 +1993,7 @@
     "text": "Nested lists: tibblify\n\nlist(root = extracted_json) |&gt; \n  tibblify::tibblify()\n\nxml2::as_list(extracted_xml) |&gt; \n  tibblify::tibblify()",
     "crumbs": [
       "Get more data from APIs",
-      "How can I process API responses?"
+      "How else can I process API responses?"
     ]
   },
   {
@@ -1982,7 +2004,7 @@
     "text": "Response objects in API docs\n\nLook for 200 in docs for this path\nFind “OpenAPI” or “Swagger” links (or “API json”, “API yaml”, etc)\n\nEg: Asana\nSearch for the path, then method, then 200 (eg: /tasks:)\nOften a $ref to something like #/components/schemas/TaskCompact\nCtrl-F around that doc!\n\n{anyapi} will soon build a tibblify spec from API spec",
     "crumbs": [
       "Get more data from APIs",
-      "How can I process API responses?"
+      "How else can I process API responses?"
     ]
   },
   {
@@ -1993,7 +2015,7 @@
     "text": "Binary objects\n\nimage/* (png, jpeg, svg+xml)\naudio/* (webm, ogg, wav)\nvideo/* (webm, ogg, mp4)\napplication/octet-stream (catch-all)\n\nresp_body_raw(resp) |&gt; writeBin(filename)",
     "crumbs": [
       "Get more data from APIs",
-      "How can I process API responses?"
+      "How else can I process API responses?"
     ]
   },
   {
@@ -2004,7 +2026,7 @@
     "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\ndslc.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
       "Get more data from APIs",
-      "How can I process API responses?"
+      "How else can I process API responses?"
     ]
   },
   {
