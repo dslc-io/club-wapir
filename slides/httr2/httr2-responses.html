@@ -10,7 +10,7 @@
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.554">
 
-  <title>Web APIs with R Book Club</title>
+  <title>Web APIs with R Book Club - Process other response types</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -389,22 +389,53 @@
   <div class="reveal">
     <div class="slides">
 
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Process other response types</h1>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section id="todo" class="title-slide slide level1 center">
+<h1>TODO</h1>
+<ul>
+<li class="fragment">Add req_error() in here somewhere!</li>
+</ul>
+</section>
 
 <section>
-<section id="how-else-can-i-process-api-responses" class="title-slide slide level1 center">
-<h1>How else can I process API responses?</h1>
-<p>Add req_error() in here somewhere!</p>
-<p><strong>Learning objectives:</strong></p>
+<section id="learning-objectives" class="title-slide slide level1 center">
+<h1>️✅ Learning objectives</h1>
+<div>
 <ul>
-<li class="fragment">Recognize the types of API responses.</li>
-<li class="fragment">Recognize JSON data structures.</li>
-<li class="fragment">Recognize XML data structures.</li>
-<li class="fragment">Parse text responses.</li>
-<li class="fragment">Parse nested lists with the {tidyverse}.</li>
-<li class="fragment">Parse nested lists with {tibblify}.</li>
-<li class="fragment">Use API docs to anticipate API responses.</li>
-<li class="fragment">Parse binary responses such as images and videos.</li>
+<li>Recognize the types of API responses.</li>
+<li>Recognize JSON data structures.</li>
+<li>Recognize XML data structures.</li>
+<li>Parse text responses.</li>
+<li>Parse nested lists with the {tidyverse}.</li>
+<li>Parse nested lists with {tibblify}.</li>
+<li>Use API docs to anticipate API responses.</li>
+<li>Parse binary responses such as images and videos.</li>
 </ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(httr2)</span>
+<span id="cb1-2"><a></a><span class="fu">library</span>(jsonlite)</span>
+<span id="cb1-3"><a></a><span class="fu">library</span>(xml2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<aside class="notes">
+<p>“After we finish this chapter, we’ll be able to…” (objectives)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="content-type" class="slide level2 unnumbered">
 <h2>Content-Type</h2>
@@ -478,12 +509,12 @@
 <section id="json-example" class="slide level2 unnumbered">
 <h2>JSON Example</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>resp_json <span class="ot">&lt;-</span> <span class="fu">req_template</span>(<span class="fu">request</span>(<span class="fu">example_url</span>()), <span class="st">"/json"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-2"><a></a>  <span class="fu">req_perform</span>()</span>
-<span id="cb1-3"><a></a>resp_json <span class="sc">|&gt;</span> <span class="fu">resp_body_string</span>() <span class="sc">|&gt;</span> jsonlite<span class="sc">::</span><span class="fu">prettify</span>(<span class="at">indent =</span> <span class="dv">2</span>)</span>
-<span id="cb1-4"><a></a>extracted_json <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp_json)</span>
-<span id="cb1-5"><a></a><span class="fu">class</span>(extracted_json)</span>
-<span id="cb1-6"><a></a><span class="fu">names</span>(extracted_json)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>resp_json <span class="ot">&lt;-</span> <span class="fu">req_template</span>(<span class="fu">request</span>(<span class="fu">example_url</span>()), <span class="st">"/json"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a></a>  <span class="fu">req_perform</span>()</span>
+<span id="cb2-3"><a></a>resp_json <span class="sc">|&gt;</span> <span class="fu">resp_body_string</span>() <span class="sc">|&gt;</span> jsonlite<span class="sc">::</span><span class="fu">prettify</span>(<span class="at">indent =</span> <span class="dv">2</span>)</span>
+<span id="cb2-4"><a></a>extracted_json <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp_json)</span>
+<span id="cb2-5"><a></a><span class="fu">class</span>(extracted_json)</span>
+<span id="cb2-6"><a></a><span class="fu">names</span>(extracted_json)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="xml" class="slide level2 unnumbered">
@@ -499,14 +530,14 @@
 <section id="xml-example" class="slide level2 unnumbered">
 <h2>XML Example</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>resp_xml <span class="ot">&lt;-</span> <span class="fu">req_template</span>(<span class="fu">request</span>(<span class="fu">example_url</span>()), <span class="st">"/xml"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a></a>  <span class="fu">req_perform</span>()</span>
-<span id="cb2-3"><a></a>resp_xml <span class="sc">|&gt;</span> <span class="fu">resp_body_string</span>() <span class="sc">|&gt;</span> <span class="fu">cat</span>()</span>
-<span id="cb2-4"><a></a>extracted_xml <span class="ot">&lt;-</span>  <span class="fu">resp_body_xml</span>(resp_xml)</span>
-<span id="cb2-5"><a></a><span class="fu">class</span>(extracted_xml)</span>
-<span id="cb2-6"><a></a><span class="co"># We'll see other ways to parse this in a later chapter.</span></span>
-<span id="cb2-7"><a></a>xml2<span class="sc">::</span><span class="fu">as_list</span>(extracted_xml) <span class="sc">|&gt;</span> <span class="fu">names</span>()</span>
-<span id="cb2-8"><a></a>xml2<span class="sc">::</span><span class="fu">as_list</span>(extracted_xml)<span class="sc">$</span>root <span class="sc">|&gt;</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>resp_xml <span class="ot">&lt;-</span> <span class="fu">req_template</span>(<span class="fu">request</span>(<span class="fu">example_url</span>()), <span class="st">"/xml"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a></a>  <span class="fu">req_perform</span>()</span>
+<span id="cb3-3"><a></a>resp_xml <span class="sc">|&gt;</span> <span class="fu">resp_body_string</span>() <span class="sc">|&gt;</span> <span class="fu">cat</span>()</span>
+<span id="cb3-4"><a></a>extracted_xml <span class="ot">&lt;-</span>  <span class="fu">resp_body_xml</span>(resp_xml)</span>
+<span id="cb3-5"><a></a><span class="fu">class</span>(extracted_xml)</span>
+<span id="cb3-6"><a></a><span class="co"># We'll see other ways to parse this in a later chapter.</span></span>
+<span id="cb3-7"><a></a>xml2<span class="sc">::</span><span class="fu">as_list</span>(extracted_xml) <span class="sc">|&gt;</span> <span class="fu">names</span>()</span>
+<span id="cb3-8"><a></a>xml2<span class="sc">::</span><span class="fu">as_list</span>(extracted_xml)<span class="sc">$</span>root <span class="sc">|&gt;</span> <span class="fu">names</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="nested-lists-tidyverse" class="slide level2 unnumbered">
@@ -519,23 +550,23 @@
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">list</span>(<span class="at">root =</span> extracted_json) <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(value)</span>
-<span id="cb3-4"><a></a></span>
-<span id="cb3-5"><a></a>xml2<span class="sc">::</span><span class="fu">as_list</span>(extracted_xml) <span class="sc">|&gt;</span> </span>
-<span id="cb3-6"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-7"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">list</span>(<span class="at">root =</span> extracted_json) <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-3"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(value)</span>
+<span id="cb4-4"><a></a></span>
+<span id="cb4-5"><a></a>xml2<span class="sc">::</span><span class="fu">as_list</span>(extracted_xml) <span class="sc">|&gt;</span> </span>
+<span id="cb4-6"><a></a>  tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-7"><a></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="nested-lists-tibblify" class="slide level2 unnumbered">
 <h2>Nested lists: tibblify</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">list</span>(<span class="at">root =</span> extracted_json) <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a></a>  tibblify<span class="sc">::</span><span class="fu">tibblify</span>()</span>
-<span id="cb4-3"><a></a></span>
-<span id="cb4-4"><a></a>xml2<span class="sc">::</span><span class="fu">as_list</span>(extracted_xml) <span class="sc">|&gt;</span> </span>
-<span id="cb4-5"><a></a>  tibblify<span class="sc">::</span><span class="fu">tibblify</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">list</span>(<span class="at">root =</span> extracted_json) <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a></a>  tibblify<span class="sc">::</span><span class="fu">tibblify</span>()</span>
+<span id="cb5-3"><a></a></span>
+<span id="cb5-4"><a></a>xml2<span class="sc">::</span><span class="fu">as_list</span>(extracted_xml) <span class="sc">|&gt;</span> </span>
+<span id="cb5-5"><a></a>  tibblify<span class="sc">::</span><span class="fu">tibblify</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="response-objects-in-api-docs" class="slide level2 unnumbered">
