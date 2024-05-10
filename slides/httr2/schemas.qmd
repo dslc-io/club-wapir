@@ -1,9 +1,13 @@
 ---
 engine: knitr
-title: How can I quickly parse API responses?
+title: Quickly parse API responses
 resources:
   - "schemas/demo_json.json"
 ---
+
+# TODO
+
+-   Merge back into "Get started with APIs"?
 
 # ️✅ Learning objectives
 

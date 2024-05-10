@@ -1,14 +1,17 @@
 ---
 engine: knitr
-title: How can I get started with APIs?
+title: Get started with APIs
 ---
+
+# TODO
+
+-   Skip tidyverse, re-integrate schemas?
 
 # ️✅ Learning objectives
 
 ::: nonincremental
 -   Fetch json-formatted data from the web.
 -   Parse nested lists with the {tidyverse}.
--   TODO: Skip tidyverse, re-integrate schemas?
 :::
 
 ```{r}

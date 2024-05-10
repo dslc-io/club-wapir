@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: How can I get a lot of data from an API?
+title: Get a lot of data from APIs
 ---
 
 # ️✅ Learning objectives
