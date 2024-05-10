@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: How can I more easily access APIs from R?
+title: Easily access APIs with {httr2}
 resources:
   - "httr2/openfec_response.json"
 ---

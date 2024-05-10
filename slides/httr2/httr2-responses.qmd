@@ -1,19 +1,15 @@
 ---
 engine: knitr
+title: Process other response types
 ---
 
-# How else can I process API responses?
+# TODO
 
-```{r responses-load-packages, include = FALSE}
-library(httr2)
-library(jsonlite)
-library(xml2)
-```
+-   Add req_error() in here somewhere!
 
-Add req_error() in here somewhere!
+# ️✅ Learning objectives
 
-**Learning objectives:**
-
+::: nonincremental
 -   Recognize the types of API responses.
 -   Recognize JSON data structures.
 -   Recognize XML data structures.
@@ -22,6 +18,19 @@ Add req_error() in here somewhere!
 -   Parse nested lists with {tibblify}.
 -   Use API docs to anticipate API responses.
 -   Parse binary responses such as images and videos.
+:::
+
+```{r}
+#| label: httr2-responses-packages-used
+#| eval: true
+library(httr2)
+library(jsonlite)
+library(xml2)
+```
+
+::: notes
+"After we finish this chapter, we'll be able to..." (objectives)
+:::
 
 ## Content-Type {-}
 

@@ -1,12 +1,14 @@
 ---
 engine: knitr
-title: How can I do other things with APIs?
+title: Do other things with APIs
 ---
 
-# ️✅ Learning objectives
+# TODO
 
-TODO: This is a new chapter focused on methods, body, etc.
-Figure out which LOs go here, exactly.
+-   This chapter needs a v1. It will focus on methods, body, etc.
+-   Consider merging httr2-misc into here.
+
+# ️✅ Learning objectives
 
 ::: nonincremental
 -   POST

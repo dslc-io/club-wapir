@@ -1,14 +1,19 @@
 ---
 engine: knitr
+title: Communicate with other types of APIs
 ---
 
-# How else can I communicate with APIs from R?
+# TODO
 
-**Learning objectives:**
+-   Put this online somewhere? Don't think it belongs in the book.
 
+# ️✅ Learning objectives
+
+::: nonincremental
 -   Fetch data from GraphQL APIs.
 -   Fetch data from websocket APIs.
 -   Fetch data from gRPC APIs.
+:::
 
 ```{r req-other-setup}
 library(ghql)

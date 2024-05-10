@@ -1,11 +1,14 @@
 ---
 engine: knitr
-title: What LOs are missing a home
+title: Do more with {httr2}
 ---
 
-# ️✅ Learning objectives
+# TODO
 
-Cover req_throttle() & req_timeout() in here
+-   Cover req_throttle() & req_timeout() in here
+-   Most likely: Merge into httr2-methods.
+
+# ️✅ Learning objectives
 
 ::: nonincremental
 -   Perform a list of {httr2} requests in sequence.

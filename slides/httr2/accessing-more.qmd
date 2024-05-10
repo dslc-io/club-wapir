@@ -1,28 +1,15 @@
 ---
 engine: knitr
+title: Learn more about APIs
 ---
 
-# How can I learn more about accessing web APIs?
+# TODO
 
-**Learning objectives:**
+-   I *think* this chapter is a good idea
+-   Link to advanced topics blog?
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+# ️✅ Learning objectives
 
-## SLIDE 1 {-}
-
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
-
-## Meeting Videos {-}
-
-### Cohort 1 {-}
-
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
-
-<details>
-<summary> Meeting chat log </summary>
-
-```
-LOG
-```
-</details>
+::: nonincremental
+-   TODO
+:::
