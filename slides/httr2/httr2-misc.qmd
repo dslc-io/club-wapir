@@ -5,8 +5,11 @@ title: Do more with {httr2}
 
 # TODO
 
+::: nonincremental
 -   Cover req_throttle() & req_timeout() in here
 -   Most likely: Merge into httr2-methods.
+:::
+
 
 # ️✅ Learning objectives
 

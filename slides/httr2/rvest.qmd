@@ -1,22 +1,21 @@
 ---
 engine: knitr
+title: Scrape data from web pages 
 ---
 
-# How can I get data from web pages?
+# ️✅ Learning objectives
 
-**Learning objectives:**
-
+::: nonincremental
 -   Determine whether a website *allows you* to scrape data from it.
 -   Determine whether you *should* scrape data from a web page.
 -   Scrape tables from web pages.
 -   Scrape more complex data structures from web pages.
-
-*(potential chapter break)*
-
 -   Scrape data from websites that require you to log in.
 -   Scrape content that requires interaction.
 -   Automate web scraping processes.
 -   Scrape data as part of a workflow.
+:::
+
 
 ## Should I scrape this data? {-}
 

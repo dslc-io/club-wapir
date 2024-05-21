@@ -5,8 +5,11 @@ title: Learn more about APIs
 
 # TODO
 
+::: nonincremental
 -   I *think* this chapter is a good idea
 -   Link to advanced topics blog?
+:::
+
 
 # ️✅ Learning objectives
 
