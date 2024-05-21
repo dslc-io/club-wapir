@@ -3,56 +3,74 @@ engine: knitr
 title: Process other response types
 ---
 
-# TODO
-
--   Add req_error() in here somewhere!
-
 # ️✅ Learning objectives
 
 ::: nonincremental
--   Recognize the types of API responses.
--   Recognize JSON data structures.
--   Recognize XML data structures.
 -   Parse text responses.
--   Parse nested lists with the {tidyverse}.
--   Parse nested lists with {tibblify}.
--   Use API docs to anticipate API responses.
 -   Parse binary responses such as images and videos.
+-   Handle HTTP error responses.
 :::
 
 ```{r}
 #| label: httr2-responses-packages-used
 #| eval: true
+#| echo: false
+#| warning: false
+# TODO: Update this list with actual used packages.
 library(httr2)
-library(jsonlite)
 library(xml2)
+library(magick)
+library(rsvg)
+library(pdftools)
+library(av)
+library(jsonlite)
 ```
 
 ::: notes
-"After we finish this chapter, we'll be able to..." (objectives)
+-   "After we finish this chapter, we'll be able to..." (objectives)
+-   Definitely would like feedback about depth of coverage!
 :::
 
-## Content-Type {-}
 
--   `Content-Type` = "MIME type"
+# Content types
+
+-   `Content-Type` header aka "MIME type"
     -   "Multipurpose Internet Mail Extensions"
 -   `type/subtype;parameter=value`
 -   `httr2::resp_content_type()` gets `type/subtype`
 -   `httr2::resp_encoding()` gets `charset` parameter
 -   More at [MDN MIME types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types)
 
-## Common text content types {-}
+::: notes
+-   type/subtype tells you which function to use to parse it
+    -   Could have typos, etc!
+-   Encoding: If you're getting weird characters, incorrect character set could be the problem.
+:::
+
+
+# Text content types
 
 |MIME type         |httr2 function      |Description                   |
 |------------------|--------------------|------------------------------|
 |`application/json`|`resp_body_json()`  |By far most common            |
 |`application/xml` |`resp_body_xml()`   |Briefly most common           |
-|`text/html`       |`resp_body_html()`  |See later chapter on scraping |
+|`text/html`       |`resp_body_html()`  |Really a subclass of xml      |
 |`text/plain`      |`resp_body_string()`|Text wildcard                 |
 
-## JSON {-}
+::: notes
+-   We'll see on later slides that sometimes people use alternative strings
+:::
+
+
+## JSON responses
 
 -   `application/json` or `*/json`
+-   `httr2::resp_body_json()` uses `jsonlite::fromJSON()`
+-   (this slide & next might be entirely covered in earlier chapter)
+
+
+## JSON data
+
 -   4 scalars (length-1 vectors)
     -   `null` ≈ `NA`
     -   `string` ≈ `character(1)`, always `"` (not `'`)
@@ -61,97 +79,248 @@ library(xml2)
 -   `array` ≈ unnamed `list()`
     -   `[]`: `[null, "a", 1, true]` ≈ `list(NULL, "a", 1, TRUE)`
 -   `object` ≈ named `list()`
-    -   `{}`: `{"a": 1, "b": [1, 2]}` ≈ `list(a = 1, b = list(1, 2))`
--   `httr2::resp_body_json()` uses `jsonlite::fromJSON()`
+    -   `{}`: `{"a": 1, "b": [1, 2]}` ≈ <br>`list(a = 1, b = list(1, 2))`
 
-## JSON Example {-}
 
-```{r responses-json-example}
-resp_json <- req_template(request(example_url()), "/json") |>
-  req_perform()
-resp_json |> resp_body_string() |> jsonlite::prettify(indent = 2)
-extracted_json <- resp_body_json(resp_json)
-class(extracted_json)
-names(extracted_json)
-```
-
-## XML {-}
+## XML responses
 
 e**X**tensible **M**arkup **L**anguage
 
--   `application/xml`, `text/xml`, or `*/xml`)
--   Tags as `<tagname attribute="a">contents</tagname>`
--   Everything nestable
+-   `application/xml`, `text/xml`, or `*/xml`
 -   `httr2::resp_body_xml()` uses `xml2::read_xml()`
 
-## XML Example {-}
 
-```{r responses-xml-example}
+## XML data
+
+-   Tags as `<tagname attribute="a">contents</tagname>`
+-   Everything nestable
+
+
+## XML example: raw
+
+```{r responses-xml-example-raw}
+#| eval: true
 resp_xml <- req_template(request(example_url()), "/xml") |>
   req_perform()
 resp_xml |> resp_body_string() |> cat()
-extracted_xml <-  resp_body_xml(resp_xml)
+```
+
+
+## XML example: parsed
+
+```{r responses-xml-example-parsed}
+#| eval: true
+extracted_xml <- resp_body_xml(resp_xml)
 class(extracted_xml)
-# We'll see other ways to parse this in a later chapter.
-xml2::as_list(extracted_xml) |> names()
-xml2::as_list(extracted_xml)$root |> names()
+# We'll see other ways to parse this in {rvest} chapter.
+xml2::as_list(extracted_xml) |> str(max.level = 2)
 ```
 
-## Nested lists: tidyverse {-}
 
--   `tibble::enframe()` to tibble-ify the `list()`
--   `tidyr::unnest_wider()` and/or `tidyr::unnest_longer()`
-    -   Sometimes `tidyr::unnest()` but it can hide layers
+# Binary objects
 
-```{r responses-en-un}
-list(root = extracted_json) |> 
-  tibble::enframe(name = NULL) |> 
-  tidyr::unnest_wider(value)
+|MIME type         |`*` examples             |Package    |
+|------------------|-------------------------|-----------|
+|`image/*`         |`png`, `jpeg`, `svg+xml` |`{magick}` |
+|`audio/*`         |`mpeg`, `ogg`, `wav`     |`{av}` ?   |
+|`video/*`         |`mpeg`, `mp4`, `ogg`     |`{av}` ?   |
+|`application/*`   |`octet-stream` (catch-all), `x-bzip`, `pdf` |(various) |
 
-xml2::as_list(extracted_xml) |> 
-  tibble::enframe(name = NULL) |> 
-  tidyr::unnest_wider(value)
+
+## Images
+
+::: fragment
+```{r}
+resp_body_raw(resp) |> magick::image_read()
 ```
-
-## Nested lists: tibblify {-}
-
-```{r responses-tibblify}
-list(root = extracted_json) |> 
-  tibblify::tibblify()
-
-xml2::as_list(extracted_xml) |> 
-  tibblify::tibblify()
+:::
+::: fragment
+```{r}
+# requires {rsvg}
+resp_body_raw(resp) |> magick::image_read_svg()
 ```
-
-## Response objects in API docs {-}
-
--   Look for `200` in docs for this path
--   Find "OpenAPI" or "Swagger" links (or "API json", "API yaml", etc)
-    -   Eg: [Asana](https://raw.githubusercontent.com/Asana/openapi/master/defs/asana_oas.yaml)
-    -   Search for the path, then method, then 200 (eg: `/tasks:`)
-    -   Often a `$ref` to something like `#/components/schemas/TaskCompact`
-    -   Ctrl-F around that doc!
--   {[anyapi](https://anyapi.api2r.org/)} will soon build a tibblify spec from API spec
-
-## Binary objects {-}
-
--   `image/*` (`png`, `jpeg`, `svg+xml`)
--   `audio/*` (`webm`, `ogg`, `wav`)
--   `video/*` (`webm`, `ogg`, `mp4`)
--   `application/octet-stream` (catch-all)
-
-`resp_body_raw(resp) |> writeBin(filename)`
-
-## Meeting Videos {-}
-
-### Cohort 1 {-}
-
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
-
-<details>
-<summary> Meeting chat log </summary>
-
+:::
+::: fragment
+```{r}
+# requires {pdftools}
+resp_body_raw(resp) |> magick::image_read_pdf()
 ```
-LOG
+:::
+
+::: notes
+-   Can also save directly, but this reads the object directly into R.
+-   SVG and PDF work best with dedicated packages.
+-   Parsing PDFs could be a book itself.
+:::
+
+
+## Video
+
+I haven't found anything yet for working with "raw" audio/video!
+
+::: fragment
+```{r}
+resp_body_raw(resp) |> writeBin(filename)
 ```
-</details>
+:::
+::: fragment
+```{r}
+av::av_video_convert(path, output = "output.mp4", verbose = TRUE)
+```
+:::
+::: fragment
+```{r}
+ffmpeg_cmd <- glue::glue(
+  "ffmpeg -v quiet ",
+  "-i {input_path} ",
+  "-ss {start_time} -to {end_time} ",
+  "-c copy {output_path}"
+)
+system(ffmpeg_cmd, ignore.stdout = TRUE)
+```
+:::
+
+::: notes
+-   As far as I can tell, you always have to save audio/video, and THEN parse it.
+-   How much do people want here? Pointers in right direction? Full examples (which might not apply in their use case)?
+-   Has anybody worked with video? This feels hacky!
+:::
+
+
+## Audio
+
+I haven't found anything yet for working with "raw" audio/video!
+
+::: fragment
+```{r}
+resp_body_raw(resp) |> writeBin(filename)
+```
+:::
+::: fragment
+```{r}
+av::av_audio_convert(
+  path, output = "output.mp3", format = NULL,
+  channels = NULL, sample_rate = NULL,
+  start_time = NULL, total_time = NULL,
+  verbose = TRUE
+)
+```
+:::
+
+::: notes
+-   How much do people want here? Pointers in right direction? Full examples (which might not apply in their use case)?
+-   Has anybody worked with audio? This feels hacky!
+:::
+
+
+## Raw data
+
+Danger zone!
+
+::: fragment
+```{r}
+resp_body_raw(resp) |> writeBin(filename)
+```
+:::
+
+::: notes
+-   Anything else likely has to be saved before any tools will know what to do.
+-   Don't save random binary files if you don't have reason to trust what they are!
+:::
+
+
+## Base64-encoded JSON data
+
+-   Base64 transforms binary data into text
+    -   6-bit blocks ➡️ 1 of 64 characters
+
+::: fragment
+```{r}
+raw_data <- resp_body_json(resp) |>
+  _$b64_json |> # Or whatever the element is named
+  jsonlite::base64_dec()
+
+magick::image_read(raw_data) # Etc
+```
+:::
+
+::: notes
+-   OpenAI API can send generated images this way (that's how I was reminded about it).
+-   64 = 2^6
+:::
+
+
+# HTTP errors
+
+
+## HTTP status codes
+
+|Range |Description   |Notes               |
+|------|--------------|--------------------|
+|1xx   |Informational |Handled by `{curl}` |
+|2xx   |Successful    |`resp_*()`          |
+|3xx   |Redirection   |Auto-followed       |
+|4xx   |Client error  |"Your fault"        |
+|5xx   |Server error  |"Server's fault"    |
+
+::: notes
+-   As with everything, codes can be incorrectly implemented
+-   "Client error" might result from mistake on server side
+-   "Server error" might mean you sent an expired key
+:::
+
+
+## Handling errors
+
+`req_error(req, is_error = NULL, body = NULL)`
+
+-   `is_error` = function to identify errors
+-   `body` = function to turn error `resp` into message
+
+::: fragment
+```{r}
+# Never trigger R errors
+req |> 
+  req_error(is_error = \(resp) FALSE)
+```
+:::
+::: fragment
+```{r}
+# Only trigger R errors for "Server error" responses
+req |> 
+  req_error(is_error = \(resp) resp_status(resp) >= 500)
+```
+:::
+::: fragment
+```{r}
+# Include information from response in error message
+req |> 
+  req_error(
+    body = function(resp) {
+      resp_body_json(resp)$error_msg # Often more complicated than this
+    }
+  )
+```
+:::
+
+::: notes
+-   Add `req_error()` before `req_perform()` (or `req_perform_iterative()`)
+-   Most common use cases:
+    -   Don't let httr2 handle errors, so you can do something yourself.
+    -   Override bad status codes from server.
+    -   Provide more details in error message from server.
+-   TODO: Find an API that returns error details!
+:::
+
+
+## Errors and pagination
+
+-   `req_perform_iterative()` has `on_error = c("stop", "return")`
+    -   On *R* error
+    -   "stop" = "throw an R error if any call throws an R error"
+    -   "return" = "stop iterating, return everything so far"
+-   `req_error(is_error = \(resp) FALSE)` can cause that not to trigger
+-   May want to combine these for your use-case
+
+
+# Questions?
