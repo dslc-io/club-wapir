@@ -28,6 +28,7 @@ Imports:
     tibblify (== 0.3.0.9000),
     tidyr,
     waldo,
+    webfakes,
     xml2,
     yaml
 Encoding: UTF-8
