@@ -18,64 +18,47 @@ website:
     contents:
       - index.qmd
       - file: slides/club-intro.qmd
-        target: wapir-club_club_intro
+        target: wapir_club-club_intro
       - file: slides/intro.qmd
-        target: wapir-club_intro
+        target: wapir_club-intro
 
       - section: "Get started"
         contents:
           - file: slides/httr2/apis-start.qmd
-            target: wapir-club_apis-start
+            target: wapir_club-apis_start
           - file: slides/httr2/schemas.qmd
-            target: wapir-club_schemas
+            target: wapir_club-schemas
           - file: slides/httr2/httr2.qmd
-            target: wapir-club_httr2
+            target: wapir_club-httr2
           - file: slides/httr2/httr2-authentication.qmd
-            target: wapir-club_httr2-authentication
+            target: wapir_club-httr2-authentication
 
       - section: "Get more data"
         contents:
           - file: slides/httr2/httr2-pagination.qmd
-            target: wapir-club_httr2-pagination
+            target: wapir_club-httr2-pagination
           - file: slides/httr2/httr2-responses.qmd
-            target: wapir-club_httr2-responses
+            target: wapir_club-httr2-responses
           - file: slides/httr2/apis-find.qmd
-            target: wapir-club_apis-find
+            target: wapir_club-apis-find
+          - file: slides/httr2/rvest.qmd
+            target: wapir_club-rvest
 
       - section: "Do more with APIs"
         contents:
           - file: slides/httr2/httr2-methods.qmd
-            target: wapir-club_httr2-methods
-          - file: slides/httr2/httr2-misc.qmd
-            target: wapir-club_httr2-misc
+            target: wapir_club-httr2-methods
+          - file: slides/httr2/accessing-other.qmd
+            target: wapir_club-accessing_other
           - file: slides/httr2/accessing-more.qmd
-            target: wapir-club_accessing-more
-
-      - section: "Create APIs"
-        contents:
-          - file: slides/plumber/plumber-intro.qmd
-            target: wapir-club_plumber-intro
-          - file: slides/plumber/plumber-input.qmd
-            target: wapir-club_plumber-input
-          - file: slides/plumber/plumber-output.qmd
-            target: wapir-club_plumber-output
-          - file: slides/plumber/plumber-errors.qmd
-            target: wapir-club_plumber-errors
-          - file: slides/plumber/plumber-security.qmd
-            target: wapir-club_plumber-security
-          - file: slides/plumber/plumber-test.qmd
-            target: wapir-club_plumber-test
-          - file: slides/plumber/plumber-deploy.qmd
-            target: wapir-club_plumber-deploy
-          - file: slides/plumber/creating-more.qmd
-            target: wapir-club_creating-more
+            target: wapir_club-accessing-more
 
       - section: "Appendices"
         contents:
           - file: slides/los.qmd
-            target: wapir-club_los
+            target: wapir_club-los
           - file: slides/leftovers.qmd
-            target: wapir-club_leftovers
+            target: wapir_club-leftovers
 
 format:
   html:

@@ -5,8 +5,11 @@ title: Tell APIs who you are
 
 # TODO
 
+::: nonincremental
 -   Emphasize difference between working with what people have done vs understanding how things SHOULD work (knowing the OAuth2 specification backwards and forwards isn't helpful when people use nonstandard terminology or implement something weird; PKCE often doesn't work, for example)
 -   Make sure this makes sense before pagination.
+:::
+
 
 # ️✅ Learning objectives
 

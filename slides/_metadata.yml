@@ -1,7 +1,7 @@
 format:
   revealjs:
     theme: [dark, custom.scss]
-    footer: <a href="/" target="wapir-club_index">dslc.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a>
+    footer: <a href="/" target="wapir-club_index">DSLC.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a>
     link-external-newwindow: true
     transition: slide
     incremental: true

@@ -5,7 +5,10 @@ title: Get started with APIs
 
 # TODO
 
+::: nonincremental
 -   Skip tidyverse, re-integrate schemas?
+:::
+
 
 # ️✅ Learning objectives
 

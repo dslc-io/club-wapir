@@ -5,8 +5,11 @@ title: Do other things with APIs
 
 # TODO
 
+::: nonincremental
 -   This chapter needs a v1. It will focus on methods, body, etc.
 -   Consider merging httr2-misc into here.
+:::
+
 
 # ️✅ Learning objectives
 
