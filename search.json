@@ -511,7 +511,7 @@
     "href": "slides/httr2/httr2-responses.html#json-responses",
     "title": "Process other response types",
     "section": "JSON responses",
-    "text": "JSON responses\n\napplication/json or */json\nhttr2::resp_body_json() uses jsonlite::fromJSON()\n(this slide & next might be entirely covered in earlier chapter)",
+    "text": "JSON responses\n\napplication/json or */json\nhttr2::resp_body_json() uses jsonlite::fromJSON()\n\n\nthis slide & next might be entirely covered in earlier chapter",
     "crumbs": [
       "Get more data",
       "Process other response types"
@@ -522,7 +522,7 @@
     "href": "slides/httr2/httr2-responses.html#json-data",
     "title": "Process other response types",
     "section": "JSON data",
-    "text": "JSON data\n\n4 scalars (length-1 vectors)\n\nnull ≈ NA\nstring ≈ character(1), always \" (not ')\nnumber ≈ numeric(1), no Inf/-Inf/NaN\nboolean ≈ logical(1), true = TRUE, false = FALSE\n\narray ≈ unnamed list()\n\n[]: [null, \"a\", 1, true] ≈ list(NULL, \"a\", 1, TRUE)\n\nobject ≈ named list()\n\n{}: {\"a\": 1, \"b\": [1, 2]} ≈ list(a = 1, b = list(1, 2))",
+    "text": "JSON data\n\n4 scalars (length-1 vectors)\n\nnull ≈ NA\nstring ≈ character(1), always \" (not ')\nnumber ≈ numeric(1), no Inf/-Inf/NaN\nboolean ≈ logical(1), true = TRUE, false = FALSE\n\narray ≈ unnamed list()\n\n[]: [null, \"a\", 1, true] ≈ list(NULL, \"a\", 1, TRUE)\n\nobject ≈ named list()\n\n{}: {\"a\": 1, \"b\": [1, 2]} ≈ list(a = 1, b = list(1, 2))\n\n\n\n\nWe never went into details about what’s legal in the JSON format.\nArrays of the same type are roughly equivalent to vectors, parsers like jsonlite often turn such arrays into vectors.",
     "crumbs": [
       "Get more data",
       "Process other response types"
@@ -573,6 +573,17 @@
     ]
   },
   {
+    "objectID": "slides/httr2/httr2-responses.html#html-responses",
+    "href": "slides/httr2/httr2-responses.html#html-responses",
+    "title": "Process other response types",
+    "section": "HTML responses",
+    "text": "HTML responses\nHyperText Markup Language\n\ntext/html, rarely application/xhtml+xml\nhttr2::resp_body_html() uses xml2::read_html()\n\nwhich uses xml2::read_xml(..., as_html = TRUE)\n\n\n\n\nHTML came before XML, but XML now includes HTML, so\nHTML is XML with specific, defined tags\nMuch more on this in rvest chapter",
+    "crumbs": [
+      "Get more data",
+      "Process other response types"
+    ]
+  },
+  {
     "objectID": "slides/httr2/httr2-responses.html#images",
     "href": "slides/httr2/httr2-responses.html#images",
     "title": "Process other response types",
@@ -588,7 +599,7 @@
     "href": "slides/httr2/httr2-responses.html#video",
     "title": "Process other response types",
     "section": "Video",
-    "text": "Video\nI haven’t found anything yet for working with “raw” audio/video!\n\n\nresp_body_raw(resp) |&gt; writeBin(filename)\n\n\n\n\nav::av_video_convert(path, output = \"output.mp4\", verbose = TRUE)\n\n\n\n\nffmpeg_cmd &lt;- glue::glue(\n  \"ffmpeg -v quiet \",\n  \"-i {input_path} \",\n  \"-ss {start_time} -to {end_time} \",\n  \"-c copy {output_path}\"\n)\nsystem(ffmpeg_cmd, ignore.stdout = TRUE)\n\n\n\n\nAs far as I can tell, you always have to save audio/video, and THEN parse it.\nHow much do people want here? Pointers in right direction? Full examples (which might not apply in their use case)?\nHas anybody worked with video? This feels hacky!",
+    "text": "Video\nI haven’t found anything yet for working with “raw” audio/video!\n\n\nresp_body_raw(resp) |&gt; writeBin(path)\n\n\n\n\nav::av_video_convert(path, output = \"output.mp4\", verbose = TRUE)\n\n\n\n\nffmpeg_cmd &lt;- glue::glue(\n  \"ffmpeg -v quiet \",\n  \"-i {input_path} \",\n  \"-ss {start_time} -to {end_time} \",\n  \"-c copy {output_path}\"\n)\nsystem(ffmpeg_cmd, ignore.stdout = TRUE)\n\n\n\n\nAs far as I can tell, you always have to save audio/video, and THEN parse it.\nHow much do people want here? Pointers in right direction? Full examples (which might not apply in their use case)?\nHas anybody worked with video? This feels hacky!",
     "crumbs": [
       "Get more data",
       "Process other response types"
@@ -655,6 +666,17 @@
     "title": "Process other response types",
     "section": "Errors and pagination",
     "text": "Errors and pagination\n\nreq_perform_iterative() has on_error = c(\"stop\", \"return\")\n\nOn R error\n“stop” = “throw an R error if any call throws an R error”\n“return” = “stop iterating, return everything so far”\n\nreq_error(is_error = \\(resp) FALSE) can cause that not to trigger\nMay want to combine these for your use-case",
+    "crumbs": [
+      "Get more data",
+      "Process other response types"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-responses.html#more-on-retries",
+    "href": "slides/httr2/httr2-responses.html#more-on-retries",
+    "title": "Process other response types",
+    "section": "More on retries",
+    "text": "More on retries\n\nhttr2::req_retry(\n  req,\n  max_tries = NULL,\n  max_seconds = NULL,\n  is_transient = NULL,\n  backoff = NULL,\n  after = NULL\n)\n\n\nis_transient = function to decide whether to retry from resp\nbackoff = function to convert tries to wait_seconds\nafter = function to convert resp to wait_seconds\n\n\n\nIn pagination chapter, we just set max_tries here to 3\nThe LinkedIn API throws a transient 404 randomly during some calls, so I set it up to retry on 404.",
     "crumbs": [
       "Get more data",
       "Process other response types"
@@ -2190,7 +2212,7 @@
     "href": "slides/httr2/httr2-pagination.html#aside-retries-and-api-consumer-etiquette",
     "title": "Get a lot of data from APIs",
     "section": "Aside: Retries and API consumer etiquette",
-    "text": "Aside: Retries and API consumer etiquette\n\nPagination ➡️ repeated API calls\nBe nice!\nhttr2::req_retry()\n\nMust set max_tries or max_seconds\nOther options usually ok as-is\n\nMore in (chapter TBD)\n\n\n\nIf neither max_tries nor max_seconds set, silently ignored\nOther things: req_throttle() limits calls/second, req_timeout() to set a time limit for single big calls",
+    "text": "Aside: Retries and API consumer etiquette\n\nPagination ➡️ repeated API calls\nBe nice!\nhttr2::req_retry()\n\nMust set max_tries or max_seconds\nOther options usually ok as-is\n\nMore in “Process other response types”\n\n\n\nIf neither max_tries nor max_seconds set, silently ignored\nOther things: req_throttle() limits calls/second, req_timeout() to set a time limit for single big calls",
     "crumbs": [
       "Get more data",
       "Get a lot of data from APIs"

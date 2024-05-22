@@ -434,6 +434,7 @@
 <li class="fragment"><code>httr2::resp_content_type()</code> gets <code>type/subtype</code></li>
 <li class="fragment"><code>httr2::resp_encoding()</code> gets <code>charset</code> parameter</li>
 <li class="fragment">More at <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types">MDN MIME types</a></li>
+<li class="fragment">Even more at <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">IANA Media Types registry</a></li>
 </ul>
 <aside class="notes">
 <ul>
@@ -442,6 +443,7 @@
 <li>Could have typos, etc!</li>
 </ul></li>
 <li>Encoding: If you’re getting weird characters, incorrect character set could be the problem.</li>
+<li>IANA = Internet Assigned Numbers Authority</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -511,8 +513,20 @@
 <ul>
 <li class="fragment"><code>application/json</code> or <code>*/json</code></li>
 <li class="fragment"><code>httr2::resp_body_json()</code> uses <code>jsonlite::fromJSON()</code></li>
-<li class="fragment">(this slide &amp; next might be entirely covered in earlier chapter)</li>
 </ul>
+<aside class="notes">
+<p>this slide &amp; next might be entirely covered in earlier chapter</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="json-data" class="slide level2">
 <h2>JSON data</h2>
@@ -533,6 +547,22 @@
 <li class="fragment"><code>{}</code>: <code>{"a": 1, "b": [1, 2]}</code> ≈ <br><code>list(a = 1, b = list(1, 2))</code></li>
 </ul></li>
 </ul>
+<aside class="notes">
+<ul>
+<li>We never went into details about what’s legal in the JSON format.</li>
+<li>Arrays of the same type are roughly equivalent to vectors, parsers like jsonlite often turn such arrays into vectors.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="xml-responses" class="slide level2">
 <h2>XML responses</h2>
@@ -608,6 +638,34 @@
 #&gt;   .. ..- attr(*, "null")= chr "true"</code></pre>
 </div>
 </div>
+</section>
+<section id="html-responses" class="slide level2">
+<h2>HTML responses</h2>
+<p><strong>H</strong>yper<strong>T</strong>ext <strong>M</strong>arkup <strong>L</strong>anguage</p>
+<ul>
+<li class="fragment"><code>text/html</code>, rarely <code>application/xhtml+xml</code></li>
+<li class="fragment"><code>httr2::resp_body_html()</code> uses <code>xml2::read_html()</code>
+<ul>
+<li class="fragment">which uses <code>xml2::read_xml(..., as_html = TRUE)</code></li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>HTML came before XML, but XML now includes HTML, so</li>
+<li>HTML is XML with specific, defined tags</li>
+<li>Much more on this in rvest chapter</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
 <section id="binary-objects" class="title-slide slide level1 center">
@@ -633,7 +691,7 @@
 </tr>
 <tr class="even">
 <td><code>audio/*</code></td>
-<td><code>mpeg</code>, <code>ogg</code>, <code>wav</code></td>
+<td><code>mpeg</code>, <code>wav</code>, <code>ogg</code></td>
 <td><code>{av}</code> ?</td>
 </tr>
 <tr class="odd">
@@ -691,7 +749,7 @@
 <p>I haven’t found anything yet for working with “raw” audio/video!</p>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> <span class="fu">writeBin</span>(filename)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> <span class="fu">writeBin</span>(path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -950,6 +1008,41 @@
 <li class="fragment"><code>req_error(is_error = \(resp) FALSE)</code> can cause that not to trigger</li>
 <li class="fragment">May want to combine these for your use-case</li>
 </ul>
+</section>
+<section id="more-on-retries" class="slide level2">
+<h2>More on retries</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>httr2<span class="sc">::</span><span class="fu">req_retry</span>(</span>
+<span id="cb20-2"><a></a>  req,</span>
+<span id="cb20-3"><a></a>  <span class="at">max_tries =</span> <span class="cn">NULL</span>,</span>
+<span id="cb20-4"><a></a>  <span class="at">max_seconds =</span> <span class="cn">NULL</span>,</span>
+<span id="cb20-5"><a></a>  <span class="at">is_transient =</span> <span class="cn">NULL</span>,</span>
+<span id="cb20-6"><a></a>  <span class="at">backoff =</span> <span class="cn">NULL</span>,</span>
+<span id="cb20-7"><a></a>  <span class="at">after =</span> <span class="cn">NULL</span></span>
+<span id="cb20-8"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li class="fragment"><code>is_transient</code> = function to decide whether to retry from <code>resp</code></li>
+<li class="fragment"><code>backoff</code> = function to convert <code>tries</code> to <code>wait_seconds</code></li>
+<li class="fragment"><code>after</code> = function to convert <code>resp</code> to <code>wait_seconds</code></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>In pagination chapter, we just set max_tries here to 3</li>
+<li>The LinkedIn API throws a transient 404 randomly during some calls, so I set it up to retry on 404.</li>
+<li></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section id="questions" class="title-slide slide level1 center">
 <h1>Questions?</h1>
