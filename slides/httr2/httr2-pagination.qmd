@@ -73,7 +73,7 @@ Unfortunately, no standard.
 -   `httr2::req_retry()`
     -   ***Must*** set `max_tries` or `max_seconds`
     -   Other options usually ok as-is
--   More in (chapter TBD)
+-   More in "Process other response types"
 
 ::: notes
 -   If neither `max_tries` nor `max_seconds` set, silently ignored

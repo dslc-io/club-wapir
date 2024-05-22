@@ -16,14 +16,13 @@ title: Process other response types
 #| eval: true
 #| echo: false
 #| warning: false
-# TODO: Update this list with actual used packages.
 library(httr2)
+library(jsonlite)
 library(xml2)
 library(magick)
 library(rsvg)
 library(pdftools)
 library(av)
-library(jsonlite)
 ```
 
 ::: notes
@@ -40,11 +39,13 @@ library(jsonlite)
 -   `httr2::resp_content_type()` gets `type/subtype`
 -   `httr2::resp_encoding()` gets `charset` parameter
 -   More at [MDN MIME types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types)
+-   Even more at [IANA Media Types registry](https://www.iana.org/assignments/media-types/media-types.xhtml)
 
 ::: notes
 -   type/subtype tells you which function to use to parse it
     -   Could have typos, etc!
 -   Encoding: If you're getting weird characters, incorrect character set could be the problem.
+-   IANA = Internet Assigned Numbers Authority
 :::
 
 
@@ -66,8 +67,10 @@ library(jsonlite)
 
 -   `application/json` or `*/json`
 -   `httr2::resp_body_json()` uses `jsonlite::fromJSON()`
--   (this slide & next might be entirely covered in earlier chapter)
 
+::: notes
+this slide & next might be entirely covered in earlier chapter
+:::
 
 ## JSON data
 
@@ -81,6 +84,10 @@ library(jsonlite)
 -   `object` ≈ named `list()`
     -   `{}`: `{"a": 1, "b": [1, 2]}` ≈ <br>`list(a = 1, b = list(1, 2))`
 
+::: notes
+-   We never went into details about what's legal in the JSON format.
+-   Arrays of the same type are roughly equivalent to vectors, parsers like jsonlite often turn such arrays into vectors.
+:::
 
 ## XML responses
 
@@ -117,12 +124,27 @@ xml2::as_list(extracted_xml) |> str(max.level = 2)
 ```
 
 
+## HTML responses
+
+**H**yper**T**ext **M**arkup **L**anguage
+
+-   `text/html`, rarely `application/xhtml+xml`
+-   `httr2::resp_body_html()` uses `xml2::read_html()`
+    -   which uses `xml2::read_xml(..., as_html = TRUE)`
+
+::: notes
+-   HTML came before XML, but XML now includes HTML, so
+-   HTML is XML with specific, defined tags
+-   Much more on this in rvest chapter
+:::
+
+
 # Binary objects
 
 |MIME type         |`*` examples             |Package    |
 |------------------|-------------------------|-----------|
 |`image/*`         |`png`, `jpeg`, `svg+xml` |`{magick}` |
-|`audio/*`         |`mpeg`, `ogg`, `wav`     |`{av}` ?   |
+|`audio/*`         |`mpeg`, `wav`, `ogg`     |`{av}` ?   |
 |`video/*`         |`mpeg`, `mp4`, `ogg`     |`{av}` ?   |
 |`application/*`   |`octet-stream` (catch-all), `x-bzip`, `pdf` |(various) |
 
@@ -160,7 +182,7 @@ I haven't found anything yet for working with "raw" audio/video!
 
 ::: fragment
 ```{r}
-resp_body_raw(resp) |> writeBin(filename)
+resp_body_raw(resp) |> writeBin(path)
 ```
 :::
 ::: fragment
@@ -321,6 +343,30 @@ req |>
     -   "return" = "stop iterating, return everything so far"
 -   `req_error(is_error = \(resp) FALSE)` can cause that not to trigger
 -   May want to combine these for your use-case
+
+
+## More on retries
+
+```{r}
+httr2::req_retry(
+  req,
+  max_tries = NULL,
+  max_seconds = NULL,
+  is_transient = NULL,
+  backoff = NULL,
+  after = NULL
+)
+```
+
+-   `is_transient` = function to decide whether to retry from `resp`
+-   `backoff` = function to convert `tries` to `wait_seconds`
+-   `after` = function to convert `resp` to `wait_seconds`
+
+::: notes
+-   In pagination chapter, we just set max_tries here to 3
+-   The LinkedIn API throws a transient 404 randomly during some calls, so I set it up to retry on 404.
+-   
+:::
 
 
 # Questions?
