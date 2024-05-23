@@ -6,8 +6,7 @@ title: Scrape data from web pages
 # ️✅ Learning objectives
 
 ::: nonincremental
--   Determine whether a website *allows you* to scrape data from it.
--   Determine whether you *should* scrape data from a web page.
+-   Decide whether to scrape data from a web page.
 -   Scrape tables from web pages.
 -   Scrape more complex data structures from web pages.
 -   Scrape data from websites that require you to log in.
@@ -17,21 +16,42 @@ title: Scrape data from web pages
 :::
 
 
-## Should I scrape this data? {-}
+# Should I scrape this data?
 
-## Can I legally scrape this data? {-}
+## Do I need to scrape this data?
 
--   Personal use or nonprofit education = usually ok
--   Be careful about personally identifiable information (PII)
--   Check legal disclaimers (but may be over-protective)
--   US:
+-   Try {[datapasta](https://cran.r-project.org/package=datapasta)} 📦
+    -   RStudio Addins
+-   If it's one time & over-complicated, consider other copy/paste strategies
+-   Only scrape what you need
+-   Look for an API!
+
+::: notes
+-   Even consider manual copy/paste one field at a time if it's not a TON of data.
+-   More on looking for APIs in chapter 9
+:::
+
+## Can I legally scrape this data?
+
+-   ✅ Personal use or nonprofit education usually ok
+-   ⚠️ Personally Identifiable Information (PII)
+-   ⚠️ Legal disclaimers (but may be over-protective)
+-   USA:
     -   Can't copyright facts,
     -   *CAN* copyright collections of facts in some cases (creative)
+    -   [TidyTuesday 2023-08-29: Fair Use](https://tidytues.day/2023/2023-08-29)
 -   Other places:
     -   Sometimes stricter ([EU](https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:31996L0009:EN:HTML))
     -   Sometimes more lax
 
-## Should I scrape this data? {-}
+::: notes
+-   If it's important, consult a lawyer.
+-   This is why recipe blogs have stories about the recipes.
+-   That TidyTuesday dataset exists because I was writing these notes.
+-   EU provides more protections for database creators
+:::
+
+## Should I scrape this data?
 
 `robots.txt`
 
@@ -41,13 +61,9 @@ title: Scrape data from web pages
 -   Check root of site (`/`) and your particular subfolder 
 -   These aren't (necessarily) legally binding
 
-## Do I need to scrape this data? {-}
-
--   Try {[datapasta](https://cran.r-project.org/package=datapasta)} 📦
-    -   RStudio Addins
--   If it's one time & over-complicated, consider other copy/paste strategies
--   Only scrape what you need
--   Look for an API!
+::: notes
+-   
+:::
 
 ## How can I scrape tables of data? {-}
 
