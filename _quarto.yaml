@@ -37,12 +37,12 @@ website:
         contents:
           - file: slides/httr2/httr2-pagination.qmd
             target: wapir_club-httr2-pagination
+          - file: slides/httr2/rvest.qmd
+            target: wapir_club-rvest
           - file: slides/httr2/httr2-responses.qmd
             target: wapir_club-httr2-responses
           - file: slides/httr2/apis-find.qmd
             target: wapir_club-apis-find
-          - file: slides/httr2/rvest.qmd
-            target: wapir_club-rvest
 
       - section: "Do more with APIs"
         contents:
