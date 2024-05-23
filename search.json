@@ -1515,11 +1515,11 @@
     "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io"
   },
   {
-    "objectID": "slides/httr2/rvest.html#should-i-scrape-this-data",
-    "href": "slides/httr2/rvest.html#should-i-scrape-this-data",
+    "objectID": "slides/httr2/rvest.html#do-i-need-to-scrape-this-data",
+    "href": "slides/httr2/rvest.html#do-i-need-to-scrape-this-data",
     "title": "Scrape data from web pages",
-    "section": "Should I scrape this data?",
-    "text": "Should I scrape this data?",
+    "section": "Do I need to scrape this data?",
+    "text": "Do I need to scrape this data?\n\nTry {datapasta} 📦\n\nRStudio Addins\n\nIf it’s one time & over-complicated, consider other copy/paste strategies\nOnly scrape what you need\nLook for an API!\n\n\n\nEven consider manual copy/paste one field at a time if it’s not a TON of data.\nMore on looking for APIs in chapter 9",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1530,7 +1530,7 @@
     "href": "slides/httr2/rvest.html#can-i-legally-scrape-this-data",
     "title": "Scrape data from web pages",
     "section": "Can I legally scrape this data?",
-    "text": "Can I legally scrape this data?\n\nPersonal use or nonprofit education = usually ok\nBe careful about personally identifiable information (PII)\nCheck legal disclaimers (but may be over-protective)\nUS:\n\nCan’t copyright facts,\nCAN copyright collections of facts in some cases (creative)\n\nOther places:\n\nSometimes stricter (EU)\nSometimes more lax",
+    "text": "Can I legally scrape this data?\n\n✅ Personal use or nonprofit education usually ok\n⚠️ Personally Identifiable Information (PII)\n⚠️ Legal disclaimers (but may be over-protective)\nUSA:\n\nCan’t copyright facts,\nCAN copyright collections of facts in some cases (creative)\nTidyTuesday 2023-08-29: Fair Use\n\nOther places:\n\nSometimes stricter (EU)\nSometimes more lax\n\n\n\n\nIf it’s important, consult a lawyer.\nThis is why recipe blogs have stories about the recipes.\nThat TidyTuesday dataset exists because I was writing these notes.\nEU provides more protections for database creators",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1542,17 +1542,6 @@
     "title": "Scrape data from web pages",
     "section": "Should I scrape this data?",
     "text": "Should I scrape this data?\nrobots.txt\n\nUser-agent: * = everybody\nSearch for name(s) of package(s)\nSearch for specific pages\nCheck root of site (/) and your particular subfolder\nThese aren’t (necessarily) legally binding",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/rvest.html#do-i-need-to-scrape-this-data",
-    "href": "slides/httr2/rvest.html#do-i-need-to-scrape-this-data",
-    "title": "Scrape data from web pages",
-    "section": "Do I need to scrape this data?",
-    "text": "Do I need to scrape this data?\n\nTry {datapasta} 📦\n\nRStudio Addins\n\nIf it’s one time & over-complicated, consider other copy/paste strategies\nOnly scrape what you need\nLook for an API!",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"

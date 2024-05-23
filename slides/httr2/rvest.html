@@ -331,13 +331,11 @@
 </div>
 
 </section>
-<section>
 <section id="learning-objectives" class="title-slide slide level1 center">
 <h1>️✅ Learning objectives</h1>
 <div>
 <ul>
-<li>Determine whether a website <em>allows you</em> to scrape data from it.</li>
-<li>Determine whether you <em>should</em> scrape data from a web page.</li>
+<li>Decide whether to scrape data from a web page.</li>
 <li>Scrape tables from web pages.</li>
 <li>Scrape more complex data structures from web pages.</li>
 <li>Scrape data from websites that require you to log in.</li>
@@ -347,39 +345,13 @@
 </ul>
 </div>
 </section>
-<section id="should-i-scrape-this-data" class="slide level2 unnumbered">
-<h2>Should I scrape this data?</h2>
+
+<section>
+<section id="should-i-scrape-this-data" class="title-slide slide level1 center">
+<h1>Should I scrape this data?</h1>
+
 </section>
-<section id="can-i-legally-scrape-this-data" class="slide level2 unnumbered">
-<h2>Can I legally scrape this data?</h2>
-<ul>
-<li class="fragment">Personal use or nonprofit education = usually ok</li>
-<li class="fragment">Be careful about personally identifiable information (PII)</li>
-<li class="fragment">Check legal disclaimers (but may be over-protective)</li>
-<li class="fragment">US:
-<ul>
-<li class="fragment">Can’t copyright facts,</li>
-<li class="fragment"><em>CAN</em> copyright collections of facts in some cases (creative)</li>
-</ul></li>
-<li class="fragment">Other places:
-<ul>
-<li class="fragment">Sometimes stricter (<a href="https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:31996L0009:EN:HTML">EU</a>)</li>
-<li class="fragment">Sometimes more lax</li>
-</ul></li>
-</ul>
-</section>
-<section id="should-i-scrape-this-data-1" class="slide level2 unnumbered">
-<h2>Should I scrape this data?</h2>
-<p><code>robots.txt</code></p>
-<ul>
-<li class="fragment">User-agent: * = everybody</li>
-<li class="fragment">Search for name(s) of package(s)</li>
-<li class="fragment">Search for specific pages</li>
-<li class="fragment">Check root of site (<code>/</code>) and your particular subfolder</li>
-<li class="fragment">These aren’t (necessarily) legally binding</li>
-</ul>
-</section>
-<section id="do-i-need-to-scrape-this-data" class="slide level2 unnumbered">
+<section id="do-i-need-to-scrape-this-data" class="slide level2">
 <h2>Do I need to scrape this data?</h2>
 <ul>
 <li class="fragment">Try {<a href="https://cran.r-project.org/package=datapasta">datapasta</a>} 📦
@@ -390,6 +362,85 @@
 <li class="fragment">Only scrape what you need</li>
 <li class="fragment">Look for an API!</li>
 </ul>
+<aside class="notes">
+<ul>
+<li>Even consider manual copy/paste one field at a time if it’s not a TON of data.</li>
+<li>More on looking for APIs in chapter 9</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="can-i-legally-scrape-this-data" class="slide level2">
+<h2>Can I legally scrape this data?</h2>
+<ul>
+<li class="fragment">✅ Personal use or nonprofit education usually ok</li>
+<li class="fragment">⚠️ Personally Identifiable Information (PII)</li>
+<li class="fragment">⚠️ Legal disclaimers (but may be over-protective)</li>
+<li class="fragment">USA:
+<ul>
+<li class="fragment">Can’t copyright facts,</li>
+<li class="fragment"><em>CAN</em> copyright collections of facts in some cases (creative)</li>
+<li class="fragment"><a href="https://tidytues.day/2023/2023-08-29">TidyTuesday 2023-08-29: Fair Use</a></li>
+</ul></li>
+<li class="fragment">Other places:
+<ul>
+<li class="fragment">Sometimes stricter (<a href="https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:31996L0009:EN:HTML">EU</a>)</li>
+<li class="fragment">Sometimes more lax</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>If it’s important, consult a lawyer.</li>
+<li>This is why recipe blogs have stories about the recipes.</li>
+<li>That TidyTuesday dataset exists because I was writing these notes.</li>
+<li>EU provides more protections for database creators</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="should-i-scrape-this-data-1" class="slide level2">
+<h2>Should I scrape this data?</h2>
+<p><code>robots.txt</code></p>
+<ul>
+<li class="fragment">User-agent: * = everybody</li>
+<li class="fragment">Search for name(s) of package(s)</li>
+<li class="fragment">Search for specific pages</li>
+<li class="fragment">Check root of site (<code>/</code>) and your particular subfolder</li>
+<li class="fragment">These aren’t (necessarily) legally binding</li>
+</ul>
+<aside class="notes">
+<ul>
+<li></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="how-can-i-scrape-tables-of-data" class="slide level2 unnumbered">
 <h2>How can I scrape tables of data?</h2>
