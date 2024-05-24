@@ -11,12 +11,23 @@ title: Scrape data from web pages
 -   Scrape more complex data structures from web pages.
 -   Scrape data from websites that require you to log in.
 -   Scrape content that requires interaction.
--   Automate web scraping processes.
--   Scrape data as part of a workflow.
 :::
 
+```{r}
+#| label: rvest-packages-used
+#| eval: true
+library(polite)
+library(rvest)
+library(xml2)
+```
 
-# Should I scrape this data?
+::: notes
+-   "Scraping" a web page means programmatically processing the web page to extract data in a usable format.
+-   Can be a single page or several.
+-   Point out that everything after the very beginning is the same as parsing HTML responses from APIs, because web pages are just GET requests
+:::
+
+# Deciding whether to scrape data
 
 ## Do I need to scrape this data?
 
@@ -28,7 +39,7 @@ title: Scrape data from web pages
 
 ::: notes
 -   Even consider manual copy/paste one field at a time if it's not a TON of data.
--   More on looking for APIs in chapter 9
+-   More on looking for APIs in chapter 9 "Find APIs"
 :::
 
 ## Can I legally scrape this data?
@@ -46,87 +57,76 @@ title: Scrape data from web pages
 
 ::: notes
 -   If it's important, consult a lawyer.
+-   PII: Or even user-generated information in some cases
 -   This is why recipe blogs have stories about the recipes.
 -   That TidyTuesday dataset exists because I was writing these notes.
--   EU provides more protections for database creators
+-   EU provides more protections for database creators and for user-generated data
 :::
 
 ## Should I scrape this data?
 
-`robots.txt`
+`robots.txt`: [github](https://github.com/robots.txt), [wikipedia](https://en.wikipedia.org/robots.txt)
 
--   User-agent: * = everybody
+-   `User-agent: *` = everybody
 -   Search for name(s) of package(s) 
 -   Search for specific pages
 -   Check root of site (`/`) and your particular subfolder 
 -   These aren't (necessarily) legally binding
+-   [{robotstxt}](https://docs.ropensci.org/robotstxt/) 📦 for parsing `robots.txt`
 
 ::: notes
--   
+-   No official standards, but certain things are common.
+-   Both examples point to the API. This is the right way to write a robots.txt!
+-   `robots.txt` might be OVER protective, but watch for notes on how to use it
+-   Don't hit a site you like a billion times in fast succession, you could "use up" their monthly bandwidth, for example
+-   Your actions COULD cost them money, so don't be a jerk!
+-   We'll see the {polite} package shortly, which wraps {robotstxt}
 :::
 
-## How can I scrape tables of data? {-}
+# Scraping tables
 
-## Example 1: Single table {-}
+## Example 1: Single table
 
 (screenshot of table on page)
 
-## How can I scrape a single table? {-}
+## Scraping a table
 
 (code demo of scraping a table)
 
-## Example 2: Multiple tables {-}
+## Example 2: Multiple tables
 
 (screenshot of tables on page)
 
-## How can I choose a table? {-}
+::: notes
+-   TidyTuesday README has two tables, even though it isn't necessarily obvious (first is the "main" GH content)
+:::
+
+## Choosing a table
 
 (code demo of scraping one of many tables)
 
-## How can I scrape multiple tables? {-}
+## Scraping multiple tables
 
 (purrr)
 
-## How can I scrape more complex data? {-}
+# Scraping non-tabular data
 
-## What is SelectorGadget? {-}
-
--   ADD CONTENTS
-
-## Example 3: Non-tabular data {-}
+## Example 3: Non-tabular data
 
 (screenshot of page with non-tabular data, possibly CSS selector rules)
 
-## How can I use SelectorGadget? {-}
+## Using SelectorGadget
 
 (record clicks? also show code where it goes)
 
-## What are CSS selectors? {-}
+## Using CSS selectors
 
--   (I continue to go back and forth about Xpath vs CSS Selectors. Xpath can traverse back up the tree, which I feel might be vital for some advanced examples; but then again maybe CSS `:has()` will be enough)
+# Scraping interactive web pages
 
-## SUBSECTION {-}
+## Example 4: Login
 
--   ADD CONTENTS
+## Scraping data behind a login
 
-## SUBSECTION {-}
+## Example 5: Dynamic data
 
--   ADD CONTENTS
-
-## SUBSECTION {-}
-
--   ADD CONTENTS
-
-## Meeting Videos {-}
-
-### Cohort 1 {-}
-
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
-
-<details>
-<summary> Meeting chat log </summary>
-
-```
-LOG
-```
-</details>
+## Scraping data that requires interaction
