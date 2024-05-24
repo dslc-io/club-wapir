@@ -1519,7 +1519,7 @@
     "href": "slides/httr2/rvest.html#do-i-need-to-scrape-this-data",
     "title": "Scrape data from web pages",
     "section": "Do I need to scrape this data?",
-    "text": "Do I need to scrape this data?\n\nTry {datapasta} 📦\n\nRStudio Addins\n\nIf it’s one time & over-complicated, consider other copy/paste strategies\nOnly scrape what you need\nLook for an API!\n\n\n\nEven consider manual copy/paste one field at a time if it’s not a TON of data.\nMore on looking for APIs in chapter 9",
+    "text": "Do I need to scrape this data?\n\nTry {datapasta} 📦\n\nRStudio Addins\n\nIf it’s one time & over-complicated, consider other copy/paste strategies\nOnly scrape what you need\nLook for an API!\n\n\n\nEven consider manual copy/paste one field at a time if it’s not a TON of data.\nMore on looking for APIs in chapter 9 “Find APIs”",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1530,29 +1530,18 @@
     "href": "slides/httr2/rvest.html#can-i-legally-scrape-this-data",
     "title": "Scrape data from web pages",
     "section": "Can I legally scrape this data?",
-    "text": "Can I legally scrape this data?\n\n✅ Personal use or nonprofit education usually ok\n⚠️ Personally Identifiable Information (PII)\n⚠️ Legal disclaimers (but may be over-protective)\nUSA:\n\nCan’t copyright facts,\nCAN copyright collections of facts in some cases (creative)\nTidyTuesday 2023-08-29: Fair Use\n\nOther places:\n\nSometimes stricter (EU)\nSometimes more lax\n\n\n\n\nIf it’s important, consult a lawyer.\nThis is why recipe blogs have stories about the recipes.\nThat TidyTuesday dataset exists because I was writing these notes.\nEU provides more protections for database creators",
+    "text": "Can I legally scrape this data?\n\n✅ Personal use or nonprofit education usually ok\n⚠️ Personally Identifiable Information (PII)\n⚠️ Legal disclaimers (but may be over-protective)\nUSA:\n\nCan’t copyright facts,\nCAN copyright collections of facts in some cases (creative)\nTidyTuesday 2023-08-29: Fair Use\n\nOther places:\n\nSometimes stricter (EU)\nSometimes more lax\n\n\n\n\nIf it’s important, consult a lawyer.\nPII: Or even user-generated information in some cases\nThis is why recipe blogs have stories about the recipes.\nThat TidyTuesday dataset exists because I was writing these notes.\nEU provides more protections for database creators and for user-generated data",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#should-i-scrape-this-data-1",
-    "href": "slides/httr2/rvest.html#should-i-scrape-this-data-1",
+    "objectID": "slides/httr2/rvest.html#should-i-scrape-this-data",
+    "href": "slides/httr2/rvest.html#should-i-scrape-this-data",
     "title": "Scrape data from web pages",
     "section": "Should I scrape this data?",
-    "text": "Should I scrape this data?\nrobots.txt\n\nUser-agent: * = everybody\nSearch for name(s) of package(s)\nSearch for specific pages\nCheck root of site (/) and your particular subfolder\nThese aren’t (necessarily) legally binding",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/rvest.html#how-can-i-scrape-tables-of-data",
-    "href": "slides/httr2/rvest.html#how-can-i-scrape-tables-of-data",
-    "title": "Scrape data from web pages",
-    "section": "How can I scrape tables of data?",
-    "text": "How can I scrape tables of data?",
+    "text": "Should I scrape this data?\nrobots.txt: github, wikipedia\n\nUser-agent: * = everybody\nSearch for name(s) of package(s)\nSearch for specific pages\nCheck root of site (/) and your particular subfolder\nThese aren’t (necessarily) legally binding\n{robotstxt} 📦 for parsing robots.txt\n\n\n\nNo official standards, but certain things are common.\nBoth examples point to the API. This is the right way to write a robots.txt!\nrobots.txt might be OVER protective, but watch for notes on how to use it\nDon’t hit a site you like a billion times in fast succession, you could “use up” their monthly bandwidth, for example\nYour actions COULD cost them money, so don’t be a jerk!\nWe’ll see the {polite} package shortly, which wraps {robotstxt}",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1570,11 +1559,11 @@
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#how-can-i-scrape-a-single-table",
-    "href": "slides/httr2/rvest.html#how-can-i-scrape-a-single-table",
+    "objectID": "slides/httr2/rvest.html#scraping-a-table",
+    "href": "slides/httr2/rvest.html#scraping-a-table",
     "title": "Scrape data from web pages",
-    "section": "How can I scrape a single table?",
-    "text": "How can I scrape a single table?\n(code demo of scraping a table)",
+    "section": "Scraping a table",
+    "text": "Scraping a table\n(code demo of scraping a table)",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1585,51 +1574,29 @@
     "href": "slides/httr2/rvest.html#example-2-multiple-tables",
     "title": "Scrape data from web pages",
     "section": "Example 2: Multiple tables",
-    "text": "Example 2: Multiple tables\n(screenshot of tables on page)",
+    "text": "Example 2: Multiple tables\n(screenshot of tables on page)\n\n\nTidyTuesday README has two tables, even though it isn’t necessarily obvious (first is the “main” GH content)",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#how-can-i-choose-a-table",
-    "href": "slides/httr2/rvest.html#how-can-i-choose-a-table",
+    "objectID": "slides/httr2/rvest.html#choosing-a-table",
+    "href": "slides/httr2/rvest.html#choosing-a-table",
     "title": "Scrape data from web pages",
-    "section": "How can I choose a table?",
-    "text": "How can I choose a table?\n(code demo of scraping one of many tables)",
+    "section": "Choosing a table",
+    "text": "Choosing a table\n(code demo of scraping one of many tables)",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#how-can-i-scrape-multiple-tables",
-    "href": "slides/httr2/rvest.html#how-can-i-scrape-multiple-tables",
+    "objectID": "slides/httr2/rvest.html#scraping-multiple-tables",
+    "href": "slides/httr2/rvest.html#scraping-multiple-tables",
     "title": "Scrape data from web pages",
-    "section": "How can I scrape multiple tables?",
-    "text": "How can I scrape multiple tables?\n(purrr)",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/rvest.html#how-can-i-scrape-more-complex-data",
-    "href": "slides/httr2/rvest.html#how-can-i-scrape-more-complex-data",
-    "title": "Scrape data from web pages",
-    "section": "How can I scrape more complex data?",
-    "text": "How can I scrape more complex data?",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/rvest.html#what-is-selectorgadget",
-    "href": "slides/httr2/rvest.html#what-is-selectorgadget",
-    "title": "Scrape data from web pages",
-    "section": "What is SelectorGadget?",
-    "text": "What is SelectorGadget?\n\nADD CONTENTS",
+    "section": "Scraping multiple tables",
+    "text": "Scraping multiple tables\n(purrr)",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1647,66 +1614,66 @@
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#how-can-i-use-selectorgadget",
-    "href": "slides/httr2/rvest.html#how-can-i-use-selectorgadget",
+    "objectID": "slides/httr2/rvest.html#using-selectorgadget",
+    "href": "slides/httr2/rvest.html#using-selectorgadget",
     "title": "Scrape data from web pages",
-    "section": "How can I use SelectorGadget?",
-    "text": "How can I use SelectorGadget?\n(record clicks? also show code where it goes)",
+    "section": "Using SelectorGadget",
+    "text": "Using SelectorGadget\n(record clicks? also show code where it goes)",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#what-are-css-selectors",
-    "href": "slides/httr2/rvest.html#what-are-css-selectors",
+    "objectID": "slides/httr2/rvest.html#using-css-selectors",
+    "href": "slides/httr2/rvest.html#using-css-selectors",
     "title": "Scrape data from web pages",
-    "section": "What are CSS selectors?",
-    "text": "What are CSS selectors?\n\n(I continue to go back and forth about Xpath vs CSS Selectors. Xpath can traverse back up the tree, which I feel might be vital for some advanced examples; but then again maybe CSS :has() will be enough)",
+    "section": "Using CSS selectors",
+    "text": "Using CSS selectors",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#subsection",
-    "href": "slides/httr2/rvest.html#subsection",
+    "objectID": "slides/httr2/rvest.html#example-4-login",
+    "href": "slides/httr2/rvest.html#example-4-login",
     "title": "Scrape data from web pages",
-    "section": "SUBSECTION",
-    "text": "SUBSECTION\n\nADD CONTENTS",
+    "section": "Example 4: Login",
+    "text": "Example 4: Login",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#subsection-1",
-    "href": "slides/httr2/rvest.html#subsection-1",
+    "objectID": "slides/httr2/rvest.html#scraping-data-behind-a-login",
+    "href": "slides/httr2/rvest.html#scraping-data-behind-a-login",
     "title": "Scrape data from web pages",
-    "section": "SUBSECTION",
-    "text": "SUBSECTION\n\nADD CONTENTS",
+    "section": "Scraping data behind a login",
+    "text": "Scraping data behind a login",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#subsection-2",
-    "href": "slides/httr2/rvest.html#subsection-2",
+    "objectID": "slides/httr2/rvest.html#example-5-dynamic-data",
+    "href": "slides/httr2/rvest.html#example-5-dynamic-data",
     "title": "Scrape data from web pages",
-    "section": "SUBSECTION",
-    "text": "SUBSECTION\n\nADD CONTENTS",
+    "section": "Example 5: Dynamic data",
+    "text": "Example 5: Dynamic data",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#meeting-videos",
-    "href": "slides/httr2/rvest.html#meeting-videos",
+    "objectID": "slides/httr2/rvest.html#scraping-data-that-requires-interaction",
+    "href": "slides/httr2/rvest.html#scraping-data-that-requires-interaction",
     "title": "Scrape data from web pages",
-    "section": "Meeting Videos",
-    "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
+    "section": "Scraping data that requires interaction",
+    "text": "Scraping data that requires interaction\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
