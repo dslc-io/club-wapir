@@ -39,6 +39,7 @@ library(xml2)
 
 ::: notes
 -   Even consider manual copy/paste one field at a time if it's not a TON of data.
+-   We'll see one place to look for an API on the next slide.
 -   More on looking for APIs in chapter 9 "Find APIs"
 :::
 
@@ -83,17 +84,91 @@ library(xml2)
 -   We'll see the {polite} package shortly, which wraps {robotstxt}
 :::
 
+# Introduction to {rvest}
+
+## Three steps of web scraping
+
+1.  Load the page.
+2.  Find the object(s) you want.
+3.  Extract text into R object(s).
+
+::: notes
+-   Pages come in as text, regardless of what they contain.
+    -   Some text might point to an image's URL, but the page is just text.
+-   Maybe you want a specific table, or specific blocks of information (like a list of products).
+-   Again, even if you're getting numbers, they're text until you say otherwise.
+-   (put this bullet later): Can use {readr} to `parse_*()` data (or `{stbl}` or probably others)
+:::
+
+## Load the page
+
+```{r}
+#| label: rvest-read_html
+rvest::read_html(
+    x,                                    # Usually URL
+    encoding = "",                        # Assumes UTF-8, specify if garbled
+    ...,                                  # Never used as far as I can find
+    options= c(                           # Options for `libxml2` parsers
+      "RECOVER", "NOERROR", "NOBLANKS"
+    )
+)
+```
+
+::: notes
+-   You'll almost always just send a URL to this function, but it CAN be HTML as text, or a file, or several other things.
+-   I don't think I've ever used any options other than defaults.
+:::
+
+## Find the object
+
+-   HTML = **H**yper**T**ext **M**arkup **L**anguage
+-   Tags as `<tagname attribute="a">contents</tagname>`
+-   `rvest::html_element()` output same length as input
+-   `rvest::html_elements()` flattens things
+-   Can use ["CSS selectors"](https://flukeout.github.io/) or ["XPath expressions"](https://www.w3schools.com/xml/xpath_intro.asp)
+    -   We'll focus on CSS selectors
+
+::: notes
+-   I often forget the difference between `html_element()` and `html_elements()`
+    -   VERY rough rule of thumb: html_elements() once, then html_element to get things inside of those elements.
+-   CSS selectors and XPath expressions can each be their own book
+    -   W3 schools tutorials are helpful!
+    -   CSS diner for CSS selectors
+:::
+
+## Extract text
+
+-   TODO: WORKING HERE
+-   html_text() vs html_text2()
+-   readr::parse_*(), {stbl}?, others?
+
 # Scraping tables
 
-## Example 1: Single table
+## Example 1: All tables on page
 
-(screenshot of table on page)
+[![The W3 Schools page about HTML Tables](rvest/table_simple.png){height=500}](https://www.w3schools.com/html/html_tables.asp)
 
-## Scraping a table
+::: notes
+-   I'll host examples for everything in this chapter in the final book, so I have control over them.
+-   Notice that the first row is headers in this case.
+-   On the page, scroll down to "HTML Table Tags" for another example of a table.
+:::
 
-(code demo of scraping a table)
+## Scraping tables
 
-## Example 2: Multiple tables
+```{r}
+#| label: rvest-tables-simple
+rvest::html_table(
+    x,                  # A page loaded 
+    header = NA,
+    trim = TRUE,
+    dec = ".",
+    na.strings = "NA",
+    convert = TRUE
+)
+```
+
+## Example 2: Choose a specific table
 
 (screenshot of tables on page)
 
