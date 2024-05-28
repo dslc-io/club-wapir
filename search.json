@@ -1519,7 +1519,7 @@
     "href": "slides/httr2/rvest.html#do-i-need-to-scrape-this-data",
     "title": "Scrape data from web pages",
     "section": "Do I need to scrape this data?",
-    "text": "Do I need to scrape this data?\n\nTry {datapasta} 📦\n\nRStudio Addins\n\nIf it’s one time & over-complicated, consider other copy/paste strategies\nOnly scrape what you need\nLook for an API!\n\n\n\nEven consider manual copy/paste one field at a time if it’s not a TON of data.\nMore on looking for APIs in chapter 9 “Find APIs”",
+    "text": "Do I need to scrape this data?\n\nTry {datapasta} 📦\n\nRStudio Addins\n\nIf it’s one time & over-complicated, consider other copy/paste strategies\nOnly scrape what you need\nLook for an API!\n\n\n\nEven consider manual copy/paste one field at a time if it’s not a TON of data.\nWe’ll see one place to look for an API on the next slide.\nMore on looking for APIs in chapter 9 “Find APIs”",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1548,33 +1548,77 @@
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#example-1-single-table",
-    "href": "slides/httr2/rvest.html#example-1-single-table",
+    "objectID": "slides/httr2/rvest.html#three-steps-of-web-scraping",
+    "href": "slides/httr2/rvest.html#three-steps-of-web-scraping",
     "title": "Scrape data from web pages",
-    "section": "Example 1: Single table",
-    "text": "Example 1: Single table\n(screenshot of table on page)",
+    "section": "Three steps of web scraping",
+    "text": "Three steps of web scraping\n\nLoad the page.\nFind the object(s) you want.\nExtract text into R object(s).\n\n\n\nPages come in as text, regardless of what they contain.\n\nSome text might point to an image’s URL, but the page is just text.\n\nMaybe you want a specific table, or specific blocks of information (like a list of products).\nAgain, even if you’re getting numbers, they’re text until you say otherwise.\n(put this bullet later): Can use {readr} to parse_*() data (or {stbl} or probably others)",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#scraping-a-table",
-    "href": "slides/httr2/rvest.html#scraping-a-table",
+    "objectID": "slides/httr2/rvest.html#load-the-page",
+    "href": "slides/httr2/rvest.html#load-the-page",
     "title": "Scrape data from web pages",
-    "section": "Scraping a table",
-    "text": "Scraping a table\n(code demo of scraping a table)",
+    "section": "Load the page",
+    "text": "Load the page\n\nrvest::read_html(\n    x,                                    # Usually URL\n    encoding = \"\",                        # Assumes UTF-8, specify if garbled\n    ...,                                  # Never used as far as I can find\n    options= c(                           # Options for `libxml2` parsers\n      \"RECOVER\", \"NOERROR\", \"NOBLANKS\"\n    )\n)\n\n\n\nYou’ll almost always just send a URL to this function, but it CAN be HTML as text, or a file, or several other things.\nI don’t think I’ve ever used any options other than defaults.",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#example-2-multiple-tables",
-    "href": "slides/httr2/rvest.html#example-2-multiple-tables",
+    "objectID": "slides/httr2/rvest.html#find-the-object",
+    "href": "slides/httr2/rvest.html#find-the-object",
     "title": "Scrape data from web pages",
-    "section": "Example 2: Multiple tables",
-    "text": "Example 2: Multiple tables\n(screenshot of tables on page)\n\n\nTidyTuesday README has two tables, even though it isn’t necessarily obvious (first is the “main” GH content)",
+    "section": "Find the object",
+    "text": "Find the object\n\nHTML = HyperText Markup Language\nTags as &lt;tagname attribute=\"a\"&gt;contents&lt;/tagname&gt;\nrvest::html_element() output same length as input\nrvest::html_elements() flattens things\nCan use “CSS selectors” or “XPath expressions”\n\nWe’ll focus on CSS selectors\n\n\n\n\nI often forget the difference between html_element() and html_elements()\n\nVERY rough rule of thumb: html_elements() once, then html_element to get things inside of those elements.\n\nCSS selectors and XPath expressions can each be their own book\n\nW3 schools tutorials are helpful!\nCSS diner for CSS selectors",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/rvest.html#extract-text",
+    "href": "slides/httr2/rvest.html#extract-text",
+    "title": "Scrape data from web pages",
+    "section": "Extract text",
+    "text": "Extract text\n\nTODO: WORKING HERE\nhtml_text() vs html_text2()\nreadr::parse_*(), {stbl}?, others?",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/rvest.html#example-1-all-tables-on-page",
+    "href": "slides/httr2/rvest.html#example-1-all-tables-on-page",
+    "title": "Scrape data from web pages",
+    "section": "Example 1: All tables on page",
+    "text": "Example 1: All tables on page\n\n\n\nThe W3 Schools page about HTML Tables\n\n\n\n\nI’ll host examples for everything in this chapter in the final book, so I have control over them.\nNotice that the first row is headers in this case.\nOn the page, scroll down to “HTML Table Tags” for another example of a table.",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/rvest.html#scraping-tables-1",
+    "href": "slides/httr2/rvest.html#scraping-tables-1",
+    "title": "Scrape data from web pages",
+    "section": "Scraping tables",
+    "text": "Scraping tables\n\nrvest::html_table(\n    x,                  # A page loaded \n    header = NA,\n    trim = TRUE,\n    dec = \".\",\n    na.strings = \"NA\",\n    convert = TRUE\n)",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/rvest.html#example-2-choose-a-specific-table",
+    "href": "slides/httr2/rvest.html#example-2-choose-a-specific-table",
+    "title": "Scrape data from web pages",
+    "section": "Example 2: Choose a specific table",
+    "text": "Example 2: Choose a specific table\n(screenshot of tables on page)\n\n\nTidyTuesday README has two tables, even though it isn’t necessarily obvious (first is the “main” GH content)",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"

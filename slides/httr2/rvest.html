@@ -450,6 +450,7 @@
 <aside class="notes">
 <ul>
 <li>Even consider manual copy/paste one field at a time if it’s not a TON of data.</li>
+<li>We’ll see one place to look for an API on the next slide.</li>
 <li>More on looking for APIs in chapter 9 “Find APIs”</li>
 </ul>
 <style type="text/css">
@@ -535,20 +536,158 @@
       }</style></aside>
 </section></section>
 <section>
+<section id="introduction-to-rvest" class="title-slide slide level1 center">
+<h1>Introduction to {rvest}</h1>
+
+</section>
+<section id="three-steps-of-web-scraping" class="slide level2">
+<h2>Three steps of web scraping</h2>
+<ol type="1">
+<li class="fragment">Load the page.</li>
+<li class="fragment">Find the object(s) you want.</li>
+<li class="fragment">Extract text into R object(s).</li>
+</ol>
+<aside class="notes">
+<ul>
+<li>Pages come in as text, regardless of what they contain.
+<ul>
+<li>Some text might point to an image’s URL, but the page is just text.</li>
+</ul></li>
+<li>Maybe you want a specific table, or specific blocks of information (like a list of products).</li>
+<li>Again, even if you’re getting numbers, they’re text until you say otherwise.</li>
+<li>(put this bullet later): Can use {readr} to <code>parse_*()</code> data (or <code>{stbl}</code> or probably others)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="load-the-page" class="slide level2">
+<h2>Load the page</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>rvest<span class="sc">::</span><span class="fu">read_html</span>(</span>
+<span id="cb2-2"><a></a>    x,                                    <span class="co"># Usually URL</span></span>
+<span id="cb2-3"><a></a>    <span class="at">encoding =</span> <span class="st">""</span>,                        <span class="co"># Assumes UTF-8, specify if garbled</span></span>
+<span id="cb2-4"><a></a>    ...,                                  <span class="co"># Never used as far as I can find</span></span>
+<span id="cb2-5"><a></a>    <span class="at">options=</span> <span class="fu">c</span>(                           <span class="co"># Options for `libxml2` parsers</span></span>
+<span id="cb2-6"><a></a>      <span class="st">"RECOVER"</span>, <span class="st">"NOERROR"</span>, <span class="st">"NOBLANKS"</span></span>
+<span id="cb2-7"><a></a>    )</span>
+<span id="cb2-8"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<aside class="notes">
+<ul>
+<li>You’ll almost always just send a URL to this function, but it CAN be HTML as text, or a file, or several other things.</li>
+<li>I don’t think I’ve ever used any options other than defaults.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="find-the-object" class="slide level2">
+<h2>Find the object</h2>
+<ul>
+<li class="fragment">HTML = <strong>H</strong>yper<strong>T</strong>ext <strong>M</strong>arkup <strong>L</strong>anguage</li>
+<li class="fragment">Tags as <code>&lt;tagname attribute="a"&gt;contents&lt;/tagname&gt;</code></li>
+<li class="fragment"><code>rvest::html_element()</code> output same length as input</li>
+<li class="fragment"><code>rvest::html_elements()</code> flattens things</li>
+<li class="fragment">Can use <a href="https://flukeout.github.io/">“CSS selectors”</a> or <a href="https://www.w3schools.com/xml/xpath_intro.asp">“XPath expressions”</a>
+<ul>
+<li class="fragment">We’ll focus on CSS selectors</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>I often forget the difference between <code>html_element()</code> and <code>html_elements()</code>
+<ul>
+<li>VERY rough rule of thumb: html_elements() once, then html_element to get things inside of those elements.</li>
+</ul></li>
+<li>CSS selectors and XPath expressions can each be their own book
+<ul>
+<li>W3 schools tutorials are helpful!</li>
+<li>CSS diner for CSS selectors</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="extract-text" class="slide level2">
+<h2>Extract text</h2>
+<ul>
+<li class="fragment">TODO: WORKING HERE</li>
+<li class="fragment">html_text() vs html_text2()</li>
+<li class="fragment">readr::parse_*(), {stbl}?, others?</li>
+</ul>
+</section></section>
+<section>
 <section id="scraping-tables" class="title-slide slide level1 center">
 <h1>Scraping tables</h1>
 
 </section>
-<section id="example-1-single-table" class="slide level2">
-<h2>Example 1: Single table</h2>
-<p>(screenshot of table on page)</p>
+<section id="example-1-all-tables-on-page" class="slide level2">
+<h2>Example 1: All tables on page</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="https://www.w3schools.com/html/html_tables.asp"><img data-src="rvest/table_simple.png" height="500" alt="The W3 Schools page about HTML Tables"></a></p>
+<figcaption>The W3 Schools page about HTML Tables</figcaption>
+</figure>
+</div>
+<aside class="notes">
+<ul>
+<li>I’ll host examples for everything in this chapter in the final book, so I have control over them.</li>
+<li>Notice that the first row is headers in this case.</li>
+<li>On the page, scroll down to “HTML Table Tags” for another example of a table.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="scraping-a-table" class="slide level2">
-<h2>Scraping a table</h2>
-<p>(code demo of scraping a table)</p>
+<section id="scraping-tables-1" class="slide level2">
+<h2>Scraping tables</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>rvest<span class="sc">::</span><span class="fu">html_table</span>(</span>
+<span id="cb3-2"><a></a>    x,                  <span class="co"># A page loaded </span></span>
+<span id="cb3-3"><a></a>    <span class="at">header =</span> <span class="cn">NA</span>,</span>
+<span id="cb3-4"><a></a>    <span class="at">trim =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-5"><a></a>    <span class="at">dec =</span> <span class="st">"."</span>,</span>
+<span id="cb3-6"><a></a>    <span class="at">na.strings =</span> <span class="st">"NA"</span>,</span>
+<span id="cb3-7"><a></a>    <span class="at">convert =</span> <span class="cn">TRUE</span></span>
+<span id="cb3-8"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
-<section id="example-2-multiple-tables" class="slide level2">
-<h2>Example 2: Multiple tables</h2>
+<section id="example-2-choose-a-specific-table" class="slide level2">
+<h2>Example 2: Choose a specific table</h2>
 <p>(screenshot of tables on page)</p>
 <aside class="notes">
 <ul>
