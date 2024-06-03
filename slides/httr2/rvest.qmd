@@ -7,8 +7,8 @@ title: Scrape data from web pages
 
 ::: nonincremental
 -   Decide whether to scrape data from a web page.
--   Scrape tables from web pages.
--   Scrape more complex data structures from web pages.
+-   Use {polite} to responsibly scrape web pages.
+-   Scrape complex data structures from web pages.
 -   Scrape data from websites that require you to log in.
 -   Scrape content that requires interaction.
 :::
@@ -19,15 +19,17 @@ title: Scrape data from web pages
 library(polite)
 library(rvest)
 library(xml2)
+library(chromote)
 ```
 
 ::: notes
 -   "Scraping" a web page means programmatically processing the web page to extract data in a usable format.
+    -   Silly personal pet peeve: "scraping" vs "scrapping".
 -   Can be a single page or several.
 -   Point out that everything after the very beginning is the same as parsing HTML responses from APIs, because web pages are just GET requests
 :::
 
-# Deciding whether to scrape data
+# Decide whether to scrape data
 
 ## Do I need to scrape this data?
 
@@ -74,6 +76,7 @@ library(xml2)
 -   Check root of site (`/`) and your particular subfolder 
 -   These aren't (necessarily) legally binding
 -   [{robotstxt}](https://docs.ropensci.org/robotstxt/) 📦 for parsing `robots.txt`
+-   [{polite}](https://dmi3kno.github.io/polite/) 📦 wraps and applies {robotstxt}
 
 ::: notes
 -   No official standards, but certain things are common.
@@ -84,21 +87,113 @@ library(xml2)
 -   We'll see the {polite} package shortly, which wraps {robotstxt}
 :::
 
-# Introduction to {rvest}
+# Scrape non-tabular data
 
-## Three steps of web scraping
+## Motivating example: Cheese
 
-1.  Load the page.
-2.  Find the object(s) you want.
-3.  Extract text into R object(s).
+[![Castelmagno cheese from cheese.com](rvest/castelmagno_cheese.png)](https://www.cheese.com/castelmagno/)
 
 ::: notes
--   Pages come in as text, regardless of what they contain.
-    -   Some text might point to an image's URL, but the page is just text.
--   Maybe you want a specific table, or specific blocks of information (like a list of products).
--   Again, even if you're getting numbers, they're text until you say otherwise.
+-   For the book, I'll host some data so we can be sure it won't change, but I'm using this example because it's roughly the shape I'm looking for.
+-   "Coss-tell-man-yo"
+:::
+
+# Three steps of web scraping with {rvest}
+
+See [R4DS Chapter 24: "Web Scraping"](https://r4ds.hadley.nz/webscraping) for a full introduction
+
+1.  Load the page.
+2.  Find the object(s) (observations & variables) you want.
+3.  Extract variables (text) into R object(s).
+
+::: notes
+-   Pages = text, regardless of what they contain.
+    -   Text might point to URL of image, but page = text.
+-   Specific table? Specific blocks of info? 
+    -   List of products
+-   Even numbers = text until parsed.
 -   (put this bullet later): Can use {readr} to `parse_*()` data (or `{stbl}` or probably others)
 :::
+
+## Use {polite} to scrape respectfully
+
+::: fragment
+```{r}
+#| label: rvest-polite-bow
+polite::bow(
+  url,
+  user_agent = "polite R package", # If you don't change this, min delay = 5
+  delay = 5,                       # Seconds
+  times = 3,                       # Retries
+  force = FALSE,                   # Clears memoised functions
+  verbose = FALSE,                 # Useful to know why it failed
+  ...
+)
+```
+:::
+::: fragment
+```{r}
+#| label: rvest-polite-scrape
+polite::scrape(
+  bow,
+  query = NULL,     # Named list to add after `?` in URL
+  accept = "html",  # Specify html, json, xml, csv, txt, etc
+  content = NULL,   # Optional MIME type
+  verbose = FALSE   # Useful to know why it failed
+)
+```
+:::
+
+::: notes
+-   Polite is a great package, but docs are light.
+    -   I'm resisting urge to rewrite it in httr2 with better documentation.
+-   bow():
+    -   Good idea to set a `user agent`. If you leave default, it *has* to be slow.
+    -   I'd set `delay` to 0; user agent requirements will override this.
+    -   Ok to leave `times` as-is, probably.
+    -   `force`: "Memoise" = if inputs are the same, use the previous result.
+        -   Ie, don't hit the API again if we already have the result.
+    -   I'd recommend setting `verbose` to TRUE unless you're doing a mostly safe, automatic scrape.
+-   scrape()
+    -   `query` is useful for updating target in a loop, we'll see that later
+    -   `accept`: For scraping, you likely want HTML
+    -   Leave `content` NULL probably
+    -   Set `verbose` to TRUE while testing.
+-   We'll see a third function later: `nod()`
+:::
+
+## Load the page: bow() + scrape()
+
+::: fragment
+```{r}
+#| label: rvest-polite-bow-usage
+session <- polite::bow(
+  "https://www.cheese.com/castelmagno/",
+  user_agent = "rvest/1.0.4 (Jon Harmon; mailto:jonthegeek+useragent@gmail.com)",
+  delay = 0,
+  verbose = TRUE
+)
+session
+#> <polite session> https://www.cheese.com/castelmagno/
+#>     User-agent: rvest/1.0.4 (Jon Harmon; https://wapir.io; mailto:jonthegeek+useragent@gmail.com)
+#>     robots.txt: 0 rules are defined for 1 bots
+#>    Crawl delay: 0 sec
+#>   The path is scrapable for this user-agent
+```
+:::
+::: fragment
+```{r}
+#| label: rvest-polite-scrape-usage
+castelmagno_page <- polite::scrape(session)
+```
+:::
+
+# Working here
+
+` castelmagno_page |> rvest::html_elements(".summary-points")`
+
+-   Link to that page again, use inspect element to find waht we want
+-   Reiterate starting with the container ("observation")
 
 ## Load the page
 
@@ -108,95 +203,56 @@ rvest::read_html(
     x,                                    # Usually URL
     encoding = "",                        # Assumes UTF-8, specify if garbled
     ...,                                  # Never used as far as I can find
-    options= c(                           # Options for `libxml2` parsers
-      "RECOVER", "NOERROR", "NOBLANKS"
+    options = c(                          # Options for `libxml2` parsers
+      "RECOVER", "NOERROR", "NOBLANKS"    # Many more options than shown
     )
 )
 ```
 
 ::: notes
--   You'll almost always just send a URL to this function, but it CAN be HTML as text, or a file, or several other things.
--   I don't think I've ever used any options other than defaults.
+-   x usually = URL, but can be literal HTML text, file, other things
+-   ~Always defaults for everything but x
+-   {xml2} under the hood
+-   Called by httr2::resp_body_html()
 :::
 
 ## Find the object
 
 -   HTML = **H**yper**T**ext **M**arkup **L**anguage
 -   Tags as `<tagname attribute="a">contents</tagname>`
--   `rvest::html_element()` output same length as input
--   `rvest::html_elements()` flattens things
+-   `rvest::html_elements()` to select *observations* (rows)
+-   `rvest::html_element()` to select *variables* (columns)
 -   Can use ["CSS selectors"](https://flukeout.github.io/) or ["XPath expressions"](https://www.w3schools.com/xml/xpath_intro.asp)
     -   We'll focus on CSS selectors
 
 ::: notes
 -   I often forget the difference between `html_element()` and `html_elements()`
-    -   VERY rough rule of thumb: html_elements() once, then html_element to get things inside of those elements.
+    -   Rule of thumb: html_elements() once, then html_element() to get each variable inside of those elements.
 -   CSS selectors and XPath expressions can each be their own book
     -   W3 schools tutorials are helpful!
     -   CSS diner for CSS selectors
+    -   I recommend learning the CSS side, because it's also (very) useful for styling docs and shiny apps
 :::
 
 ## Extract text
 
 -   TODO: WORKING HERE
--   html_text() vs html_text2()
+-   html_text() vs html_text2() vs html_attrs() vs html_attr()
 -   readr::parse_*(), {stbl}?, others?
 
-# Scraping tables
-
-## Example 1: All tables on page
-
-[![The W3 Schools page about HTML Tables](rvest/table_simple.png){height=500}](https://www.w3schools.com/html/html_tables.asp)
-
-::: notes
--   I'll host examples for everything in this chapter in the final book, so I have control over them.
--   Notice that the first row is headers in this case.
--   On the page, scroll down to "HTML Table Tags" for another example of a table.
-:::
-
-## Scraping tables
-
-```{r}
-#| label: rvest-tables-simple
-rvest::html_table(
-    x,                  # A page loaded 
-    header = NA,
-    trim = TRUE,
-    dec = ".",
-    na.strings = "NA",
-    convert = TRUE
-)
-```
-
-## Example 2: Choose a specific table
-
-(screenshot of tables on page)
-
-::: notes
--   TidyTuesday README has two tables, even though it isn't necessarily obvious (first is the "main" GH content)
-:::
-
-## Choosing a table
-
-(code demo of scraping one of many tables)
-
-## Scraping multiple tables
-
-(purrr)
-
-# Scraping non-tabular data
+# Scrape non-tabular data (old)
 
 ## Example 3: Non-tabular data
 
+::: notes
+-   I'll host examples for everything in this chapter in the final book, so I have control over them.
+:::
+
 (screenshot of page with non-tabular data, possibly CSS selector rules)
-
-## Using SelectorGadget
-
-(record clicks? also show code where it goes)
 
 ## Using CSS selectors
 
-# Scraping interactive web pages
+# Scrape interactive web pages
 
 ## Example 4: Login
 

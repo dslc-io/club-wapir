@@ -12,6 +12,7 @@ Depends:
 Imports: 
     av,
     callr,
+    chromote,
     cli,
     dplyr,
     here,
