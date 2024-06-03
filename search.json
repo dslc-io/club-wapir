@@ -1541,18 +1541,40 @@
     "href": "slides/httr2/rvest.html#should-i-scrape-this-data",
     "title": "Scrape data from web pages",
     "section": "Should I scrape this data?",
-    "text": "Should I scrape this data?\nrobots.txt: github, wikipedia\n\nUser-agent: * = everybody\nSearch for name(s) of package(s)\nSearch for specific pages\nCheck root of site (/) and your particular subfolder\nThese aren’t (necessarily) legally binding\n{robotstxt} 📦 for parsing robots.txt\n\n\n\nNo official standards, but certain things are common.\nBoth examples point to the API. This is the right way to write a robots.txt!\nrobots.txt might be OVER protective, but watch for notes on how to use it\nDon’t hit a site you like a billion times in fast succession, you could “use up” their monthly bandwidth, for example\nYour actions COULD cost them money, so don’t be a jerk!\nWe’ll see the {polite} package shortly, which wraps {robotstxt}",
+    "text": "Should I scrape this data?\nrobots.txt: github, wikipedia\n\nUser-agent: * = everybody\nSearch for name(s) of package(s)\nSearch for specific pages\nCheck root of site (/) and your particular subfolder\nThese aren’t (necessarily) legally binding\n{robotstxt} 📦 for parsing robots.txt\n{polite} 📦 wraps and applies {robotstxt}\n\n\n\nNo official standards, but certain things are common.\nBoth examples point to the API. This is the right way to write a robots.txt!\nrobots.txt might be OVER protective, but watch for notes on how to use it\nDon’t hit a site you like a billion times in fast succession, you could “use up” their monthly bandwidth, for example\nYour actions COULD cost them money, so don’t be a jerk!\nWe’ll see the {polite} package shortly, which wraps {robotstxt}",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#three-steps-of-web-scraping",
-    "href": "slides/httr2/rvest.html#three-steps-of-web-scraping",
+    "objectID": "slides/httr2/rvest.html#motivating-example-cheese",
+    "href": "slides/httr2/rvest.html#motivating-example-cheese",
     "title": "Scrape data from web pages",
-    "section": "Three steps of web scraping",
-    "text": "Three steps of web scraping\n\nLoad the page.\nFind the object(s) you want.\nExtract text into R object(s).\n\n\n\nPages come in as text, regardless of what they contain.\n\nSome text might point to an image’s URL, but the page is just text.\n\nMaybe you want a specific table, or specific blocks of information (like a list of products).\nAgain, even if you’re getting numbers, they’re text until you say otherwise.\n(put this bullet later): Can use {readr} to parse_*() data (or {stbl} or probably others)",
+    "section": "Motivating example: Cheese",
+    "text": "Motivating example: Cheese\n\n\n\nCastelmagno cheese from cheese.com\n\n\n\n\nFor the book, I’ll host some data so we can be sure it won’t change, but I’m using this example because it’s roughly the shape I’m looking for.\n“Coss-tell-man-yo”",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/rvest.html#use-polite-to-scrape-respectfully",
+    "href": "slides/httr2/rvest.html#use-polite-to-scrape-respectfully",
+    "title": "Scrape data from web pages",
+    "section": "Use {polite} to scrape respectfully",
+    "text": "Use {polite} to scrape respectfully\n\n\npolite::bow(\n  url,\n  user_agent = \"polite R package\", # If you don't change this, min delay = 5\n  delay = 5,                       # Seconds\n  times = 3,                       # Retries\n  force = FALSE,                   # Clears memoised functions\n  verbose = FALSE,                 # Useful to know why it failed\n  ...\n)\n\n\n\n\npolite::scrape(\n  bow,\n  query = NULL,     # Named list to add after `?` in URL\n  accept = \"html\",  # Specify html, json, xml, csv, txt, etc\n  content = NULL,   # Optional MIME type\n  verbose = FALSE   # Useful to know why it failed\n)\n\n\n\n\nPolite is a great package, but docs are light.\n\nI’m resisting urge to rewrite it in httr2 with better documentation.\n\nbow():\n\nGood idea to set a user agent. If you leave default, it has to be slow.\nI’d set delay to 0; user agent requirements will override this.\nOk to leave times as-is, probably.\nforce: “Memoise” = if inputs are the same, use the previous result.\n\nIe, don’t hit the API again if we already have the result.\n\nI’d recommend setting verbose to TRUE unless you’re doing a mostly safe, automatic scrape.\n\nscrape()\n\nquery is useful for updating target in a loop, we’ll see that later\naccept: For scraping, you likely want HTML\nLeave content NULL probably\nSet verbose to TRUE while testing.\n\nWe’ll see a third function later: nod()",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/rvest.html#load-the-page-bow-scrape",
+    "href": "slides/httr2/rvest.html#load-the-page-bow-scrape",
+    "title": "Scrape data from web pages",
+    "section": "Load the page: bow() + scrape()",
+    "text": "Load the page: bow() + scrape()\n\n\nsession &lt;- polite::bow(\n  \"https://www.cheese.com/castelmagno/\",\n  user_agent = \"rvest/1.0.4 (Jon Harmon; mailto:jonthegeek+useragent@gmail.com)\",\n  delay = 0,\n  verbose = TRUE\n)\nsession\n#&gt; &lt;polite session&gt; https://www.cheese.com/castelmagno/\n#&gt;     User-agent: rvest/1.0.4 (Jon Harmon; https://wapir.io; mailto:jonthegeek+useragent@gmail.com)\n#&gt;     robots.txt: 0 rules are defined for 1 bots\n#&gt;    Crawl delay: 0 sec\n#&gt;   The path is scrapable for this user-agent\n\n\n\n\ncastelmagno_page &lt;- polite::scrape(session)",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1563,7 +1585,7 @@
     "href": "slides/httr2/rvest.html#load-the-page",
     "title": "Scrape data from web pages",
     "section": "Load the page",
-    "text": "Load the page\n\nrvest::read_html(\n    x,                                    # Usually URL\n    encoding = \"\",                        # Assumes UTF-8, specify if garbled\n    ...,                                  # Never used as far as I can find\n    options= c(                           # Options for `libxml2` parsers\n      \"RECOVER\", \"NOERROR\", \"NOBLANKS\"\n    )\n)\n\n\n\nYou’ll almost always just send a URL to this function, but it CAN be HTML as text, or a file, or several other things.\nI don’t think I’ve ever used any options other than defaults.",
+    "text": "Load the page\n\nrvest::read_html(\n    x,                                    # Usually URL\n    encoding = \"\",                        # Assumes UTF-8, specify if garbled\n    ...,                                  # Never used as far as I can find\n    options = c(                          # Options for `libxml2` parsers\n      \"RECOVER\", \"NOERROR\", \"NOBLANKS\"    # Many more options than shown\n    )\n)\n\n\n\nx usually = URL, but can be literal HTML text, file, other things\n~Always defaults for everything but x\n{xml2} under the hood\nCalled by httr2::resp_body_html()",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1574,7 +1596,7 @@
     "href": "slides/httr2/rvest.html#find-the-object",
     "title": "Scrape data from web pages",
     "section": "Find the object",
-    "text": "Find the object\n\nHTML = HyperText Markup Language\nTags as &lt;tagname attribute=\"a\"&gt;contents&lt;/tagname&gt;\nrvest::html_element() output same length as input\nrvest::html_elements() flattens things\nCan use “CSS selectors” or “XPath expressions”\n\nWe’ll focus on CSS selectors\n\n\n\n\nI often forget the difference between html_element() and html_elements()\n\nVERY rough rule of thumb: html_elements() once, then html_element to get things inside of those elements.\n\nCSS selectors and XPath expressions can each be their own book\n\nW3 schools tutorials are helpful!\nCSS diner for CSS selectors",
+    "text": "Find the object\n\nHTML = HyperText Markup Language\nTags as &lt;tagname attribute=\"a\"&gt;contents&lt;/tagname&gt;\nrvest::html_elements() to select observations (rows)\nrvest::html_element() to select variables (columns)\nCan use “CSS selectors” or “XPath expressions”\n\nWe’ll focus on CSS selectors\n\n\n\n\nI often forget the difference between html_element() and html_elements()\n\nRule of thumb: html_elements() once, then html_element() to get each variable inside of those elements.\n\nCSS selectors and XPath expressions can each be their own book\n\nW3 schools tutorials are helpful!\nCSS diner for CSS selectors\nI recommend learning the CSS side, because it’s also (very) useful for styling docs and shiny apps",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1585,62 +1607,7 @@
     "href": "slides/httr2/rvest.html#extract-text",
     "title": "Scrape data from web pages",
     "section": "Extract text",
-    "text": "Extract text\n\nTODO: WORKING HERE\nhtml_text() vs html_text2()\nreadr::parse_*(), {stbl}?, others?",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/rvest.html#example-1-all-tables-on-page",
-    "href": "slides/httr2/rvest.html#example-1-all-tables-on-page",
-    "title": "Scrape data from web pages",
-    "section": "Example 1: All tables on page",
-    "text": "Example 1: All tables on page\n\n\n\nThe W3 Schools page about HTML Tables\n\n\n\n\nI’ll host examples for everything in this chapter in the final book, so I have control over them.\nNotice that the first row is headers in this case.\nOn the page, scroll down to “HTML Table Tags” for another example of a table.",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/rvest.html#scraping-tables-1",
-    "href": "slides/httr2/rvest.html#scraping-tables-1",
-    "title": "Scrape data from web pages",
-    "section": "Scraping tables",
-    "text": "Scraping tables\n\nrvest::html_table(\n    x,                  # A page loaded \n    header = NA,\n    trim = TRUE,\n    dec = \".\",\n    na.strings = \"NA\",\n    convert = TRUE\n)",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/rvest.html#example-2-choose-a-specific-table",
-    "href": "slides/httr2/rvest.html#example-2-choose-a-specific-table",
-    "title": "Scrape data from web pages",
-    "section": "Example 2: Choose a specific table",
-    "text": "Example 2: Choose a specific table\n(screenshot of tables on page)\n\n\nTidyTuesday README has two tables, even though it isn’t necessarily obvious (first is the “main” GH content)",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/rvest.html#choosing-a-table",
-    "href": "slides/httr2/rvest.html#choosing-a-table",
-    "title": "Scrape data from web pages",
-    "section": "Choosing a table",
-    "text": "Choosing a table\n(code demo of scraping one of many tables)",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/rvest.html#scraping-multiple-tables",
-    "href": "slides/httr2/rvest.html#scraping-multiple-tables",
-    "title": "Scrape data from web pages",
-    "section": "Scraping multiple tables",
-    "text": "Scraping multiple tables\n(purrr)",
+    "text": "Extract text\n\nTODO: WORKING HERE\nhtml_text() vs html_text2() vs html_attrs() vs html_attr()\nreadr::parse_*(), {stbl}?, others?",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1651,18 +1618,7 @@
     "href": "slides/httr2/rvest.html#example-3-non-tabular-data",
     "title": "Scrape data from web pages",
     "section": "Example 3: Non-tabular data",
-    "text": "Example 3: Non-tabular data\n(screenshot of page with non-tabular data, possibly CSS selector rules)",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/rvest.html#using-selectorgadget",
-    "href": "slides/httr2/rvest.html#using-selectorgadget",
-    "title": "Scrape data from web pages",
-    "section": "Using SelectorGadget",
-    "text": "Using SelectorGadget\n(record clicks? also show code where it goes)",
+    "text": "Example 3: Non-tabular data\n\n\nI’ll host examples for everything in this chapter in the final book, so I have control over them.\n\n\n(screenshot of page with non-tabular data, possibly CSS selector rules)",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
