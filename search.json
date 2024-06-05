@@ -1519,7 +1519,7 @@
     "href": "slides/httr2/rvest.html#do-i-need-to-scrape-this-data",
     "title": "Scrape data from web pages",
     "section": "Do I need to scrape this data?",
-    "text": "Do I need to scrape this data?\n\nTry {datapasta} 📦\n\nRStudio Addins\n\nIf it’s one time & over-complicated, consider other copy/paste strategies\nOnly scrape what you need\nLook for an API!\n\n\n\nEven consider manual copy/paste one field at a time if it’s not a TON of data.\nWe’ll see one place to look for an API on the next slide.\nMore on looking for APIs in chapter 9 “Find APIs”",
+    "text": "Do I need to scrape this data?\n\nLook for an API!\nTry {datapasta} 📦\n\nRStudio Addins\n\nIf it’s one time & over-complicated, consider other copy/paste strategies\nOnly scrape pages you need\n\n\n\nMore on looking for APIs in chapter 9 “Find APIs”\nWe’ll see one place to look for an API on the next slide.\nEven consider manual copy/paste one field at a time if it’s not a TON of data.\nPoint of that last bullet: Don’t hit the server more than you need to",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1530,7 +1530,7 @@
     "href": "slides/httr2/rvest.html#can-i-legally-scrape-this-data",
     "title": "Scrape data from web pages",
     "section": "Can I legally scrape this data?",
-    "text": "Can I legally scrape this data?\n\n✅ Personal use or nonprofit education usually ok\n⚠️ Personally Identifiable Information (PII)\n⚠️ Legal disclaimers (but may be over-protective)\nUSA:\n\nCan’t copyright facts,\nCAN copyright collections of facts in some cases (creative)\nTidyTuesday 2023-08-29: Fair Use\n\nOther places:\n\nSometimes stricter (EU)\nSometimes more lax\n\n\n\n\nIf it’s important, consult a lawyer.\nPII: Or even user-generated information in some cases\nThis is why recipe blogs have stories about the recipes.\nThat TidyTuesday dataset exists because I was writing these notes.\nEU provides more protections for database creators and for user-generated data",
+    "text": "Can I legally scrape this data?\n\n⚠️ Legal disclaimers (but may be over-protective)\nUSA:\n\nCan’t copyright facts,\nCAN copyright collections of facts in some cases (creative)\nTidyTuesday 2023-08-29: Fair Use\n\nOther places:\n\nSometimes stricter (EU)\nSometimes more lax\n\n✅ Personal use or nonprofit education usually ok\n⚠️ Personally Identifiable Information (PII)\n\n\n\nIf it’s important, consult a lawyer.\nThis is why recipe blogs have stories about the recipes.\nThat TidyTuesday dataset exists because I was writing these notes.\nEU provides more protections for database creators and for user-generated data\nPII: Or even user-generated information in some cases\nUser-generated example: Stack overflow content requires attribution.",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1541,7 +1541,7 @@
     "href": "slides/httr2/rvest.html#should-i-scrape-this-data",
     "title": "Scrape data from web pages",
     "section": "Should I scrape this data?",
-    "text": "Should I scrape this data?\nrobots.txt: github, wikipedia\n\nUser-agent: * = everybody\nSearch for name(s) of package(s)\nSearch for specific pages\nCheck root of site (/) and your particular subfolder\nThese aren’t (necessarily) legally binding\n{robotstxt} 📦 for parsing robots.txt\n{polite} 📦 wraps and applies {robotstxt}\n\n\n\nNo official standards, but certain things are common.\nBoth examples point to the API. This is the right way to write a robots.txt!\nrobots.txt might be OVER protective, but watch for notes on how to use it\nDon’t hit a site you like a billion times in fast succession, you could “use up” their monthly bandwidth, for example\nYour actions COULD cost them money, so don’t be a jerk!\nWe’ll see the {polite} package shortly, which wraps {robotstxt}",
+    "text": "Should I scrape this data?\nrobots.txt: github, wikipedia\n\nUser-agent: * = everybody\nSearch for name(s) of package(s)\nSearch for specific pages within site\nCheck root of site (/) and your particular subfolder\nThese aren’t (necessarily) legally binding\n{robotstxt} 📦 for parsing robots.txt\n{polite} 📦 wraps and applies {robotstxt}\n\n\n\nCheck comments at the top for general feel (comments have # at start)\nBoth examples point to the API. This is the right way to write a robots.txt!\nrobots.txt might be OVER protective, but watch for notes on how to use it\nDon’t hit a site you like a billion times in fast succession, you could “use up” their monthly bandwidth, for example\nYour actions COULD cost them money, so don’t be a jerk!\nWe’ll see the {polite} package shortly, which wraps {robotstxt}",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1552,7 +1552,18 @@
     "href": "slides/httr2/rvest.html#motivating-example-cheese",
     "title": "Scrape data from web pages",
     "section": "Motivating example: Cheese",
-    "text": "Motivating example: Cheese\n\n\n\nCastelmagno cheese from cheese.com\n\n\n\n\nFor the book, I’ll host some data so we can be sure it won’t change, but I’m using this example because it’s roughly the shape I’m looking for.\n“Coss-tell-man-yo”",
+    "text": "Motivating example: Cheese\n\nCastelmagno cheese from cheese.com\n\nFor the book, I’ll host some data so we can be sure it won’t change, but I’m using this example because it’s roughly the shape I’m looking for.\n“Coss-tell-man-yo”\nIf you look at the “cleaning script” in this week’s TidyTuesday… it’s not perfect. I’ve improved it since then.",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/rvest.html#three-steps-of-web-scraping-with-rvest",
+    "href": "slides/httr2/rvest.html#three-steps-of-web-scraping-with-rvest",
+    "title": "Scrape data from web pages",
+    "section": "Three steps of web scraping with {rvest}",
+    "text": "Three steps of web scraping with {rvest}\nSee R4DS Chapter 24: “Web Scraping” for a full introduction\n\nLoad the page.\nFind the object(s) (observations & variables) you want.\nExtract variables (text) into R object(s).\n\n\n\nStep 1 = scraping, 2-3 also apply to API requests that return HTML or XML.\nPages = text, regardless of what they contain.\n\nText might point to URL of image, but page = text.\n\nSpecific table? Specific blocks of info?\n\nList of products\n\nEven numbers = text until parsed.",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1563,7 +1574,7 @@
     "href": "slides/httr2/rvest.html#use-polite-to-scrape-respectfully",
     "title": "Scrape data from web pages",
     "section": "Use {polite} to scrape respectfully",
-    "text": "Use {polite} to scrape respectfully\n\n\npolite::bow(\n  url,\n  user_agent = \"polite R package\", # If you don't change this, min delay = 5\n  delay = 5,                       # Seconds\n  times = 3,                       # Retries\n  force = FALSE,                   # Clears memoised functions\n  verbose = FALSE,                 # Useful to know why it failed\n  ...\n)\n\n\n\n\npolite::scrape(\n  bow,\n  query = NULL,     # Named list to add after `?` in URL\n  accept = \"html\",  # Specify html, json, xml, csv, txt, etc\n  content = NULL,   # Optional MIME type\n  verbose = FALSE   # Useful to know why it failed\n)\n\n\n\n\nPolite is a great package, but docs are light.\n\nI’m resisting urge to rewrite it in httr2 with better documentation.\n\nbow():\n\nGood idea to set a user agent. If you leave default, it has to be slow.\nI’d set delay to 0; user agent requirements will override this.\nOk to leave times as-is, probably.\nforce: “Memoise” = if inputs are the same, use the previous result.\n\nIe, don’t hit the API again if we already have the result.\n\nI’d recommend setting verbose to TRUE unless you’re doing a mostly safe, automatic scrape.\n\nscrape()\n\nquery is useful for updating target in a loop, we’ll see that later\naccept: For scraping, you likely want HTML\nLeave content NULL probably\nSet verbose to TRUE while testing.\n\nWe’ll see a third function later: nod()",
+    "text": "Use {polite} to scrape respectfully\n\n\npolite::bow(\n  url,                             # Page to scrape (or root)\n  user_agent = \"polite R package\", # If you don't change this, min delay = 5\n  delay = 5,                       # Seconds between requests\n  times = 3,                       # Retries\n  force = FALSE,                   # Clears memoised functions\n  verbose = FALSE,                 # Useful to know why it failed\n  ...\n)\n\n\n\n\npolite::scrape(\n  bow,              # Session opened with bow()\n  query = NULL,     # Named list to add after `?` in URL\n  accept = \"html\",  # Specify html, json, xml, csv, txt, etc\n  content = NULL,   # Optional MIME type\n  verbose = FALSE   # Useful to know why it failed\n)\n\n\n\n\nPolite is a great package, but docs are light.\n\nI’m resisting urge to rewrite it in httr2 with better documentation.\n\nbow():\n\nGood idea to set a user agent. If you leave default, it has to be slow. Searches for “polite” or polite package author in your user agent to set slow rule.\nI’d set delay to 0; user agent requirements will override this.\nOk to leave times as-is, probably.\nforce: “Memoise” = if inputs are the same, use the previous result.\n\nIe, don’t hit the API again if we already have the result.\n\nI’d recommend setting verbose to TRUE unless you’re doing a mostly safe, automatic scrape.\n\nscrape()\n\nquery is useful for updating target in a loop, we’ll see that later\naccept: For scraping, you likely want HTML\nLeave content NULL probably\nSet verbose to TRUE while testing.\n\nWe’ll see a third function later: nod()",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
@@ -1581,99 +1592,55 @@
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#load-the-page",
-    "href": "slides/httr2/rvest.html#load-the-page",
+    "objectID": "slides/httr2/rvest.html#find-the-objects",
+    "href": "slides/httr2/rvest.html#find-the-objects",
     "title": "Scrape data from web pages",
-    "section": "Load the page",
-    "text": "Load the page\n\nrvest::read_html(\n    x,                                    # Usually URL\n    encoding = \"\",                        # Assumes UTF-8, specify if garbled\n    ...,                                  # Never used as far as I can find\n    options = c(                          # Options for `libxml2` parsers\n      \"RECOVER\", \"NOERROR\", \"NOBLANKS\"    # Many more options than shown\n    )\n)\n\n\n\nx usually = URL, but can be literal HTML text, file, other things\n~Always defaults for everything but x\n{xml2} under the hood\nCalled by httr2::resp_body_html()",
+    "section": "Find the object(s)",
+    "text": "Find the object(s)\nhttps://www.cheese.com/castelmagno\n\nSelect a specific element from R4DS slides\n\n\n\nLoad the page and inspect element\nWhole container: class: “summary-points” so .summary-points\n\nTechnically could use “ul.summary_points”",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#find-the-object",
-    "href": "slides/httr2/rvest.html#find-the-object",
+    "objectID": "slides/httr2/rvest.html#selected-elements",
+    "href": "slides/httr2/rvest.html#selected-elements",
     "title": "Scrape data from web pages",
-    "section": "Find the object",
-    "text": "Find the object\n\nHTML = HyperText Markup Language\nTags as &lt;tagname attribute=\"a\"&gt;contents&lt;/tagname&gt;\nrvest::html_elements() to select observations (rows)\nrvest::html_element() to select variables (columns)\nCan use “CSS selectors” or “XPath expressions”\n\nWe’ll focus on CSS selectors\n\n\n\n\nI often forget the difference between html_element() and html_elements()\n\nRule of thumb: html_elements() once, then html_element() to get each variable inside of those elements.\n\nCSS selectors and XPath expressions can each be their own book\n\nW3 schools tutorials are helpful!\nCSS diner for CSS selectors\nI recommend learning the CSS side, because it’s also (very) useful for styling docs and shiny apps",
+    "section": "Selected elements",
+    "text": "Selected elements\n\nhtml_element() vs html_elements() from R4DS slides\n\n\n\nsummary_points &lt;- castelmagno_page |&gt; \n  rvest::html_elements(\".summary-points li\")\nsummary_points\n#&gt; {xml_nodeset (15)}\n#&gt; [1] &lt;li class=\"summary_milk\"&gt;\\n               ...\n#&gt; [2] &lt;li class=\"summary_country\"&gt;\\n            ...\n#&gt; [3] &lt;li class=\"summary_region\"&gt;\\n             ...\n#&gt; [4] &lt;li class=\"summary_family\"&gt;\\n             ...\n#&gt; [5] &lt;li class=\"summary_moisture_and_type\"&gt;\\n  ...\n#&gt; [6] &lt;li class=\"summary_fat\"&gt;\\n                ...\n#&gt; [7] &lt;li class=\"summary_calcium\"&gt;\\n            ...\n#&gt; [8] &lt;li class=\"summary_texture\"&gt;\\n            ...\n#&gt; [9] &lt;li class=\"summary_rind\"&gt;\\n               ...\n#&gt; [10] &lt;li class=\"summary_tint\"&gt;\\n              ...\n#&gt; [11] &lt;li class=\"summary_taste\"&gt;\\n             ...\n#&gt; [12] &lt;li class=\"summary_smell\"&gt;\\n             ...\n#&gt; [13] &lt;li class=\"summary_vegetarian\"&gt;\\n        ...\n#&gt; [14] &lt;li class=\"summary_vegan\"&gt;\\n             ...\n#&gt; [15] &lt;li class=\"summary_alt_spelling\"&gt;\\n      ...\n\n\n\n\nWe really only have a single observation and separate variables here, so that rule of thumb doesn’t always hold!",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#extract-text",
-    "href": "slides/httr2/rvest.html#extract-text",
+    "objectID": "slides/httr2/rvest.html#extract-variables",
+    "href": "slides/httr2/rvest.html#extract-variables",
     "title": "Scrape data from web pages",
-    "section": "Extract text",
-    "text": "Extract text\n\nTODO: WORKING HERE\nhtml_text() vs html_text2() vs html_attrs() vs html_attr()\nreadr::parse_*(), {stbl}?, others?",
+    "section": "Extract variables",
+    "text": "Extract variables\n\n\ncheese_variables &lt;- summary_points |&gt; \n  rvest::html_text2() |&gt; \n  stringr::str_remove(\"^[^:]*: \") # \"Remove anything up to \": \"\n\n\n\n\nnames(cheese_variables) &lt;- summary_points |&gt; \n  rvest::html_attr(\"class\") |&gt; \n  stringr::str_remove(\"^summary_\")\n\n\n\n\ncheese_data &lt;- tibble::tibble(!!!cheese_variables)\n#&gt; $ milk              &lt;chr&gt; \"Made from pasteurized or unpasteurized cow's, goat's and sheep's milk\"\n#&gt; $ country           &lt;chr&gt; \"Italy\"\n#&gt; $ region            &lt;chr&gt; \"Piedmont\"\n#&gt; $ family            &lt;chr&gt; \"Blue\"\n#&gt; $ moisture_and_type &lt;chr&gt; \"semi-hard\"\n#&gt; $ fat               &lt;chr&gt; \"34.2 g/100g\"\n#&gt; $ calcium           &lt;chr&gt; \"4768 mg/100g\"\n#&gt; $ texture           &lt;chr&gt; \"crumbly, dense and grainy\"\n#&gt; $ rind              &lt;chr&gt; \"washed\"\n#&gt; $ tint              &lt;chr&gt; \"ivory\"\n#&gt; $ taste             &lt;chr&gt; \"sharp, spicy, strong\"\n#&gt; $ smell             &lt;chr&gt; \"strong\"\n#&gt; $ vegetarian        &lt;chr&gt; \"no\"\n#&gt; $ vegan             &lt;chr&gt; \"no\"\n#&gt; $ alt_spelling      &lt;chr&gt; \"Castelmagno PDO, Castelmagno di alpeggio, Castelmagno prodotto della montagna\"\n\n\n\n\nhtml_text2() cleans up text, you probalby always want it.\nhtml_attr() gets things inside the tag (tab to view of the page)\nI like the “bang bang bang” method for named vector to tibble, there are other ways to do this, too.\nI’ll briefly show cleaning on the next page.\n\nSplit (comma/and)-separated lists into list-vars\nExtract info from “milk”\nClean up classes",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#example-3-non-tabular-data",
-    "href": "slides/httr2/rvest.html#example-3-non-tabular-data",
+    "objectID": "slides/httr2/rvest.html#aside-cleaning",
+    "href": "slides/httr2/rvest.html#aside-cleaning",
     "title": "Scrape data from web pages",
-    "section": "Example 3: Non-tabular data",
-    "text": "Example 3: Non-tabular data\n\n\nI’ll host examples for everything in this chapter in the final book, so I have control over them.\n\n\n(screenshot of page with non-tabular data, possibly CSS selector rules)",
+    "section": "Aside: Cleaning",
+    "text": "Aside: Cleaning\n\ncheese_data |&gt; \n  dplyr::mutate(\n    vegetarian = vegetarian == \"yes\",\n    vegan = vegan == \"yes\",\n    dplyr::across(\n      c(\"fat\", \"calcium\"),\n      \\(x) as.double(stringr::str_remove(x, \" m?g/100g\"))\n    ),\n    dplyr::across(\n      c(-\"milk\", -\"vegetarian\", -\"vegan\", -\"fat\", -\"calcium\"),\n      \\(x) stringr::str_split(x, \"(, )|( and )\")\n    )\n  ) |&gt; \n  dplyr::mutate(\n    pasteurized = stringr::str_detect(milk, \"\\\\bpasteurized\"),\n    unpasteurized = stringr::str_detect(milk, \"\\\\bunpasteurized\"),\n    animal = stringr::str_extract_all(milk, \"(\\\\S+)(?='s)\"),\n    .before = \"milk\",\n    .keep = \"unused\"\n  ) |&gt; \n  dplyr::glimpse()\n#&gt; Rows: 1\n#&gt; Columns: 17\n#&gt; $ pasteurized       &lt;lgl&gt; TRUE\n#&gt; $ unpasteurized     &lt;lgl&gt; TRUE\n#&gt; $ animal            &lt;list&gt; &lt;\"cow\", \"goat\", \"sheep\"&gt;\n#&gt; $ country           &lt;list&gt; \"Italy\"\n#&gt; $ region            &lt;list&gt; \"Piedmont\"\n#&gt; $ family            &lt;list&gt; \"Blue\"\n#&gt; $ moisture_and_type &lt;list&gt; \"semi-hard\"\n#&gt; $ fat               &lt;dbl&gt; 34.2\n#&gt; $ calcium           &lt;dbl&gt; 4768\n#&gt; $ texture           &lt;list&gt; &lt;\"crumbly\", \"dense\", \"grainy\"&gt;\n#&gt; $ rind              &lt;list&gt; \"washed\"\n#&gt; $ tint              &lt;list&gt; \"ivory\"\n#&gt; $ taste             &lt;list&gt; &lt;\"sharp\", \"spicy\", \"strong\"&gt;\n#&gt; $ smell             &lt;list&gt; \"strong\"\n#&gt; $ vegetarian        &lt;lgl&gt; FALSE\n#&gt; $ vegan             &lt;lgl&gt; FALSE\n#&gt; $ alt_spelling      &lt;list&gt; &lt;\"Castelmagno PDO\", \"Castelmagno di alpeggio\", \"Castelmagno prodotto della montagna\"…\n\n\n\n{readr} parse_*() functions can be handy for dates and numbers.\n\nMy {stbl} package might eventually be better for web data.",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
     ]
   },
   {
-    "objectID": "slides/httr2/rvest.html#using-css-selectors",
-    "href": "slides/httr2/rvest.html#using-css-selectors",
+    "objectID": "slides/httr2/rvest.html#read_html_live",
+    "href": "slides/httr2/rvest.html#read_html_live",
     "title": "Scrape data from web pages",
-    "section": "Using CSS selectors",
-    "text": "Using CSS selectors",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/rvest.html#example-4-login",
-    "href": "slides/httr2/rvest.html#example-4-login",
-    "title": "Scrape data from web pages",
-    "section": "Example 4: Login",
-    "text": "Example 4: Login",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/rvest.html#scraping-data-behind-a-login",
-    "href": "slides/httr2/rvest.html#scraping-data-behind-a-login",
-    "title": "Scrape data from web pages",
-    "section": "Scraping data behind a login",
-    "text": "Scraping data behind a login",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/rvest.html#example-5-dynamic-data",
-    "href": "slides/httr2/rvest.html#example-5-dynamic-data",
-    "title": "Scrape data from web pages",
-    "section": "Example 5: Dynamic data",
-    "text": "Example 5: Dynamic data",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/rvest.html#scraping-data-that-requires-interaction",
-    "href": "slides/httr2/rvest.html#scraping-data-that-requires-interaction",
-    "title": "Scrape data from web pages",
-    "section": "Scraping data that requires interaction",
-    "text": "Scraping data that requires interaction\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
+    "section": "read_html_live",
+    "text": "read_html_live\n\nData: HMdb.org\n\nrobots.txt\n\nLive-coding!\n\n\n\nsession &lt;- rvest::read_html_live(\"https://www.hmdb.org/geolists.asp\")\nsession |&gt; \n  rvest::html_element(\"#StatesList\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"div.bodysansserif\") |&gt;\n  rvest::html_elements(\"td:nth-child(2)\") |&gt; \n  rvest::html_text2()\nsession$click(\"tr:nth-child(1) .countryarrow\")\nsession |&gt; \n  rvest::html_element(\"#StatesList\") |&gt; \n  rvest::html_text2()\nsession$click(\"tr:nth-child(2) .countryarrow\")\nsession |&gt; \n  rvest::html_element(\"#StatesList\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"#StateSidebar\") |&gt;\n  rvest::html_elements(\"td:nth-child(2)\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"#CountiesList\") |&gt; \n  rvest::html_text2()\nsession$click(\"#StateSidebar tr:nth-child(3) .statearrow\")\nsession |&gt; \n  rvest::html_element(\"#CountiesList\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"#CountySidebar\") |&gt; \n  rvest::html_elements(\"a\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"#CountySidebar\") |&gt; \n  rvest::html_elements(\"a\") |&gt; \n  rvest::html_attr(\"href\")\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
       "Get more data",
       "Scrape data from web pages"
