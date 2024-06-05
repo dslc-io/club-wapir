@@ -9,7 +9,6 @@ title: Scrape data from web pages
 -   Decide whether to scrape data from a web page.
 -   Use {polite} to responsibly scrape web pages.
 -   Scrape complex data structures from web pages.
--   Scrape data from websites that require you to log in.
 -   Scrape content that requires interaction.
 :::
 
@@ -33,22 +32,21 @@ library(chromote)
 
 ## Do I need to scrape this data?
 
+-   Look for an API!
 -   Try {[datapasta](https://cran.r-project.org/package=datapasta)} 📦
     -   RStudio Addins
 -   If it's one time & over-complicated, consider other copy/paste strategies
--   Only scrape what you need
--   Look for an API!
+-   Only scrape pages you need
 
 ::: notes
--   Even consider manual copy/paste one field at a time if it's not a TON of data.
--   We'll see one place to look for an API on the next slide.
 -   More on looking for APIs in chapter 9 "Find APIs"
+-   We'll see one place to look for an API on the next slide.
+-   Even consider manual copy/paste one field at a time if it's not a TON of data.
+-   Point of that last bullet: Don't hit the server more than you need to
 :::
 
 ## Can I legally scrape this data?
 
--   ✅ Personal use or nonprofit education usually ok
--   ⚠️ Personally Identifiable Information (PII)
 -   ⚠️ Legal disclaimers (but may be over-protective)
 -   USA:
     -   Can't copyright facts,
@@ -57,13 +55,16 @@ library(chromote)
 -   Other places:
     -   Sometimes stricter ([EU](https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:31996L0009:EN:HTML))
     -   Sometimes more lax
+-   ✅ Personal use or nonprofit education usually ok
+-   ⚠️ Personally Identifiable Information (PII)
 
 ::: notes
 -   If it's important, consult a lawyer.
--   PII: Or even user-generated information in some cases
 -   This is why recipe blogs have stories about the recipes.
 -   That TidyTuesday dataset exists because I was writing these notes.
 -   EU provides more protections for database creators and for user-generated data
+-   PII: Or even user-generated information in some cases
+-   User-generated example: Stack overflow content requires attribution.
 :::
 
 ## Should I scrape this data?
@@ -72,14 +73,14 @@ library(chromote)
 
 -   `User-agent: *` = everybody
 -   Search for name(s) of package(s) 
--   Search for specific pages
+-   Search for specific pages within site
 -   Check root of site (`/`) and your particular subfolder 
 -   These aren't (necessarily) legally binding
 -   [{robotstxt}](https://docs.ropensci.org/robotstxt/) 📦 for parsing `robots.txt`
 -   [{polite}](https://dmi3kno.github.io/polite/) 📦 wraps and applies {robotstxt}
 
 ::: notes
--   No official standards, but certain things are common.
+-   Check comments at the top for general feel (comments have `#` at start)
 -   Both examples point to the API. This is the right way to write a robots.txt!
 -   `robots.txt` might be OVER protective, but watch for notes on how to use it
 -   Don't hit a site you like a billion times in fast succession, you could "use up" their monthly bandwidth, for example
@@ -91,14 +92,15 @@ library(chromote)
 
 ## Motivating example: Cheese
 
-[![Castelmagno cheese from cheese.com](rvest/castelmagno_cheese.png)](https://www.cheese.com/castelmagno/)
+![[Castelmagno cheese from cheese.com](https://www.cheese.com/castelmagno/)](rvest/castelmagno_cheese.png)
 
 ::: notes
 -   For the book, I'll host some data so we can be sure it won't change, but I'm using this example because it's roughly the shape I'm looking for.
 -   "Coss-tell-man-yo"
+-   If you look at the "cleaning script" in this week's TidyTuesday... it's not perfect. I've improved it since then.
 :::
 
-# Three steps of web scraping with {rvest}
+## Three steps of web scraping with {rvest}
 
 See [R4DS Chapter 24: "Web Scraping"](https://r4ds.hadley.nz/webscraping) for a full introduction
 
@@ -107,12 +109,12 @@ See [R4DS Chapter 24: "Web Scraping"](https://r4ds.hadley.nz/webscraping) for a 
 3.  Extract variables (text) into R object(s).
 
 ::: notes
+-   Step 1 = scraping, 2-3 also apply to API requests that return HTML or XML.
 -   Pages = text, regardless of what they contain.
     -   Text might point to URL of image, but page = text.
 -   Specific table? Specific blocks of info? 
     -   List of products
 -   Even numbers = text until parsed.
--   (put this bullet later): Can use {readr} to `parse_*()` data (or `{stbl}` or probably others)
 :::
 
 ## Use {polite} to scrape respectfully
@@ -121,9 +123,9 @@ See [R4DS Chapter 24: "Web Scraping"](https://r4ds.hadley.nz/webscraping) for a 
 ```{r}
 #| label: rvest-polite-bow
 polite::bow(
-  url,
+  url,                             # Page to scrape (or root)
   user_agent = "polite R package", # If you don't change this, min delay = 5
-  delay = 5,                       # Seconds
+  delay = 5,                       # Seconds between requests
   times = 3,                       # Retries
   force = FALSE,                   # Clears memoised functions
   verbose = FALSE,                 # Useful to know why it failed
@@ -135,7 +137,7 @@ polite::bow(
 ```{r}
 #| label: rvest-polite-scrape
 polite::scrape(
-  bow,
+  bow,              # Session opened with bow()
   query = NULL,     # Named list to add after `?` in URL
   accept = "html",  # Specify html, json, xml, csv, txt, etc
   content = NULL,   # Optional MIME type
@@ -148,7 +150,7 @@ polite::scrape(
 -   Polite is a great package, but docs are light.
     -   I'm resisting urge to rewrite it in httr2 with better documentation.
 -   bow():
-    -   Good idea to set a `user agent`. If you leave default, it *has* to be slow.
+    -   Good idea to set a `user agent`. If you leave default, it *has* to be slow. Searches for "polite" or polite package author in your user agent to set slow rule.
     -   I'd set `delay` to 0; user agent requirements will override this.
     -   Ok to leave `times` as-is, probably.
     -   `force`: "Memoise" = if inputs are the same, use the previous result.
@@ -188,76 +190,197 @@ castelmagno_page <- polite::scrape(session)
 ```
 :::
 
-# Working here
+## Find the object(s)
 
-` castelmagno_page |> rvest::html_elements(".summary-points")`
+[https://www.cheese.com/castelmagno](https://www.cheese.com/castelmagno)
 
--   Link to that page again, use inspect element to find waht we want
--   Reiterate starting with the container ("observation")
+-   [Select a specific element](https://r4ds.github.io/bookclub-r4ds/select-a-specific-element.html) from R4DS slides
 
-## Load the page
+::: notes
+-   Load the page and inspect element
+-   Whole container: class: "summary-points" so `.summary-points`
+    -   Technically could use "ul.summary_points"
+:::
+
+## Selected elements
+
+-   [html_element() vs html_elements()](https://r4ds.github.io/bookclub-r4ds/select-finer-grained-elements.html) from R4DS slides
+
+::: fragment
+```{r}
+#| label: rvest-summary_points
+summary_points <- castelmagno_page |> 
+  rvest::html_elements(".summary-points li")
+summary_points
+#> {xml_nodeset (15)}
+#> [1] <li class="summary_milk">\n               ...
+#> [2] <li class="summary_country">\n            ...
+#> [3] <li class="summary_region">\n             ...
+#> [4] <li class="summary_family">\n             ...
+#> [5] <li class="summary_moisture_and_type">\n  ...
+#> [6] <li class="summary_fat">\n                ...
+#> [7] <li class="summary_calcium">\n            ...
+#> [8] <li class="summary_texture">\n            ...
+#> [9] <li class="summary_rind">\n               ...
+#> [10] <li class="summary_tint">\n              ...
+#> [11] <li class="summary_taste">\n             ...
+#> [12] <li class="summary_smell">\n             ...
+#> [13] <li class="summary_vegetarian">\n        ...
+#> [14] <li class="summary_vegan">\n             ...
+#> [15] <li class="summary_alt_spelling">\n      ...
+```
+:::
+
+::: notes
+-   We really only have a single observation and separate variables here, so that rule of thumb doesn't always hold!
+:::
+
+## Extract variables
+
+::: fragment
+```{r}
+#| label: rvest-summary_points-html_text2
+cheese_variables <- summary_points |> 
+  rvest::html_text2() |> 
+  stringr::str_remove("^[^:]*: ") # "Remove anything up to ": "
+```
+:::
+::: fragment
+```{r}
+#| label: rvest-summary_points-html_attr
+names(cheese_variables) <- summary_points |> 
+  rvest::html_attr("class") |> 
+  stringr::str_remove("^summary_")
+```
+:::
+::: fragment
+```{r}
+#| label: rvest-summary_points-cheese_data
+cheese_data <- tibble::tibble(!!!cheese_variables)
+#> $ milk              <chr> "Made from pasteurized or unpasteurized cow's, goat's and sheep's milk"
+#> $ country           <chr> "Italy"
+#> $ region            <chr> "Piedmont"
+#> $ family            <chr> "Blue"
+#> $ moisture_and_type <chr> "semi-hard"
+#> $ fat               <chr> "34.2 g/100g"
+#> $ calcium           <chr> "4768 mg/100g"
+#> $ texture           <chr> "crumbly, dense and grainy"
+#> $ rind              <chr> "washed"
+#> $ tint              <chr> "ivory"
+#> $ taste             <chr> "sharp, spicy, strong"
+#> $ smell             <chr> "strong"
+#> $ vegetarian        <chr> "no"
+#> $ vegan             <chr> "no"
+#> $ alt_spelling      <chr> "Castelmagno PDO, Castelmagno di alpeggio, Castelmagno prodotto della montagna"
+```
+:::
+
+::: notes
+-   html_text2() cleans up text, you probalby always want it.
+-   html_attr() gets things inside the tag (tab to view of the page)
+-   I like the "bang bang bang" method for named vector to tibble, there are other ways to do this, too.
+-   I'll briefly show cleaning on the next page.
+    -   Split (comma/and)-separated lists into list-vars
+    -   Extract info from "milk"
+    -   Clean up classes
+:::
+
+## Aside: Cleaning
 
 ```{r}
-#| label: rvest-read_html
-rvest::read_html(
-    x,                                    # Usually URL
-    encoding = "",                        # Assumes UTF-8, specify if garbled
-    ...,                                  # Never used as far as I can find
-    options = c(                          # Options for `libxml2` parsers
-      "RECOVER", "NOERROR", "NOBLANKS"    # Many more options than shown
+#| label: rvest-summary_points-cleaning
+cheese_data |> 
+  dplyr::mutate(
+    vegetarian = vegetarian == "yes",
+    vegan = vegan == "yes",
+    dplyr::across(
+      c("fat", "calcium"),
+      \(x) as.double(stringr::str_remove(x, " m?g/100g"))
+    ),
+    dplyr::across(
+      c(-"milk", -"vegetarian", -"vegan", -"fat", -"calcium"),
+      \(x) stringr::str_split(x, "(, )|( and )")
     )
-)
+  ) |> 
+  dplyr::mutate(
+    pasteurized = stringr::str_detect(milk, "\\bpasteurized"),
+    unpasteurized = stringr::str_detect(milk, "\\bunpasteurized"),
+    animal = stringr::str_extract_all(milk, "(\\S+)(?='s)"),
+    .before = "milk",
+    .keep = "unused"
+  ) |> 
+  dplyr::glimpse()
+#> Rows: 1
+#> Columns: 17
+#> $ pasteurized       <lgl> TRUE
+#> $ unpasteurized     <lgl> TRUE
+#> $ animal            <list> <"cow", "goat", "sheep">
+#> $ country           <list> "Italy"
+#> $ region            <list> "Piedmont"
+#> $ family            <list> "Blue"
+#> $ moisture_and_type <list> "semi-hard"
+#> $ fat               <dbl> 34.2
+#> $ calcium           <dbl> 4768
+#> $ texture           <list> <"crumbly", "dense", "grainy">
+#> $ rind              <list> "washed"
+#> $ tint              <list> "ivory"
+#> $ taste             <list> <"sharp", "spicy", "strong">
+#> $ smell             <list> "strong"
+#> $ vegetarian        <lgl> FALSE
+#> $ vegan             <lgl> FALSE
+#> $ alt_spelling      <list> <"Castelmagno PDO", "Castelmagno di alpeggio", "Castelmagno prodotto della montagna"…
 ```
 
 ::: notes
--   x usually = URL, but can be literal HTML text, file, other things
--   ~Always defaults for everything but x
--   {xml2} under the hood
--   Called by httr2::resp_body_html()
+-   {readr} `parse_*()` functions can be handy for dates and numbers.
+    -   My {stbl} package might eventually be better for web data.
 :::
-
-## Find the object
-
--   HTML = **H**yper**T**ext **M**arkup **L**anguage
--   Tags as `<tagname attribute="a">contents</tagname>`
--   `rvest::html_elements()` to select *observations* (rows)
--   `rvest::html_element()` to select *variables* (columns)
--   Can use ["CSS selectors"](https://flukeout.github.io/) or ["XPath expressions"](https://www.w3schools.com/xml/xpath_intro.asp)
-    -   We'll focus on CSS selectors
-
-::: notes
--   I often forget the difference between `html_element()` and `html_elements()`
-    -   Rule of thumb: html_elements() once, then html_element() to get each variable inside of those elements.
--   CSS selectors and XPath expressions can each be their own book
-    -   W3 schools tutorials are helpful!
-    -   CSS diner for CSS selectors
-    -   I recommend learning the CSS side, because it's also (very) useful for styling docs and shiny apps
-:::
-
-## Extract text
-
--   TODO: WORKING HERE
--   html_text() vs html_text2() vs html_attrs() vs html_attr()
--   readr::parse_*(), {stbl}?, others?
-
-# Scrape non-tabular data (old)
-
-## Example 3: Non-tabular data
-
-::: notes
--   I'll host examples for everything in this chapter in the final book, so I have control over them.
-:::
-
-(screenshot of page with non-tabular data, possibly CSS selector rules)
-
-## Using CSS selectors
 
 # Scrape interactive web pages
 
-## Example 4: Login
+## read_html_live
 
-## Scraping data behind a login
+-   Data: [HMdb.org](https://www.hmdb.org/geolists.asp)
+    -   [robots.txt](https://www.hmdb.org/robots.txt)
+-   Live-coding!
 
-## Example 5: Dynamic data
-
-## Scraping data that requires interaction
+::: fragment
+```{r}
+#| label: rvest-read_html_live
+session <- rvest::read_html_live("https://www.hmdb.org/geolists.asp")
+session |> 
+  rvest::html_element("#StatesList") |> 
+  rvest::html_text2()
+session |> 
+  rvest::html_element("div.bodysansserif") |>
+  rvest::html_elements("td:nth-child(2)") |> 
+  rvest::html_text2()
+session$click("tr:nth-child(1) .countryarrow")
+session |> 
+  rvest::html_element("#StatesList") |> 
+  rvest::html_text2()
+session$click("tr:nth-child(2) .countryarrow")
+session |> 
+  rvest::html_element("#StatesList") |> 
+  rvest::html_text2()
+session |> 
+  rvest::html_element("#StateSidebar") |>
+  rvest::html_elements("td:nth-child(2)") |> 
+  rvest::html_text2()
+session |> 
+  rvest::html_element("#CountiesList") |> 
+  rvest::html_text2()
+session$click("#StateSidebar tr:nth-child(3) .statearrow")
+session |> 
+  rvest::html_element("#CountiesList") |> 
+  rvest::html_text2()
+session |> 
+  rvest::html_element("#CountySidebar") |> 
+  rvest::html_elements("a") |> 
+  rvest::html_text2()
+session |> 
+  rvest::html_element("#CountySidebar") |> 
+  rvest::html_elements("a") |> 
+  rvest::html_attr("href")
+```
+:::
