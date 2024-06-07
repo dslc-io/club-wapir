@@ -161,7 +161,7 @@
     "section": "General tips for searching",
     "text": "General tips for searching\n\ntolower(FIELD) to find “API”, “api”, “Api”, etc\n\\\\b in regex pattern for “word boundary”\n\n\"\\\\bapi\\\\b\" = “api surrounded by spaces, (), newline, etc”",
     "crumbs": [
-      "Get more data",
+      "Do more with APIs",
       "Find APIs"
     ]
   },
@@ -172,7 +172,7 @@
     "section": "Searching CRAN packages",
     "text": "Searching CRAN packages\n\n# TODO: Re-enable this when CRAN isn't down.\napi_pkgs &lt;- tools::CRAN_package_db() |&gt; \n  as_tibble() |&gt; \n  filter(str_detect(tolower(Description), \"\\\\bapi\\\\b\")) |&gt; \n  select(Package, Description)\nnrow(api_pkgs)\nhead(api_pkgs)",
     "crumbs": [
-      "Get more data",
+      "Do more with APIs",
       "Find APIs"
     ]
   },
@@ -183,7 +183,7 @@
     "section": "Searching the R Universe",
     "text": "Searching the R Universe\n\nWeb interface at https://r-universe.dev/\nAPI in {universe} package? (broken as of 2023-11-13)\nAPI at https://r-universe.dev/stats/powersearch",
     "crumbs": [
-      "Get more data",
+      "Do more with APIs",
       "Find APIs"
     ]
   },
@@ -194,7 +194,7 @@
     "section": "Searching the R Universe API",
     "text": "Searching the R Universe API\n\nresp &lt;- request(\"https://r-universe.dev\") |&gt; \n  req_url_path_append(\"stats/powersearch\") |&gt;\n  req_url_query(q = \"api\") |&gt; \n  req_perform() |&gt; \n  resp_body_json()\n\nuni_api_pkgs &lt;- tibble(pkg = resp$results) |&gt; \n  unnest_wider(pkg) |&gt; \n  filter(str_detect(tolower(Description), \"\\\\bapi\\\\b\")) |&gt; \n  distinct(Package, Description)\n\nnrow(uni_api_pkgs)\nhead(uni_api_pkgs)",
     "crumbs": [
-      "Get more data",
+      "Do more with APIs",
       "Find APIs"
     ]
   },
@@ -205,7 +205,7 @@
     "section": "anyapi",
     "text": "anyapi\n\n{anyapi} package wraps these functions\n\n(technically not yet)\n\nIf package doesn’t exist\n\nSearch for API spec\nCreate package on-the-fly to interact with the API\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
-      "Get more data",
+      "Do more with APIs",
       "Find APIs"
     ]
   },
