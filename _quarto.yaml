@@ -41,13 +41,13 @@ website:
             target: wapir_club-rvest
           - file: slides/httr2/httr2-responses.qmd
             target: wapir_club-httr2-responses
-          - file: slides/httr2/apis-find.qmd
-            target: wapir_club-apis-find
 
       - section: "Do more with APIs"
         contents:
           - file: slides/httr2/httr2-methods.qmd
             target: wapir_club-httr2-methods
+          - file: slides/httr2/apis-find.qmd
+            target: wapir_club-apis-find
           - file: slides/httr2/accessing-other.qmd
             target: wapir_club-accessing_other
           - file: slides/httr2/accessing-more.qmd
