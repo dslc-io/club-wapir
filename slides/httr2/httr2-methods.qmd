@@ -3,105 +3,330 @@ engine: knitr
 title: Do other things with APIs
 ---
 
-# TODO
-
-::: nonincremental
--   This chapter needs a v1. It will focus on methods, body, etc.
--   Consider merging httr2-misc into here.
-:::
-
-
 # ️✅ Learning objectives
 
 ::: nonincremental
--   POST
--   Etc
+-   Create new content through an API.
+-   Update existing content through an API.
+-   Delete existing content through an API.
+-   Perform multiple API requests.
+-   Learn more about making API requests with {httr2}.
 :::
 
 ```{r}
 #| label: httr2-methods-packages-used
 #| eval: true
 library(httr2)
+library(keyring)
+library(here)
+library(curl)
+library(jsonlite)
+library(dplyr)
+library(tibble)
+library(tidyr)
+library(purrr)
+library(glue)
 ```
 
-# First LO.
+::: notes
+-   Might merge "perform multiple" into "learn more."
+-   Learn more: {httr2} is 1.0 (which means it's relatively stable), but they're continuing to improve it.
+    -   So the documentation, issues, and PR threads are very useful!
+:::
+
+# Do more than GET
+
+## Motivating Example: Trello
+
+[Trello](https://trello.com) = Project Management Tool
+
+![](methods/trello_board.png)
+
+::: notes
+-   One way to use Trello is to track cards moving through statuses on a board
+-   I'm using this API as one of my test cases for {beekeeper}
+        -   Watch for {trellor} on CRAN.
+-   We'll create a card, update its status, and then delete it.
+:::
 
 ## What are the pieces of an HTTP request?
 
-HTTP request = URL + headers + ***method*** + body
+HTTP request = URL + headers + ***method*** + ***body***
 
 ::: notes
--   Re-orient ourselves with the pieces of an HTTP request.
--   Focus on method.
+-   We've been making HTTP requests all along, but haven't dug into all the details about them.
+-   We've done a lot with URL & headers (authentication, user-agent)
+    -   Technically the URL is a header ("Host"), if anybody wants to be pedantic.
+-   Today we'll look at method & body
+    -   Starting with body.
+:::
+
+## What is a request body?
+
+Body = data sent in request
+
+-   `req_body_json()` = most common
+-   `req_body_multipart()` = mixed
+    -   `curl::form_file()` to indicate file paths
+-   `req_body_file()`
+-   `req_body_form()` = special format for HTML forms
+-   `req_body_raw()`
+
+::: fragment
+`httr2::req_body_json(req, data, {jsonlite::toJSON args})`
+:::
+
+::: notes
+-   Body often bigger than query params, somewhat more secure (like header).
+-   You'll probably use `req_body_json()` almost always (when body needed).
+-   `req_body_multipart()` somewhat common for file + info about the file.
+    -   Need to tell it which part is a path to a file, which part is info to send as text.
+-   `req_body_file()` somewhat rare because API usually wants additional info.
 :::
 
 ## What are HTTP request methods?
 
+Formally:
+
 -   Paths are ***nouns***
 -   Methods are ***verbs***
     -   `GET` (fetch existing thing)
-    -   `POST` (push new thing)
-    -   `DELETE` (delete existing thing)
+    -   `POST` (send new thing)
     -   `PATCH` (change existing thing)
     -   `PUT` (replace existing thing)
+    -   `DELETE` (delete existing thing)
     -   `CONNECT`, `OPTIONS`, `HEAD`, `TRACE` (very rare)
 
 ::: notes
--   By convention for REST APIs
-    -   We'll dig into different API frameworks in a later chapter.
--   Path examples: candidates, calendar-dates, filings, electioneering (ads)
--   We've been doing GET by default
--   CONNECT = "start 2-way communication" (eg ask server to be a bridge)
--   OPTIONS should tell you method options
--   HEAD returns headers that you'd get with GET
+-   We've technically been talking about "REST" APIs
+    -   "Representational State Transfer"
+    -   We'll see other frameworks in a later chapter.
+-   Path examples (trello): `cards`, `boards`, `members` (+each w/ `id`)
+-   We've been doing `GET` by default
+-   `CONNECT` = "start 2-way communication" (eg ask server to be a bridge)
+-   `OPTIONS` *should* tell you method options
+-   `HEAD` returns headers that you'd get with `GET`
     -   Eg, use it to check if DL would be big.
--   TRACE returns the request as the final server received it, with header info about route.
+-   `TRACE` returns the request as the final server received it, with header info about route.
 -   Methods aren't strict
     -   API owner can do weird things.
-    -   GET or POST often used for ~everything
+    -   `GET` or `POST` often used for ~everything
+    -   `PATCH` and `PUT` used interchangeably
 :::
 
-## `req_method()`
+## How do I specify a method?
 
 -   `GET` = default without body
 -   `POST` = default with body
 -   `req_method()` to specify (rarely needed)
 
-## `req_template()`
-
-::: fragment
-Build request with variables
-
-```{r}
-#| code-line-numbers: "1|1-2"
-req_candidates2 <- req_fec |> 
-  req_template("GET /{endpoint}", endpoint = "candidates")
-```
-:::
-
 ::: fragment
 ```{r}
-identical(req_candidates$url, req_candidates2$url)
-```
-:::
-
-::: fragment
-A more useful example:
-```{r}
-req_fec |> 
-  req_template("GET /candidate/{candidate_id}/", candidate_id = "P40014052")
+#| label: httr2-methods-req_method
+httr2::req_method(req, method)
 ```
 :::
 
 ::: notes
-Sometimes APIs are pretty much described in this syntax, lets you copy-paste.
+-   Many APIs use only `GET` and/or `POST`.
+-   Technically `GET` can have a body, and technically `POST` can lack one.
+-   Always need to specify for other methods like `DELETE`.
+-   Doesn't hurt to specify to be sure.
 :::
 
-## What are the pieces of an HTTP request?
+# Live Example
 
-HTTP request = URL + headers + method + ***body***
+## Trello background
+
+-   [API docs](https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/)
+-   [API description](https://developer.atlassian.com/cloud/trello/swagger.v3.json)
+-   Somewhat weird auth:
+    -   OAuth 1!
+    -   "API key" ≈ OAuth client ID
+    -   "Token" ≈ OAuth token (but can manually generate one)
+-   `6dkXRHRK` = board ID from [URL](https://trello.com/b/6dkXRHRK/trellor-kanban) 
 
 ::: notes
--   Re-orient ourselves with the pieces of an HTTP request.
--   Focus on body
+-   I didn't know anybody still used OAuth 1! Everything we've seen has been Oauth2
+-   We need both Key and Token for each request!
+-   Reminder: All the specifications are guidelines, people can and do mess them up!
+:::
+
+## Baseline Trello request
+
+```{r}
+#| label: httr2-methods-trello-baseline
+cache_path <- here::here("slides/httr2/methods/cache")
+trello_req <- httr2::request("https://trello.com/1") |> 
+  .req_ua() |> 
+  httr2::req_url_query(
+    key = keyring::key_get("TRELLO_KEY"),
+    token = keyring::key_get("TRELLO_TOKEN")
+  ) |> 
+  httr2::req_cache(cache_path) |> 
+  httr2::req_retry(max_tries = 3)
+```
+
+::: notes
+-   `.req_ua()` calls `httr2::req_user_agent()` with my defaults
+-   I saved the key and token to my keyring per previous chapter
+-   Throwing in a cache here; I didn't go over this (might in book), but it saves results to specified directory, loads from there if exists
+:::
+
+## Get Trello board info
+
+```{r}
+#| label: httr2-methods-trello-lists
+board_lists <- trello_req |> 
+  httr2::req_url_path_append("boards/6dkXRHRK/lists") |> 
+  httr2::req_perform() |> 
+  httr2::resp_body_json()
+board_lists |> purrr::map_chr("name")
+```
+
+## Create a Trello card
+
+```{r}
+#| label: httr2-methods-trello-post
+new_card <- list(
+  idBoard = "6dkXRHRK",
+  idList = board_lists[[1]]$id,
+  name = "*** Newly Created Card ***",
+  desc = "This card was created as a book club demo."
+)
+
+new_card_response <- trello_req |> 
+  httr2::req_url_path_append("cards") |> 
+  httr2::req_body_json(data = new_card) |> 
+  httr2::req_perform() |> 
+  httr2::resp_body_json()
+```
+
+::: notes
+-   Response is info about the card, importantly including the id.
+:::
+
+## Move the Trello card
+
+```{r}
+#| label: httr2-methods-trello-put
+move_card_response <- trello_req |> 
+  httr2::req_url_path_append("cards", new_card_response$id) |> 
+  httr2::req_body_json(data = list(idList = board_lists[[2]]$id)) |> 
+  httr2::req_method("put") |> 
+  httr2::req_perform() |> 
+  httr2::resp_body_json()
+```
+
+::: fragment
+```{r}
+#| label: httr2-methods-trello-put2
+move_card_response2 <- trello_req |> 
+  httr2::req_url_path_append("cards", new_card_response$id) |> 
+  httr2::req_body_json(data = list(idList = board_lists[[3]]$id)) |> 
+  httr2::req_method("put") |> 
+  httr2::req_perform() |> 
+  httr2::resp_body_json()
+```
+:::
+
+::: notes
+-   SHOW THE BOARD BEFORE EXECUTING CODE
+-   This really SHOULD be PATCH, since we aren't REPLACING the data, just updating.
+:::
+
+## Delete the card
+
+```{r}
+#| label: httr2-methods-trello-delete
+delete_card_response <- trello_req |> 
+  httr2::req_url_path_append("cards", new_card_response$id) |> 
+  httr2::req_method("delete") |> 
+  httr2::req_perform() |> 
+  httr2::resp_body_json()
+```
+
+# Multiple requests
+
+## Motivating example: Trello cards as data
+
+```{r}
+#| label: httr2-methods-card-tbl
+#| eval: true
+cards <- tibble::tibble(
+  name = glue::glue("*** Sample card for {state.abb} ***"),
+  desc = glue::glue("A card to do something for {state.name}.")
+)
+cards
+```
+
+::: notes
+-   This is a quick dummy example, but I'm hoping people can see how a real version of this would make sense.
+:::
+
+## Create multiple cards
+
+```{r}
+#| label: httr2-methods-cards-create-reqs
+card_creation_requests <- purrr::pmap(
+  cards,
+  \(name, desc) {
+    new_card <- list(
+      idBoard = "6dkXRHRK",
+      idList = board_lists[[1]]$id,
+      name = name,
+      desc = desc
+    )
+    trello_req |> 
+      httr2::req_url_path_append("cards") |> 
+      httr2::req_body_json(data = new_card)
+  }
+)
+```
+::: fragment
+```{r}
+#| label: httr2-methods-cards-create-perform
+card_creation_responses <- card_creation_requests |> 
+  httr2::req_perform_sequential() |> 
+  httr2::resps_data(
+    \(resp) {
+      tibble::tibble(data = list(httr2::resp_body_json(resp))) |> 
+        tidyr::unnest_wider(data)
+    }
+)
+```
+:::
+
+## Delete multiple cards
+
+```{r}
+#| label: httr2-methods-cards-delete
+card_deletion_responses <- card_creation_responses$id |> 
+  purrr::map(
+    \(card_id) {
+      trello_req |> 
+        httr2::req_url_path_append("cards", card_id) |> 
+        httr2::req_method("delete")
+    }
+  ) |> 
+  httr2::req_perform_parallel()
+```
+
+# Learn more about {httr2}
+
+-   [pkgdown site](https://httr2.r-lib.org/)
+-   [GitHub issues](https://github.com/r-lib/httr2/issues)
+-   [GitHub PRs](https://github.com/r-lib/httr2/pulls)
+-   Some notable functions:
+    -   `req_template()`
+    -   `curl_translate()`
+    -   `req_throttle()`
+    -   `req_timeout()`
+    -   `req_progress()`
+    -   `req_perform_stream()`
+    -   `req_options()`
+
+::: notes
+-   No point in me replicating all of the docs.
+-   It's 1.0.0+/"stable," but they're still improving things.
 :::
