@@ -318,11 +318,8 @@ card_deletion_responses <- card_creation_responses$id |>
 -   [GitHub issues](https://github.com/r-lib/httr2/issues)
 -   [GitHub PRs](https://github.com/r-lib/httr2/pulls)
 -   Some notable functions:
-    -   `req_template()`
-    -   `curl_translate()`
-    -   `req_throttle()`
-    -   `req_timeout()`
-    -   `req_progress()`
+    -   `req_template()`, `curl_translate()`
+    -   `req_throttle()`, `req_timeout()`, `req_progress()`
     -   `req_perform_stream()`
     -   `req_options()`
 
