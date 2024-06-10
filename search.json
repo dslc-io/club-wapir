@@ -100,11 +100,33 @@
     "text": "My plan\n\n\n✅ Rough draft slides\n⬜ Discuss material with learners (ID needs)\n❓ Create an assessment?\n🔄️ Revise slides\n📝 Write chapter\n\n\n\n\nI spent November making rough slides of almost everything.\n\nTool to give structure to meetings\n\nDoing this today! (also see next slide)\nNot sure about this yet, but may write exercises next\nIdeal universe = repeat process, might skip to draft\nNo solid completion date yet"
   },
   {
+    "objectID": "slides/httr2/httr2-methods.html#motivating-example-trello",
+    "href": "slides/httr2/httr2-methods.html#motivating-example-trello",
+    "title": "Do other things with APIs",
+    "section": "Motivating Example: Trello",
+    "text": "Motivating Example: Trello\nTrello = Project Management Tool\n\n\n\nOne way to use Trello is to track cards moving through statuses on a board\nI’m using this API as one of my test cases for {beekeeper} - Watch for {trellor} on CRAN.\nWe’ll create a card, update its status, and then delete it.",
+    "crumbs": [
+      "Do more with APIs",
+      "Do other things with APIs"
+    ]
+  },
+  {
     "objectID": "slides/httr2/httr2-methods.html#what-are-the-pieces-of-an-http-request",
     "href": "slides/httr2/httr2-methods.html#what-are-the-pieces-of-an-http-request",
     "title": "Do other things with APIs",
     "section": "What are the pieces of an HTTP request?",
-    "text": "What are the pieces of an HTTP request?\nHTTP request = URL + headers + method + body\n\n\nRe-orient ourselves with the pieces of an HTTP request.\nFocus on method.",
+    "text": "What are the pieces of an HTTP request?\nHTTP request = URL + headers + method + body\n\n\nWe’ve been making HTTP requests all along, but haven’t dug into all the details about them.\nWe’ve done a lot with URL & headers (authentication, user-agent)\n\nTechnically the URL is a header (“Host”), if anybody wants to be pedantic.\n\nToday we’ll look at method & body\n\nStarting with body.",
+    "crumbs": [
+      "Do more with APIs",
+      "Do other things with APIs"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-methods.html#what-is-a-request-body",
+    "href": "slides/httr2/httr2-methods.html#what-is-a-request-body",
+    "title": "Do other things with APIs",
+    "section": "What is a request body?",
+    "text": "What is a request body?\nBody = data sent in request\n\nreq_body_json() = most common\nreq_body_multipart() = mixed\n\ncurl::form_file() to indicate file paths\n\nreq_body_file()\nreq_body_form() = special format for HTML forms\nreq_body_raw()\n\n\nhttr2::req_body_json(req, data, {jsonlite::toJSON args})\n\n\n\nBody often bigger than query params, somewhat more secure (like header).\nYou’ll probably use req_body_json() almost always (when body needed).\nreq_body_multipart() somewhat common for file + info about the file.\n\nNeed to tell it which part is a path to a file, which part is info to send as text.\n\nreq_body_file() somewhat rare because API usually wants additional info.",
     "crumbs": [
       "Do more with APIs",
       "Do other things with APIs"
@@ -115,40 +137,117 @@
     "href": "slides/httr2/httr2-methods.html#what-are-http-request-methods",
     "title": "Do other things with APIs",
     "section": "What are HTTP request methods?",
-    "text": "What are HTTP request methods?\n\nPaths are nouns\nMethods are verbs\n\nGET (fetch existing thing)\nPOST (push new thing)\nDELETE (delete existing thing)\nPATCH (change existing thing)\nPUT (replace existing thing)\nCONNECT, OPTIONS, HEAD, TRACE (very rare)\n\n\n\n\nBy convention for REST APIs\n\nWe’ll dig into different API frameworks in a later chapter.\n\nPath examples: candidates, calendar-dates, filings, electioneering (ads)\nWe’ve been doing GET by default\nCONNECT = “start 2-way communication” (eg ask server to be a bridge)\nOPTIONS should tell you method options\nHEAD returns headers that you’d get with GET\n\nEg, use it to check if DL would be big.\n\nTRACE returns the request as the final server received it, with header info about route.\nMethods aren’t strict\n\nAPI owner can do weird things.\nGET or POST often used for ~everything",
+    "text": "What are HTTP request methods?\nFormally:\n\nPaths are nouns\nMethods are verbs\n\nGET (fetch existing thing)\nPOST (send new thing)\nPATCH (change existing thing)\nPUT (replace existing thing)\nDELETE (delete existing thing)\nCONNECT, OPTIONS, HEAD, TRACE (very rare)\n\n\n\n\nWe’ve technically been talking about “REST” APIs\n\n“Representational State Transfer”\nWe’ll see other frameworks in a later chapter.\n\nPath examples (trello): cards, boards, members (+each w/ id)\nWe’ve been doing GET by default\nCONNECT = “start 2-way communication” (eg ask server to be a bridge)\nOPTIONS should tell you method options\nHEAD returns headers that you’d get with GET\n\nEg, use it to check if DL would be big.\n\nTRACE returns the request as the final server received it, with header info about route.\nMethods aren’t strict\n\nAPI owner can do weird things.\nGET or POST often used for ~everything\nPATCH and PUT used interchangeably",
     "crumbs": [
       "Do more with APIs",
       "Do other things with APIs"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-methods.html#req_method",
-    "href": "slides/httr2/httr2-methods.html#req_method",
+    "objectID": "slides/httr2/httr2-methods.html#how-do-i-specify-a-method",
+    "href": "slides/httr2/httr2-methods.html#how-do-i-specify-a-method",
     "title": "Do other things with APIs",
-    "section": "req_method()",
-    "text": "req_method()\n\nGET = default without body\nPOST = default with body\nreq_method() to specify (rarely needed)",
+    "section": "How do I specify a method?",
+    "text": "How do I specify a method?\n\nGET = default without body\nPOST = default with body\nreq_method() to specify (rarely needed)\n\n\n\nhttr2::req_method(req, method)\n\n\n\n\nMany APIs use only GET and/or POST.\nTechnically GET can have a body, and technically POST can lack one.\nAlways need to specify for other methods like DELETE.\nDoesn’t hurt to specify to be sure.",
     "crumbs": [
       "Do more with APIs",
       "Do other things with APIs"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-methods.html#req_template",
-    "href": "slides/httr2/httr2-methods.html#req_template",
+    "objectID": "slides/httr2/httr2-methods.html#trello-background",
+    "href": "slides/httr2/httr2-methods.html#trello-background",
     "title": "Do other things with APIs",
-    "section": "req_template()",
-    "text": "req_template()\n\nBuild request with variables\n\nreq_candidates2 &lt;- req_fec |&gt; \n  req_template(\"GET /{endpoint}\", endpoint = \"candidates\")\n\n\n\n\nidentical(req_candidates$url, req_candidates2$url)\n\n\n\nA more useful example:\n\nreq_fec |&gt; \n  req_template(\"GET /candidate/{candidate_id}/\", candidate_id = \"P40014052\")\n\n\n\nSometimes APIs are pretty much described in this syntax, lets you copy-paste.",
+    "section": "Trello background",
+    "text": "Trello background\n\nAPI docs\nAPI description\nSomewhat weird auth:\n\nOAuth 1!\n“API key” ≈ OAuth client ID\n“Token” ≈ OAuth token (but can manually generate one)\n\n6dkXRHRK = board ID from URL\n\n\n\nI didn’t know anybody still used OAuth 1! Everything we’ve seen has been Oauth2\nWe need both Key and Token for each request!\nReminder: All the specifications are guidelines, people can and do mess them up!",
     "crumbs": [
       "Do more with APIs",
       "Do other things with APIs"
     ]
   },
   {
-    "objectID": "slides/httr2/httr2-methods.html#what-are-the-pieces-of-an-http-request-1",
-    "href": "slides/httr2/httr2-methods.html#what-are-the-pieces-of-an-http-request-1",
+    "objectID": "slides/httr2/httr2-methods.html#baseline-trello-request",
+    "href": "slides/httr2/httr2-methods.html#baseline-trello-request",
     "title": "Do other things with APIs",
-    "section": "What are the pieces of an HTTP request?",
-    "text": "What are the pieces of an HTTP request?\nHTTP request = URL + headers + method + body\n\n\nRe-orient ourselves with the pieces of an HTTP request.\nFocus on body\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
+    "section": "Baseline Trello request",
+    "text": "Baseline Trello request\n\ncache_path &lt;- here::here(\"slides/httr2/methods/cache\")\ntrello_req &lt;- httr2::request(\"https://trello.com/1\") |&gt; \n  .req_ua() |&gt; \n  httr2::req_url_query(\n    key = keyring::key_get(\"TRELLO_KEY\"),\n    token = keyring::key_get(\"TRELLO_TOKEN\")\n  ) |&gt; \n  httr2::req_cache(cache_path) |&gt; \n  httr2::req_retry(max_tries = 3)\n\n\n\n.req_ua() calls httr2::req_user_agent() with my defaults\nI saved the key and token to my keyring per previous chapter\nThrowing in a cache here; I didn’t go over this (might in book), but it saves results to specified directory, loads from there if exists",
+    "crumbs": [
+      "Do more with APIs",
+      "Do other things with APIs"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-methods.html#get-trello-board-info",
+    "href": "slides/httr2/httr2-methods.html#get-trello-board-info",
+    "title": "Do other things with APIs",
+    "section": "Get Trello board info",
+    "text": "Get Trello board info\n\nboard_lists &lt;- trello_req |&gt; \n  httr2::req_url_path_append(\"boards/6dkXRHRK/lists\") |&gt; \n  httr2::req_perform() |&gt; \n  httr2::resp_body_json()\nboard_lists |&gt; purrr::map_chr(\"name\")",
+    "crumbs": [
+      "Do more with APIs",
+      "Do other things with APIs"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-methods.html#create-a-trello-card",
+    "href": "slides/httr2/httr2-methods.html#create-a-trello-card",
+    "title": "Do other things with APIs",
+    "section": "Create a Trello card",
+    "text": "Create a Trello card\n\nnew_card &lt;- list(\n  idBoard = \"6dkXRHRK\",\n  idList = board_lists[[1]]$id,\n  name = \"*** Newly Created Card ***\",\n  desc = \"This card was created as a book club demo.\"\n)\n\nnew_card_response &lt;- trello_req |&gt; \n  httr2::req_url_path_append(\"cards\") |&gt; \n  httr2::req_body_json(data = new_card) |&gt; \n  httr2::req_perform() |&gt; \n  httr2::resp_body_json()\n\n\n\nResponse is info about the card, importantly including the id.",
+    "crumbs": [
+      "Do more with APIs",
+      "Do other things with APIs"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-methods.html#move-the-trello-card",
+    "href": "slides/httr2/httr2-methods.html#move-the-trello-card",
+    "title": "Do other things with APIs",
+    "section": "Move the Trello card",
+    "text": "Move the Trello card\n\nmove_card_response &lt;- trello_req |&gt; \n  httr2::req_url_path_append(\"cards\", new_card_response$id) |&gt; \n  httr2::req_body_json(data = list(idList = board_lists[[2]]$id)) |&gt; \n  httr2::req_method(\"put\") |&gt; \n  httr2::req_perform() |&gt; \n  httr2::resp_body_json()\n\n\n\nmove_card_response2 &lt;- trello_req |&gt; \n  httr2::req_url_path_append(\"cards\", new_card_response$id) |&gt; \n  httr2::req_body_json(data = list(idList = board_lists[[3]]$id)) |&gt; \n  httr2::req_method(\"put\") |&gt; \n  httr2::req_perform() |&gt; \n  httr2::resp_body_json()\n\n\n\n\nSHOW THE BOARD BEFORE EXECUTING CODE\nThis really SHOULD be PATCH, since we aren’t REPLACING the data, just updating.",
+    "crumbs": [
+      "Do more with APIs",
+      "Do other things with APIs"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-methods.html#delete-the-card",
+    "href": "slides/httr2/httr2-methods.html#delete-the-card",
+    "title": "Do other things with APIs",
+    "section": "Delete the card",
+    "text": "Delete the card\n\ndelete_card_response &lt;- trello_req |&gt; \n  httr2::req_url_path_append(\"cards\", new_card_response$id) |&gt; \n  httr2::req_method(\"delete\") |&gt; \n  httr2::req_perform() |&gt; \n  httr2::resp_body_json()",
+    "crumbs": [
+      "Do more with APIs",
+      "Do other things with APIs"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-methods.html#motivating-example-trello-cards-as-data",
+    "href": "slides/httr2/httr2-methods.html#motivating-example-trello-cards-as-data",
+    "title": "Do other things with APIs",
+    "section": "Motivating example: Trello cards as data",
+    "text": "Motivating example: Trello cards as data\n\ncards &lt;- tibble::tibble(\n  name = glue::glue(\"*** Sample card for {state.abb} ***\"),\n  desc = glue::glue(\"A card to do something for {state.name}.\")\n)\ncards\n\n#&gt; # A tibble: 50 × 2\n#&gt;    name                       desc                                   \n#&gt;    &lt;glue&gt;                     &lt;glue&gt;                                 \n#&gt;  1 *** Sample card for AL *** A card to do something for Alabama.    \n#&gt;  2 *** Sample card for AK *** A card to do something for Alaska.     \n#&gt;  3 *** Sample card for AZ *** A card to do something for Arizona.    \n#&gt;  4 *** Sample card for AR *** A card to do something for Arkansas.   \n#&gt;  5 *** Sample card for CA *** A card to do something for California. \n#&gt;  6 *** Sample card for CO *** A card to do something for Colorado.   \n#&gt;  7 *** Sample card for CT *** A card to do something for Connecticut.\n#&gt;  8 *** Sample card for DE *** A card to do something for Delaware.   \n#&gt;  9 *** Sample card for FL *** A card to do something for Florida.    \n#&gt; 10 *** Sample card for GA *** A card to do something for Georgia.    \n#&gt; # ℹ 40 more rows\n\n\n\n\nThis is a quick dummy example, but I’m hoping people can see how a real version of this would make sense.",
+    "crumbs": [
+      "Do more with APIs",
+      "Do other things with APIs"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-methods.html#create-multiple-cards",
+    "href": "slides/httr2/httr2-methods.html#create-multiple-cards",
+    "title": "Do other things with APIs",
+    "section": "Create multiple cards",
+    "text": "Create multiple cards\n\ncard_creation_requests &lt;- purrr::pmap(\n  cards,\n  \\(name, desc) {\n    new_card &lt;- list(\n      idBoard = \"6dkXRHRK\",\n      idList = board_lists[[1]]$id,\n      name = name,\n      desc = desc\n    )\n    trello_req |&gt; \n      httr2::req_url_path_append(\"cards\") |&gt; \n      httr2::req_body_json(data = new_card)\n  }\n)\n\n\n\ncard_creation_responses &lt;- card_creation_requests |&gt; \n  httr2::req_perform_sequential() |&gt; \n  httr2::resps_data(\n    \\(resp) {\n      tibble::tibble(data = list(httr2::resp_body_json(resp))) |&gt; \n        tidyr::unnest_wider(data)\n    }\n)",
+    "crumbs": [
+      "Do more with APIs",
+      "Do other things with APIs"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/httr2-methods.html#delete-multiple-cards",
+    "href": "slides/httr2/httr2-methods.html#delete-multiple-cards",
+    "title": "Do other things with APIs",
+    "section": "Delete multiple cards",
+    "text": "Delete multiple cards\n\ncard_deletion_responses &lt;- card_creation_responses$id |&gt; \n  purrr::map(\n    \\(card_id) {\n      trello_req |&gt; \n        httr2::req_url_path_append(\"cards\", card_id) |&gt; \n        httr2::req_method(\"delete\")\n    }\n  ) |&gt; \n  httr2::req_perform_parallel()",
     "crumbs": [
       "Do more with APIs",
       "Do other things with APIs"
