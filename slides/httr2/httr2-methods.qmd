@@ -19,6 +19,13 @@ title: Do other things with APIs
 library(httr2)
 library(keyring)
 library(here)
+library(curl)
+library(jsonlite)
+library(dplyr)
+library(tibble)
+library(tidyr)
+library(purrr)
+library(glue)
 ```
 
 ::: notes
