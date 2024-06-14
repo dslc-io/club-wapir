@@ -6,12 +6,9 @@ title: Find APIs
 # ️✅ Learning objectives
 
 ::: nonincremental
--   DIGGING INTO BROWSERS TO FIND THINGS
--   GOOGLING
--   ETC
--   Use `tools::CRAN_package_db()` to search for packages.
--   Search the [R-universe](https://r-universe.dev).
--   Use {anyapi} to search for packages.
+-   Search the web for APIs.
+-   Search for API-wrapping packages.
+-   Use browser developer tools to find undocumented APIs.
 :::
 
 ```{r}
@@ -23,9 +20,35 @@ library(tidyr)
 library(tools)
 library(httr2)
 library(anyapi)
+library(apisniffer)
 ```
 
-## General tips for searching {-}
+# Search the web for APIs
+
+-   [apis.guru](https://apis.guru/)
+-   [Public APIs](https://publicapis.dev/)
+    -   [GitHub repo](https://github.com/marcelscruz/public-apis)
+-   [{site} + api](https://www.google.com/search?q=nytimes+api)
+-   [developer(s).{site}](https://developer.nytimes.com/)
+-   [GitHub/{organization}](https://github.com/washingtonpost)
+
+
+::: notes
+-   apis.guru is in the {anyapi} package (on github)
+-   I plan to add Public APIs (in addition)
+    -   More active dev
+    -   There's an open issue to add OpenAPI specs when available
+-   Google search is a GET API,
+    -   But google.com/robots.txt Disallow's hitting /search.
+    -   And probably need LiveHTML to get something useful out of it
+-   developers.google.com
+-   Sometimes api(s).{site} but I don't have an example right now
+-   WaPo GitHub doesn't have an API, but it has some of what you might hope to use an API to find.
+:::
+
+# Search for API-wrapping packages
+
+## General tips for searching
 
 -   `tolower(FIELD)` to find "API", "api", "Api", etc
 -   `\\b` in regex pattern for "word ***b***oundary"
@@ -36,9 +59,9 @@ library(anyapi)
 ```{r pkgs-cran, eval = FALSE}
 # TODO: Re-enable this when CRAN isn't down.
 api_pkgs <- tools::CRAN_package_db() |> 
-  as_tibble() |> 
-  filter(str_detect(tolower(Description), "\\bapi\\b")) |> 
-  select(Package, Description)
+  dplyr::as_tibble() |> 
+  dplyr::filter(stringr::str_detect(tolower(Description), "\\bapi\\b")) |> 
+  dplyr::select(Package, Description)
 nrow(api_pkgs)
 head(api_pkgs)
 ```
