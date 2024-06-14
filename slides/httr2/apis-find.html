@@ -396,17 +396,13 @@
 </div>
 
 </section>
-<section>
 <section id="learning-objectives" class="title-slide slide level1 center">
 <h1>️✅ Learning objectives</h1>
 <div>
 <ul>
-<li>DIGGING INTO BROWSERS TO FIND THINGS</li>
-<li>GOOGLING</li>
-<li>ETC</li>
-<li>Use <code>tools::CRAN_package_db()</code> to search for packages.</li>
-<li>Search the <a href="https://r-universe.dev">R-universe</a>.</li>
-<li>Use {anyapi} to search for packages.</li>
+<li>Search the web for APIs.</li>
+<li>Search for API-wrapping packages.</li>
+<li>Use browser developer tools to find undocumented APIs.</li>
 </ul>
 </div>
 <div class="cell">
@@ -415,10 +411,59 @@
 <span id="cb1-3"><a></a><span class="fu">library</span>(tidyr)</span>
 <span id="cb1-4"><a></a><span class="fu">library</span>(tools)</span>
 <span id="cb1-5"><a></a><span class="fu">library</span>(httr2)</span>
-<span id="cb1-6"><a></a><span class="fu">library</span>(anyapi)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a></a><span class="fu">library</span>(anyapi)</span>
+<span id="cb1-7"><a></a><span class="fu">library</span>(apisniffer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="general-tips-for-searching" class="slide level2 unnumbered">
+
+<section id="search-the-web-for-apis" class="title-slide slide level1 center">
+<h1>Search the web for APIs</h1>
+<ul>
+<li class="fragment"><a href="https://apis.guru/">apis.guru</a></li>
+<li class="fragment"><a href="https://publicapis.dev/">Public APIs</a>
+<ul>
+<li class="fragment"><a href="https://github.com/marcelscruz/public-apis">GitHub repo</a></li>
+</ul></li>
+<li class="fragment"><a href="https://www.google.com/search?q=nytimes+api">{site} + api</a></li>
+<li class="fragment"><a href="https://developer.nytimes.com/">developer(s).{site}</a></li>
+<li class="fragment"><a href="https://github.com/washingtonpost">GitHub/{organization}</a></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>apis.guru is in the {anyapi} package (on github)</li>
+<li>I plan to add Public APIs (in addition)
+<ul>
+<li>More active dev</li>
+<li>There’s an open issue to add OpenAPI specs when available</li>
+</ul></li>
+<li>Google search is a GET API,
+<ul>
+<li>But google.com/robots.txt Disallow’s hitting /search.</li>
+<li>And probably need LiveHTML to get something useful out of it</li>
+</ul></li>
+<li>developers.google.com</li>
+<li>Sometimes api(s).{site} but I don’t have an example right now</li>
+<li>WaPo GitHub doesn’t have an API, but it has some of what you might hope to use an API to find.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+
+<section>
+<section id="search-for-api-wrapping-packages" class="title-slide slide level1 center">
+<h1>Search for API-wrapping packages</h1>
+
+</section>
+<section id="general-tips-for-searching" class="slide level2">
 <h2>General tips for searching</h2>
 <ul>
 <li class="fragment"><code>tolower(FIELD)</code> to find “API”, “api”, “Api”, etc</li>
@@ -433,9 +478,9 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Re-enable this when CRAN isn't down.</span></span>
 <span id="cb2-2"><a></a>api_pkgs <span class="ot">&lt;-</span> tools<span class="sc">::</span><span class="fu">CRAN_package_db</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb2-3"><a></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb2-4"><a></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(<span class="fu">tolower</span>(Description), <span class="st">"</span><span class="sc">\\</span><span class="st">bapi</span><span class="sc">\\</span><span class="st">b"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb2-5"><a></a>  <span class="fu">select</span>(Package, Description)</span>
+<span id="cb2-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-4"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="fu">tolower</span>(Description), <span class="st">"</span><span class="sc">\\</span><span class="st">bapi</span><span class="sc">\\</span><span class="st">b"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-5"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Package, Description)</span>
 <span id="cb2-6"><a></a><span class="fu">nrow</span>(api_pkgs)</span>
 <span id="cb2-7"><a></a><span class="fu">head</span>(api_pkgs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>

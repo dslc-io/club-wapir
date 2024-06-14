@@ -269,7 +269,7 @@
     "href": "slides/httr2/apis-find.html#searching-cran-packages",
     "title": "Find APIs",
     "section": "Searching CRAN packages",
-    "text": "Searching CRAN packages\n\n# TODO: Re-enable this when CRAN isn't down.\napi_pkgs &lt;- tools::CRAN_package_db() |&gt; \n  as_tibble() |&gt; \n  filter(str_detect(tolower(Description), \"\\\\bapi\\\\b\")) |&gt; \n  select(Package, Description)\nnrow(api_pkgs)\nhead(api_pkgs)",
+    "text": "Searching CRAN packages\n\n# TODO: Re-enable this when CRAN isn't down.\napi_pkgs &lt;- tools::CRAN_package_db() |&gt; \n  dplyr::as_tibble() |&gt; \n  dplyr::filter(stringr::str_detect(tolower(Description), \"\\\\bapi\\\\b\")) |&gt; \n  dplyr::select(Package, Description)\nnrow(api_pkgs)\nhead(api_pkgs)",
     "crumbs": [
       "Do more with APIs",
       "Find APIs"
