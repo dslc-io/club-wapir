@@ -254,11 +254,11 @@
     ]
   },
   {
-    "objectID": "slides/httr2/apis-find.html#general-tips-for-searching",
-    "href": "slides/httr2/apis-find.html#general-tips-for-searching",
+    "objectID": "slides/httr2/apis-find.html#general-tips-for-text-filtering",
+    "href": "slides/httr2/apis-find.html#general-tips-for-text-filtering",
     "title": "Find APIs",
-    "section": "General tips for searching",
-    "text": "General tips for searching\n\ntolower(FIELD) to find “API”, “api”, “Api”, etc\n\\\\b in regex pattern for “word boundary”\n\n\"\\\\bapi\\\\b\" = “api surrounded by spaces, (), newline, etc”",
+    "section": "General tips for text filtering",
+    "text": "General tips for text filtering\n\ntolower(FIELD) to find “API”, “api”, “Api”, etc\n\\\\b in regex pattern for “word boundary”\n\n\"\\\\bapi\\\\b\" = “api surrounded by spaces, (), newline, etc”\n\n\n\n\nThese are generally useful, but we’ll use them specifically for packages",
     "crumbs": [
       "Do more with APIs",
       "Find APIs"
@@ -269,7 +269,7 @@
     "href": "slides/httr2/apis-find.html#searching-cran-packages",
     "title": "Find APIs",
     "section": "Searching CRAN packages",
-    "text": "Searching CRAN packages\n\n# TODO: Re-enable this when CRAN isn't down.\napi_pkgs &lt;- tools::CRAN_package_db() |&gt; \n  dplyr::as_tibble() |&gt; \n  dplyr::filter(stringr::str_detect(tolower(Description), \"\\\\bapi\\\\b\")) |&gt; \n  dplyr::select(Package, Description)\nnrow(api_pkgs)\nhead(api_pkgs)",
+    "text": "Searching CRAN packages\n\napi_pkgs &lt;- tools::CRAN_package_db() |&gt; \n  dplyr::as_tibble() |&gt; \n  dplyr::filter(\n    stringr::str_detect(tolower(Description), \"\\\\bapi\\\\b\") |\n      stringr::str_detect(tolower(Title), \"\\\\bapi\\\\b\")\n  ) |&gt; \n  dplyr::select(Package, Title)\napi_pkgs\n\n#&gt; # A tibble: 891 × 2\n#&gt;    Package           Title                                                      \n#&gt;    &lt;chr&gt;             &lt;chr&gt;                                                      \n#&gt;  1 academictwitteR   \"Access the Twitter Academic Research Product Track V2 API…\n#&gt;  2 ACEsearch         \"'ACE' Search Engine API\"                                  \n#&gt;  3 acled.api         \"Automated Retrieval of ACLED Conflict Event Data\"         \n#&gt;  4 adbcdrivermanager \"'Arrow' Database Connectivity ('ADBC') Driver Manager\"    \n#&gt;  5 adbcpostgresql    \"'Arrow' Database Connectivity ('ADBC') 'PostgreSQL' Drive…\n#&gt;  6 adbcsqlite        \"'Arrow' Database Connectivity ('ADBC') 'SQLite' Driver\"   \n#&gt;  7 adformR           \"Get Adform Ads Data via the 'Windsor.ai' API\"             \n#&gt;  8 adobeanalyticsr   \"R Client for 'Adobe Analytics' API 2.0\"                   \n#&gt;  9 adsDataHubR       \"Google Ads Data Hub API Client\"                           \n#&gt; 10 adwordsR          \"Access the 'Google Adwords' API\"                          \n#&gt; # ℹ 881 more rows\n\n\n\n\nCRAN_package_db() returns 69 columns of info (everything that can be in the DESCRIPTION file)\nTitle = short description, generally sentence case.\nDescription = paragraph or so about the package\nCould also check Author and/or Authors@R for credit to API owner.",
     "crumbs": [
       "Do more with APIs",
       "Find APIs"
@@ -280,29 +280,51 @@
     "href": "slides/httr2/apis-find.html#searching-the-r-universe",
     "title": "Find APIs",
     "section": "Searching the R Universe",
-    "text": "Searching the R Universe\n\nWeb interface at https://r-universe.dev/\nAPI in {universe} package? (broken as of 2023-11-13)\nAPI at https://r-universe.dev/stats/powersearch",
+    "text": "Searching the R Universe\n\nrOpenSci project for package discovery\nWeb interface at https://r-universe.dev/\nAPI (under development) at https://r-universe.dev/api/search\n\n\n\nUsers and organizations can set up their own universes\nLikely to be different by the time I do next iteration of these slides",
     "crumbs": [
       "Do more with APIs",
       "Find APIs"
     ]
   },
   {
-    "objectID": "slides/httr2/apis-find.html#searching-the-r-universe-api",
-    "href": "slides/httr2/apis-find.html#searching-the-r-universe-api",
+    "objectID": "slides/httr2/apis-find.html#r-universe-api-request",
+    "href": "slides/httr2/apis-find.html#r-universe-api-request",
     "title": "Find APIs",
-    "section": "Searching the R Universe API",
-    "text": "Searching the R Universe API\n\nresp &lt;- request(\"https://r-universe.dev\") |&gt; \n  req_url_path_append(\"stats/powersearch\") |&gt;\n  req_url_query(q = \"api\") |&gt; \n  req_perform() |&gt; \n  resp_body_json()\n\nuni_api_pkgs &lt;- tibble(pkg = resp$results) |&gt; \n  unnest_wider(pkg) |&gt; \n  filter(str_detect(tolower(Description), \"\\\\bapi\\\\b\")) |&gt; \n  distinct(Package, Description)\n\nnrow(uni_api_pkgs)\nhead(uni_api_pkgs)",
+    "section": "R Universe API: Request",
+    "text": "R Universe API: Request\n\n\nr_universe_apis_req &lt;- httr2::request(\"https://r-universe.dev/api/search\") |&gt; \n  httr2::req_url_query(\n    q = \"api\",\n    all = TRUE,\n    limit = 100\n  )\n\n\n\n\nr_universe_apis_resps &lt;- r_universe_apis_req |&gt; \n  httr2::req_perform_iterative(\n    httr2::iterate_with_offset(\n      \"skip\",\n      start = 0,\n      offset = 100,\n      resp_pages = \\(resp) ceiling(httr2::resp_body_json(resp)$total/100)\n    )\n  )\n\n\n\n\nAPI isn’t done.\n\nNo documented pagination, but…\nSkip parameter will work!",
     "crumbs": [
       "Do more with APIs",
       "Find APIs"
     ]
   },
   {
-    "objectID": "slides/httr2/apis-find.html#anyapi",
-    "href": "slides/httr2/apis-find.html#anyapi",
+    "objectID": "slides/httr2/apis-find.html#r-universe-results",
+    "href": "slides/httr2/apis-find.html#r-universe-results",
     "title": "Find APIs",
-    "section": "anyapi",
-    "text": "anyapi\n\n{anyapi} package wraps these functions\n\n(technically not yet)\n\nIf package doesn’t exist\n\nSearch for API spec\nCreate package on-the-fly to interact with the API\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
+    "section": "R Universe Results",
+    "text": "R Universe Results\n\nr_universe_apis_resps |&gt; \n  httr2::resps_data(\n    \\(resp) {\n      httr2::resp_body_json(resp)$results |&gt; \n        tibble::enframe(name = NULL) |&gt; \n        tidyr::unnest_wider(value)\n    }\n  ) |&gt; \n  dplyr::select(Package, Title)\n\n#&gt; # A tibble: 1,384 × 2\n#&gt;    Package         Title                                                        \n#&gt;    &lt;chr&gt;           &lt;chr&gt;                                                        \n#&gt;  1 hoopR           \"Access Men's Basketball Play by Play Data\"                  \n#&gt;  2 wehoop          \"Access Women's Basketball Play by Play Data\"                \n#&gt;  3 gptstudio       \"Use Large Language Models Directly in your Development\\nEnv…\n#&gt;  4 geosapi         \"GeoServer REST API R Interface\"                             \n#&gt;  5 googleLanguageR \"Call Google's 'Natural Language' API, 'Cloud Translation' A…\n#&gt;  6 RobinHood       \"Interface for the RobinHood.com No Commission Investing Pla…\n#&gt;  7 hereR           \"'sf'-Based Interface to the 'HERE' REST APIs\"               \n#&gt;  8 oaii            \"'OpenAI' API R Interface\"                                   \n#&gt;  9 nhlapi          \"A Minimum-Dependency 'R' Interface to the 'NHL' API\"        \n#&gt; 10 salesforcer     \"An Implementation of 'Salesforce' APIs Using Tidy Principle…\n#&gt; # ℹ 1,374 more rows",
+    "crumbs": [
+      "Do more with APIs",
+      "Find APIs"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/apis-find.html#browser-developer-tools",
+    "href": "slides/httr2/apis-find.html#browser-developer-tools",
+    "title": "Find APIs",
+    "section": "Browser developer tools",
+    "text": "Browser developer tools\n\nDiffers browser-to-browser, showing Chrome\nctrl-shift-I (cmd-shift-I) or right click &gt; Inspect\nNetwork tab\nFilter to Fetch/XHR\nRight click &gt; Header Options &gt; Path\nDemo: Amazon suggestions\n\n\n\nMicrosoft Edge is also a Chromium-based browser, so should be same there\nFetch & XHR are two JavaScript APIs for making requests.\n\nXHR = XmlHttpRequest, but not used just for XML.\nFetch is more modern version, but both are used.\n\nImportantly: They’re how web pages often make API requests on your behalf.\nLoad Amazon, then ctrl-shift-i (make sure it’s empty)\nShow clearing with the circle/line icon\nClick the search box\nType “Web APIs with R”, pausing to see requests & results\nPoint out “Path” column\nFilter to “suggestions”\nSingle click last one\nWalk through Headers, Payload, Response\nRight click &gt; Copy &gt; Copy as cURL (bash)\n\nCan paste this and use httr2::curl_translate()",
+    "crumbs": [
+      "Do more with APIs",
+      "Find APIs"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/apis-find.html#sniff-api-requests-with-apisniffer",
+    "href": "slides/httr2/apis-find.html#sniff-api-requests-with-apisniffer",
+    "title": "Find APIs",
+    "section": "Sniff API requests with {apisniffer}",
+    "text": "Sniff API requests with {apisniffer}\n\n {apisniffer}\nGoal:\n\nLoad page\n(optional) Interact\nReturns tibble of API info\n(maybe) Also returns functions to access detected APIs\n\n\n\n\nCurrently doesn’t allow interaction\nReturns raw data, not tibble\nCan use httr2::url_parse() to break url into pieces\nrequest objects have sections by {httr2} function\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
       "Do more with APIs",
       "Find APIs"
