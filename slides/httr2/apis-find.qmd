@@ -32,7 +32,6 @@ library(apisniffer)
 -   [developer(s).{site}](https://developer.nytimes.com/)
 -   [GitHub/{organization}](https://github.com/washingtonpost)
 
-
 ::: notes
 -   apis.guru is in the {anyapi} package (on github)
 -   I plan to add Public APIs (in addition)
@@ -48,52 +47,136 @@ library(apisniffer)
 
 # Search for API-wrapping packages
 
-## General tips for searching
+## General tips for text filtering
 
 -   `tolower(FIELD)` to find "API", "api", "Api", etc
 -   `\\b` in regex pattern for "word ***b***oundary"
     -   `"\\bapi\\b"` = "api surrounded by spaces, (), newline, etc"
 
-## Searching CRAN packages {-}
+::: notes
+-   These are generally useful, but we'll use them specifically for packages
+:::
 
-```{r pkgs-cran, eval = FALSE}
-# TODO: Re-enable this when CRAN isn't down.
+## Searching CRAN packages
+
+```{r pkgs-cran, eval = TRUE}
 api_pkgs <- tools::CRAN_package_db() |> 
   dplyr::as_tibble() |> 
-  dplyr::filter(stringr::str_detect(tolower(Description), "\\bapi\\b")) |> 
-  dplyr::select(Package, Description)
-nrow(api_pkgs)
-head(api_pkgs)
+  dplyr::filter(
+    stringr::str_detect(tolower(Description), "\\bapi\\b") |
+      stringr::str_detect(tolower(Title), "\\bapi\\b")
+  ) |> 
+  dplyr::select(Package, Title)
+api_pkgs
 ```
 
-## Searching the R Universe {-}
+::: notes
+-   CRAN_package_db() returns 69 columns of info (everything that can be in the DESCRIPTION file)
+-   Title = short description, generally sentence case.
+-   Description = paragraph or so about the package
+-   Could also check `Author` and/or `Authors@R` for credit to API owner. 
+:::
 
+
+## Searching the R Universe
+
+-   [rOpenSci project for package discovery](https://ropensci.org/r-universe/)
 -   Web interface at https://r-universe.dev/
--   API in {universe} package? (broken as of 2023-11-13)
--   API at `https://r-universe.dev/stats/powersearch`
+-   API (under development) at `https://r-universe.dev/api/search`
 
-## Searching the R Universe API {-}
+::: notes
+-   Users and organizations can set up their own universes
+-   Likely to be different by the time I do next iteration of these slides
+:::
 
-```{r pkgs-r-universe}
-resp <- request("https://r-universe.dev") |> 
-  req_url_path_append("stats/powersearch") |>
-  req_url_query(q = "api") |> 
-  req_perform() |> 
-  resp_body_json()
+## R Universe API: Request
 
-uni_api_pkgs <- tibble(pkg = resp$results) |> 
-  unnest_wider(pkg) |> 
-  filter(str_detect(tolower(Description), "\\bapi\\b")) |> 
-  distinct(Package, Description)
+::: fragment
+```{r apis-find-r-universe_api-request, eval = TRUE}
+r_universe_apis_req <- httr2::request("https://r-universe.dev/api/search") |> 
+  httr2::req_url_query(
+    q = "api",
+    all = TRUE,
+    limit = 100
+  )
+```
+:::
 
-nrow(uni_api_pkgs)
-head(uni_api_pkgs)
+::: fragment
+```{r apis-find-r-universe_api-iterate, eval = TRUE}
+r_universe_apis_resps <- r_universe_apis_req |> 
+  httr2::req_perform_iterative(
+    httr2::iterate_with_offset(
+      "skip",
+      start = 0,
+      offset = 100,
+      resp_pages = \(resp) ceiling(httr2::resp_body_json(resp)$total/100)
+    )
+  )
+```
+:::
+
+::: notes
+-   API isn't done.
+    -   No documented pagination, but...
+    -   Skip parameter will work!
+:::
+
+## R Universe Results
+
+```{r pkgs-r-universe, eval = TRUE}
+r_universe_apis_resps |> 
+  httr2::resps_data(
+    \(resp) {
+      httr2::resp_body_json(resp)$results |> 
+        tibble::enframe(name = NULL) |> 
+        tidyr::unnest_wider(value)
+    }
+  ) |> 
+  dplyr::select(Package, Title)
 ```
 
-## anyapi {-}
+# Sniff API requests in browser
 
--   {anyapi} package wraps these functions
-    -   (technically not yet)
--   If package doesn't exist
-    -   Search for API spec
-    -   Create package on-the-fly to interact with the API
+## Browser developer tools
+
+-   Differs browser-to-browser, showing Chrome
+-   ctrl-shift-I (cmd-shift-I) or right click > `Inspect`
+-   `Network` tab
+-   Filter to `Fetch/XHR`
+-   Right click > `Header Options` > `Path`
+-   Demo: [Amazon suggestions](https://amazon.com)
+
+::: notes
+-   Microsoft Edge is also a Chromium-based browser, so should be same there
+-   Fetch & XHR are two JavaScript APIs for making requests.
+    -   XHR = XmlHttpRequest, but not used just for XML.
+    -   Fetch is more modern version, but both are used.
+-   Importantly: They're how web pages often make API requests on your behalf.
+-   Load Amazon, then ctrl-shift-i (make sure it's empty)
+-   Show clearing with the circle/line icon
+-   Click the search box
+-   Type "Web APIs with R", pausing to see requests & results
+-   Point out "Path" column
+-   Filter to "suggestions"
+-   Single click last one
+-   Walk through Headers, Payload, Response
+-   Right click > `Copy` > `Copy as cURL (bash)`
+    -   Can paste this and use `httr2::curl_translate()`
+:::
+
+## Sniff API requests with {apisniffer}
+
+-   `r lifecycle::badge("experimental")` [{apisniffer}](https://github.com/jonthegeek/apisniffer)
+-   Goal:
+    -   Load page
+    -   (optional) Interact
+    -   Returns tibble of API info
+    -   (maybe) Also returns functions to access detected APIs
+
+::: notes
+-   Currently doesn't allow interaction
+-   Returns raw data, not tibble
+-   Can use `httr2::url_parse()` to break url into pieces
+-   `request` objects have sections by {httr2} function
+:::
