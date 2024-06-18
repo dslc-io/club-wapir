@@ -11,7 +11,8 @@ title: Communicate with other types of APIs
 -   Fetch data from gRPC APIs.
 :::
 
-```{r req-other-setup}
+```{r}
+#| label: req-other-setup
 library(ghql)
 library(jsonlite)
 library(dplyr)
@@ -21,58 +22,115 @@ library(protolite)
 # library(RProtoBuf)
 ```
 
-## GraphQL {-}
+# GraphQL
 
+## What is GraphQL?
+
+-   "Open-source data query and manipulation language"
+    -   `query` = data you need
+    -   `mutation` = new data to add
+    -   JSON-like format
+    -   1 endpoint
+-   Developed by Facebook
+-   Used by [Facebook](https://developers.facebook.com/docs/graph-api/), [GitHub](https://docs.github.com/en/graphql), [Yelp](https://docs.developer.yelp.com/docs/graphql-intro), [Shopify](https://shopify.dev/docs/apps/build/graphql), etc
+
+::: notes
+-   Think of it as a REST API with 1 endpoint and strict rules about what goes into the request body.
+-   Might get a chapter in my next iteration.
+-   Intended to allow you to filter for the data you need.
+    -   Could really use a dplyr implementation!
+:::
+
+## GraphQL in R
+
+-   Client side: [{ghql}](https://docs.ropensci.org/ghql/index.html)
+-   Server side: [{gqlr}](http://schloerke.com/gqlr/index.html)
+
+::: notes
 -   Current landscape feels like "I use GraphQL in other languages, and want it to technically be possible to do so from R."
--   Queries: [ghql](https://docs.ropensci.org/ghql/index.html)
-    -   Demo on next slide
--   Server side: [gqlr](http://schloerke.com/gqlr/index.html) (more in later chapter)
+-   We'll go through a {ghql} example
+:::
 
-## GraphQL setup {-}
+## Country data: setup
 
-```{r req-other-graphql-setup, eval = FALSE}
-ghql_con <- GraphqlClient$new(
-  url = "https://api.github.com/graphql",
-  headers = list(Authorization = paste0("Bearer ", Sys.getenv("GITHUB_PAT")))
+-   [Countries GraphQL API](https://github.com/trevorblades/countries)
+
+::: fragment
+```{r}
+#| label: req-other-graphql-setup
+ghql_con <- ghql::GraphqlClient$new(url = "https://countries.trevorblades.com/")
+qry <- ghql::Query$new()
+```
+:::
+
+::: notes
+-   UpperCamelCase + `$new()` means this uses R6. 
+    -   See Advanced R to get started
+:::
+
+## Country data: query
+
+::::: columns
+
+:::: column
+```{r}
+#| label: req-other-graphql-query
+qry$query("country_data",
+  "query($code: [String!]) {
+     countries(
+       filter: {code: {in: $code}}
+     ) {
+       code
+       name
+       capital
+       phone
+       languages {
+         code
+         name
+       }
+     }
+   }"
 )
-ghql_con$load_schema()
-qry <- Query$new()
+```
+::::
+:::: column
+```{r}
+#| label: req-other-graphql-query-comments
+# name of this query
+# define variables
+#
+#
+# Select countries using codes
+#
+# fields we want for each country
 ```
 
-## GraphQL query {-}
+-   No commas
+-   No quotation marks
+::::
+:::::
 
-```{r req-other-graphql-query, eval = FALSE}
-qry$query('mydata', '{
-  repositoryOwner(login:"jonthegeek") {
-    repositories(first: 5, orderBy: {field:PUSHED_AT,direction:DESC}, isFork:false) {
-      edges {
-        node {
-          name
-          stargazers {
-            totalCount
-          }
-        }
-      }
-    }
-  }
-}')
-```
+::: notes
+-   "[String!]" means "Array of non-nullable (required) strings".
+-   Schema specifies data types
+-   Could filter by more things (like dplyr filter)
+    -   Schema specifies code, continent, currency, name
+:::
 
 ## GraphQL response {-}
 
 ```{r req-other-graphql-response, eval = FALSE}
-x <- ghql_con$exec(qry$queries$mydata) # We created a query named "mydata"
+country_codes <- list(code = c("US", "DE"))
+x <- ghql_con$exec(
+  qry$queries$country_data,
+  country_codes
+) # We created a query named "country_data"
 jsonlite::fromJSON(x)
 #> $data
-#> $data$repositoryOwner
-#> $data$repositoryOwner$repositories
-#> $data$repositoryOwner$repositories$edges
-#>                   node.name node.totalCount
-#> 1                     wapir              17
-#> 2                    zoomer               3
-#> 3                rstats.fyi               0
-#> 4                 tidyslack               0
-#> 5 jonthegeek.r-universe.dev               0
+#> $data$countries
+#>   code          name         capital phone   languages
+#> 1   DE       Germany          Berlin    49  de, German
+#> 2   US United States Washington D.C.     1 en, English
 ```
 
 ## websocket review {-}
@@ -192,17 +250,3 @@ resp_body_raw(resp) |>
   unserialize_pb()
 #> [1] 102.61489 101.70467  99.12647  99.85958 100.47736
 ```
-
-## Meeting Videos {-}
-
-### Cohort 1 {-}
-
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
-
-<details>
-<summary> Meeting chat log </summary>
-
-```
-LOG
-```
-</details>
