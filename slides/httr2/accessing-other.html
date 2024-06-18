@@ -396,7 +396,6 @@
 </div>
 
 </section>
-<section>
 <section id="learning-objectives" class="title-slide slide level1 center">
 <h1>️✅ Learning objectives</h1>
 <div>
@@ -416,62 +415,172 @@
 <span id="cb1-7"><a></a><span class="co"># library(RProtoBuf)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="graphql" class="slide level2 unnumbered">
-<h2>GraphQL</h2>
+
+<section>
+<section id="graphql" class="title-slide slide level1 center">
+<h1>GraphQL</h1>
+
+</section>
+<section id="what-is-graphql" class="slide level2">
+<h2>What is GraphQL?</h2>
 <ul>
-<li class="fragment">Current landscape feels like “I use GraphQL in other languages, and want it to technically be possible to do so from R.”</li>
-<li class="fragment">Queries: <a href="https://docs.ropensci.org/ghql/index.html">ghql</a>
+<li class="fragment">“Open-source data query and manipulation language”
 <ul>
-<li class="fragment">Demo on next slide</li>
+<li class="fragment"><code>query</code> = data you need</li>
+<li class="fragment"><code>mutation</code> = new data to add</li>
+<li class="fragment">JSON-like format</li>
+<li class="fragment">1 endpoint</li>
 </ul></li>
-<li class="fragment">Server side: <a href="http://schloerke.com/gqlr/index.html">gqlr</a> (more in later chapter)</li>
+<li class="fragment">Developed by Facebook</li>
+<li class="fragment">Used by <a href="https://developers.facebook.com/docs/graph-api/">Facebook</a>, <a href="https://docs.github.com/en/graphql">GitHub</a>, <a href="https://docs.developer.yelp.com/docs/graphql-intro">Yelp</a>, <a href="https://shopify.dev/docs/apps/build/graphql">Shopify</a>, etc</li>
 </ul>
+<aside class="notes">
+<ul>
+<li>Think of it as a REST API with 1 endpoint and strict rules about what goes into the request body.</li>
+<li>Might get a chapter in my next iteration.</li>
+<li>Intended to allow you to filter for the data you need.
+<ul>
+<li>Could really use a dplyr implementation!</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="graphql-setup" class="slide level2 unnumbered">
-<h2>GraphQL setup</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>ghql_con <span class="ot">&lt;-</span> GraphqlClient<span class="sc">$</span><span class="fu">new</span>(</span>
-<span id="cb2-2"><a></a>  <span class="at">url =</span> <span class="st">"https://api.github.com/graphql"</span>,</span>
-<span id="cb2-3"><a></a>  <span class="at">headers =</span> <span class="fu">list</span>(<span class="at">Authorization =</span> <span class="fu">paste0</span>(<span class="st">"Bearer "</span>, <span class="fu">Sys.getenv</span>(<span class="st">"GITHUB_PAT"</span>)))</span>
-<span id="cb2-4"><a></a>)</span>
-<span id="cb2-5"><a></a>ghql_con<span class="sc">$</span><span class="fu">load_schema</span>()</span>
-<span id="cb2-6"><a></a>qry <span class="ot">&lt;-</span> Query<span class="sc">$</span><span class="fu">new</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<section id="graphql-in-r" class="slide level2">
+<h2>GraphQL in R</h2>
+<ul>
+<li class="fragment">Client side: <a href="https://docs.ropensci.org/ghql/index.html">{ghql}</a></li>
+<li class="fragment">Server side: <a href="http://schloerke.com/gqlr/index.html">{gqlr}</a></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Current landscape feels like “I use GraphQL in other languages, and want it to technically be possible to do so from R.”</li>
+<li>We’ll go through a {ghql} example</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="graphql-query" class="slide level2 unnumbered">
-<h2>GraphQL query</h2>
+<section id="country-data-setup" class="slide level2">
+<h2>Country data: setup</h2>
+<ul>
+<li class="fragment"><a href="https://github.com/trevorblades/countries">Countries GraphQL API</a></li>
+</ul>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>qry<span class="sc">$</span><span class="fu">query</span>(<span class="st">'mydata'</span>, <span class="st">'{</span></span>
-<span id="cb3-2"><a></a><span class="st">  repositoryOwner(login:"jonthegeek") {</span></span>
-<span id="cb3-3"><a></a><span class="st">    repositories(first: 5, orderBy: {field:PUSHED_AT,direction:DESC}, isFork:false) {</span></span>
-<span id="cb3-4"><a></a><span class="st">      edges {</span></span>
-<span id="cb3-5"><a></a><span class="st">        node {</span></span>
-<span id="cb3-6"><a></a><span class="st">          name</span></span>
-<span id="cb3-7"><a></a><span class="st">          stargazers {</span></span>
-<span id="cb3-8"><a></a><span class="st">            totalCount</span></span>
-<span id="cb3-9"><a></a><span class="st">          }</span></span>
-<span id="cb3-10"><a></a><span class="st">        }</span></span>
-<span id="cb3-11"><a></a><span class="st">      }</span></span>
-<span id="cb3-12"><a></a><span class="st">    }</span></span>
-<span id="cb3-13"><a></a><span class="st">  }</span></span>
-<span id="cb3-14"><a></a><span class="st">}'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>ghql_con <span class="ot">&lt;-</span> ghql<span class="sc">::</span>GraphqlClient<span class="sc">$</span><span class="fu">new</span>(<span class="at">url =</span> <span class="st">"https://countries.trevorblades.com/"</span>)</span>
+<span id="cb2-2"><a></a>qry <span class="ot">&lt;-</span> ghql<span class="sc">::</span>Query<span class="sc">$</span><span class="fu">new</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</div>
+<aside class="notes">
+<ul>
+<li>UpperCamelCase + <code>$new()</code> means this uses R6.
+<ul>
+<li>See Advanced R to get started</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="country-data-query" class="slide level2">
+<h2>Country data: query</h2>
+<div class="columns">
+<div class="column">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>qry<span class="sc">$</span><span class="fu">query</span>(<span class="st">"country_data"</span>,</span>
+<span id="cb3-2"><a></a>  <span class="st">"query($code: [String!]) {</span></span>
+<span id="cb3-3"><a></a><span class="st">     countries(</span></span>
+<span id="cb3-4"><a></a><span class="st">       filter: {code: {in: $code}}</span></span>
+<span id="cb3-5"><a></a><span class="st">     ) {</span></span>
+<span id="cb3-6"><a></a><span class="st">       code</span></span>
+<span id="cb3-7"><a></a><span class="st">       name</span></span>
+<span id="cb3-8"><a></a><span class="st">       capital</span></span>
+<span id="cb3-9"><a></a><span class="st">       phone</span></span>
+<span id="cb3-10"><a></a><span class="st">       languages {</span></span>
+<span id="cb3-11"><a></a><span class="st">         code</span></span>
+<span id="cb3-12"><a></a><span class="st">         name</span></span>
+<span id="cb3-13"><a></a><span class="st">       }</span></span>
+<span id="cb3-14"><a></a><span class="st">     }</span></span>
+<span id="cb3-15"><a></a><span class="st">   }"</span></span>
+<span id="cb3-16"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="co"># name of this query</span></span>
+<span id="cb4-2"><a></a><span class="co"># define variables</span></span>
+<span id="cb4-3"><a></a><span class="co">#</span></span>
+<span id="cb4-4"><a></a><span class="co">#</span></span>
+<span id="cb4-5"><a></a><span class="co"># Select countries using codes</span></span>
+<span id="cb4-6"><a></a><span class="co">#</span></span>
+<span id="cb4-7"><a></a><span class="co"># fields we want for each country</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li class="fragment">No commas</li>
+<li class="fragment">No quotation marks</li>
+</ul>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>“[String!]” means “Array of non-nullable (required) strings”.</li>
+<li>Schema specifies data types</li>
+<li>Could filter by more things (like dplyr filter)
+<ul>
+<li>Schema specifies code, continent, currency, name</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="graphql-response" class="slide level2 unnumbered">
 <h2>GraphQL response</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>x <span class="ot">&lt;-</span> ghql_con<span class="sc">$</span><span class="fu">exec</span>(qry<span class="sc">$</span>queries<span class="sc">$</span>mydata) <span class="co"># We created a query named "mydata"</span></span>
-<span id="cb4-2"><a></a>jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(x)</span>
-<span id="cb4-3"><a></a><span class="co">#&gt; $data</span></span>
-<span id="cb4-4"><a></a><span class="co">#&gt; $data$repositoryOwner</span></span>
-<span id="cb4-5"><a></a><span class="co">#&gt; $data$repositoryOwner$repositories</span></span>
-<span id="cb4-6"><a></a><span class="co">#&gt; $data$repositoryOwner$repositories$edges</span></span>
-<span id="cb4-7"><a></a><span class="co">#&gt;                   node.name node.totalCount</span></span>
-<span id="cb4-8"><a></a><span class="co">#&gt; 1                     wapir              17</span></span>
-<span id="cb4-9"><a></a><span class="co">#&gt; 2                    zoomer               3</span></span>
-<span id="cb4-10"><a></a><span class="co">#&gt; 3                rstats.fyi               0</span></span>
-<span id="cb4-11"><a></a><span class="co">#&gt; 4                 tidyslack               0</span></span>
-<span id="cb4-12"><a></a><span class="co">#&gt; 5 jonthegeek.r-universe.dev               0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>country_codes <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">code =</span> <span class="fu">c</span>(<span class="st">"US"</span>, <span class="st">"DE"</span>))</span>
+<span id="cb5-2"><a></a>x <span class="ot">&lt;-</span> ghql_con<span class="sc">$</span><span class="fu">exec</span>(</span>
+<span id="cb5-3"><a></a>  qry<span class="sc">$</span>queries<span class="sc">$</span>country_data,</span>
+<span id="cb5-4"><a></a>  country_codes</span>
+<span id="cb5-5"><a></a>) <span class="co"># We created a query named "country_data"</span></span>
+<span id="cb5-6"><a></a>jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(x)</span>
+<span id="cb5-7"><a></a><span class="co">#&gt; $data</span></span>
+<span id="cb5-8"><a></a><span class="co">#&gt; $data$countries</span></span>
+<span id="cb5-9"><a></a><span class="co">#&gt;   code          name         capital phone   languages</span></span>
+<span id="cb5-10"><a></a><span class="co">#&gt; 1   DE       Germany          Berlin    49  de, German</span></span>
+<span id="cb5-11"><a></a><span class="co">#&gt; 2   US United States Washington D.C.     1 en, English</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="websocket-review" class="slide level2 unnumbered">
@@ -495,44 +604,44 @@
 <section id="websocket-demo-setup" class="slide level2 unnumbered">
 <h2>websocket demo: setup</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>ws <span class="ot">&lt;-</span> WebSocket<span class="sc">$</span><span class="fu">new</span>(<span class="st">"ws://echo.websocket.events/"</span>, <span class="at">autoConnect =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb5-2"><a></a>ws<span class="sc">$</span><span class="fu">onMessage</span>(\(event) {</span>
-<span id="cb5-3"><a></a>  now <span class="ot">&lt;-</span> <span class="fu">format</span>(<span class="fu">Sys.time</span>(), <span class="at">digits =</span> <span class="dv">0</span>)</span>
-<span id="cb5-4"><a></a>  <span class="fu">cat</span>(<span class="st">"Client got msg:"</span>, event<span class="sc">$</span>data, <span class="st">"at"</span>, now, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb5-5"><a></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>ws <span class="ot">&lt;-</span> WebSocket<span class="sc">$</span><span class="fu">new</span>(<span class="st">"ws://echo.websocket.events/"</span>, <span class="at">autoConnect =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-2"><a></a>ws<span class="sc">$</span><span class="fu">onMessage</span>(\(event) {</span>
+<span id="cb6-3"><a></a>  now <span class="ot">&lt;-</span> <span class="fu">format</span>(<span class="fu">Sys.time</span>(), <span class="at">digits =</span> <span class="dv">0</span>)</span>
+<span id="cb6-4"><a></a>  <span class="fu">cat</span>(<span class="st">"Client got msg:"</span>, event<span class="sc">$</span>data, <span class="st">"at"</span>, now, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb6-5"><a></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="websocket-demo" class="slide level2 unnumbered">
 <h2>websocket demo</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>ws<span class="sc">$</span><span class="fu">connect</span>()</span>
-<span id="cb6-2"><a></a><span class="co">#&gt; Client got msg: echo.websocket.events sponsored by Lob.com at 2023-11-15 2023-11-15 08:28:04</span></span>
-<span id="cb6-3"><a></a><span class="co"># (can do other things in console now)</span></span>
-<span id="cb6-4"><a></a><span class="dv">1</span></span>
-<span id="cb6-5"><a></a><span class="co">#&gt; [1] 1</span></span>
-<span id="cb6-6"><a></a>ws<span class="sc">$</span><span class="fu">send</span>(<span class="st">"hello"</span>)</span>
-<span id="cb6-7"><a></a><span class="co">#&gt; Client got msg: hello at 2023-11-15 08:28:10</span></span>
-<span id="cb6-8"><a></a>ws<span class="sc">$</span><span class="fu">close</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>ws<span class="sc">$</span><span class="fu">connect</span>()</span>
+<span id="cb7-2"><a></a><span class="co">#&gt; Client got msg: echo.websocket.events sponsored by Lob.com at 2023-11-15 2023-11-15 08:28:04</span></span>
+<span id="cb7-3"><a></a><span class="co"># (can do other things in console now)</span></span>
+<span id="cb7-4"><a></a><span class="dv">1</span></span>
+<span id="cb7-5"><a></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb7-6"><a></a>ws<span class="sc">$</span><span class="fu">send</span>(<span class="st">"hello"</span>)</span>
+<span id="cb7-7"><a></a><span class="co">#&gt; Client got msg: hello at 2023-11-15 08:28:10</span></span>
+<span id="cb7-8"><a></a>ws<span class="sc">$</span><span class="fu">close</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="websocket-toward-usefulness" class="slide level2 unnumbered">
 <h2>websocket: toward usefulness</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>ws_counter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb7-2"><a></a>ws2 <span class="ot">&lt;-</span> WebSocket<span class="sc">$</span><span class="fu">new</span>(<span class="st">"ws://echo.websocket.events/"</span>, <span class="at">autoConnect =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb7-3"><a></a>ws2<span class="sc">$</span><span class="fu">onMessage</span>(\(event) {</span>
-<span id="cb7-4"><a></a>  ws_counter <span class="ot">&lt;&lt;-</span> ws_counter <span class="sc">+</span> <span class="dv">1</span> <span class="co"># Add 1 to global ws_counter var </span></span>
-<span id="cb7-5"><a></a>  <span class="fu">cat</span>(ws_counter, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb7-6"><a></a>})</span>
-<span id="cb7-7"><a></a>ws_counter</span>
-<span id="cb7-8"><a></a><span class="co">#&gt; 1</span></span>
-<span id="cb7-9"><a></a>ws2<span class="sc">$</span><span class="fu">connect</span>()</span>
-<span id="cb7-10"><a></a><span class="co">#&gt; 2</span></span>
-<span id="cb7-11"><a></a>ws2<span class="sc">$</span><span class="fu">send</span>(<span class="st">"update"</span>)</span>
-<span id="cb7-12"><a></a><span class="co">#&gt; 3</span></span>
-<span id="cb7-13"><a></a>ws2<span class="sc">$</span><span class="fu">send</span>(<span class="st">"update again"</span>)</span>
-<span id="cb7-14"><a></a><span class="co">#&gt; 4</span></span>
-<span id="cb7-15"><a></a>ws2<span class="sc">$</span><span class="fu">close</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>ws_counter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb8-2"><a></a>ws2 <span class="ot">&lt;-</span> WebSocket<span class="sc">$</span><span class="fu">new</span>(<span class="st">"ws://echo.websocket.events/"</span>, <span class="at">autoConnect =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-3"><a></a>ws2<span class="sc">$</span><span class="fu">onMessage</span>(\(event) {</span>
+<span id="cb8-4"><a></a>  ws_counter <span class="ot">&lt;&lt;-</span> ws_counter <span class="sc">+</span> <span class="dv">1</span> <span class="co"># Add 1 to global ws_counter var </span></span>
+<span id="cb8-5"><a></a>  <span class="fu">cat</span>(ws_counter, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb8-6"><a></a>})</span>
+<span id="cb8-7"><a></a>ws_counter</span>
+<span id="cb8-8"><a></a><span class="co">#&gt; 1</span></span>
+<span id="cb8-9"><a></a>ws2<span class="sc">$</span><span class="fu">connect</span>()</span>
+<span id="cb8-10"><a></a><span class="co">#&gt; 2</span></span>
+<span id="cb8-11"><a></a>ws2<span class="sc">$</span><span class="fu">send</span>(<span class="st">"update"</span>)</span>
+<span id="cb8-12"><a></a><span class="co">#&gt; 3</span></span>
+<span id="cb8-13"><a></a>ws2<span class="sc">$</span><span class="fu">send</span>(<span class="st">"update again"</span>)</span>
+<span id="cb8-14"><a></a><span class="co">#&gt; 4</span></span>
+<span id="cb8-15"><a></a>ws2<span class="sc">$</span><span class="fu">close</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="websocket-usecases" class="slide level2 unnumbered">
@@ -578,48 +687,36 @@
 <h2>gRPC demo</h2>
 <p>From <a href="https://www.jstatsoft.org/article/view/v071i02">RProtoBuf paper</a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>resp <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://demo.ocpu.io/MASS/data/Animals/pb"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb8-2"><a></a>  <span class="fu">req_perform</span>()</span>
-<span id="cb8-3"><a></a>output <span class="ot">&lt;-</span> <span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> </span>
-<span id="cb8-4"><a></a>  <span class="fu">unserialize_pb</span>() <span class="co"># This is the important part</span></span>
-<span id="cb8-5"><a></a><span class="fu">identical</span>(output, MASS<span class="sc">::</span>Animals)</span>
-<span id="cb8-6"><a></a><span class="co">#&gt; [1] TRUE</span></span>
-<span id="cb8-7"><a></a><span class="fu">head</span>(output)</span>
-<span id="cb8-8"><a></a><span class="co">#&gt;                     body brain</span></span>
-<span id="cb8-9"><a></a><span class="co">#&gt; Mountain beaver     1.35   8.1</span></span>
-<span id="cb8-10"><a></a><span class="co">#&gt; Cow               465.00 423.0</span></span>
-<span id="cb8-11"><a></a><span class="co">#&gt; Grey wolf          36.33 119.5</span></span>
-<span id="cb8-12"><a></a><span class="co">#&gt; Goat               27.66 115.0</span></span>
-<span id="cb8-13"><a></a><span class="co">#&gt; Guinea pig          1.04   5.5</span></span>
-<span id="cb8-14"><a></a><span class="co">#&gt; Dipliodocus     11700.00  50.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>resp <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://demo.ocpu.io/MASS/data/Animals/pb"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a></a>  <span class="fu">req_perform</span>()</span>
+<span id="cb9-3"><a></a>output <span class="ot">&lt;-</span> <span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> </span>
+<span id="cb9-4"><a></a>  <span class="fu">unserialize_pb</span>() <span class="co"># This is the important part</span></span>
+<span id="cb9-5"><a></a><span class="fu">identical</span>(output, MASS<span class="sc">::</span>Animals)</span>
+<span id="cb9-6"><a></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb9-7"><a></a><span class="fu">head</span>(output)</span>
+<span id="cb9-8"><a></a><span class="co">#&gt;                     body brain</span></span>
+<span id="cb9-9"><a></a><span class="co">#&gt; Mountain beaver     1.35   8.1</span></span>
+<span id="cb9-10"><a></a><span class="co">#&gt; Cow               465.00 423.0</span></span>
+<span id="cb9-11"><a></a><span class="co">#&gt; Grey wolf          36.33 119.5</span></span>
+<span id="cb9-12"><a></a><span class="co">#&gt; Goat               27.66 115.0</span></span>
+<span id="cb9-13"><a></a><span class="co">#&gt; Guinea pig          1.04   5.5</span></span>
+<span id="cb9-14"><a></a><span class="co">#&gt; Dipliodocus     11700.00  50.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="grpc-demo2-r-via-api" class="slide level2 unnumbered">
 <h2>gRPC demo2: R via API</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>args <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">n =</span> <span class="dv">5</span>, <span class="at">mean =</span> <span class="dv">100</span>)</span>
-<span id="cb9-2"><a></a>payload <span class="ot">&lt;-</span> <span class="fu">serialize_pb</span>(args, <span class="at">connection =</span> <span class="cn">NULL</span>)</span>
-<span id="cb9-3"><a></a>resp <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://cloud.opencpu.org/ocpu/library"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-4"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"stats"</span>, <span class="st">"R"</span>, <span class="st">"rnorm"</span>, <span class="st">"pb"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-5"><a></a>  <span class="fu">req_body_raw</span>(payload, <span class="at">type =</span> <span class="st">"application/protobuf"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-6"><a></a>  <span class="fu">req_perform</span>()</span>
-<span id="cb9-7"><a></a></span>
-<span id="cb9-8"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> </span>
-<span id="cb9-9"><a></a>  <span class="fu">unserialize_pb</span>()</span>
-<span id="cb9-10"><a></a><span class="co">#&gt; [1] 102.61489 101.70467  99.12647  99.85958 100.47736</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>args <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">n =</span> <span class="dv">5</span>, <span class="at">mean =</span> <span class="dv">100</span>)</span>
+<span id="cb10-2"><a></a>payload <span class="ot">&lt;-</span> <span class="fu">serialize_pb</span>(args, <span class="at">connection =</span> <span class="cn">NULL</span>)</span>
+<span id="cb10-3"><a></a>resp <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://cloud.opencpu.org/ocpu/library"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-4"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"stats"</span>, <span class="st">"R"</span>, <span class="st">"rnorm"</span>, <span class="st">"pb"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-5"><a></a>  <span class="fu">req_body_raw</span>(payload, <span class="at">type =</span> <span class="st">"application/protobuf"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb10-6"><a></a>  <span class="fu">req_perform</span>()</span>
+<span id="cb10-7"><a></a></span>
+<span id="cb10-8"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> </span>
+<span id="cb10-9"><a></a>  <span class="fu">unserialize_pb</span>()</span>
+<span id="cb10-10"><a></a><span class="co">#&gt; [1] 102.61489 101.70467  99.12647  99.85958 100.47736</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="meeting-videos" class="slide level2 unnumbered">
-<h2>Meeting Videos</h2>
-<h3 class="unnumbered" id="cohort-1">Cohort 1</h3>
-<iframe src="https://www.youtube.com/embed/URL" width="100%" height="400px" data-external="1">
-</iframe>
-<details>
-<summary>
-Meeting chat log
-</summary>
-<pre><code>LOG</code></pre>
-</details>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">

@@ -302,7 +302,7 @@
     "href": "slides/httr2/apis-find.html#r-universe-results",
     "title": "Find APIs",
     "section": "R Universe Results",
-    "text": "R Universe Results\n\nr_universe_apis_resps |&gt; \n  httr2::resps_data(\n    \\(resp) {\n      httr2::resp_body_json(resp)$results |&gt; \n        tibble::enframe(name = NULL) |&gt; \n        tidyr::unnest_wider(value)\n    }\n  ) |&gt; \n  dplyr::select(Package, Title)\n\n#&gt; # A tibble: 1,384 × 2\n#&gt;    Package         Title                                                        \n#&gt;    &lt;chr&gt;           &lt;chr&gt;                                                        \n#&gt;  1 hoopR           \"Access Men's Basketball Play by Play Data\"                  \n#&gt;  2 wehoop          \"Access Women's Basketball Play by Play Data\"                \n#&gt;  3 gptstudio       \"Use Large Language Models Directly in your Development\\nEnv…\n#&gt;  4 geosapi         \"GeoServer REST API R Interface\"                             \n#&gt;  5 googleLanguageR \"Call Google's 'Natural Language' API, 'Cloud Translation' A…\n#&gt;  6 RobinHood       \"Interface for the RobinHood.com No Commission Investing Pla…\n#&gt;  7 hereR           \"'sf'-Based Interface to the 'HERE' REST APIs\"               \n#&gt;  8 oaii            \"'OpenAI' API R Interface\"                                   \n#&gt;  9 nhlapi          \"A Minimum-Dependency 'R' Interface to the 'NHL' API\"        \n#&gt; 10 salesforcer     \"An Implementation of 'Salesforce' APIs Using Tidy Principle…\n#&gt; # ℹ 1,374 more rows",
+    "text": "R Universe Results\n\nr_universe_apis_resps |&gt; \n  httr2::resps_data(\n    \\(resp) {\n      httr2::resp_body_json(resp)$results |&gt; \n        tibble::enframe(name = NULL) |&gt; \n        tidyr::unnest_wider(value)\n    }\n  ) |&gt; \n  dplyr::select(Package, Title)\n\n#&gt; # A tibble: 1,387 × 2\n#&gt;    Package         Title                                                        \n#&gt;    &lt;chr&gt;           &lt;chr&gt;                                                        \n#&gt;  1 hoopR           \"Access Men's Basketball Play by Play Data\"                  \n#&gt;  2 wehoop          \"Access Women's Basketball Play by Play Data\"                \n#&gt;  3 gptstudio       \"Use Large Language Models Directly in your Development\\nEnv…\n#&gt;  4 geosapi         \"GeoServer REST API R Interface\"                             \n#&gt;  5 googleLanguageR \"Call Google's 'Natural Language' API, 'Cloud Translation' A…\n#&gt;  6 RobinHood       \"Interface for the RobinHood.com No Commission Investing Pla…\n#&gt;  7 hereR           \"'sf'-Based Interface to the 'HERE' REST APIs\"               \n#&gt;  8 oaii            \"'OpenAI' API R Interface\"                                   \n#&gt;  9 nhlapi          \"A Minimum-Dependency 'R' Interface to the 'NHL' API\"        \n#&gt; 10 salesforcer     \"An Implementation of 'Salesforce' APIs Using Tidy Principle…\n#&gt; # ℹ 1,377 more rows",
     "crumbs": [
       "Do more with APIs",
       "Find APIs"
@@ -1768,33 +1768,44 @@
     ]
   },
   {
-    "objectID": "slides/httr2/accessing-other.html#graphql",
-    "href": "slides/httr2/accessing-other.html#graphql",
+    "objectID": "slides/httr2/accessing-other.html#what-is-graphql",
+    "href": "slides/httr2/accessing-other.html#what-is-graphql",
     "title": "Communicate with other types of APIs",
-    "section": "GraphQL",
-    "text": "GraphQL\n\nCurrent landscape feels like “I use GraphQL in other languages, and want it to technically be possible to do so from R.”\nQueries: ghql\n\nDemo on next slide\n\nServer side: gqlr (more in later chapter)",
+    "section": "What is GraphQL?",
+    "text": "What is GraphQL?\n\n“Open-source data query and manipulation language”\n\nquery = data you need\nmutation = new data to add\nJSON-like format\n1 endpoint\n\nDeveloped by Facebook\nUsed by Facebook, GitHub, Yelp, Shopify, etc\n\n\n\nThink of it as a REST API with 1 endpoint and strict rules about what goes into the request body.\nMight get a chapter in my next iteration.\nIntended to allow you to filter for the data you need.\n\nCould really use a dplyr implementation!",
     "crumbs": [
       "Do more with APIs",
       "Communicate with other types of APIs"
     ]
   },
   {
-    "objectID": "slides/httr2/accessing-other.html#graphql-setup",
-    "href": "slides/httr2/accessing-other.html#graphql-setup",
+    "objectID": "slides/httr2/accessing-other.html#graphql-in-r",
+    "href": "slides/httr2/accessing-other.html#graphql-in-r",
     "title": "Communicate with other types of APIs",
-    "section": "GraphQL setup",
-    "text": "GraphQL setup\n\nghql_con &lt;- GraphqlClient$new(\n  url = \"https://api.github.com/graphql\",\n  headers = list(Authorization = paste0(\"Bearer \", Sys.getenv(\"GITHUB_PAT\")))\n)\nghql_con$load_schema()\nqry &lt;- Query$new()",
+    "section": "GraphQL in R",
+    "text": "GraphQL in R\n\nClient side: {ghql}\nServer side: {gqlr}\n\n\n\nCurrent landscape feels like “I use GraphQL in other languages, and want it to technically be possible to do so from R.”\nWe’ll go through a {ghql} example",
     "crumbs": [
       "Do more with APIs",
       "Communicate with other types of APIs"
     ]
   },
   {
-    "objectID": "slides/httr2/accessing-other.html#graphql-query",
-    "href": "slides/httr2/accessing-other.html#graphql-query",
+    "objectID": "slides/httr2/accessing-other.html#country-data-setup",
+    "href": "slides/httr2/accessing-other.html#country-data-setup",
     "title": "Communicate with other types of APIs",
-    "section": "GraphQL query",
-    "text": "GraphQL query\n\nqry$query('mydata', '{\n  repositoryOwner(login:\"jonthegeek\") {\n    repositories(first: 5, orderBy: {field:PUSHED_AT,direction:DESC}, isFork:false) {\n      edges {\n        node {\n          name\n          stargazers {\n            totalCount\n          }\n        }\n      }\n    }\n  }\n}')",
+    "section": "Country data: setup",
+    "text": "Country data: setup\n\nCountries GraphQL API\n\n\n\nghql_con &lt;- ghql::GraphqlClient$new(url = \"https://countries.trevorblades.com/\")\nqry &lt;- ghql::Query$new()\n\n\n\n\nUpperCamelCase + $new() means this uses R6.\n\nSee Advanced R to get started",
+    "crumbs": [
+      "Do more with APIs",
+      "Communicate with other types of APIs"
+    ]
+  },
+  {
+    "objectID": "slides/httr2/accessing-other.html#country-data-query",
+    "href": "slides/httr2/accessing-other.html#country-data-query",
+    "title": "Communicate with other types of APIs",
+    "section": "Country data: query",
+    "text": "Country data: query\n\n\n\nqry$query(\"country_data\",\n  \"query($code: [String!]) {\n     countries(\n       filter: {code: {in: $code}}\n     ) {\n       code\n       name\n       capital\n       phone\n       languages {\n         code\n         name\n       }\n     }\n   }\"\n)\n\n\n\n# name of this query\n# define variables\n#\n#\n# Select countries using codes\n#\n# fields we want for each country\n\n\nNo commas\nNo quotation marks\n\n\n\n\n\n“[String!]” means “Array of non-nullable (required) strings”.\nSchema specifies data types\nCould filter by more things (like dplyr filter)\n\nSchema specifies code, continent, currency, name",
     "crumbs": [
       "Do more with APIs",
       "Communicate with other types of APIs"
@@ -1805,7 +1816,7 @@
     "href": "slides/httr2/accessing-other.html#graphql-response",
     "title": "Communicate with other types of APIs",
     "section": "GraphQL response",
-    "text": "GraphQL response\n\nx &lt;- ghql_con$exec(qry$queries$mydata) # We created a query named \"mydata\"\njsonlite::fromJSON(x)\n#&gt; $data\n#&gt; $data$repositoryOwner\n#&gt; $data$repositoryOwner$repositories\n#&gt; $data$repositoryOwner$repositories$edges\n#&gt;                   node.name node.totalCount\n#&gt; 1                     wapir              17\n#&gt; 2                    zoomer               3\n#&gt; 3                rstats.fyi               0\n#&gt; 4                 tidyslack               0\n#&gt; 5 jonthegeek.r-universe.dev               0",
+    "text": "GraphQL response\n\ncountry_codes &lt;- list(code = c(\"US\", \"DE\"))\nx &lt;- ghql_con$exec(\n  qry$queries$country_data,\n  country_codes\n) # We created a query named \"country_data\"\njsonlite::fromJSON(x)\n#&gt; $data\n#&gt; $data$countries\n#&gt;   code          name         capital phone   languages\n#&gt; 1   DE       Germany          Berlin    49  de, German\n#&gt; 2   US United States Washington D.C.     1 en, English",
     "crumbs": [
       "Do more with APIs",
       "Communicate with other types of APIs"
@@ -1915,18 +1926,7 @@
     "href": "slides/httr2/accessing-other.html#grpc-demo2-r-via-api",
     "title": "Communicate with other types of APIs",
     "section": "gRPC demo2: R via API",
-    "text": "gRPC demo2: R via API\n\nargs &lt;- list(n = 5, mean = 100)\npayload &lt;- serialize_pb(args, connection = NULL)\nresp &lt;- request(\"https://cloud.opencpu.org/ocpu/library\") |&gt; \n  req_url_path_append(\"stats\", \"R\", \"rnorm\", \"pb\") |&gt; \n  req_body_raw(payload, type = \"application/protobuf\") |&gt;\n  req_perform()\n\nresp_body_raw(resp) |&gt; \n  unserialize_pb()\n#&gt; [1] 102.61489 101.70467  99.12647  99.85958 100.47736",
-    "crumbs": [
-      "Do more with APIs",
-      "Communicate with other types of APIs"
-    ]
-  },
-  {
-    "objectID": "slides/httr2/accessing-other.html#meeting-videos",
-    "href": "slides/httr2/accessing-other.html#meeting-videos",
-    "title": "Communicate with other types of APIs",
-    "section": "Meeting Videos",
-    "text": "Meeting Videos\nCohort 1\n\n\n\n\nMeeting chat log\n\nLOG\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
+    "text": "gRPC demo2: R via API\n\nargs &lt;- list(n = 5, mean = 100)\npayload &lt;- serialize_pb(args, connection = NULL)\nresp &lt;- request(\"https://cloud.opencpu.org/ocpu/library\") |&gt; \n  req_url_path_append(\"stats\", \"R\", \"rnorm\", \"pb\") |&gt; \n  req_body_raw(payload, type = \"application/protobuf\") |&gt;\n  req_perform()\n\nresp_body_raw(resp) |&gt; \n  unserialize_pb()\n#&gt; [1] 102.61489 101.70467  99.12647  99.85958 100.47736\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
       "Do more with APIs",
       "Communicate with other types of APIs"
