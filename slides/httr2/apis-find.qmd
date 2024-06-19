@@ -81,8 +81,8 @@ api_pkgs
 ## Searching the R Universe
 
 -   [rOpenSci project for package discovery](https://ropensci.org/r-universe/)
--   Web interface at https://r-universe.dev/
--   API (under development) at `https://r-universe.dev/api/search`
+-   Web interface at [r-universe.dev](https://r-universe.dev/)
+-   API (under development) at [r-universe.dev/api/search](https://r-universe.dev/api/search)
 
 ::: notes
 -   Users and organizations can set up their own universes
