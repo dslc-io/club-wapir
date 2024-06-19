@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: Easily access APIs with {httr2}
+title: 4. Easily access APIs with {httr2}
 resources:
   - "httr2/openfec_response.json"
 ---

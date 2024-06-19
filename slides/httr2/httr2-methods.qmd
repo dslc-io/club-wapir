@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: Do other things with APIs
+title: 9. Do other things with APIs
 ---
 
 # ️✅ Learning objectives
