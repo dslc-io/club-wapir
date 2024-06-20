@@ -3,6 +3,10 @@ title: "Club Meetings"
 engine: knitr
 ---
 
+## TODO
+
+-   When a cohort 2 is about to begin, update the "Goal" of the club (and probably the process).
+
 ## ️✅ Process
 
 **Meetings = weekly**
@@ -10,7 +14,7 @@ engine: knitr
 -   🧑‍🏫 Jon leads a *discussion* of a chapter
     -   🙋‍♀️ **IMPORTANT:** You ask questions!
     -   ️✅ Goal: Revise/finalize learning objectives
-    -   📺 Recordings on [DSLC YouTube](https://dslc.io/youtube)
+    -   📺 Recordings on [DSLC YouTube](https://dslc.video)
 -   🔄️ Jon revises slides
 -   ❓Jon writes "test yourself" questions
     -   🧵 Discuss in channel?
@@ -18,10 +22,9 @@ engine: knitr
 -   📝 Jon writes chapter
 
 ::: notes
--   Talked about this writing process in project club, dslc.io/youtube
+-   Talked about this writing process in project club, dslc.video
 -   Meet *every* week... unless I need a break to catch up.
 -   Discussion even more important than in a normal club
--   Review revised slides? Maybe spend 2 weeks per chapter?
 -   Would formal survey of some sort help?
 -   Not 100% certain about question structure yet (whether "homeworky" or "think about it").
 -   Hoping to write as we go, but definitely won't keep up.
