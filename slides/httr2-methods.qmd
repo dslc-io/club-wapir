@@ -156,7 +156,7 @@ httr2::req_method(req, method)
 
 ```{r}
 #| label: httr2-methods-trello-baseline
-cache_path <- here::here("slides/httr2/methods/cache")
+cache_path <- here::here("slides/methods/cache")
 trello_req <- httr2::request("https://trello.com/1") |> 
   .req_ua() |> 
   httr2::req_url_query(

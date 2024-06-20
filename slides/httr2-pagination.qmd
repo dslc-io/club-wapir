@@ -186,7 +186,7 @@ candidates_multi <-
   )
 saveRDS(
   candidates_multi, 
-  here::here("slides", "httr2", "pagination", "candidates_multi.rds")
+  here::here("slides", "pagination", "candidates_multi.rds")
 )
 ```
 :::
@@ -379,7 +379,7 @@ mtg_cards_multi <-
   )
 saveRDS(
   mtg_cards_multi, 
-  here::here("slides", "httr2", "pagination", "mtg_cards_multi.rds")
+  here::here("slides", "pagination", "mtg_cards_multi.rds")
 )
 ```
 :::
@@ -455,7 +455,7 @@ dnd_multi <-
   )
 saveRDS(
   dnd_multi, 
-  here::here("slides", "httr2", "pagination", "dnd_multi.rds")
+  here::here("slides", "pagination", "dnd_multi.rds")
 )
 ```
 :::
@@ -486,7 +486,7 @@ saveRDS(
 #| eval: true
 #| include: false
 candidates_multi <- readRDS(
-  here::here("slides", "httr2", "pagination", "candidates_multi.rds")
+  here::here("slides", "pagination", "candidates_multi.rds")
 )
 ```
 

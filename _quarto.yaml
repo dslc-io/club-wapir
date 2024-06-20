@@ -24,41 +24,34 @@ website:
 
       - section: "Get started"
         contents:
-          - file: slides/httr2/apis-start.qmd
+          - file: slides/apis-start.qmd
             target: wapir_club-apis_start
-          - file: slides/httr2/schemas.qmd
+          - file: slides/schemas.qmd
             target: wapir_club-schemas
-          - file: slides/httr2/httr2.qmd
+          - file: httr2.qmd
             target: wapir_club-httr2
-          - file: slides/httr2/httr2-authentication.qmd
+          - file: slides/httr2-authentication.qmd
             target: wapir_club-httr2-authentication
 
       - section: "Get more data"
         contents:
-          - file: slides/httr2/httr2-pagination.qmd
+          - file: slides/httr2-pagination.qmd
             target: wapir_club-httr2-pagination
-          - file: slides/httr2/rvest.qmd
+          - file: slides/rvest.qmd
             target: wapir_club-rvest
-          - file: slides/httr2/httr2-responses.qmd
+          - file: slides/httr2-responses.qmd
             target: wapir_club-httr2-responses
 
       - section: "Do more with APIs"
         contents:
-          - file: slides/httr2/httr2-methods.qmd
+          - file: slides/httr2-methods.qmd
             target: wapir_club-httr2-methods
-          - file: slides/httr2/apis-find.qmd
+          - file: slides/apis-find.qmd
             target: wapir_club-apis-find
-          - file: slides/httr2/accessing-other.qmd
+          - file: slides/accessing-other.qmd
             target: wapir_club-accessing_other
-          - file: slides/httr2/accessing-more.qmd
+          - file: slides/accessing-more.qmd
             target: wapir_club-accessing-more
-
-      - section: "Appendices"
-        contents:
-          - file: slides/los.qmd
-            target: wapir_club-los
-          - file: slides/leftovers.qmd
-            target: wapir_club-leftovers
 
 format:
   html:

@@ -5,41 +5,6 @@ engine: knitr
 
 # One-offs
 
-## How can I quickly translate API docs?
-
--   Docs often have "Try it out" option
-    -   [https://api.open.fec.gov/developers/](https://api.open.fec.gov/developers/)
--   Copy the "Curl" block
-
-::: fragment
-```{r}
-curl_translate(
-  "curl -X 'GET' \
-  'https://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=H'"
-)
-```
-:::
-
-::: fragment
-```
-request("https://api.open.fec.gov/v1/candidates/") |> 
-  req_method("GET") |> 
-  req_url_query(
-    api_key = "DEMO_KEY",
-    office = "H"
-  ) |> 
-  req_perform()
-```
-:::
-
-::: notes
--   If you want to use this API, sign up for your own key at that same URL.
--   I edited the given curl to fit
--   This code will usually get you started
--   Now let's clean it up and understand it!
--   Extra: OpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json
-:::
-
 ## The Pieces of a URL
 
 https://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_key=DEMO_KEY
@@ -65,7 +30,7 @@ https://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_key=DEMO
 openfec_endpoints <- tibblify::parse_openapi_spec("https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json")
 saveRDS(
   openfec_endpoints, 
-  here::here("slides", "httr2", "httr2", "openfec_endponts.rds")
+  here::here("slides", "httr2", "openfec_endponts.rds")
 )
 ```
 ```{r}
@@ -73,7 +38,7 @@ saveRDS(
 #| eval: false
 #| include: false
 openfec_endpoints <- readRDS(
-  here::here("slides", "httr2", "httr2", "openfec_endponts.rds")
+  here::here("slides", "httr2", "openfec_endponts.rds")
 )
 ```
 

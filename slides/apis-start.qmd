@@ -82,14 +82,14 @@ all_apis <- jsonlite::fromJSON("https://api.apis.guru/v2/list.json")
 #| include: false
 download.file(
   "https://api.apis.guru/v2/list.json",
-  here::here("slides", "httr2", "apis-start", "list.json")
+  here::here("slides", "apis-start", "list.json")
 )
 ```
 ```{r}
 #| label: apis_start-apis_guru_list_load
 #| eval: true
 #| include: false
-all_apis <- jsonlite::fromJSON(here::here("slides", "httr2", "apis-start", "list.json"))
+all_apis <- jsonlite::fromJSON(here::here("slides", "apis-start", "list.json"))
 ```
 
 ::: fragment
