@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: 4. Easily access APIs with {httr2}
+title: Easily access APIs with {httr2}
 resources:
   - "httr2/openfec_response.json"
 ---
@@ -83,11 +83,11 @@ url <- "https://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_
 openfec_response <- jsonlite::read_json(url)
 saveRDS(
   openfec_response, 
-  here::here("slides", "httr2", "httr2", "openfec_response.rds")
+  here::here("slides", "httr2", "openfec_response.rds")
 )
 jsonlite::write_json(
   openfec_response, 
-  here::here("slides", "httr2", "httr2", "openfec_response.json"),
+  here::here("slides", "httr2", "openfec_response.json"),
   auto_unbox = TRUE,
   null = "null"
 )
@@ -96,7 +96,7 @@ jsonlite::write_json(
 #| label: httr2-motivating-read
 #| eval: true
 #| include: false
-openfec_response <- readRDS(here::here("slides", "httr2", "httr2", "openfec_response.rds"))
+openfec_response <- readRDS(here::here("slides", "httr2", "openfec_response.rds"))
 ```
 ::: fragment
 ```{r}

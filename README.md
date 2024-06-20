@@ -13,7 +13,7 @@ As we read, we are producing [slides for the book](https://dslc.io/wapir).
 
 ## Meeting Schedule
 
-- Cohort 1 (started 2024-01-17): [Wednesdays, 13:00 CST/CDT](https://www.timeanddate.com/worldclock/converter.html?iso=20240117T190000&p1=24&p2=1440) | [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGg-zPCeSCSp7tkkQBZNLDzv)
+- Cohort 1 (started 2024-01-17, finished 2024-06-19): [meeting videos](https://www.youtube.com/playlist?list=PL3x6DOfs2NGg-zPCeSCSp7tkkQBZNLDzv)
 
 <hr>
 

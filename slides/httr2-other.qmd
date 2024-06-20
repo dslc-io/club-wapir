@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: 9. Do other things with APIs
+title: Do other things with APIs
 ---
 
 # ️✅ Learning objectives
@@ -14,7 +14,7 @@ title: 9. Do other things with APIs
 :::
 
 ```{r}
-#| label: httr2-methods-packages-used
+#| label: httr2-other-packages-used
 #| eval: true
 library(httr2)
 library(keyring)
@@ -40,7 +40,7 @@ library(glue)
 
 [Trello](https://trello.com) = Project Management Tool
 
-![](methods/trello_board.png)
+![](other/trello_board.png)
 
 ::: notes
 -   One way to use Trello is to track cards moving through statuses on a board
@@ -122,7 +122,7 @@ Formally:
 
 ::: fragment
 ```{r}
-#| label: httr2-methods-req_method
+#| label: httr2-other-req_method
 httr2::req_method(req, method)
 ```
 :::
@@ -155,8 +155,8 @@ httr2::req_method(req, method)
 ## Baseline Trello request
 
 ```{r}
-#| label: httr2-methods-trello-baseline
-cache_path <- here::here("slides/httr2/methods/cache")
+#| label: httr2-other-trello-baseline
+cache_path <- here::here("slides/other/cache")
 trello_req <- httr2::request("https://trello.com/1") |> 
   .req_ua() |> 
   httr2::req_url_query(
@@ -176,7 +176,7 @@ trello_req <- httr2::request("https://trello.com/1") |>
 ## Get Trello board info
 
 ```{r}
-#| label: httr2-methods-trello-lists
+#| label: httr2-other-trello-lists
 board_lists <- trello_req |> 
   httr2::req_url_path_append("boards/6dkXRHRK/lists") |> 
   httr2::req_perform() |> 
@@ -187,7 +187,7 @@ board_lists |> purrr::map_chr("name")
 ## Create a Trello card
 
 ```{r}
-#| label: httr2-methods-trello-post
+#| label: httr2-other-trello-post
 new_card <- list(
   idBoard = "6dkXRHRK",
   idList = board_lists[[1]]$id,
@@ -209,7 +209,7 @@ new_card_response <- trello_req |>
 ## Move the Trello card
 
 ```{r}
-#| label: httr2-methods-trello-put
+#| label: httr2-other-trello-put
 move_card_response <- trello_req |> 
   httr2::req_url_path_append("cards", new_card_response$id) |> 
   httr2::req_body_json(data = list(idList = board_lists[[2]]$id)) |> 
@@ -220,7 +220,7 @@ move_card_response <- trello_req |>
 
 ::: fragment
 ```{r}
-#| label: httr2-methods-trello-put2
+#| label: httr2-other-trello-put2
 move_card_response2 <- trello_req |> 
   httr2::req_url_path_append("cards", new_card_response$id) |> 
   httr2::req_body_json(data = list(idList = board_lists[[3]]$id)) |> 
@@ -238,7 +238,7 @@ move_card_response2 <- trello_req |>
 ## Delete the card
 
 ```{r}
-#| label: httr2-methods-trello-delete
+#| label: httr2-other-trello-delete
 delete_card_response <- trello_req |> 
   httr2::req_url_path_append("cards", new_card_response$id) |> 
   httr2::req_method("delete") |> 
@@ -251,7 +251,7 @@ delete_card_response <- trello_req |>
 ## Motivating example: Trello cards as data
 
 ```{r}
-#| label: httr2-methods-card-tbl
+#| label: httr2-other-card-tbl
 #| eval: true
 cards <- tibble::tibble(
   name = glue::glue("*** Sample card for {state.abb} ***"),
@@ -267,7 +267,7 @@ cards
 ## Create multiple cards
 
 ```{r}
-#| label: httr2-methods-cards-create-reqs
+#| label: httr2-other-cards-create-reqs
 card_creation_requests <- purrr::pmap(
   cards,
   \(name, desc) {
@@ -285,7 +285,7 @@ card_creation_requests <- purrr::pmap(
 ```
 ::: fragment
 ```{r}
-#| label: httr2-methods-cards-create-perform
+#| label: httr2-other-cards-create-perform
 card_creation_responses <- card_creation_requests |> 
   httr2::req_perform_sequential() |> 
   httr2::resps_data(
@@ -300,7 +300,7 @@ card_creation_responses <- card_creation_requests |>
 ## Delete multiple cards
 
 ```{r}
-#| label: httr2-methods-cards-delete
+#| label: httr2-other-cards-delete
 card_deletion_responses <- card_creation_responses$id |> 
   purrr::map(
     \(card_id) {

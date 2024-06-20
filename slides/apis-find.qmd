@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: 10. Find APIs
+title: Find APIs
 ---
 
 # ️✅ Learning objectives

@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: 12. Learn more about APIs
+title: Learn more about APIs
 ---
 
 # TODO

@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: 7. Scrape data from web pages 
+title: Scrape data from web pages 
 ---
 
 # ️✅ Learning objectives

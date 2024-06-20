@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: 5. Tell APIs who you are
+title: Tell APIs who you are
 ---
 
 # TODO

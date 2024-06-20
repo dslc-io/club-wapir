@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: 3. Quickly parse API responses
+title: Quickly parse API responses
 resources:
   - "schemas/demo_json.json"
 ---
@@ -62,7 +62,7 @@ library(waldo)
 #| label: schemas-write_demo_json
 #| include: false
 #| eval: false
-all_apis <- jsonlite::fromJSON(here::here("slides", "httr2", "apis-start", "list.json"))
+all_apis <- jsonlite::fromJSON(here::here("slides", "apis-start", "list.json"))
 demo_json <- all_apis[c("apis.guru", "fec.gov", "googleapis.com:youtube")] |> 
   tibble::enframe(name = "api_id") |> 
   tidyr::unnest_wider(value) |> 
@@ -100,7 +100,7 @@ demo_json2 <- purrr::map(
 names(demo_json2) <- demo_json$api_id
 jsonlite::write_json(
   demo_json2, 
-  here::here("slides", "httr2", "schemas", "demo_json.json"), 
+  here::here("slides", "schemas", "demo_json.json"), 
   auto_unbox = TRUE
 )
 ```
@@ -112,14 +112,14 @@ jsonlite::write_json(
 #| include: false
 #| eval: true
 demo_json <- jsonlite::fromJSON(
-  here::here("slides", "httr2", "schemas", "demo_json.json")
+  here::here("slides", "schemas", "demo_json.json")
 )
 ```
 
 ::: fragment
 ```{r}
 #| label: schemas-read_demo_json-url
-url <- "https://r4ds.github.io/bookclub-wapir/slides/httr2/schemas/demo_json.json"
+url <- "https://r4ds.github.io/bookclub-wapir/slides/schemas/demo_json.json"
 demo_json <- jsonlite::fromJSON(url)
 ```
 :::
