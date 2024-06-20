@@ -44,8 +44,8 @@ website:
 
       - section: "Do more with APIs"
         contents:
-          - file: slides/httr2-methods.qmd
-            target: wapir_club-httr2-methods
+          - file: slides/httr2-other.qmd
+            target: wapir_club-httr2-other
           - file: slides/apis-find.qmd
             target: wapir_club-apis-find
           - file: slides/accessing-other.qmd
