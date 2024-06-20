@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: 6. Get a lot of data from APIs
+title: Get a lot of data from APIs
 ---
 
 # ️✅ Learning objectives

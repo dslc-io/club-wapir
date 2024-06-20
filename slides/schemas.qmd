@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: 3. Quickly parse API responses
+title: Quickly parse API responses
 resources:
   - "schemas/demo_json.json"
 ---

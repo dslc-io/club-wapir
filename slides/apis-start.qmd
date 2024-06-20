@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: 2. Get started with APIs
+title: Get started with APIs
 ---
 
 # TODO

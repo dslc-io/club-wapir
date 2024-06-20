@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: 8. Process other response types
+title: Process other response types
 ---
 
 # ️✅ Learning objectives

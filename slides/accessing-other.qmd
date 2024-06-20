@@ -1,6 +1,6 @@
 ---
 engine: knitr
-title: 11. Communicate with other types of APIs
+title: Communicate with other types of APIs
 ---
 
 # ️✅ Learning objectives
