@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-html/tabby.min.js"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.555">
 
-  <title>Web APIs with R Book Club</title>
+  <title>Web APIs with R Book Club - Process other response types</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -94,11 +94,11 @@
     code span.vs { color: #abe338; } /* VerbatimString */
     code span.wa { color: #dcc6e0; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto.css">
-  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto.css">
+  <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -389,30 +389,112 @@
   <div class="reveal">
     <div class="slides">
 
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Process other response types</h1>
 
-<section id="how-can-i-authenticate-api-users" class="title-slide slide level1 center">
-<h1>How can I authenticate API users?</h1>
-<p><strong>Learning objectives:</strong></p>
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section id="learning-objectives" class="title-slide slide level1 center">
+<h1>️✅ Learning objectives</h1>
+<div>
 <ul>
-<li class="fragment">Implement API keys for a plumber API.</li>
-<li class="fragment">Implement OAuth2 authentication for a plumber API.</li>
-<li class="fragment">Use cookies to save and restore API user state.</li>
-<li class="fragment">Set and read encrypted cookies for API users.</li>
-<li class="fragment">(Something about things like Posit Connect?)</li>
+<li>Parse text responses.</li>
+<li>Parse binary responses such as images and videos.</li>
+<li>Handle HTTP error responses.</li>
 </ul>
+</div>
+<aside class="notes">
+<ul>
+<li>“After we finish this chapter, we’ll be able to…” (objectives)</li>
+<li>Definitely would like feedback about depth of coverage!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 
-<section id="what-did-i-move-here-from-the-httr2-version" class="title-slide slide level1 center">
-<h1>What did I move here from the httr2 version?</h1>
-
+<section id="content-types" class="title-slide slide level1 center">
+<h1>Content types</h1>
+<ul>
+<li class="fragment"><code>Content-Type</code> header aka “MIME type”
+<ul>
+<li class="fragment">“Multipurpose Internet Mail Extensions”</li>
+</ul></li>
+<li class="fragment"><code>type/subtype;parameter=value</code></li>
+<li class="fragment"><code>httr2::resp_content_type()</code> gets <code>type/subtype</code></li>
+<li class="fragment"><code>httr2::resp_encoding()</code> gets <code>charset</code> parameter</li>
+<li class="fragment">More at <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types">MDN MIME types</a></li>
+<li class="fragment">Even more at <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">IANA Media Types registry</a></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>type/subtype tells you which function to use to parse it
+<ul>
+<li>Could have typos, etc!</li>
+</ul></li>
+<li>Encoding: If you’re getting weird characters, incorrect character set could be the problem.</li>
+<li>IANA = Internet Assigned Numbers Authority</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 
 <section>
-<section id="what-is-authentication" class="title-slide slide level1 center">
-<h1>What is authentication?</h1>
+<section id="text-content-types" class="title-slide slide level1 center">
+<h1>Text content types</h1>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>MIME type</th>
+<th>httr2 function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>application/json</code></td>
+<td><code>resp_body_json()</code></td>
+<td>By far most common</td>
+</tr>
+<tr class="even">
+<td><code>application/xml</code></td>
+<td><code>resp_body_xml()</code></td>
+<td>Briefly most common</td>
+</tr>
+<tr class="odd">
+<td><code>text/html</code></td>
+<td><code>resp_body_html()</code></td>
+<td>Really a subclass of xml</td>
+</tr>
+<tr class="even">
+<td><code>text/plain</code></td>
+<td><code>resp_body_string()</code></td>
+<td>Text wildcard</td>
+</tr>
+</tbody>
+</table>
 <aside class="notes">
 <ul>
-<li>Before we dive into the how-to, let’s try to understand why authentication is complicated.</li>
+<li>We’ll see on later slides that sometimes people use alternative strings</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -426,43 +508,14 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="the-2-auths" class="slide level2">
-<h2>The 2 auths</h2>
-<div class="columns">
-<div class="column">
-<div class="fragment" data-fragment-index="0">
-<p>Authentication</p>
-</div>
+<section id="json-responses" class="slide level2">
+<h2>JSON responses</h2>
 <ul>
-<li class="fragment">Verifying who you are</li>
-<li class="fragment">Uses some sort of “credentials”</li>
+<li class="fragment"><code>application/json</code> or <code>*/json</code></li>
+<li class="fragment"><code>httr2::resp_body_json()</code> uses <code>jsonlite::fromJSON()</code></li>
 </ul>
-</div><div class="column">
-<div class="fragment" data-fragment-index="1">
-<p>Authorization</p>
-</div>
-<ul>
-<li class="fragment">Granting access</li>
-</ul>
-</div>
-</div>
-<ul>
-<li class="fragment">Both often abbreviated “auth”</li>
-<li class="fragment">Often used interchangeably</li>
-</ul>
-<div class="fragment">
-<blockquote>
-<p>The HTTP <em>Authorization</em> request header can be used to provide credentials that <em>authenticate</em> a user agent with a server, allowing access to a protected resource. — <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization">MDN web docs</a></p>
-</blockquote>
-</div>
 <aside class="notes">
-<ul>
-<li>“TECHNICALLY…”</li>
-<li>Credentials = username &amp; password, api key, temporary token…</li>
-<li>“Despite what the internet will insist on telling you…” (“Often used”)</li>
-<li>Mozilla Developer Network (MDN) is pretty much THE reference for these things, and it mixes them.</li>
-<li>(Learned there that server is <em>supposed</em> to send 401 with info about how to auth in <code>WWW-Authenticate</code> header! Haven’t found an API that actually does that.)</li>
-</ul>
+<p>this slide &amp; next might be entirely covered in earlier chapter</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -475,227 +528,548 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="what-are-the-dangers-of-leaked-creds" class="slide level2">
-<h2>What are the dangers of leaked creds?</h2>
-<div class="columns">
-<div class="column">
-<div class="fragment">
-<p>How much control does it have?</p>
+<section id="json-data" class="slide level2">
+<h2>JSON data</h2>
 <ul>
-<li class="fragment">Can it lock you out?</li>
-<li class="fragment">Can it reveal sensitive data?</li>
-</ul>
-</div>
-</div><div class="column">
-<div class="fragment">
-<p>How long does it last?</p>
+<li class="fragment">4 scalars (length-1 vectors)
 <ul>
-<li class="fragment">Shorter = safer</li>
-<li class="fragment">Can you revoke it?</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="fragment">
-<p>How likely is it to leak?</p>
-<ul>
-<li class="fragment">When do you send it?</li>
-<li class="fragment">Where do you send it?</li>
-<li class="fragment">How often do you send it?</li>
-</ul>
-</div>
-</section>
-<section id="types-of-authentication" class="slide level2">
-<h2>Types of authentication</h2>
-<div class="columns">
-<div class="column">
-<div class="fragment">
-<p>🔴 <strong>HTTP Basic:</strong> username + password sent with request</p>
-<ul>
-<li class="fragment">Access entire account</li>
-<li class="fragment">Often difficult to turn off</li>
-</ul>
-</div>
-<div class="fragment">
-<p>🟠 <strong>API Key:</strong> password-like thing sent with request</p>
-<ul>
-<li class="fragment">Usually key == you</li>
-<li class="fragment">You can often revoke</li>
-</ul>
-</div>
-</div><div class="column">
-<div class="fragment">
-<p>🟡 <strong>Bearer Token:</strong> shorter-lived api-key-like thing</p>
-<ul>
-<li class="fragment">Different token for different use</li>
-<li class="fragment">Often short-lived</li>
-</ul>
-</div>
-<div class="fragment">
-<p>🟢 <strong>OAuth:</strong> Multi-step process to generate a key</p>
-<ul>
-<li class="fragment">Exists to minimize dangers</li>
-<li class="fragment">Multiple short-lived pieces</li>
-</ul>
-</div>
-</div>
-</div>
-<aside class="notes">
-<ul>
-<li>There are other things, but these three cover almost everything.</li>
-<li>And almost nobody uses the first one for APIs anymore.</li>
-<li>Oauth not always implemented correctly</li>
-<li>Other schemes like api keys in cookies, SSL certs not discussed here</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="review-of-authentication-schemes" class="slide level2">
-<h2>Review of authentication schemes</h2>
-<p>(FROM <code>httr2-authentication.Rmd</code> once that’s edited)</p>
-</section>
-<section id="api-key-considerations" class="slide level2 unnumbered">
-<h2>API key considerations</h2>
-<ul>
-<li class="fragment">Accept in URL query?
-<ul>
-<li class="fragment">May be easier for user (eg, purely in-browser)</li>
-<li class="fragment">Less secure than header</li>
+<li class="fragment"><code>null</code> ≈ <code>NA</code></li>
+<li class="fragment"><code>string</code> ≈ <code>character(1)</code>, always <code>"</code> (not <code>'</code>)</li>
+<li class="fragment"><code>number</code> ≈ <code>numeric(1)</code>, no <code>Inf</code>/<code>-Inf</code>/<code>NaN</code></li>
+<li class="fragment"><code>boolean</code> ≈ <code>logical(1)</code>, <code>true</code> = <code>TRUE</code>, <code>false</code> = <code>FALSE</code></li>
 </ul></li>
-<li class="fragment">Cookies? {-}
+<li class="fragment"><code>array</code> ≈ unnamed <code>list()</code>
 <ul>
-<li class="fragment">If you set cookie, you need to read it (see later slide)</li>
-<li class="fragment">Probably also accept header</li>
+<li class="fragment"><code>[]</code>: <code>[null, "a", 1, true]</code> ≈ <code>list(NULL, "a", 1, TRUE)</code></li>
+</ul></li>
+<li class="fragment"><code>object</code> ≈ named <code>list()</code>
+<ul>
+<li class="fragment"><code>{}</code>: <code>{"a": 1, "b": [1, 2]}</code> ≈ <br><code>list(a = 1, b = list(1, 2))</code></li>
 </ul></li>
 </ul>
+<aside class="notes">
+<ul>
+<li>We never went into details about what’s legal in the JSON format.</li>
+<li>Arrays of the same type are roughly equivalent to vectors, parsers like jsonlite often turn such arrays into vectors.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="api-keys-with-plumber-process-keys" class="slide level2 unnumbered">
-<h2>API keys with plumber: Process Keys</h2>
+<section id="xml-responses" class="slide level2">
+<h2>XML responses</h2>
+<p>e<strong>X</strong>tensible <strong>M</strong>arkup <strong>L</strong>anguage</p>
+<ul>
+<li class="fragment"><code>application/xml</code>, <code>text/xml</code>, or <code>*/xml</code></li>
+<li class="fragment"><code>httr2::resp_body_xml()</code> uses <code>xml2::read_xml()</code></li>
+</ul>
+</section>
+<section id="xml-data" class="slide level2">
+<h2>XML data</h2>
+<ul>
+<li class="fragment">Tags as <code>&lt;tagname attribute="a"&gt;contents&lt;/tagname&gt;</code></li>
+<li class="fragment">Everything nestable</li>
+</ul>
+</section>
+<section id="xml-example-raw" class="slide level2">
+<h2>XML example: raw</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co">#* Authorize user</span></span>
-<span id="cb1-2"><a></a><span class="co">#* @filter authorize_api_key</span></span>
-<span id="cb1-3"><a></a><span class="cf">function</span>(req) {</span>
-<span id="cb1-4"><a></a>  api_key <span class="ot">&lt;-</span> req<span class="sc">$</span>HTTP_AUTHORIZATION <span class="sc">%||%</span>            <span class="co"># Header</span></span>
-<span id="cb1-5"><a></a>    req<span class="sc">$</span>session<span class="sc">$</span>api_key <span class="sc">%||%</span> req<span class="sc">$</span>cookies<span class="sc">$</span>api_key    <span class="co"># Cookies</span></span>
-<span id="cb1-6"><a></a>  <span class="co"># Code to validate and process the API key.</span></span>
-<span id="cb1-7"><a></a>  req<span class="sc">$</span>authorized <span class="ot">&lt;-</span> <span class="cn">TRUE</span> <span class="co"># Or FALSE, set in auth section</span></span>
-<span id="cb1-8"><a></a>  plumber<span class="sc">::</span><span class="fu">forward</span>()</span>
-<span id="cb1-9"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>resp_xml <span class="ot">&lt;-</span> <span class="fu">req_template</span>(<span class="fu">request</span>(<span class="fu">example_url</span>()), <span class="st">"/xml"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a></a>  <span class="fu">req_perform</span>()</span>
+<span id="cb1-3"><a></a>resp_xml <span class="sc">|&gt;</span> <span class="fu">resp_body_string</span>() <span class="sc">|&gt;</span> <span class="fu">cat</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+#&gt; &lt;root&gt;
+#&gt;    &lt;address&gt;
+#&gt;       &lt;city&gt;New York&lt;/city&gt;
+#&gt;       &lt;postalCode&gt;10021-3100&lt;/postalCode&gt;
+#&gt;       &lt;state&gt;NY&lt;/state&gt;
+#&gt;       &lt;streetAddress&gt;21 2nd Street&lt;/streetAddress&gt;
+#&gt;    &lt;/address&gt;
+#&gt;    &lt;age&gt;27&lt;/age&gt;
+#&gt;    &lt;children /&gt;
+#&gt;    &lt;firstName&gt;John&lt;/firstName&gt;
+#&gt;    &lt;isAlive&gt;true&lt;/isAlive&gt;
+#&gt;    &lt;lastName&gt;Smith&lt;/lastName&gt;
+#&gt;    &lt;phoneNumbers&gt;
+#&gt;       &lt;element&gt;
+#&gt;          &lt;number&gt;212 555-1234&lt;/number&gt;
+#&gt;          &lt;type&gt;home&lt;/type&gt;
+#&gt;       &lt;/element&gt;
+#&gt;       &lt;element&gt;
+#&gt;          &lt;number&gt;646 555-4567&lt;/number&gt;
+#&gt;          &lt;type&gt;office&lt;/type&gt;
+#&gt;       &lt;/element&gt;
+#&gt;    &lt;/phoneNumbers&gt;
+#&gt;    &lt;spouse null="true" /&gt;
+#&gt; &lt;/root&gt;</code></pre>
 </div>
-<ul>
-<li class="fragment"><code>#* @preempt authorize_api_key</code> if endpoint doesn’t use auth</li>
-</ul>
+</div>
 </section>
-<section id="api-keys-with-plumber-error" class="slide level2 unnumbered">
-<h2>API keys with plumber: Error</h2>
+<section id="xml-example-parsed" class="slide level2">
+<h2>XML example: parsed</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="co">#* Error: Unauthorized</span></span>
-<span id="cb2-2"><a></a><span class="co">#* @filter stop_unauthorized</span></span>
-<span id="cb2-3"><a></a><span class="cf">function</span>(req) {</span>
-<span id="cb2-4"><a></a>  <span class="cf">if</span> (req<span class="sc">$</span>authorized) {</span>
-<span id="cb2-5"><a></a>    plumber<span class="sc">::</span><span class="fu">forward</span>()</span>
-<span id="cb2-6"><a></a>  }</span>
-<span id="cb2-7"><a></a>  res<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="dv">401</span>L</span>
-<span id="cb2-8"><a></a>  <span class="co"># </span><span class="al">TODO</span><span class="co">: do_the_log_thing() per plumber-errors.Rmd</span></span>
-<span id="cb2-9"><a></a>  res<span class="sc">$</span>serializer <span class="ot">&lt;-</span> plumber<span class="sc">::</span>serializer_json</span>
-<span id="cb2-10"><a></a>  res<span class="sc">$</span>body <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb2-11"><a></a>    <span class="at">error =</span> <span class="st">"Unauthorized"</span>,</span>
-<span id="cb2-12"><a></a>    <span class="at">message =</span> <span class="st">"Obtain an API key at https://your_key_process.html"</span></span>
-<span id="cb2-13"><a></a>  )</span>
-<span id="cb2-14"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>extracted_xml <span class="ot">&lt;-</span> <span class="fu">resp_body_xml</span>(resp_xml)</span>
+<span id="cb3-2"><a></a><span class="fu">class</span>(extracted_xml)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "xml_document" "xml_node"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co"># We'll see other ways to parse this in {rvest} chapter.</span></span>
+<span id="cb5-2"><a></a>xml2<span class="sc">::</span><span class="fu">as_list</span>(extracted_xml) <span class="sc">|&gt;</span> <span class="fu">str</span>(<span class="at">max.level =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; List of 1
+#&gt;  $ root:List of 8
+#&gt;   ..$ address     :List of 4
+#&gt;   ..$ age         :List of 1
+#&gt;   ..$ children    : list()
+#&gt;   ..$ firstName   :List of 1
+#&gt;   ..$ isAlive     :List of 1
+#&gt;   ..$ lastName    :List of 1
+#&gt;   ..$ phoneNumbers:List of 2
+#&gt;   ..$ spouse      : list()
+#&gt;   .. ..- attr(*, "null")= chr "true"</code></pre>
+</div>
+</div>
+</section>
+<section id="html-responses" class="slide level2">
+<h2>HTML responses</h2>
+<p><strong>H</strong>yper<strong>T</strong>ext <strong>M</strong>arkup <strong>L</strong>anguage</p>
+<ul>
+<li class="fragment"><code>text/html</code>, rarely <code>application/xhtml+xml</code></li>
+<li class="fragment"><code>httr2::resp_body_html()</code> uses <code>xml2::read_html()</code>
+<ul>
+<li class="fragment">which uses <code>xml2::read_xml(..., as_html = TRUE)</code></li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>HTML came before XML, but XML now includes HTML, so</li>
+<li>HTML is XML with specific, defined tags</li>
+<li>Much more on this in rvest chapter</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="binary-objects" class="title-slide slide level1 center">
+<h1>Binary objects</h1>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 46%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>MIME type</th>
+<th><code>*</code> examples</th>
+<th>Package</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>image/*</code></td>
+<td><code>png</code>, <code>jpeg</code>, <code>svg+xml</code></td>
+<td><code>{magick}</code></td>
+</tr>
+<tr class="even">
+<td><code>audio/*</code></td>
+<td><code>mpeg</code>, <code>wav</code>, <code>ogg</code></td>
+<td><code>{av}</code> ?</td>
+</tr>
+<tr class="odd">
+<td><code>video/*</code></td>
+<td><code>mpeg</code>, <code>mp4</code>, <code>ogg</code></td>
+<td><code>{av}</code> ?</td>
+</tr>
+<tr class="even">
+<td><code>application/*</code></td>
+<td><code>octet-stream</code> (catch-all), <code>x-bzip</code>, <code>pdf</code></td>
+<td>(various)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="images" class="slide level2">
+<h2>Images</h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> magick<span class="sc">::</span><span class="fu">image_read</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="co"># requires {rsvg}</span></span>
+<span id="cb8-2"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> magick<span class="sc">::</span><span class="fu">image_read_svg</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="co"># requires {pdftools}</span></span>
+<span id="cb9-2"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> magick<span class="sc">::</span><span class="fu">image_read_pdf</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Can also save directly, but this reads the object directly into R.</li>
+<li>SVG and PDF work best with dedicated packages.</li>
+<li>Parsing PDFs could be a book itself.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="video" class="slide level2">
+<h2>Video</h2>
+<p>I haven’t found anything yet for working with “raw” audio/video!</p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> <span class="fu">writeBin</span>(path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>av<span class="sc">::</span><span class="fu">av_video_convert</span>(path, <span class="at">output =</span> <span class="st">"output.mp4"</span>, <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>ffmpeg_cmd <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(</span>
+<span id="cb12-2"><a></a>  <span class="st">"ffmpeg -v quiet "</span>,</span>
+<span id="cb12-3"><a></a>  <span class="st">"-i {input_path} "</span>,</span>
+<span id="cb12-4"><a></a>  <span class="st">"-ss {start_time} -to {end_time} "</span>,</span>
+<span id="cb12-5"><a></a>  <span class="st">"-c copy {output_path}"</span></span>
+<span id="cb12-6"><a></a>)</span>
+<span id="cb12-7"><a></a><span class="fu">system</span>(ffmpeg_cmd, <span class="at">ignore.stdout =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>As far as I can tell, you always have to save audio/video, and THEN parse it.</li>
+<li>How much do people want here? Pointers in right direction? Full examples (which might not apply in their use case)?</li>
+<li>Has anybody worked with video? This feels hacky!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="audio" class="slide level2">
+<h2>Audio</h2>
+<p>I haven’t found anything yet for working with “raw” audio/video!</p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> <span class="fu">writeBin</span>(filename)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>av<span class="sc">::</span><span class="fu">av_audio_convert</span>(</span>
+<span id="cb14-2"><a></a>  path, <span class="at">output =</span> <span class="st">"output.mp3"</span>, <span class="at">format =</span> <span class="cn">NULL</span>,</span>
+<span id="cb14-3"><a></a>  <span class="at">channels =</span> <span class="cn">NULL</span>, <span class="at">sample_rate =</span> <span class="cn">NULL</span>,</span>
+<span id="cb14-4"><a></a>  <span class="at">start_time =</span> <span class="cn">NULL</span>, <span class="at">total_time =</span> <span class="cn">NULL</span>,</span>
+<span id="cb14-5"><a></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
+<span id="cb14-6"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>How much do people want here? Pointers in right direction? Full examples (which might not apply in their use case)?</li>
+<li>Has anybody worked with audio? This feels hacky!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="raw-data" class="slide level2">
+<h2>Raw data</h2>
+<p>Danger zone!</p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> <span class="fu">writeBin</span>(filename)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Anything else likely has to be saved before any tools will know what to do.</li>
+<li>Don’t save random binary files if you don’t have reason to trust what they are!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="base64-encoded-json-data" class="slide level2">
+<h2>Base64-encoded JSON data</h2>
+<ul>
+<li class="fragment">Base64 transforms binary data into text
+<ul>
+<li class="fragment">6-bit blocks ➡️ 1 of 64 characters</li>
+</ul></li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>raw_data <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp) <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a></a>  _<span class="sc">$</span>b64_json <span class="sc">|&gt;</span> <span class="co"># Or whatever the element is named</span></span>
+<span id="cb16-3"><a></a>  jsonlite<span class="sc">::</span><span class="fu">base64_dec</span>()</span>
+<span id="cb16-4"><a></a></span>
+<span id="cb16-5"><a></a>magick<span class="sc">::</span><span class="fu">image_read</span>(raw_data) <span class="co"># Etc</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>OpenAI API can send generated images this way (that’s how I was reminded about it).</li>
+<li>64 = 2^6</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="http-errors" class="title-slide slide level1 center">
+<h1>HTTP errors</h1>
+
+</section>
+<section id="http-status-codes" class="slide level2">
+<h2>HTTP status codes</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Range</th>
+<th>Description</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1xx</td>
+<td>Informational</td>
+<td>Handled by <code>{curl}</code></td>
+</tr>
+<tr class="even">
+<td>2xx</td>
+<td>Successful</td>
+<td><code>resp_*()</code></td>
+</tr>
+<tr class="odd">
+<td>3xx</td>
+<td>Redirection</td>
+<td>Auto-followed</td>
+</tr>
+<tr class="even">
+<td>4xx</td>
+<td>Client error</td>
+<td>“Your fault”</td>
+</tr>
+<tr class="odd">
+<td>5xx</td>
+<td>Server error</td>
+<td>“Server’s fault”</td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">
+<ul>
+<li>As with everything, codes can be incorrectly implemented</li>
+<li>“Client error” might result from mistake on server side</li>
+<li>“Server error” might mean you sent an expired key</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="handling-errors" class="slide level2">
+<h2>Handling errors</h2>
+<p><code>req_error(req, is_error = NULL, body = NULL)</code></p>
+<ul>
+<li class="fragment"><code>is_error</code> = function to identify errors</li>
+<li class="fragment"><code>body</code> = function to turn error <code>resp</code> into message</li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="co"># Never trigger R errors</span></span>
+<span id="cb17-2"><a></a>req <span class="sc">|&gt;</span> </span>
+<span id="cb17-3"><a></a>  <span class="fu">req_error</span>(<span class="at">is_error =</span> \(resp) <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a><span class="co"># Only trigger R errors for "Server error" responses</span></span>
+<span id="cb18-2"><a></a>req <span class="sc">|&gt;</span> </span>
+<span id="cb18-3"><a></a>  <span class="fu">req_error</span>(<span class="at">is_error =</span> \(resp) <span class="fu">resp_status</span>(resp) <span class="sc">&gt;=</span> <span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="co"># Include information from response in error message</span></span>
+<span id="cb19-2"><a></a>req <span class="sc">|&gt;</span> </span>
+<span id="cb19-3"><a></a>  <span class="fu">req_error</span>(</span>
+<span id="cb19-4"><a></a>    <span class="at">body =</span> <span class="cf">function</span>(resp) {</span>
+<span id="cb19-5"><a></a>      <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>error_msg <span class="co"># Often more complicated than this</span></span>
+<span id="cb19-6"><a></a>    }</span>
+<span id="cb19-7"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Add <code>req_error()</code> before <code>req_perform()</code> (or <code>req_perform_iterative()</code>)</li>
+<li>Most common use cases:
+<ul>
+<li>Don’t let httr2 handle errors, so you can do something yourself.</li>
+<li>Override bad status codes from server.</li>
+<li>Provide more details in error message from server.</li>
+</ul></li>
+<li>TODO: Find an API that returns error details!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="errors-and-pagination" class="slide level2">
+<h2>Errors and pagination</h2>
+<ul>
+<li class="fragment"><code>req_perform_iterative()</code> has <code>on_error = c("stop", "return")</code>
+<ul>
+<li class="fragment">On <em>R</em> error</li>
+<li class="fragment">“stop” = “throw an R error if any call throws an R error”</li>
+<li class="fragment">“return” = “stop iterating, return everything so far”</li>
+</ul></li>
+<li class="fragment"><code>req_error(is_error = \(resp) FALSE)</code> can cause that not to trigger</li>
+<li class="fragment">May want to combine these for your use-case</li>
+</ul>
+</section>
+<section id="more-on-retries" class="slide level2">
+<h2>More on retries</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>httr2<span class="sc">::</span><span class="fu">req_retry</span>(</span>
+<span id="cb20-2"><a></a>  req,</span>
+<span id="cb20-3"><a></a>  <span class="at">max_tries =</span> <span class="cn">NULL</span>,</span>
+<span id="cb20-4"><a></a>  <span class="at">max_seconds =</span> <span class="cn">NULL</span>,</span>
+<span id="cb20-5"><a></a>  <span class="at">is_transient =</span> <span class="cn">NULL</span>,</span>
+<span id="cb20-6"><a></a>  <span class="at">backoff =</span> <span class="cn">NULL</span>,</span>
+<span id="cb20-7"><a></a>  <span class="at">after =</span> <span class="cn">NULL</span></span>
+<span id="cb20-8"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
-<li class="fragment"><code>#* @preempt stop_unauthorized</code> if endpoint doesn’t <em>require</em> auth
-<ul>
-<li class="fragment"><em>In addition to <code>authorize_api_key</code></em> if not used at all</li>
-</ul></li>
+<li class="fragment"><code>is_transient</code> = function to decide whether to retry from <code>resp</code></li>
+<li class="fragment"><code>backoff</code> = function to convert <code>tries</code> to <code>wait_seconds</code></li>
+<li class="fragment"><code>after</code> = function to convert <code>resp</code> to <code>wait_seconds</code></li>
 </ul>
-</section>
-<section id="oauth2-with-plumber" class="slide level2 unnumbered">
-<h2>OAuth2 with plumber</h2>
+<aside class="notes">
 <ul>
-<li class="fragment">Endpoint for user to initiate Oauth2 dance
-<ul>
-<li class="fragment">Will launch browser for interaction with OAuth2 provider</li>
-</ul></li>
-<li class="fragment">Endpoint for provider to send code</li>
-<li class="fragment">Use state params to keep track of user</li>
-<li class="fragment">End result is a bearer token (+ possibly other pieces)</li>
+<li>In pagination chapter, we just set max_tries here to 3</li>
+<li>The LinkedIn API throws a transient 404 randomly during some calls, so I set it up to retry on 404.</li>
+<li></li>
 </ul>
-<p>TODO: Actually implement this and make sure it works how you think!</p>
-</section>
-<section id="using-cookies-for-user-state" class="slide level2 unnumbered">
-<h2>Using cookies for user state</h2>
-<ul>
-<li class="fragment">Client controls cookies, so don’t store anything you “own”
-<ul>
-<li class="fragment">Eg, store a key, not a user ID</li>
-<li class="fragment">Safer: Store preferences</li>
-<li class="fragment">General rule: things you’d accept as user input</li>
-</ul></li>
-<li class="fragment"><code>res$setCookie()</code> for unencrypted data</li>
-</ul>
-</section>
-<section id="encrypted-cookies" class="slide level2 unnumbered">
-<h2>Encrypted cookies</h2>
-<ul>
-<li class="fragment"><code>pr_cookie(pr, key, name)</code> in router
-<ul>
-<li class="fragment">Tells plumber to read/write that cookie.</li>
-<li class="fragment">Encrypts with <code>key</code></li>
-<li class="fragment">By default <code>name = "plumber"</code>
-<ul>
-<li class="fragment">All stored in <code>req$session$plumber</code></li>
-</ul></li>
-</ul></li>
-<li class="fragment">Can include lists (ends up as json)</li>
-<li class="fragment">TODO: Add details about env vars and/or keyring (probably same as httr2 slides)</li>
-</ul>
-</section>
-<section id="meeting-videos" class="slide level2 unnumbered">
-<h2>Meeting Videos</h2>
-<h3 class="unnumbered" id="cohort-1">Cohort 1</h3>
-<iframe src="https://www.youtube.com/embed/URL" width="100%" height="400px" data-external="1">
-</iframe>
-<details>
-<summary>
-Meeting chat log
-</summary>
-<pre><code>LOG</code></pre>
-</details>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section id="questions" class="title-slide slide level1 center">
+<h1>Questions?</h1>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
-<p><a href="../../" target="wapir-club_index">DSLC.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
+<p><a href="../" target="wapir-club_index">DSLC.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
 </div>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <script src="../site_libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
-  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script src="../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../site_libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>

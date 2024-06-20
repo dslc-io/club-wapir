@@ -10,7 +10,7 @@
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.555">
 
-  <title>Web APIs with R Book Club - 1. Introduction</title>
+  <title>Web APIs with R Book Club - Introduction</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -325,7 +325,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">1. Introduction</h1>
+  <h1 class="title">Introduction</h1>
 
 <div class="quarto-title-authors">
 </div>
@@ -456,63 +456,33 @@
 <section>
 <section id="what-will-i-learn" class="title-slide slide level1 center">
 <h1>What will I learn?</h1>
-<ul>
-<li class="fragment">Part 1: How can I get web data into R? ({httr2})</li>
-<li class="fragment">Part 2: How can I create my own APIs with R? ({plumber})</li>
-</ul>
-<aside class="notes">
-<ul>
-<li>Catch-all chapter at end of each section about learning more.</li>
-<li>Survey: https://forms.gle/9qdYTrDL5cZmG26y6</li>
-<li>Please fill out the survey, which will get details about which chapters sound interesting to you.</li>
-<li>Any missing topics?</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="what-does-each-chapter-cover" class="slide level2">
-<h2>What does each chapter cover?</h2>
 <div class="columns" style="font-size: 0.7em;">
-<div class="column fragment" style="width:50%;">
-<p><strong>Part 1: How can I get web data into R?</strong></p>
+<div class="column fragment" style="width:33%;">
+<p><strong>Part 1: Get started</strong></p>
 <ul>
-<li class="fragment">How can I access APIs from R?</li>
-<li class="fragment">How do I tell the API who I am?</li>
-<li class="fragment">How can I process API responses?</li>
-<li class="fragment">How can I get a lot of data from an API?</li>
-<li class="fragment">How can I find APIs?</li>
-<li class="fragment">How can I find API-wrapping packages?</li>
-<li class="fragment">How else can I communicate with APIs from R?</li>
-<li class="fragment">How can I get data from web pages?</li>
-<li class="fragment">How can I learn more about accessing web APIs?</li>
+<li class="fragment">Get started with APIs</li>
+<li class="fragment">Quickly parse API responses</li>
+<li class="fragment">Tell APIs who you are</li>
 </ul>
-</div><div class="column fragment" style="width:50%;">
-<p><strong>Part 2: How can I create my own APIs with R?</strong></p>
+</div><div class="column fragment" style="width:33%;">
+<p><strong>Part 2: Get more data</strong></p>
 <ul>
-<li class="fragment">How can I create an API?</li>
-<li class="fragment">How can I get inputs from API users?</li>
-<li class="fragment">How can I control API output?</li>
-<li class="fragment">How can I handle API errors?</li>
-<li class="fragment">How can I authenticate API users?</li>
-<li class="fragment">How can I test my plumber API?</li>
-<li class="fragment">How do I deploy my plumber API?</li>
-<li class="fragment">How can I learn more about creating APIs?</li>
+<li class="fragment">Get a lot of data from APIs</li>
+<li class="fragment">Scrape data from web pages</li>
+<li class="fragment">Process other responses types</li>
+</ul>
+</div><div class="column fragment" style="width:33%;">
+<p><strong>Part 3: Do more with APIs</strong></p>
+<ul>
+<li class="fragment">Do other things with APIs</li>
+<li class="fragment">Find APIs</li>
+<li class="fragment">Communicate with other types of APIs</li>
+<li class="fragment">Learn more about APIs</li>
 </ul>
 </div>
 </div>
 <aside class="notes">
 <ul>
-<li>I want to quickly gauge interest, but more details in the survey.</li>
-<li>Will have an over-arching case study woven into most chapters (but as independent pieces to allow jumping around)</li>
 <li>Any missing topics?</li>
 </ul>
 <style type="text/css">
@@ -531,20 +501,13 @@
 <h2>What won’t I learn?</h2>
 <ul>
 <li class="fragment">How can I access APIs with {<a href="https://httr.r-lib.org/">httr</a>} or {<a href="https://jeroen.r-universe.dev/curl">curl</a>}?</li>
+<li class="fragment">How can I create an API?</li>
 <li class="fragment">How can I access APIs from other programming languages?</li>
-<li class="fragment">How <em>should</em> I design a complex API?
-<ul>
-<li class="fragment">Many other books, such as <a href="https://www.manning.com/books/designing-apis-with-swagger-and-openapi">Designing APIs with Swagger and OpenAPI</a></li>
-</ul></li>
-<li class="fragment">How can I administer an enterprise API?
-<ul>
-<li class="fragment"><a href="https://do4ds.com/">DevOps for Data Science</a> for tips</li>
-<li class="fragment">Work with professionals for full-scale deployments</li>
-</ul></li>
 </ul>
 <aside class="notes">
 <ul>
 <li>Anything else people would expect?</li>
+<li>For now at least, {plumber} didn’t make the cut. Separate book?</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -560,37 +523,24 @@
 </section>
 <section id="who-should-read-this-book" class="slide level2">
 <h2>Who should read this book?</h2>
-<div class="columns">
-<div class="column fragment" style="width:50%;">
 <ul>
 <li class="fragment">Data Analysts/Scientists
 <ul>
-<li class="fragment">Part 1: Enrich datasets</li>
+<li class="fragment">Access datasets</li>
+<li class="fragment">Enrich datasets</li>
 </ul></li>
 <li class="fragment">Machine Learning Engineers
 <ul>
-<li class="fragment">Part 1: Feature engineering</li>
-<li class="fragment">Part 2: Share predictions</li>
-</ul></li>
-</ul>
-</div><div class="column fragment" style="width:50%;">
-<ul>
-<li class="fragment">Data Producers (Researchers, etc)
-<ul>
-<li class="fragment">Part 2: Share data</li>
+<li class="fragment">Feature engineering</li>
 </ul></li>
 <li class="fragment">Shiny App Designers
 <ul>
-<li class="fragment">Part 1: Load/process data</li>
-<li class="fragment">Part 2: Divide &amp; conquer</li>
+<li class="fragment">Load/process data</li>
 </ul></li>
 </ul>
-</div>
-</div>
 <aside class="notes">
 <ul>
 <li>People who analyze data, not necessarily that job title.</li>
-<li>Researchers or anybody else with data to share.</li>
 <li>Does anybody fit into something other than those use cases?</li>
 </ul>
 <style type="text/css">
@@ -618,13 +568,12 @@
 </ul></li>
 <li class="fragment">Helpful:
 <ul>
-<li class="fragment"><a href="https://adv-r.hadley.nz/">Advanced R</a> to construct more robust APIs</li>
+<li class="fragment"><a href="https://adv-r.hadley.nz/">Advanced R</a> to do more complicated things with retrieved data</li>
 <li class="fragment"><a href="https://r-pkgs.org/">R Packages</a> for deeper dive into 📦</li>
 </ul></li>
 </ul>
 <aside class="notes">
 <ul>
-<li>(I repeat these questions in the survey)</li>
 <li>How many have read R4DS?</li>
 <li>How many have read Advanced R?</li>
 <li>How many have read R Packages?</li>
@@ -661,32 +610,13 @@
 <li class="fragment">(TODO: Anything to note about code vs text?)</li>
 <li class="fragment">(TODO: Probably an over-arching case study of an election data Shiny app?)</li>
 </ul>
-</section></section>
-<section id="what-do-you-think" class="title-slide slide level1 center">
-<h1>What do you think?</h1>
-<p>Please complete this <a href="https://forms.gle/9qdYTrDL5cZmG26y6">survey</a>!</p>
-<aside class="notes">
-<ul>
-<li>https://forms.gle/9qdYTrDL5cZmG26y6</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 <p><a href="../" target="wapir-club_index">DSLC.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
 </div>
 </div>
-</section>
+</section></section>
     </div>
   </div>
 

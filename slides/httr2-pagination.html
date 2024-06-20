@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-html/tabby.min.js"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.555">
 
-  <title>Web APIs with R Book Club - 8. Process other response types</title>
+  <title>Web APIs with R Book Club - Get a lot of data from APIs</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -94,11 +94,11 @@
     code span.vs { color: #abe338; } /* VerbatimString */
     code span.wa { color: #dcc6e0; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto.css">
-  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto.css">
+  <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -390,7 +390,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">8. Process other response types</h1>
+  <h1 class="title">Get a lot of data from APIs</h1>
 
 <div class="quarto-title-authors">
 </div>
@@ -400,51 +400,20 @@
 <h1>️✅ Learning objectives</h1>
 <div>
 <ul>
-<li>Parse text responses.</li>
-<li>Parse binary responses such as images and videos.</li>
-<li>Handle HTTP error responses.</li>
+<li>Find information about pagination in API docs and descriptions.</li>
+<li>Retry API requests respectfully.</li>
+<li>Retrieve multiple pages of data from an API.</li>
+<li>Process lists of {httr2} responses.</li>
+<li>TODO: Add argument names in calls, for clarity</li>
+<li>TODO: Introduce/use <code>httr2::req_cache()</code></li>
 </ul>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(httr2)</span>
+<span id="cb1-2"><a></a><span class="fu">library</span>(tibblify)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <aside class="notes">
-<ul>
-<li>“After we finish this chapter, we’ll be able to…” (objectives)</li>
-<li>Definitely would like feedback about depth of coverage!</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-
-<section id="content-types" class="title-slide slide level1 center">
-<h1>Content types</h1>
-<ul>
-<li class="fragment"><code>Content-Type</code> header aka “MIME type”
-<ul>
-<li class="fragment">“Multipurpose Internet Mail Extensions”</li>
-</ul></li>
-<li class="fragment"><code>type/subtype;parameter=value</code></li>
-<li class="fragment"><code>httr2::resp_content_type()</code> gets <code>type/subtype</code></li>
-<li class="fragment"><code>httr2::resp_encoding()</code> gets <code>charset</code> parameter</li>
-<li class="fragment">More at <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types">MDN MIME types</a></li>
-<li class="fragment">Even more at <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">IANA Media Types registry</a></li>
-</ul>
-<aside class="notes">
-<ul>
-<li>type/subtype tells you which function to use to parse it
-<ul>
-<li>Could have typos, etc!</li>
-</ul></li>
-<li>Encoding: If you’re getting weird characters, incorrect character set could be the problem.</li>
-<li>IANA = Internet Assigned Numbers Authority</li>
-</ul>
+<p>“After we finish this chapter, we’ll be able to…” (objectives)</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -459,475 +428,86 @@
 </section>
 
 <section>
-<section id="text-content-types" class="title-slide slide level1 center">
-<h1>Text content types</h1>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>MIME type</th>
-<th>httr2 function</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>application/json</code></td>
-<td><code>resp_body_json()</code></td>
-<td>By far most common</td>
-</tr>
-<tr class="even">
-<td><code>application/xml</code></td>
-<td><code>resp_body_xml()</code></td>
-<td>Briefly most common</td>
-</tr>
-<tr class="odd">
-<td><code>text/html</code></td>
-<td><code>resp_body_html()</code></td>
-<td>Really a subclass of xml</td>
-</tr>
-<tr class="even">
-<td><code>text/plain</code></td>
-<td><code>resp_body_string()</code></td>
-<td>Text wildcard</td>
-</tr>
-</tbody>
-</table>
-<aside class="notes">
-<ul>
-<li>We’ll see on later slides that sometimes people use alternative strings</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="json-responses" class="slide level2">
-<h2>JSON responses</h2>
-<ul>
-<li class="fragment"><code>application/json</code> or <code>*/json</code></li>
-<li class="fragment"><code>httr2::resp_body_json()</code> uses <code>jsonlite::fromJSON()</code></li>
-</ul>
-<aside class="notes">
-<p>this slide &amp; next might be entirely covered in earlier chapter</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="json-data" class="slide level2">
-<h2>JSON data</h2>
-<ul>
-<li class="fragment">4 scalars (length-1 vectors)
-<ul>
-<li class="fragment"><code>null</code> ≈ <code>NA</code></li>
-<li class="fragment"><code>string</code> ≈ <code>character(1)</code>, always <code>"</code> (not <code>'</code>)</li>
-<li class="fragment"><code>number</code> ≈ <code>numeric(1)</code>, no <code>Inf</code>/<code>-Inf</code>/<code>NaN</code></li>
-<li class="fragment"><code>boolean</code> ≈ <code>logical(1)</code>, <code>true</code> = <code>TRUE</code>, <code>false</code> = <code>FALSE</code></li>
-</ul></li>
-<li class="fragment"><code>array</code> ≈ unnamed <code>list()</code>
-<ul>
-<li class="fragment"><code>[]</code>: <code>[null, "a", 1, true]</code> ≈ <code>list(NULL, "a", 1, TRUE)</code></li>
-</ul></li>
-<li class="fragment"><code>object</code> ≈ named <code>list()</code>
-<ul>
-<li class="fragment"><code>{}</code>: <code>{"a": 1, "b": [1, 2]}</code> ≈ <br><code>list(a = 1, b = list(1, 2))</code></li>
-</ul></li>
-</ul>
-<aside class="notes">
-<ul>
-<li>We never went into details about what’s legal in the JSON format.</li>
-<li>Arrays of the same type are roughly equivalent to vectors, parsers like jsonlite often turn such arrays into vectors.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="xml-responses" class="slide level2">
-<h2>XML responses</h2>
-<p>e<strong>X</strong>tensible <strong>M</strong>arkup <strong>L</strong>anguage</p>
-<ul>
-<li class="fragment"><code>application/xml</code>, <code>text/xml</code>, or <code>*/xml</code></li>
-<li class="fragment"><code>httr2::resp_body_xml()</code> uses <code>xml2::read_xml()</code></li>
-</ul>
-</section>
-<section id="xml-data" class="slide level2">
-<h2>XML data</h2>
-<ul>
-<li class="fragment">Tags as <code>&lt;tagname attribute="a"&gt;contents&lt;/tagname&gt;</code></li>
-<li class="fragment">Everything nestable</li>
-</ul>
-</section>
-<section id="xml-example-raw" class="slide level2">
-<h2>XML example: raw</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>resp_xml <span class="ot">&lt;-</span> <span class="fu">req_template</span>(<span class="fu">request</span>(<span class="fu">example_url</span>()), <span class="st">"/xml"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-2"><a></a>  <span class="fu">req_perform</span>()</span>
-<span id="cb1-3"><a></a>resp_xml <span class="sc">|&gt;</span> <span class="fu">resp_body_string</span>() <span class="sc">|&gt;</span> <span class="fu">cat</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; &lt;?xml version="1.0" encoding="UTF-8"?&gt;
-#&gt; &lt;root&gt;
-#&gt;    &lt;address&gt;
-#&gt;       &lt;city&gt;New York&lt;/city&gt;
-#&gt;       &lt;postalCode&gt;10021-3100&lt;/postalCode&gt;
-#&gt;       &lt;state&gt;NY&lt;/state&gt;
-#&gt;       &lt;streetAddress&gt;21 2nd Street&lt;/streetAddress&gt;
-#&gt;    &lt;/address&gt;
-#&gt;    &lt;age&gt;27&lt;/age&gt;
-#&gt;    &lt;children /&gt;
-#&gt;    &lt;firstName&gt;John&lt;/firstName&gt;
-#&gt;    &lt;isAlive&gt;true&lt;/isAlive&gt;
-#&gt;    &lt;lastName&gt;Smith&lt;/lastName&gt;
-#&gt;    &lt;phoneNumbers&gt;
-#&gt;       &lt;element&gt;
-#&gt;          &lt;number&gt;212 555-1234&lt;/number&gt;
-#&gt;          &lt;type&gt;home&lt;/type&gt;
-#&gt;       &lt;/element&gt;
-#&gt;       &lt;element&gt;
-#&gt;          &lt;number&gt;646 555-4567&lt;/number&gt;
-#&gt;          &lt;type&gt;office&lt;/type&gt;
-#&gt;       &lt;/element&gt;
-#&gt;    &lt;/phoneNumbers&gt;
-#&gt;    &lt;spouse null="true" /&gt;
-#&gt; &lt;/root&gt;</code></pre>
-</div>
-</div>
-</section>
-<section id="xml-example-parsed" class="slide level2">
-<h2>XML example: parsed</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>extracted_xml <span class="ot">&lt;-</span> <span class="fu">resp_body_xml</span>(resp_xml)</span>
-<span id="cb3-2"><a></a><span class="fu">class</span>(extracted_xml)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; [1] "xml_document" "xml_node"</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co"># We'll see other ways to parse this in {rvest} chapter.</span></span>
-<span id="cb5-2"><a></a>xml2<span class="sc">::</span><span class="fu">as_list</span>(extracted_xml) <span class="sc">|&gt;</span> <span class="fu">str</span>(<span class="at">max.level =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; List of 1
-#&gt;  $ root:List of 8
-#&gt;   ..$ address     :List of 4
-#&gt;   ..$ age         :List of 1
-#&gt;   ..$ children    : list()
-#&gt;   ..$ firstName   :List of 1
-#&gt;   ..$ isAlive     :List of 1
-#&gt;   ..$ lastName    :List of 1
-#&gt;   ..$ phoneNumbers:List of 2
-#&gt;   ..$ spouse      : list()
-#&gt;   .. ..- attr(*, "null")= chr "true"</code></pre>
-</div>
-</div>
-</section>
-<section id="html-responses" class="slide level2">
-<h2>HTML responses</h2>
-<p><strong>H</strong>yper<strong>T</strong>ext <strong>M</strong>arkup <strong>L</strong>anguage</p>
-<ul>
-<li class="fragment"><code>text/html</code>, rarely <code>application/xhtml+xml</code></li>
-<li class="fragment"><code>httr2::resp_body_html()</code> uses <code>xml2::read_html()</code>
-<ul>
-<li class="fragment">which uses <code>xml2::read_xml(..., as_html = TRUE)</code></li>
-</ul></li>
-</ul>
-<aside class="notes">
-<ul>
-<li>HTML came before XML, but XML now includes HTML, so</li>
-<li>HTML is XML with specific, defined tags</li>
-<li>Much more on this in rvest chapter</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section></section>
-<section>
-<section id="binary-objects" class="title-slide slide level1 center">
-<h1>Binary objects</h1>
-<table class="caption-top">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 46%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>MIME type</th>
-<th><code>*</code> examples</th>
-<th>Package</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>image/*</code></td>
-<td><code>png</code>, <code>jpeg</code>, <code>svg+xml</code></td>
-<td><code>{magick}</code></td>
-</tr>
-<tr class="even">
-<td><code>audio/*</code></td>
-<td><code>mpeg</code>, <code>wav</code>, <code>ogg</code></td>
-<td><code>{av}</code> ?</td>
-</tr>
-<tr class="odd">
-<td><code>video/*</code></td>
-<td><code>mpeg</code>, <code>mp4</code>, <code>ogg</code></td>
-<td><code>{av}</code> ?</td>
-</tr>
-<tr class="even">
-<td><code>application/*</code></td>
-<td><code>octet-stream</code> (catch-all), <code>x-bzip</code>, <code>pdf</code></td>
-<td>(various)</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="images" class="slide level2">
-<h2>Images</h2>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> magick<span class="sc">::</span><span class="fu">image_read</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="co"># requires {rsvg}</span></span>
-<span id="cb8-2"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> magick<span class="sc">::</span><span class="fu">image_read_svg</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="co"># requires {pdftools}</span></span>
-<span id="cb9-2"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> magick<span class="sc">::</span><span class="fu">image_read_pdf</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<aside class="notes">
-<ul>
-<li>Can also save directly, but this reads the object directly into R.</li>
-<li>SVG and PDF work best with dedicated packages.</li>
-<li>Parsing PDFs could be a book itself.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="video" class="slide level2">
-<h2>Video</h2>
-<p>I haven’t found anything yet for working with “raw” audio/video!</p>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> <span class="fu">writeBin</span>(path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>av<span class="sc">::</span><span class="fu">av_video_convert</span>(path, <span class="at">output =</span> <span class="st">"output.mp4"</span>, <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>ffmpeg_cmd <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(</span>
-<span id="cb12-2"><a></a>  <span class="st">"ffmpeg -v quiet "</span>,</span>
-<span id="cb12-3"><a></a>  <span class="st">"-i {input_path} "</span>,</span>
-<span id="cb12-4"><a></a>  <span class="st">"-ss {start_time} -to {end_time} "</span>,</span>
-<span id="cb12-5"><a></a>  <span class="st">"-c copy {output_path}"</span></span>
-<span id="cb12-6"><a></a>)</span>
-<span id="cb12-7"><a></a><span class="fu">system</span>(ffmpeg_cmd, <span class="at">ignore.stdout =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<aside class="notes">
-<ul>
-<li>As far as I can tell, you always have to save audio/video, and THEN parse it.</li>
-<li>How much do people want here? Pointers in right direction? Full examples (which might not apply in their use case)?</li>
-<li>Has anybody worked with video? This feels hacky!</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="audio" class="slide level2">
-<h2>Audio</h2>
-<p>I haven’t found anything yet for working with “raw” audio/video!</p>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> <span class="fu">writeBin</span>(filename)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>av<span class="sc">::</span><span class="fu">av_audio_convert</span>(</span>
-<span id="cb14-2"><a></a>  path, <span class="at">output =</span> <span class="st">"output.mp3"</span>, <span class="at">format =</span> <span class="cn">NULL</span>,</span>
-<span id="cb14-3"><a></a>  <span class="at">channels =</span> <span class="cn">NULL</span>, <span class="at">sample_rate =</span> <span class="cn">NULL</span>,</span>
-<span id="cb14-4"><a></a>  <span class="at">start_time =</span> <span class="cn">NULL</span>, <span class="at">total_time =</span> <span class="cn">NULL</span>,</span>
-<span id="cb14-5"><a></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
-<span id="cb14-6"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<aside class="notes">
-<ul>
-<li>How much do people want here? Pointers in right direction? Full examples (which might not apply in their use case)?</li>
-<li>Has anybody worked with audio? This feels hacky!</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="raw-data" class="slide level2">
-<h2>Raw data</h2>
-<p>Danger zone!</p>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">resp_body_raw</span>(resp) <span class="sc">|&gt;</span> <span class="fu">writeBin</span>(filename)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<aside class="notes">
-<ul>
-<li>Anything else likely has to be saved before any tools will know what to do.</li>
-<li>Don’t save random binary files if you don’t have reason to trust what they are!</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="base64-encoded-json-data" class="slide level2">
-<h2>Base64-encoded JSON data</h2>
-<ul>
-<li class="fragment">Base64 transforms binary data into text
-<ul>
-<li class="fragment">6-bit blocks ➡️ 1 of 64 characters</li>
-</ul></li>
-</ul>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>raw_data <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp) <span class="sc">|&gt;</span></span>
-<span id="cb16-2"><a></a>  _<span class="sc">$</span>b64_json <span class="sc">|&gt;</span> <span class="co"># Or whatever the element is named</span></span>
-<span id="cb16-3"><a></a>  jsonlite<span class="sc">::</span><span class="fu">base64_dec</span>()</span>
-<span id="cb16-4"><a></a></span>
-<span id="cb16-5"><a></a>magick<span class="sc">::</span><span class="fu">image_read</span>(raw_data) <span class="co"># Etc</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<aside class="notes">
-<ul>
-<li>OpenAI API can send generated images this way (that’s how I was reminded about it).</li>
-<li>64 = 2^6</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section></section>
-<section>
-<section id="http-errors" class="title-slide slide level1 center">
-<h1>HTTP errors</h1>
+<section id="what-is-pagination" class="title-slide slide level1 center">
+<h1>What is pagination?</h1>
 
 </section>
-<section id="http-status-codes" class="slide level2">
-<h2>HTTP status codes</h2>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>Range</th>
-<th>Description</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1xx</td>
-<td>Informational</td>
-<td>Handled by <code>{curl}</code></td>
-</tr>
-<tr class="even">
-<td>2xx</td>
-<td>Successful</td>
-<td><code>resp_*()</code></td>
-</tr>
-<tr class="odd">
-<td>3xx</td>
-<td>Redirection</td>
-<td>Auto-followed</td>
-</tr>
-<tr class="even">
-<td>4xx</td>
-<td>Client error</td>
-<td>“Your fault”</td>
-</tr>
-<tr class="odd">
-<td>5xx</td>
-<td>Server error</td>
-<td>“Server’s fault”</td>
-</tr>
-</tbody>
-</table>
+<section id="why-paginate" class="slide level2">
+<h2>Why paginate?</h2>
+<ul>
+<li class="fragment">Network traffic is slow &amp; expensive</li>
+<li class="fragment">Bigger transfers ➡️ more corruption chance ➡️ resends</li>
+<li class="fragment">So APIs often limit results per call</li>
+<li class="fragment">1 set of results = 1 page</li>
+</ul>
+</section>
+<section id="what-are-some-pagination-strategies" class="slide level2">
+<h2>What are some pagination strategies?</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li class="fragment"><strong>Offset:</strong> <code>page</code> param
+<ul>
+<li class="fragment"><a href="https://api.open.fec.gov/developers/#/candidate/get_v1_candidates_">OpenFEC</a></li>
+<li class="fragment"><a href="https://api.crossref.org/swagger-ui/index.html">Crossref.org</a></li>
+</ul></li>
+<li class="fragment"><strong>Cursor:</strong> <code>cursor</code> or <code>token</code> param
+<ul>
+<li class="fragment"><a href="https://api.crossref.org/swagger-ui/index.html">Crossref.org “deep paging”</a></li>
+</ul></li>
+</ul>
+</div><div class="column">
+<ul>
+<li class="fragment"><strong>Header link:</strong> <code>Link:</code> to <code>next</code> in response <code>header</code>
+<ul>
+<li class="fragment"><a href="https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api?apiVersion=2022-11-28#using-link-headers">GitHub</a></li>
+<li class="fragment"><a href="https://docs.magicthegathering.io/#documentationheaders">MTG cars</a></li>
+</ul></li>
+<li class="fragment"><strong>Body link:</strong> <code>nextUrl</code> in response <code>body</code>
+<ul>
+<li class="fragment"><a href="https://api.open5e.com/monsters/?limit=100">open5e.com monsters</a></li>
+</ul></li>
+</ul>
+</div>
+</div>
+<ul>
+<li class="fragment">shared: Most offer <code>perPage</code> or <code>pageSize</code> param</li>
+</ul>
+</section>
+<section id="how-can-i-determine-how-an-api-handles-pagination" class="slide level2">
+<h2>How can I determine how an API handles pagination?</h2>
+<p>Unfortunately, no standard.</p>
+<ul>
+<li class="fragment">Almost always: Mentioned in relevant paths</li>
+<li class="fragment">Often: Separate “pagination” section near top of docs</li>
+<li class="fragment">Fall-throughs:
+<ul>
+<li class="fragment"><code>page</code>, <code>perPage</code>, <code>cursor</code> parameters</li>
+<li class="fragment">Look at a response</li>
+</ul></li>
+</ul>
+</section></section>
+<section>
+<section id="how-do-i-perform-pagination" class="title-slide slide level1 center">
+<h1>How do I perform pagination?</h1>
+
+</section>
+<section id="aside-retries-and-api-consumer-etiquette" class="slide level2">
+<h2>Aside: Retries and API consumer etiquette</h2>
+<ul>
+<li class="fragment">Pagination ➡️ repeated API calls</li>
+<li class="fragment">Be nice!</li>
+<li class="fragment"><code>httr2::req_retry()</code>
+<ul>
+<li class="fragment"><strong><em>Must</em></strong> set <code>max_tries</code> or <code>max_seconds</code></li>
+<li class="fragment">Other options usually ok as-is</li>
+</ul></li>
+<li class="fragment">More in “Process other response types”</li>
+</ul>
 <aside class="notes">
 <ul>
-<li>As with everything, codes can be incorrectly implemented</li>
-<li>“Client error” might result from mistake on server side</li>
-<li>“Server error” might mean you sent an expired key</li>
+<li>If neither <code>max_tries</code> nor <code>max_seconds</code> set, silently ignored</li>
+<li>Other things: <code>req_throttle()</code> limits calls/second, <code>req_timeout()</code> to set a time limit for single big calls</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -941,48 +521,30 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="handling-errors" class="slide level2">
-<h2>Handling errors</h2>
-<p><code>req_error(req, is_error = NULL, body = NULL)</code></p>
+<section id="req_perform_iterative" class="slide level2">
+<h2>req_perform_iterative()</h2>
 <ul>
-<li class="fragment"><code>is_error</code> = function to identify errors</li>
-<li class="fragment"><code>body</code> = function to turn error <code>resp</code> into message</li>
+<li class="fragment"><img data-src="https://img.shields.io/badge/lifecycle-experimental-orange.svg"> Added in {httr2} 1.0.0.</li>
+<li class="fragment">Replaces <code>req_perform()</code></li>
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="co"># Never trigger R errors</span></span>
-<span id="cb17-2"><a></a>req <span class="sc">|&gt;</span> </span>
-<span id="cb17-3"><a></a>  <span class="fu">req_error</span>(<span class="at">is_error =</span> \(resp) <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>normal_request <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="co"># Tries *per page*</span></span>
+<span id="cb2-3"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb2-4"><a></a>    <span class="at">next_req =</span> function_to_choose_next_req,</span>
+<span id="cb2-5"><a></a>    <span class="at">max_reqs =</span> <span class="dv">20</span> <span class="co"># Maximum separate page calls</span></span>
+<span id="cb2-6"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a><span class="co"># Only trigger R errors for "Server error" responses</span></span>
-<span id="cb18-2"><a></a>req <span class="sc">|&gt;</span> </span>
-<span id="cb18-3"><a></a>  <span class="fu">req_error</span>(<span class="at">is_error =</span> \(resp) <span class="fu">resp_status</span>(resp) <span class="sc">&gt;=</span> <span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="co"># Include information from response in error message</span></span>
-<span id="cb19-2"><a></a>req <span class="sc">|&gt;</span> </span>
-<span id="cb19-3"><a></a>  <span class="fu">req_error</span>(</span>
-<span id="cb19-4"><a></a>    <span class="at">body =</span> <span class="cf">function</span>(resp) {</span>
-<span id="cb19-5"><a></a>      <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>error_msg <span class="co"># Often more complicated than this</span></span>
-<span id="cb19-6"><a></a>    }</span>
-<span id="cb19-7"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
+<ul>
+<li class="fragment">“Iteration helpers” = built-in <code>next_req</code> functions</li>
+</ul>
 <aside class="notes">
 <ul>
-<li>Add <code>req_error()</code> before <code>req_perform()</code> (or <code>req_perform_iterative()</code>)</li>
-<li>Most common use cases:
-<ul>
-<li>Don’t let httr2 handle errors, so you can do something yourself.</li>
-<li>Override bad status codes from server.</li>
-<li>Provide more details in error message from server.</li>
-</ul></li>
-<li>TODO: Find an API that returns error details!</li>
+<li>Usually include retry, because API might yell at you for multiple calls</li>
+<li><code>max_reqs</code> default is 20. Start low when experimenting, <code>Inf</code> when solid</li>
+<li>Each iteration helper gets a slide</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -996,41 +558,375 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="errors-and-pagination" class="slide level2">
-<h2>Errors and pagination</h2>
+<section id="iteration-helpers-iterate_with_offset" class="slide level2">
+<h2>Iteration helpers: iterate_with_offset()</h2>
 <ul>
-<li class="fragment"><code>req_perform_iterative()</code> has <code>on_error = c("stop", "return")</code>
+<li class="fragment"><code>param_name</code> = <code>"page"</code> or whatever API calls it</li>
+<li class="fragment"><code>start</code>, <code>offset</code> = almost always leave as-is</li>
+<li class="fragment"><code>resp_pages</code> = function to convert <code>resp</code> to page count
 <ul>
-<li class="fragment">On <em>R</em> error</li>
-<li class="fragment">“stop” = “throw an R error if any call throws an R error”</li>
-<li class="fragment">“return” = “stop iterating, return everything so far”</li>
+<li class="fragment"><code>max_reqs &lt;- min(max_reqs, total_pages)</code></li>
 </ul></li>
-<li class="fragment"><code>req_error(is_error = \(resp) FALSE)</code> can cause that not to trigger</li>
-<li class="fragment">May want to combine these for your use-case</li>
-</ul>
-</section>
-<section id="more-on-retries" class="slide level2">
-<h2>More on retries</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>httr2<span class="sc">::</span><span class="fu">req_retry</span>(</span>
-<span id="cb20-2"><a></a>  req,</span>
-<span id="cb20-3"><a></a>  <span class="at">max_tries =</span> <span class="cn">NULL</span>,</span>
-<span id="cb20-4"><a></a>  <span class="at">max_seconds =</span> <span class="cn">NULL</span>,</span>
-<span id="cb20-5"><a></a>  <span class="at">is_transient =</span> <span class="cn">NULL</span>,</span>
-<span id="cb20-6"><a></a>  <span class="at">backoff =</span> <span class="cn">NULL</span>,</span>
-<span id="cb20-7"><a></a>  <span class="at">after =</span> <span class="cn">NULL</span></span>
-<span id="cb20-8"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<li class="fragment"><code>resp_complete</code> = function to check if <code>resp</code> is last page
 <ul>
-<li class="fragment"><code>is_transient</code> = function to decide whether to retry from <code>resp</code></li>
-<li class="fragment"><code>backoff</code> = function to convert <code>tries</code> to <code>wait_seconds</code></li>
-<li class="fragment"><code>after</code> = function to convert <code>resp</code> to <code>wait_seconds</code></li>
+<li class="fragment">Eg: <code>\(resp) !length(resp_body_json(resp))</code></li>
+</ul></li>
 </ul>
 <aside class="notes">
 <ul>
-<li>In pagination chapter, we just set max_tries here to 3</li>
-<li>The LinkedIn API throws a transient 404 randomly during some calls, so I set it up to retry on 404.</li>
-<li></li>
+<li>Almost always “page”.</li>
+<li><code>resp_pages</code> called 1st response. Optional.
+<ul>
+<li>Help says it’s called once, but, if it fails to find total, it will be called for each response.</li>
+</ul></li>
+<li><code>resp_complete</code> usually not needed
+<ul>
+<li>Example is shorthand for “Did we get an empty body?”</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="offset-example-openfec" class="slide level2">
+<h2>Offset example: OpenFEC</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>candidates_request <span class="ot">&lt;-</span> </span>
+<span id="cb3-2"><a></a>  <span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1/candidates"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">api_key =</span> <span class="st">"DEMO_KEY"</span>, <span class="at">election_year =</span> <span class="dv">2020</span>, <span class="at">office =</span> <span class="st">"P"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a></a>  <span class="fu">req_url_query</span>(<span class="at">has_raised_funds =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="columns">
+<div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>candidates_single <span class="ot">&lt;-</span> </span>
+<span id="cb4-2"><a></a>  candidates_request <span class="sc">|&gt;</span> </span>
+<span id="cb4-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
+<span id="cb4-5"><a></a><span class="fu">length</span>(candidates_single<span class="sc">$</span>results)</span>
+<span id="cb4-6"><a></a><span class="co">#&gt; [1] 20</span></span>
+<span id="cb4-7"><a></a>candidates_single<span class="sc">$</span>pagination<span class="sc">$</span>count</span>
+<span id="cb4-8"><a></a><span class="co">#&gt; [1] 173</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>candidates_multi <span class="ot">&lt;-</span> </span>
+<span id="cb5-2"><a></a>  candidates_request <span class="sc">|&gt;</span> </span>
+<span id="cb5-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb5-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_offset</span>(</span>
+<span id="cb5-6"><a></a>      <span class="st">"page"</span>,</span>
+<span id="cb5-7"><a></a>      <span class="at">resp_pages =</span> \(resp) {</span>
+<span id="cb5-8"><a></a>        content <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)</span>
+<span id="cb5-9"><a></a>        content<span class="sc">$</span>pagination<span class="sc">$</span>pages</span>
+<span id="cb5-10"><a></a>      }</span>
+<span id="cb5-11"><a></a>    ),</span>
+<span id="cb5-12"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb5-13"><a></a>  )</span>
+<span id="cb5-14"><a></a><span class="fu">length</span>(candidates_multi)</span>
+<span id="cb5-15"><a></a><span class="co">#&gt; [1] 9</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Warning: This might take a while with the DEMO_KEY</li>
+<li>We’ll see how to extract data from the pages shortly</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="offset-example-crossref.org" class="slide level2">
+<h2>Offset example: crossref.org</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>crossref_request <span class="ot">&lt;-</span> </span>
+<span id="cb6-2"><a></a>  <span class="fu">request</span>(<span class="st">"https://api.crossref.org/works"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">query =</span> <span class="st">"apis"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="columns">
+<div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>crossref_single <span class="ot">&lt;-</span> </span>
+<span id="cb7-2"><a></a>  crossref_request <span class="sc">|&gt;</span> </span>
+<span id="cb7-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb7-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
+<span id="cb7-5"><a></a><span class="fu">length</span>(crossref_single<span class="sc">$</span>message<span class="sc">$</span>items)</span>
+<span id="cb7-6"><a></a><span class="co">#&gt; [1] 20</span></span>
+<span id="cb7-7"><a></a>crossref_single<span class="sc">$</span>message<span class="sc">$</span><span class="st">`</span><span class="at">total-results</span><span class="st">`</span></span>
+<span id="cb7-8"><a></a><span class="co">#&gt; [1] 14114</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>crossref_multi <span class="ot">&lt;-</span> </span>
+<span id="cb8-2"><a></a>  crossref_request <span class="sc">|&gt;</span> </span>
+<span id="cb8-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb8-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_offset</span>(</span>
+<span id="cb8-6"><a></a>      <span class="st">"offset"</span>,</span>
+<span id="cb8-7"><a></a>      <span class="at">resp_pages =</span> \(resp) {</span>
+<span id="cb8-8"><a></a>        content <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)</span>
+<span id="cb8-9"><a></a>        content<span class="sc">$</span>pagination<span class="sc">$</span>message<span class="sc">$</span><span class="st">`</span><span class="at">total-results</span><span class="st">`</span></span>
+<span id="cb8-10"><a></a>      }</span>
+<span id="cb8-11"><a></a>    ),</span>
+<span id="cb8-12"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb8-13"><a></a>  )</span>
+<span id="cb8-14"><a></a><span class="fu">length</span>(crossref_multi)</span>
+<span id="cb8-15"><a></a><span class="co">#&gt; [1] 706</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Warning: This takes a long time, probably don’t actually run it!</li>
+<li>This one has a faster (?) method that we’ll check in a sec.</li>
+<li>We’ll see how to extract data from the pages shortly</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="iteration-helpers-iterate_with_cursor" class="slide level2">
+<h2>Iteration helpers: iterate_with_cursor()</h2>
+<ul>
+<li class="fragment"><code>param_name</code> = <code>"cursor"</code> or whatever API calls it</li>
+<li class="fragment"><code>resp_param_value</code> = function to convert <code>resp</code> to next cursor
+<ul>
+<li class="fragment"><code>NULL</code> if no more pages</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>I’ve seen “cursor”, “token” and variations, like “nextPageToken”.</li>
+<li>Single function because usually this style ends with an empty <code>nextCursor</code>.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="cursor-example-crossref" class="slide level2">
+<h2>Cursor example: Crossref</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>crossref_request_cursor <span class="ot">&lt;-</span> </span>
+<span id="cb9-2"><a></a>  crossref_request <span class="sc">|&gt;</span> </span>
+<span id="cb9-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">cursor =</span> <span class="st">"*"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="columns">
+<div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>crossref_single <span class="ot">&lt;-</span> </span>
+<span id="cb10-2"><a></a>  crossref_request_cursor <span class="sc">|&gt;</span> </span>
+<span id="cb10-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb10-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
+<span id="cb10-5"><a></a><span class="fu">names</span>(crossref_single<span class="sc">$</span>message)</span>
+<span id="cb10-6"><a></a><span class="co">#&gt; [1] "facets"         "next-cursor"    "total-results"  "items"          "items-per-page"</span></span>
+<span id="cb10-7"><a></a><span class="co">#&gt; [6] "query" </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>crossref_multi <span class="ot">&lt;-</span> </span>
+<span id="cb11-2"><a></a>  crossref_request_cursor <span class="sc">|&gt;</span> </span>
+<span id="cb11-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb11-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb11-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_cursor</span>(</span>
+<span id="cb11-6"><a></a>      <span class="st">"cursor"</span>,</span>
+<span id="cb11-7"><a></a>      <span class="at">resp_param_value =</span> \(resp) {</span>
+<span id="cb11-8"><a></a>        content <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)</span>
+<span id="cb11-9"><a></a>        <span class="cf">if</span> (<span class="sc">!</span><span class="fu">length</span>(content<span class="sc">$</span>message<span class="sc">$</span>items)) {</span>
+<span id="cb11-10"><a></a>          <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb11-11"><a></a>        }</span>
+<span id="cb11-12"><a></a>        content<span class="sc">$</span>message<span class="sc">$</span><span class="st">`</span><span class="at">next-cursor</span><span class="st">`</span></span>
+<span id="cb11-13"><a></a>      }</span>
+<span id="cb11-14"><a></a>    ),</span>
+<span id="cb11-15"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb11-16"><a></a>  )</span>
+<span id="cb11-17"><a></a><span class="fu">length</span>(crossref_multi)</span>
+<span id="cb11-18"><a></a><span class="co">#&gt; [1] 706</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Warning: This takes a long time, probably don’t actually run it!</li>
+<li>Not noticeably faster, but this API limits total results from normal pagination, unlimited for cursor-based</li>
+<li>In this case they keep sending next-cursors even when results are empty, so we need to tell it to stop when no results</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="iteration-helpers-iterate_with_link_url" class="slide level2">
+<h2>Iteration helpers: iterate_with_link_url()</h2>
+<ul>
+<li class="fragment"><code>rel</code> = <code>"next"</code> or whatever API calls it</li>
+<li class="fragment"><code>resp_param_value</code> = function to convert <code>resp</code> to next cursor
+<ul>
+<li class="fragment"><code>NULL</code> if no more pages</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>This really should always be “next”, but it isn’t required</li>
+<li>Canonical example is the GitHub API, but I’m showing a demo that doesn’t require any setup by you</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="link-url-example-mtg" class="slide level2">
+<h2>Link-URL example: MTG</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>mtg_cards_request <span class="ot">&lt;-</span> </span>
+<span id="cb12-2"><a></a>  <span class="fu">request</span>(<span class="st">"http://api.magicthegathering.io/v1"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"cards"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a></a>  <span class="fu">req_url_query</span>(<span class="at">name =</span> <span class="st">"bee"</span>, <span class="at">pageSize =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="columns">
+<div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>mtg_cards_single <span class="ot">&lt;-</span> </span>
+<span id="cb13-2"><a></a>  mtg_cards_request <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a></a>  <span class="fu">req_perform</span>()</span>
+<span id="cb13-4"><a></a><span class="fu">resp_header</span>(mtg_cards_single, <span class="st">"link"</span>)</span>
+<span id="cb13-5"><a></a><span class="co">#&gt; &lt;https://api.magicthegathering.io/v1/cards?name=bee&amp;page=5&amp;pageSize=20&gt;; rel="last", </span></span>
+<span id="cb13-6"><a></a><span class="co">#&gt; &lt;https://api.magicthegathering.io/v1/cards?name=bee&amp;page=2&amp;pageSize=20&gt;; rel="next"</span></span>
+<span id="cb13-7"><a></a>mtg_cards_content <span class="ot">&lt;-</span> mtg_cards_single <span class="sc">|&gt;</span> </span>
+<span id="cb13-8"><a></a>  <span class="fu">resp_body_json</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>mtg_cards_multi <span class="ot">&lt;-</span> </span>
+<span id="cb14-2"><a></a>  mtg_cards_request <span class="sc">|&gt;</span> </span>
+<span id="cb14-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb14-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_link_url</span>(),</span>
+<span id="cb14-6"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb14-7"><a></a>  )</span>
+<span id="cb14-8"><a></a><span class="fu">length</span>(mtg_cards_multi)</span>
+<span id="cb14-9"><a></a><span class="co">#&gt; [1] 5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>If I were working with this one a lot, I’d probably actually use offset pagination.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="roll-your-own-iteration" class="slide level2">
+<h2>Roll-your-own iteration</h2>
+<ul>
+<li class="fragment">People love to reinvent this wheel.</li>
+<li class="fragment"><strong>Body link:</strong> <code>nextUrl</code> in response <code>body</code>
+<ul>
+<li class="fragment"><a href="https://api.open5e.com/monsters/?limit=100">open5e.com monsters</a></li>
+</ul></li>
+</ul>
+</section>
+<section id="roll-your-own-example-dnd-monsters" class="slide level2">
+<h2>Roll-your-own example: DnD Monsters</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>dnd_request <span class="ot">&lt;-</span> </span>
+<span id="cb15-2"><a></a>  <span class="fu">request</span>(<span class="st">"https://api.open5e.com/monsters/?limit=100"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="columns">
+<div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>dnd_single <span class="ot">&lt;-</span> </span>
+<span id="cb16-2"><a></a>  dnd_request <span class="sc">|&gt;</span> </span>
+<span id="cb16-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb16-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
+<span id="cb16-5"><a></a><span class="fu">length</span>(dnd_single<span class="sc">$</span>results)</span>
+<span id="cb16-6"><a></a><span class="co">#&gt; [1] 100</span></span>
+<span id="cb16-7"><a></a>dnd_single<span class="sc">$</span>count</span>
+<span id="cb16-8"><a></a><span class="co">#&gt; [1] 2439</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>dnd_multi <span class="ot">&lt;-</span> </span>
+<span id="cb17-2"><a></a>  dnd_request <span class="sc">|&gt;</span> </span>
+<span id="cb17-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb17-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb17-5"><a></a>    <span class="at">next_req =</span> <span class="cf">function</span>(resp, req) {</span>
+<span id="cb17-6"><a></a>      url <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span><span class="st">`</span><span class="at">next</span><span class="st">`</span></span>
+<span id="cb17-7"><a></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(url)) {</span>
+<span id="cb17-8"><a></a>        <span class="fu">req_url</span>(req, url)</span>
+<span id="cb17-9"><a></a>      }</span>
+<span id="cb17-10"><a></a>    },</span>
+<span id="cb17-11"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb17-12"><a></a>  )</span>
+<span id="cb17-13"><a></a><span class="fu">length</span>(dnd_multi)</span>
+<span id="cb17-14"><a></a><span class="co">#&gt; [1] 25</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Used code returned by <code>iterate_with_link_url()</code> as template</li>
+<li>Be sure to keep all the non-URL bits of the req!</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -1044,32 +940,141 @@
           display:block!important;
       }</style></aside>
 </section></section>
-<section id="questions" class="title-slide slide level1 center">
-<h1>Questions?</h1>
+<section>
+<section id="how-do-i-parse-paginated-responses" class="title-slide slide level1 center">
+<h1>How do I parse paginated responses?</h1>
+
+</section>
+<section id="resps_data" class="slide level2">
+<h2>resps_data()</h2>
+<ul>
+<li class="fragment"><code>req_perform_iterative()</code> returns <em>list</em> of responses</li>
+<li class="fragment"><code>resps_data()</code> takes that list + <code>resp_data</code> parsing function and merges</li>
+<li class="fragment">Usually you need more than just something like <code>resp_body_json</code>
+<ul>
+<li class="fragment">Grab just the actual results</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Clarify that <code>resp_data</code> is the function itself, NOT a call to the function.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="resps_data-example-openfec" class="slide level2">
+<h2>resps_data() example: OpenFEC</h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>fec_resp_parser <span class="ot">&lt;-</span> <span class="cf">function</span>(resp) {</span>
+<span id="cb18-2"><a></a>  <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>results</span>
+<span id="cb18-3"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>candidates_multi_results <span class="ot">&lt;-</span> <span class="fu">resps_data</span>(</span>
+<span id="cb19-2"><a></a>  candidates_multi, fec_resp_parser</span>
+<span id="cb19-3"><a></a>)</span>
+<span id="cb19-4"><a></a>tibblify<span class="sc">::</span><span class="fu">tibblify</span>(candidates_multi_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 173 × 24
+#&gt;    active_through candidate_id candidate_inactive candidate_status cycles    
+#&gt;             &lt;int&gt; &lt;chr&gt;        &lt;lgl&gt;              &lt;chr&gt;            &lt;list&gt;    
+#&gt;  1           2020 P00014241    FALSE              N                &lt;list [3]&gt;
+#&gt;  2           2024 P00008193    FALSE              N                &lt;list [4]&gt;
+#&gt;  3           2020 P00006296    FALSE              P                &lt;list [4]&gt;
+#&gt;  4           2020 P00010900    FALSE              N                &lt;list [1]&gt;
+#&gt;  5           2020 P00012104    FALSE              P                &lt;list [3]&gt;
+#&gt;  6           2020 P40003170    FALSE              N                &lt;list [5]&gt;
+#&gt;  7           2020 P00008128    FALSE              N                &lt;list [4]&gt;
+#&gt;  8           2020 P80004369    FALSE              N                &lt;list [2]&gt;
+#&gt;  9           2020 P00010090    FALSE              N                &lt;list [3]&gt;
+#&gt; 10           2024 P00015297    FALSE              N                &lt;list [3]&gt;
+#&gt; # ℹ 163 more rows
+#&gt; # ℹ 19 more variables: district &lt;chr&gt;, district_number &lt;int&gt;,
+#&gt; #   election_districts &lt;list&gt;, election_years &lt;list&gt;, federal_funds_flag &lt;lgl&gt;,
+#&gt; #   first_file_date &lt;chr&gt;, has_raised_funds &lt;lgl&gt;,
+#&gt; #   inactive_election_years &lt;list&gt;, incumbent_challenge &lt;chr&gt;,
+#&gt; #   incumbent_challenge_full &lt;chr&gt;, last_f2_date &lt;chr&gt;, last_file_date &lt;chr&gt;,
+#&gt; #   load_date &lt;chr&gt;, name &lt;chr&gt;, office &lt;chr&gt;, office_full &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>Reiterate that fec_resp_parser is the function itself, not a call to the function.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="resps_data-friends" class="slide level2">
+<h2>resps_data() friends</h2>
+<ul>
+<li class="fragment"><code>req_perform_iterative</code> <code>on_error</code> arg: “stop” or “return”</li>
+<li class="fragment"><code>resps_successes()</code> extracts just successes from <code>resps</code> list</li>
+<li class="fragment"><code>resps_failures()</code> same, but failures</li>
+<li class="fragment"><code>resps_requests()</code> to see how they were called</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>We didn’t dig into it, but <code>req_perform_iterative()</code> has <code>on_error</code> arg</li>
+<li>Common workflow might be to grab the successes, and then pass THAT to <code>resps_data()</code></li>
+<li><code>req_perform_iterative</code> can only have 1 failure, but we’ll see some more multi performs in a later chapter TBD</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
-<p><a href="../../" target="wapir-club_index">DSLC.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
+<p><a href="../" target="wapir-club_index">DSLC.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
 </div>
 </div>
-</section>
+</section></section>
     </div>
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <script src="../site_libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
-  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script src="../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../site_libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>

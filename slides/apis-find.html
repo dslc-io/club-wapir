@@ -10,7 +10,7 @@
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.555">
 
-  <title>Web APIs with R Book Club - Unused Slides from Other Chapters</title>
+  <title>Web APIs with R Book Club - Find APIs</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -390,50 +390,60 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Unused Slides from Other Chapters</h1>
+  <h1 class="title">Find APIs</h1>
 
 <div class="quarto-title-authors">
 </div>
 
 </section>
-<section>
-<section id="one-offs" class="title-slide slide level1 center">
-<h1>One-offs</h1>
-
-</section>
-<section id="how-can-i-quickly-translate-api-docs" class="slide level2">
-<h2>How can I quickly translate API docs?</h2>
+<section id="learning-objectives" class="title-slide slide level1 center">
+<h1>️✅ Learning objectives</h1>
+<div>
 <ul>
-<li class="fragment">Docs often have “Try it out” option
-<ul>
-<li class="fragment"><a href="https://api.open.fec.gov/developers/">https://api.open.fec.gov/developers/</a></li>
-</ul></li>
-<li class="fragment">Copy the “Curl” block</li>
+<li>Search the web for APIs.</li>
+<li>Search for API-wrapping packages.</li>
+<li>Use browser developer tools to find undocumented APIs.</li>
 </ul>
-<div class="fragment">
+</div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">curl_translate</span>(</span>
-<span id="cb1-2"><a></a>  <span class="st">"curl -X 'GET' \</span></span>
-<span id="cb1-3"><a></a><span class="st">  'https://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&amp;office=H'"</span></span>
-<span id="cb1-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1-3"><a></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-4"><a></a><span class="fu">library</span>(tools)</span>
+<span id="cb1-5"><a></a><span class="fu">library</span>(httr2)</span>
+<span id="cb1-6"><a></a><span class="fu">library</span>(anyapi)</span>
+<span id="cb1-7"><a></a><span class="fu">library</span>(apisniffer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<div class="fragment">
-<pre><code>request("https://api.open.fec.gov/v1/candidates/") |&gt; 
-  req_method("GET") |&gt; 
-  req_url_query(
-    api_key = "DEMO_KEY",
-    office = "H"
-  ) |&gt; 
-  req_perform()</code></pre>
-</div>
+</section>
+
+<section id="search-the-web-for-apis" class="title-slide slide level1 center">
+<h1>Search the web for APIs</h1>
+<ul>
+<li class="fragment"><a href="https://apis.guru/">apis.guru</a></li>
+<li class="fragment"><a href="https://publicapis.dev/">Public APIs</a>
+<ul>
+<li class="fragment"><a href="https://github.com/marcelscruz/public-apis">GitHub repo</a></li>
+</ul></li>
+<li class="fragment"><a href="https://www.google.com/search?q=nytimes+api">{site} + api</a></li>
+<li class="fragment"><a href="https://developer.nytimes.com/">developer(s).{site}</a></li>
+<li class="fragment"><a href="https://github.com/washingtonpost">GitHub/{organization}</a></li>
+</ul>
 <aside class="notes">
 <ul>
-<li>If you want to use this API, sign up for your own key at that same URL.</li>
-<li>I edited the given curl to fit</li>
-<li>This code will usually get you started</li>
-<li>Now let’s clean it up and understand it!</li>
-<li>Extra: OpenAPI 3.0 description at https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json</li>
+<li>apis.guru is in the {anyapi} package (on github)</li>
+<li>I plan to add Public APIs (in addition)
+<ul>
+<li>More active dev</li>
+<li>There’s an open issue to add OpenAPI specs when available</li>
+</ul></li>
+<li>Google search is a GET API,
+<ul>
+<li>But google.com/robots.txt Disallow’s hitting /search.</li>
+<li>And probably need LiveHTML to get something useful out of it</li>
+</ul></li>
+<li>developers.google.com</li>
+<li>Sometimes api(s).{site} but I don’t have an example right now</li>
+<li>WaPo GitHub doesn’t have an API, but it has some of what you might hope to use an API to find.</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -447,41 +457,219 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="the-pieces-of-a-url" class="slide level2">
-<h2>The Pieces of a URL</h2>
-<p>https://api.open.fec.gov/v1/candidates/?election_year=2020&amp;office=P&amp;api_key=DEMO_KEY</p>
+
+<section>
+<section id="search-for-api-wrapping-packages" class="title-slide slide level1 center">
+<h1>Search for API-wrapping packages</h1>
+
+</section>
+<section id="general-tips-for-text-filtering" class="slide level2">
+<h2>General tips for text filtering</h2>
 <ul>
-<li class="fragment"><code>https://api.open.fec.gov</code> = “scheme” + “host name”</li>
-<li class="fragment"><code>/v1/candidates/</code> = “path”</li>
-<li class="fragment"><code>?election_year=2020&amp;office=P&amp;api_key=DEMO_KEY</code> = “query”</li>
-<li class="fragment"><em>Not present:</em>
+<li class="fragment"><code>tolower(FIELD)</code> to find “API”, “api”, “Api”, etc</li>
+<li class="fragment"><code>\\b</code> in regex pattern for “word <strong><em>b</em></strong>oundary”
 <ul>
-<li class="fragment"><code>:1234</code> = “port”</li>
-<li class="fragment"><code>#target</code> = “fragment”</li>
-<li class="fragment"><code>username:password@</code></li>
+<li class="fragment"><code>"\\bapi\\b"</code> = “api surrounded by spaces, (), newline, etc”</li>
 </ul></li>
 </ul>
+<aside class="notes">
+<ul>
+<li>These are generally useful, but we’ll use them specifically for packages</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="searching-cran-packages" class="slide level2">
+<h2>Searching CRAN packages</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>api_pkgs <span class="ot">&lt;-</span> tools<span class="sc">::</span><span class="fu">CRAN_package_db</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a></a>  dplyr<span class="sc">::</span><span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
+<span id="cb2-4"><a></a>    stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="fu">tolower</span>(Description), <span class="st">"</span><span class="sc">\\</span><span class="st">bapi</span><span class="sc">\\</span><span class="st">b"</span>) <span class="sc">|</span></span>
+<span id="cb2-5"><a></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="fu">tolower</span>(Title), <span class="st">"</span><span class="sc">\\</span><span class="st">bapi</span><span class="sc">\\</span><span class="st">b"</span>)</span>
+<span id="cb2-6"><a></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb2-7"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Package, Title)</span>
+<span id="cb2-8"><a></a>api_pkgs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 891 × 2
+#&gt;    Package           Title                                                      
+#&gt;    &lt;chr&gt;             &lt;chr&gt;                                                      
+#&gt;  1 academictwitteR   "Access the Twitter Academic Research Product Track V2 API…
+#&gt;  2 ACEsearch         "'ACE' Search Engine API"                                  
+#&gt;  3 acled.api         "Automated Retrieval of ACLED Conflict Event Data"         
+#&gt;  4 adbcdrivermanager "'Arrow' Database Connectivity ('ADBC') Driver Manager"    
+#&gt;  5 adbcpostgresql    "'Arrow' Database Connectivity ('ADBC') 'PostgreSQL' Drive…
+#&gt;  6 adbcsqlite        "'Arrow' Database Connectivity ('ADBC') 'SQLite' Driver"   
+#&gt;  7 adformR           "Get Adform Ads Data via the 'Windsor.ai' API"             
+#&gt;  8 adobeanalyticsr   "R Client for 'Adobe Analytics' API 2.0"                   
+#&gt;  9 adsDataHubR       "Google Ads Data Hub API Client"                           
+#&gt; 10 adwordsR          "Access the 'Google Adwords' API"                          
+#&gt; # ℹ 881 more rows</code></pre>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>CRAN_package_db() returns 69 columns of info (everything that can be in the DESCRIPTION file)</li>
+<li>Title = short description, generally sentence case.</li>
+<li>Description = paragraph or so about the package</li>
+<li>Could also check <code>Author</code> and/or <code>Authors@R</code> for credit to API owner.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="searching-the-r-universe" class="slide level2">
+<h2>Searching the R Universe</h2>
+<ul>
+<li class="fragment"><a href="https://ropensci.org/r-universe/">rOpenSci project for package discovery</a></li>
+<li class="fragment">Web interface at <a href="https://r-universe.dev/">r-universe.dev</a></li>
+<li class="fragment">API (under development) at <a href="https://r-universe.dev/api/search">r-universe.dev/api/search</a></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Users and organizations can set up their own universes</li>
+<li>Likely to be different by the time I do next iteration of these slides</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="r-universe-api-request" class="slide level2">
+<h2>R Universe API: Request</h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>r_universe_apis_req <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(<span class="st">"https://r-universe.dev/api/search"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a></a>  httr2<span class="sc">::</span><span class="fu">req_url_query</span>(</span>
+<span id="cb4-3"><a></a>    <span class="at">q =</span> <span class="st">"api"</span>,</span>
+<span id="cb4-4"><a></a>    <span class="at">all =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-5"><a></a>    <span class="at">limit =</span> <span class="dv">100</span></span>
+<span id="cb4-6"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>r_universe_apis_resps <span class="ot">&lt;-</span> r_universe_apis_req <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a></a>  httr2<span class="sc">::</span><span class="fu">req_perform_iterative</span>(</span>
+<span id="cb5-3"><a></a>    httr2<span class="sc">::</span><span class="fu">iterate_with_offset</span>(</span>
+<span id="cb5-4"><a></a>      <span class="st">"skip"</span>,</span>
+<span id="cb5-5"><a></a>      <span class="at">start =</span> <span class="dv">0</span>,</span>
+<span id="cb5-6"><a></a>      <span class="at">offset =</span> <span class="dv">100</span>,</span>
+<span id="cb5-7"><a></a>      <span class="at">resp_pages =</span> \(resp) <span class="fu">ceiling</span>(httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>total<span class="sc">/</span><span class="dv">100</span>)</span>
+<span id="cb5-8"><a></a>    )</span>
+<span id="cb5-9"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<aside class="notes">
+<ul>
+<li>API isn’t done.
+<ul>
+<li>No documented pagination, but…</li>
+<li>Skip parameter will work!</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="r-universe-results" class="slide level2">
+<h2>R Universe Results</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>r_universe_apis_resps <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a></a>  httr2<span class="sc">::</span><span class="fu">resps_data</span>(</span>
+<span id="cb6-3"><a></a>    \(resp) {</span>
+<span id="cb6-4"><a></a>      httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>results <span class="sc">|&gt;</span> </span>
+<span id="cb6-5"><a></a>        tibble<span class="sc">::</span><span class="fu">enframe</span>(<span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-6"><a></a>        tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(value)</span>
+<span id="cb6-7"><a></a>    }</span>
+<span id="cb6-8"><a></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-9"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Package, Title)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 1,384 × 2
+#&gt;    Package         Title                                                        
+#&gt;    &lt;chr&gt;           &lt;chr&gt;                                                        
+#&gt;  1 hoopR           "Access Men's Basketball Play by Play Data"                  
+#&gt;  2 wehoop          "Access Women's Basketball Play by Play Data"                
+#&gt;  3 gptstudio       "Use Large Language Models Directly in your Development\nEnv…
+#&gt;  4 geosapi         "GeoServer REST API R Interface"                             
+#&gt;  5 googleLanguageR "Call Google's 'Natural Language' API, 'Cloud Translation' A…
+#&gt;  6 RobinHood       "Interface for the RobinHood.com No Commission Investing Pla…
+#&gt;  7 hereR           "'sf'-Based Interface to the 'HERE' REST APIs"               
+#&gt;  8 oaii            "'OpenAI' API R Interface"                                   
+#&gt;  9 nhlapi          "A Minimum-Dependency 'R' Interface to the 'NHL' API"        
+#&gt; 10 salesforcer     "An Implementation of 'Salesforce' APIs Using Tidy Principle…
+#&gt; # ℹ 1,374 more rows</code></pre>
+</div>
+</div>
 </section></section>
 <section>
-<section id="tibblifyparse_openapi_spec" class="title-slide slide level1 center">
-<h1>tibblify::parse_openapi_spec()</h1>
+<section id="sniff-api-requests-in-browser" class="title-slide slide level1 center">
+<h1>Sniff API requests in browser</h1>
 
 </section>
-<section id="endpoint-info-as-data" class="slide level2">
-<h2>Endpoint info as data</h2>
+<section id="browser-developer-tools" class="slide level2">
+<h2>Browser developer tools</h2>
 <ul>
-<li class="fragment">{tibblify} can load OpenAPI endpoint data</li>
+<li class="fragment">Differs browser-to-browser, showing Chrome</li>
+<li class="fragment">ctrl-shift-I (cmd-shift-I) or right click &gt; <code>Inspect</code></li>
+<li class="fragment"><code>Network</code> tab</li>
+<li class="fragment">Filter to <code>Fetch/XHR</code></li>
+<li class="fragment">Right click &gt; <code>Header Options</code> &gt; <code>Path</code></li>
+<li class="fragment">Demo: <a href="https://amazon.com">Amazon suggestions</a></li>
 </ul>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>openfec_endpoints <span class="ot">&lt;-</span> tibblify<span class="sc">::</span><span class="fu">parse_openapi_spec</span>(<span class="st">"https://api.apis.guru/v2/specs/fec.gov/1.0/openapi.json"</span>)</span>
-<span id="cb3-2"><a></a>openfec_endpoints <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a></a>  <span class="fu">unnest</span>(operations)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
 <aside class="notes">
 <ul>
-<li>This is a dev version of tibblify, production version only gets some of this data.</li>
+<li>Microsoft Edge is also a Chromium-based browser, so should be same there</li>
+<li>Fetch &amp; XHR are two JavaScript APIs for making requests.
+<ul>
+<li>XHR = XmlHttpRequest, but not used just for XML.</li>
+<li>Fetch is more modern version, but both are used.</li>
+</ul></li>
+<li>Importantly: They’re how web pages often make API requests on your behalf.</li>
+<li>Load Amazon, then ctrl-shift-i (make sure it’s empty)</li>
+<li>Show clearing with the circle/line icon</li>
+<li>Click the search box</li>
+<li>Type “Web APIs with R”, pausing to see requests &amp; results</li>
+<li>Point out “Path” column</li>
+<li>Filter to “suggestions”</li>
+<li>Single click last one</li>
+<li>Walk through Headers, Payload, Response</li>
+<li>Right click &gt; <code>Copy</code> &gt; <code>Copy as cURL (bash)</code>
+<ul>
+<li>Can paste this and use <code>httr2::curl_translate()</code></li>
+</ul></li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -495,28 +683,24 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="endpoint-parameters" class="slide level2">
-<h2>Endpoint parameters</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>candidates_endpoint <span class="ot">&lt;-</span> openfec_endpoints <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a></a>  <span class="fu">unnest</span>(operations) <span class="sc">|&gt;</span> </span>
-<span id="cb4-3"><a></a>  <span class="fu">filter</span>(endpoint <span class="sc">==</span> <span class="st">"/candidates/"</span>)</span>
-<span id="cb4-4"><a></a>candidates_endpoint <span class="sc">|&gt;</span> </span>
-<span id="cb4-5"><a></a>  <span class="fu">select</span>(parameters) <span class="sc">|&gt;</span> </span>
-<span id="cb4-6"><a></a>  <span class="fu">unnest</span>(parameters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="endpoint-responses" class="slide level2">
-<h2>Endpoint responses</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>candidates_endpoint <span class="sc">|&gt;</span> </span>
-<span id="cb5-2"><a></a>  <span class="fu">select</span>(responses) <span class="sc">|&gt;</span></span>
-<span id="cb5-3"><a></a>  <span class="fu">unnest</span>(responses) <span class="sc">|&gt;</span> </span>
-<span id="cb5-4"><a></a>  <span class="fu">unnest</span>(content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<section id="sniff-api-requests-with-apisniffer" class="slide level2">
+<h2>Sniff API requests with {apisniffer}</h2>
+<ul>
+<li class="fragment"> <a href="https://github.com/jonthegeek/apisniffer">{apisniffer}</a></li>
+<li class="fragment">Goal:
+<ul>
+<li class="fragment">Load page</li>
+<li class="fragment">(optional) Interact</li>
+<li class="fragment">Returns tibble of API info</li>
+<li class="fragment">(maybe) Also returns functions to access detected APIs</li>
+</ul></li>
+</ul>
 <aside class="notes">
 <ul>
-<li>Note that <code>spec</code> is a tspec!</li>
+<li>Currently doesn’t allow interaction</li>
+<li>Returns raw data, not tibble</li>
+<li>Can use <code>httr2::url_parse()</code> to break url into pieces</li>
+<li><code>request</code> objects have sections by {httr2} function</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
