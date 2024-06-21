@@ -3,6 +3,11 @@ engine: knitr
 title: Get a lot of data from APIs
 ---
 
+# TODO
+
+-   TODO: Add argument names in calls, for clarity
+-   TODO: Introduce/use `httr2::req_cache()`
+
 # ️✅ Learning objectives
 
 ::: nonincremental
@@ -10,8 +15,6 @@ title: Get a lot of data from APIs
 -   Retry API requests respectfully.
 -   Retrieve multiple pages of data from an API.
 -   Process lists of {httr2} responses.
--   TODO: Add argument names in calls, for clarity
--   TODO: Introduce/use `httr2::req_cache()`
 :::
 
 ```{r}
