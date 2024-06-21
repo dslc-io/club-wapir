@@ -28,19 +28,19 @@ website:
             target: wapir_club-apis_start
           - file: slides/schemas.qmd
             target: wapir_club-schemas
-          - file: httr2.qmd
+          - file: slides/httr2.qmd
             target: wapir_club-httr2
-          - file: slides/httr2-authentication.qmd
-            target: wapir_club-httr2-authentication
+          - file: slides/authentication.qmd
+            target: wapir_club-authentication
 
       - section: "Get more data"
         contents:
-          - file: slides/httr2-pagination.qmd
-            target: wapir_club-httr2-pagination
+          - file: slides/pagination.qmd
+            target: wapir_club-pagination
           - file: slides/rvest.qmd
             target: wapir_club-rvest
-          - file: slides/httr2-responses.qmd
-            target: wapir_club-httr2-responses
+          - file: slides/responses.qmd
+            target: wapir_club-responses
 
       - section: "Do more with APIs"
         contents:
@@ -50,8 +50,8 @@ website:
             target: wapir_club-apis-find
           - file: slides/accessing-other.qmd
             target: wapir_club-accessing_other
-          - file: slides/accessing-more.qmd
-            target: wapir_club-accessing-more
+          - file: slides/learn-more.qmd
+            target: wapir_club-learn-more
 
 format:
   html:
