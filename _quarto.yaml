@@ -28,7 +28,7 @@ website:
             target: wapir_club-apis_start
           - file: slides/schemas.qmd
             target: wapir_club-schemas
-          - file: httr2.qmd
+          - file: slides/httr2.qmd
             target: wapir_club-httr2
           - file: slides/httr2-authentication.qmd
             target: wapir_club-httr2-authentication
