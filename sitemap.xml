@@ -2,58 +2,58 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://r4ds.github.io/bookclub-wapir/index.html</loc>
-    <lastmod>2024-06-20T13:12:37.468Z</lastmod>
-  </url>
-  <url>
-    <loc>https://r4ds.github.io/bookclub-wapir/slides/httr2.html</loc>
-    <lastmod>2024-06-20T13:12:37.496Z</lastmod>
-  </url>
-  <url>
-    <loc>https://r4ds.github.io/bookclub-wapir/slides/httr2-responses.html</loc>
-    <lastmod>2024-06-20T13:12:37.496Z</lastmod>
-  </url>
-  <url>
-    <loc>https://r4ds.github.io/bookclub-wapir/slides/intro.html</loc>
-    <lastmod>2024-06-20T13:12:37.496Z</lastmod>
-  </url>
-  <url>
-    <loc>https://r4ds.github.io/bookclub-wapir/slides/club-intro.html</loc>
-    <lastmod>2024-06-20T13:12:37.496Z</lastmod>
-  </url>
-  <url>
-    <loc>https://r4ds.github.io/bookclub-wapir/slides/accessing-more.html</loc>
-    <lastmod>2024-06-20T13:12:37.468Z</lastmod>
-  </url>
-  <url>
-    <loc>https://r4ds.github.io/bookclub-wapir/slides/httr2-other.html</loc>
-    <lastmod>2024-06-20T13:12:37.496Z</lastmod>
-  </url>
-  <url>
-    <loc>https://r4ds.github.io/bookclub-wapir/slides/rvest.html</loc>
-    <lastmod>2024-06-20T13:12:37.504Z</lastmod>
-  </url>
-  <url>
-    <loc>https://r4ds.github.io/bookclub-wapir/slides/accessing-other.html</loc>
-    <lastmod>2024-06-20T13:12:37.468Z</lastmod>
-  </url>
-  <url>
-    <loc>https://r4ds.github.io/bookclub-wapir/slides/httr2-authentication.html</loc>
-    <lastmod>2024-06-20T13:12:37.496Z</lastmod>
-  </url>
-  <url>
-    <loc>https://r4ds.github.io/bookclub-wapir/slides/apis-find.html</loc>
-    <lastmod>2024-06-20T13:12:37.468Z</lastmod>
-  </url>
-  <url>
-    <loc>https://r4ds.github.io/bookclub-wapir/slides/apis-start.html</loc>
-    <lastmod>2024-06-20T13:12:37.468Z</lastmod>
+    <lastmod>2024-06-21T14:00:42.387Z</lastmod>
   </url>
   <url>
     <loc>https://r4ds.github.io/bookclub-wapir/slides/schemas.html</loc>
-    <lastmod>2024-06-20T13:12:37.508Z</lastmod>
+    <lastmod>2024-06-21T14:00:42.427Z</lastmod>
   </url>
   <url>
-    <loc>https://r4ds.github.io/bookclub-wapir/slides/httr2-pagination.html</loc>
-    <lastmod>2024-06-20T13:12:37.496Z</lastmod>
+    <loc>https://r4ds.github.io/bookclub-wapir/slides/pagination.html</loc>
+    <lastmod>2024-06-21T14:00:42.419Z</lastmod>
+  </url>
+  <url>
+    <loc>https://r4ds.github.io/bookclub-wapir/slides/intro.html</loc>
+    <lastmod>2024-06-21T14:00:42.415Z</lastmod>
+  </url>
+  <url>
+    <loc>https://r4ds.github.io/bookclub-wapir/slides/club-intro.html</loc>
+    <lastmod>2024-06-21T14:00:42.415Z</lastmod>
+  </url>
+  <url>
+    <loc>https://r4ds.github.io/bookclub-wapir/slides/accessing-other.html</loc>
+    <lastmod>2024-06-21T14:00:42.387Z</lastmod>
+  </url>
+  <url>
+    <loc>https://r4ds.github.io/bookclub-wapir/slides/httr2-other.html</loc>
+    <lastmod>2024-06-21T14:00:42.415Z</lastmod>
+  </url>
+  <url>
+    <loc>https://r4ds.github.io/bookclub-wapir/slides/rvest.html</loc>
+    <lastmod>2024-06-21T14:00:42.423Z</lastmod>
+  </url>
+  <url>
+    <loc>https://r4ds.github.io/bookclub-wapir/slides/responses.html</loc>
+    <lastmod>2024-06-21T14:00:42.423Z</lastmod>
+  </url>
+  <url>
+    <loc>https://r4ds.github.io/bookclub-wapir/slides/authentication.html</loc>
+    <lastmod>2024-06-21T14:00:42.415Z</lastmod>
+  </url>
+  <url>
+    <loc>https://r4ds.github.io/bookclub-wapir/slides/apis-find.html</loc>
+    <lastmod>2024-06-21T14:00:42.387Z</lastmod>
+  </url>
+  <url>
+    <loc>https://r4ds.github.io/bookclub-wapir/slides/apis-start.html</loc>
+    <lastmod>2024-06-21T14:00:42.387Z</lastmod>
+  </url>
+  <url>
+    <loc>https://r4ds.github.io/bookclub-wapir/slides/learn-more.html</loc>
+    <lastmod>2024-06-21T14:00:42.415Z</lastmod>
+  </url>
+  <url>
+    <loc>https://r4ds.github.io/bookclub-wapir/slides/httr2.html</loc>
+    <lastmod>2024-06-21T14:00:42.415Z</lastmod>
   </url>
 </urlset>
