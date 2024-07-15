@@ -8,7 +8,7 @@ website:
     search: true
     tools:
       - icon: github
-        href: https://github.com/dslc/club-wapir
+        href: https://github.com/dslc-io/club-wapir
       - icon: youtube
         href: https://www.youtube.com/playlist?list=PL3x6DOfs2NGg-zPCeSCSp7tkkQBZNLDzv
       - icon: mastodon

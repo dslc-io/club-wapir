@@ -119,7 +119,7 @@ demo_json <- jsonlite::fromJSON(
 ::: fragment
 ```{r}
 #| label: schemas-read_demo_json-url
-url <- "https://dslc.github.io/club-wapir/slides/schemas/demo_json.json"
+url <- "https://dslc-io.github.io/club-wapir/slides/schemas/demo_json.json"
 demo_json <- jsonlite::fromJSON(url)
 ```
 :::
