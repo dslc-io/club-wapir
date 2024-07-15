@@ -14,7 +14,7 @@ engine: knitr
 -   🧑‍🏫 Jon leads a *discussion* of a chapter
     -   🙋‍♀️ **IMPORTANT:** You ask questions!
     -   ️✅ Goal: Revise/finalize learning objectives
-    -   📺 Recordings on [DSLC YouTube](https://dslc.video)
+    -   📺 Recordings on [DSLC Videos](https://dslc.video)
 -   🔄️ Jon revises slides
 -   ❓Jon writes "test yourself" questions
     -   🧵 Discuss in channel?

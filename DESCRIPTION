@@ -5,8 +5,8 @@ Version: 0.0.1
 Authors@R: 
     person("Data Science Learning Community", , , "rfordatasci@gmail.com", role = c("aut", "cre", "cph"))
 Description: This is only here for GHA dependencies.
-URL: https://dslc.github.io/club-wapir,
-    https://github.com/dslc/club-wapir
+URL: https://dslc-io.github.io/club-wapir,
+    https://github.com/dslc-io/club-wapir
 Depends:
     R (>= 3.1.0)
 Imports: 
