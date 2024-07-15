@@ -4,7 +4,7 @@ date: now
 date-format: "YYYY-MM-DD HH:mm"
 ---
 
-This is a companion for the book [_Web APIs with R_](https://wapir.io/) by Jon Harmon (in progress, aiming for publication in 2024).
+This is a companion for the book [_Web APIs with R_](https://wapir.io/) by Jon Harmon (in progress, aiming for publication in 2025).
 
 Each chapter title to the left is a link to a slide deck.
 

@@ -26,7 +26,7 @@ To present, follow these instructions:
 Do these steps once:
 
 1. [Setup Git and GitHub to work with RStudio](https://github.com/r4ds/bookclub-setup) (click through for detailed, step-by-step instructions; I recommend checking this out even if you're pretty sure you're all set).
-2. `usethis::create_from_github("r4ds/bookclub-wapir")` (cleanly creates your own copy of this repository).
+2. `usethis::create_from_github("dslc/club-wapir")` (cleanly creates your own copy of this repository).
 
 Do these steps each time you present another chapter:
 
@@ -47,4 +47,4 @@ When your PR is checked into the main branch, the bookdown site will rebuild, ad
 
 ## Code of Conduct
 
-Please note that the bookclub-wapir project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+Please note that the club-wapir project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
