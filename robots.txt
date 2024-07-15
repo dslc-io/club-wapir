@@ -1,1 +1,1 @@
-Sitemap: https://r4ds.github.io/bookclub-wapir/sitemap.xml
+Sitemap: https://dslc-io.github.io/club-wapir/sitemap.xml

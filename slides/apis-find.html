@@ -8,9 +8,9 @@
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.555">
+  <meta name="generator" content="quarto-1.5.54">
 
-  <title>Web APIs with R Book Club - Find APIs</title>
+  <title>Web APIs with R Book Club – Find APIs</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -41,7 +41,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -500,7 +500,7 @@
 <span id="cb2-7"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Package, Title)</span>
 <span id="cb2-8"><a></a>api_pkgs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 891 × 2
+<pre><code>#&gt; # A tibble: 897 × 2
 #&gt;    Package           Title                                                      
 #&gt;    &lt;chr&gt;             &lt;chr&gt;                                                      
 #&gt;  1 academictwitteR   "Access the Twitter Academic Research Product Track V2 API…
@@ -513,7 +513,7 @@
 #&gt;  8 adobeanalyticsr   "R Client for 'Adobe Analytics' API 2.0"                   
 #&gt;  9 adsDataHubR       "Google Ads Data Hub API Client"                           
 #&gt; 10 adwordsR          "Access the 'Google Adwords' API"                          
-#&gt; # ℹ 881 more rows</code></pre>
+#&gt; # ℹ 887 more rows</code></pre>
 </div>
 </div>
 <aside class="notes">
@@ -617,7 +617,7 @@
 <span id="cb6-8"><a></a>  ) <span class="sc">|&gt;</span> </span>
 <span id="cb6-9"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Package, Title)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 1,385 × 2
+<pre><code>#&gt; # A tibble: 1,419 × 2
 #&gt;    Package         Title                                                        
 #&gt;    &lt;chr&gt;           &lt;chr&gt;                                                        
 #&gt;  1 hoopR           "Access Men's Basketball Play by Play Data"                  
@@ -627,10 +627,10 @@
 #&gt;  5 googleLanguageR "Call Google's 'Natural Language' API, 'Cloud Translation' A…
 #&gt;  6 RobinHood       "Interface for the RobinHood.com No Commission Investing Pla…
 #&gt;  7 hereR           "'sf'-Based Interface to the 'HERE' REST APIs"               
-#&gt;  8 oaii            "'OpenAI' API R Interface"                                   
-#&gt;  9 nhlapi          "A Minimum-Dependency 'R' Interface to the 'NHL' API"        
-#&gt; 10 salesforcer     "An Implementation of 'Salesforce' APIs Using Tidy Principle…
-#&gt; # ℹ 1,375 more rows</code></pre>
+#&gt;  8 nhlapi          "A Minimum-Dependency 'R' Interface to the 'NHL' API"        
+#&gt;  9 salesforcer     "An Implementation of 'Salesforce' APIs Using Tidy Principle…
+#&gt; 10 oaii            "'OpenAI' API R Interface"                                   
+#&gt; # ℹ 1,409 more rows</code></pre>
 </div>
 </div>
 </section></section>
@@ -1000,18 +1000,7 @@
         }
         return false;
       }
-      const clipboard = new window.ClipboardJS('.code-copy-button', {
-        text: function(trigger) {
-          const codeEl = trigger.previousElementSibling.cloneNode(true);
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
-            }
-          }
-          return codeEl.innerText;
-        }
-      });
-      clipboard.on('success', function(e) {
+      const onCopySuccess = function(e) {
         // button target
         const button = e.trigger;
         // don't keep focus
@@ -1043,15 +1032,37 @@
         }, 1000);
         // clear code selection
         e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
       });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
         var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
         var mailtoRegex = new RegExp(/^mailto:/);
-          var filterRegex = new RegExp("https:\/\/r4ds\.github\.io\/bookclub-wapir\/");
+          var filterRegex = new RegExp("https:\/\/dslc-io\.github\.io\/club-wapir\/");
         var isInternal = (href) => {
             return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
         }
         // Inspect non-navigation links and adorn them if external
-     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
         for (var i=0; i<links.length; i++) {
           const link = links[i];
           if (!isInternal(link.href)) {
