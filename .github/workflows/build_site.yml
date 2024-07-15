@@ -9,7 +9,7 @@ name: Render and deploy site
 
 jobs:
   render:
-    if: startsWith(github.repository, 'r4ds/')
+    if: startsWith(github.repository, 'dslc/')
     runs-on: ubuntu-latest
     permissions:
       contents: write

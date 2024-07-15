@@ -26,7 +26,7 @@ To present, follow these instructions:
 Do these steps once:
 
 1. [Setup Git and GitHub to work with RStudio](https://github.com/r4ds/bookclub-setup) (click through for detailed, step-by-step instructions; I recommend checking this out even if you're pretty sure you're all set).
-2. `usethis::create_from_github("r4ds/bookclub-wapir")` (cleanly creates your own copy of this repository).
+2. `usethis::create_from_github("dslc/bookclub-wapir")` (cleanly creates your own copy of this repository).
 
 Do these steps each time you present another chapter:
 
