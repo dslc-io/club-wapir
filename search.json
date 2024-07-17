@@ -120,11 +120,11 @@
     ]
   },
   {
-    "objectID": "slides/apis-start.html#browsing-apis.guru",
-    "href": "slides/apis-start.html#browsing-apis.guru",
+    "objectID": "slides/apis-start.html#api-directories",
+    "href": "slides/apis-start.html#api-directories",
     "title": "Get started with APIs",
-    "section": "Browsing APIs.guru",
-    "text": "Browsing APIs.guru\n(launch APIs.guru to explore)\n\nWarning: No API database is complete! Just because it isn’t here doesn’t mean it doesn’t exist!\nGood if you know what you’re looking for\nLess good for exploration\nBut we can grab the data directly!",
+    "section": "API Directories",
+    "text": "API Directories\n\nAPIs.guru)\npublicapis.dev)\n\npublicapis.dev GitHub\n\n\n\n\nWarning: No API database is complete! Just because it isn’t here doesn’t mean it doesn’t exist!\nGood if you know what you’re looking for\nLess good for exploration\nBut we can grab the data from APIS.guru directly!",
     "crumbs": [
       "Get started",
       "Get started with APIs"
@@ -135,7 +135,7 @@
     "href": "slides/apis-start.html#the-apis.guru-api-list",
     "title": "Get started with APIs",
     "section": "The APIs.guru API List",
-    "text": "The APIs.guru API List\n\n(list.json result)\n\n\n\nJSON = JavaScript Object Notation\nBy far most common format for API data\nI’m using JSONVue browser extension\nJSON: Great for nested data\nWe aren’t going to dig into the format because we won’t use it directly",
+    "text": "The APIs.guru API List\n\n(list.json result)\n\n\n\nJSON = JavaScript Object Notation\nBy far most common format for API data\nI’m using JSONVue browser extension\nJSON: Great for nested data\nWe aren’t going to dig into the format yet because we won’t use it directly",
     "crumbs": [
       "Get started",
       "Get started with APIs"
@@ -146,7 +146,7 @@
     "href": "slides/apis-start.html#fetch-all-apis.guru-apis",
     "title": "Get started with APIs",
     "section": "Fetch all APIs.guru APIs",
-    "text": "Fetch all APIs.guru APIs\n\n\nall_apis &lt;- jsonlite::fromJSON(\"https://api.apis.guru/v2/list.json\")\n\n\n\n\nlength(all_apis)\n\n#&gt; [1] 2529\n\n\n\n\n\nhead(names(all_apis))\n\n#&gt; [1] \"1forge.com\"                    \"1password.com:events\"         \n#&gt; [3] \"1password.local:connect\"       \"6-dot-authentiqio.appspot.com\"\n#&gt; [5] \"ably.io:platform\"              \"ably.net:control\"\n\n\n\n\n\npurrr::pluck_depth(all_apis)\n\n#&gt; [1] 10\n\n\n\n\n\nstr(head(all_apis, 2), max.level = 2)\n\n#&gt; List of 2\n#&gt;  $ 1forge.com          :List of 3\n#&gt;   ..$ added    : chr \"2017-05-30T08:34:14.000Z\"\n#&gt;   ..$ preferred: chr \"0.0.1\"\n#&gt;   ..$ versions :List of 1\n#&gt;  $ 1password.com:events:List of 3\n#&gt;   ..$ added    : chr \"2021-07-19T10:17:09.188Z\"\n#&gt;   ..$ preferred: chr \"1.0.0\"\n#&gt;   ..$ versions :List of 1\n\n\n\n\n\njsonlite = one of several packages for parsing JSON\n\nWe’ll stick with it because it works & is used by higher-level packages\nUsed in {shiny}, {httr}, {httr2}, dozens of other packages\n\nfromJSON does some automatic guessing, we’ll come back to this in a later chapter\n\nAlternatives: read_json reads file, parse_json reads string; don’t guess by default\n\nThis result is a huge, nested list\npurrr::pluck_depth() tells you how nested a list is\nhard to see this. Let’s rectangle it!",
+    "text": "Fetch all APIs.guru APIs\n\n\nall_apis &lt;- jsonlite::fromJSON(\"https://api.apis.guru/v2/list.json\")\n\n\n\n\nlength(all_apis)\n\n#&gt; [1] 2529\n\n\n\n\n\nhead(names(all_apis))\n\n#&gt; [1] \"1forge.com\"                    \"1password.com:events\"         \n#&gt; [3] \"1password.local:connect\"       \"6-dot-authentiqio.appspot.com\"\n#&gt; [5] \"ably.io:platform\"              \"ably.net:control\"\n\n\n\n\n\npurrr::pluck_depth(all_apis)\n\n#&gt; [1] 10\n\n\n\n\n\nstr(head(all_apis, 2), max.level = 2)\n\n#&gt; List of 2\n#&gt;  $ 1forge.com          :List of 3\n#&gt;   ..$ added    : chr \"2017-05-30T08:34:14.000Z\"\n#&gt;   ..$ preferred: chr \"0.0.1\"\n#&gt;   ..$ versions :List of 1\n#&gt;  $ 1password.com:events:List of 3\n#&gt;   ..$ added    : chr \"2021-07-19T10:17:09.188Z\"\n#&gt;   ..$ preferred: chr \"1.0.0\"\n#&gt;   ..$ versions :List of 1\n\n\n\n\n\njsonlite = one of several packages for parsing JSON\n\nWe’ll stick with it because it works & is used by higher-level packages\nUsed in {shiny}, {httr}, {httr2}, dozens of other packages\n\nfromJSON does some automatic guessing, we’ll come back to this in a later chapter\n\nAlternatives: read_json() reads file, parse_json() reads string; don’t guess by default\n\nThis result is a huge, nested list\npurrr::pluck_depth() tells you how nested a list is\nhard to see this. Let’s rectangle it!",
     "crumbs": [
       "Get started",
       "Get started with APIs"
@@ -608,7 +608,7 @@
     "href": "slides/apis-find.html#searching-cran-packages",
     "title": "Find APIs",
     "section": "Searching CRAN packages",
-    "text": "Searching CRAN packages\n\napi_pkgs &lt;- tools::CRAN_package_db() |&gt; \n  dplyr::as_tibble() |&gt; \n  dplyr::filter(\n    stringr::str_detect(tolower(Description), \"\\\\bapi\\\\b\") |\n      stringr::str_detect(tolower(Title), \"\\\\bapi\\\\b\")\n  ) |&gt; \n  dplyr::select(Package, Title)\napi_pkgs\n\n#&gt; # A tibble: 897 × 2\n#&gt;    Package           Title                                                      \n#&gt;    &lt;chr&gt;             &lt;chr&gt;                                                      \n#&gt;  1 academictwitteR   \"Access the Twitter Academic Research Product Track V2 API…\n#&gt;  2 ACEsearch         \"'ACE' Search Engine API\"                                  \n#&gt;  3 acled.api         \"Automated Retrieval of ACLED Conflict Event Data\"         \n#&gt;  4 adbcdrivermanager \"'Arrow' Database Connectivity ('ADBC') Driver Manager\"    \n#&gt;  5 adbcpostgresql    \"'Arrow' Database Connectivity ('ADBC') 'PostgreSQL' Drive…\n#&gt;  6 adbcsqlite        \"'Arrow' Database Connectivity ('ADBC') 'SQLite' Driver\"   \n#&gt;  7 adformR           \"Get Adform Ads Data via the 'Windsor.ai' API\"             \n#&gt;  8 adobeanalyticsr   \"R Client for 'Adobe Analytics' API 2.0\"                   \n#&gt;  9 adsDataHubR       \"Google Ads Data Hub API Client\"                           \n#&gt; 10 adwordsR          \"Access the 'Google Adwords' API\"                          \n#&gt; # ℹ 887 more rows\n\n\n\n\nCRAN_package_db() returns 69 columns of info (everything that can be in the DESCRIPTION file)\nTitle = short description, generally sentence case.\nDescription = paragraph or so about the package\nCould also check Author and/or Authors@R for credit to API owner.",
+    "text": "Searching CRAN packages\n\napi_pkgs &lt;- tools::CRAN_package_db() |&gt; \n  dplyr::as_tibble() |&gt; \n  dplyr::filter(\n    stringr::str_detect(tolower(Description), \"\\\\bapi\\\\b\") |\n      stringr::str_detect(tolower(Title), \"\\\\bapi\\\\b\")\n  ) |&gt; \n  dplyr::select(Package, Title)\napi_pkgs\n\n#&gt; # A tibble: 899 × 2\n#&gt;    Package           Title                                                      \n#&gt;    &lt;chr&gt;             &lt;chr&gt;                                                      \n#&gt;  1 academictwitteR   \"Access the Twitter Academic Research Product Track V2 API…\n#&gt;  2 ACEsearch         \"'ACE' Search Engine API\"                                  \n#&gt;  3 acled.api         \"Automated Retrieval of ACLED Conflict Event Data\"         \n#&gt;  4 adbcdrivermanager \"'Arrow' Database Connectivity ('ADBC') Driver Manager\"    \n#&gt;  5 adbcpostgresql    \"'Arrow' Database Connectivity ('ADBC') 'PostgreSQL' Drive…\n#&gt;  6 adbcsqlite        \"'Arrow' Database Connectivity ('ADBC') 'SQLite' Driver\"   \n#&gt;  7 adformR           \"Get Adform Ads Data via the 'Windsor.ai' API\"             \n#&gt;  8 adobeanalyticsr   \"R Client for 'Adobe Analytics' API 2.0\"                   \n#&gt;  9 adsDataHubR       \"Google Ads Data Hub API Client\"                           \n#&gt; 10 adwordsR          \"Access the 'Google Adwords' API\"                          \n#&gt; # ℹ 889 more rows\n\n\n\n\nCRAN_package_db() returns 69 columns of info (everything that can be in the DESCRIPTION file)\nTitle = short description, generally sentence case.\nDescription = paragraph or so about the package\nCould also check Author and/or Authors@R for credit to API owner.",
     "crumbs": [
       "Do more with APIs",
       "Find APIs"
@@ -1340,7 +1340,7 @@
     "href": "slides/intro.html#prerequisites",
     "title": "Introduction",
     "section": "Prerequisites",
-    "text": "Prerequisites\n\nVery few hard prerequisites\n\nWill point to resources when helpful\n\nI assume familiarity with R\n\nR for Data Science\n\nHelpful:\n\nAdvanced R to do more complicated things with retrieved data\nR Packages for deeper dive into 📦\n\n\n\n\nHow many have read R4DS?\nHow many have read Advanced R?\nHow many have read R Packages?\nHow many have written a function?\nHow many have written a package?\nHow many have published a package on CRAN?\nAccessed an API from R with httr?\nAccessed an API from R with httr2?\nAccessed an API from R some other way?\nDiscuss level I can assume.",
+    "text": "Prerequisites\n\nFamiliarity with R\n\nR for Data Science\n\nVery few hard prerequisites\n\nWill point to resources when helpful\n\nHelpful:\n\nAdvanced R to do more complicated things with retrieved data\n\n\n\n\nHow many have read R4DS?\nHow many have read Advanced R?\nHow many have written a function?\nAccessed an API from R with httr?\nAccessed an API from R with httr2?\nAccessed an API from R some other way?\nDiscuss level I can assume.",
     "crumbs": [
       "Introduction"
     ]
@@ -1350,19 +1350,9 @@
     "href": "slides/intro.html#how-are-chapters-structured",
     "title": "Introduction",
     "section": "How are chapters structured?",
-    "text": "How are chapters structured?\n\nLearning Objectives ≈ skills\n\n“After you read this chapter, you will be able to…”\nThere will be a separate index of these\n\nTest-Yourself Questions to check understanding\nCheck online version for API updates\n(TODO: Anything to note about code vs text?)\n(TODO: Probably an over-arching case study of an election data Shiny app?)\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
+    "text": "How are chapters structured?\n\nLearning Objectives ≈ skills\n\n“After you read this chapter, you will be able to…”\n\nTest-Yourself Questions to check understanding\nCheck online version for updates\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
       "Introduction"
-    ]
-  },
-  {
-    "objectID": "slides/club-intro.html#todo",
-    "href": "slides/club-intro.html#todo",
-    "title": "Club Meetings",
-    "section": "TODO",
-    "text": "TODO\n\nWhen a cohort 2 is about to begin, update the “Goal” of the club (and probably the process).",
-    "crumbs": [
-      "Club Meetings"
     ]
   },
   {
@@ -1370,7 +1360,7 @@
     "href": "slides/club-intro.html#process",
     "title": "Club Meetings",
     "section": "️✅ Process",
-    "text": "️✅ Process\nMeetings = weekly\n\n🧑‍🏫 Jon leads a discussion of a chapter\n\n🙋‍♀️ IMPORTANT: You ask questions!\n️✅ Goal: Revise/finalize learning objectives\n📺 Recordings on DSLC Videos\n\n🔄️ Jon revises slides\n❓Jon writes “test yourself” questions\n\n🧵 Discuss in channel?\n\n(revisions, maybe future cohorts)\n📝 Jon writes chapter\n\n\n\nTalked about this writing process in project club, dslc.video\nMeet every week… unless I need a break to catch up.\nDiscussion even more important than in a normal club\nWould formal survey of some sort help?\nNot 100% certain about question structure yet (whether “homeworky” or “think about it”).\nHoping to write as we go, but definitely won’t keep up.\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
+    "text": "️✅ Process\nMeetings = weekly\n\n🧑‍🏫 Jon leads a discussion of a chapter\n\n🙋‍♀️ IMPORTANT: You ask questions!\n️✅ Goal:\n\nCohort 1: Revise/finalize learning objectives\nCohort 2: Do slides get you to the LOs?\nCohort 3+: Read the actual book\n\n📺 Recordings on DSLC Videos\n\n🔄️ Jon revises slides & “test yourself” questions\n(revisions, maybe future cohorts)\n📝 Jon writes chapter\n\n\n\nMeet every week… unless I need a break to catch up.\nDiscussion even more important than in a normal club\nWould formal survey of some sort help?\nHoping to write as we go, but definitely won’t keep up.\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
       "Club Meetings"
     ]

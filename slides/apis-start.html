@@ -416,7 +416,7 @@
 <li>Parse nested lists with the {tidyverse}.</li>
 </ul>
 </div>
-<div class="cell">
+<div class="cell" data-warn="false">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb1-2"><a></a><span class="fu">library</span>(jsonlite)</span>
 <span id="cb1-3"><a></a><span class="fu">library</span>(purrr)</span>
@@ -425,7 +425,6 @@
 </div>
 <aside class="notes">
 <ul>
-<li>Pretend this is our second meeting. Chapter 1 talked about what APIs are, but we haven’t done httr2 yet.</li>
 <li>Has anybody used:
 <ul>
 <li>nested lists (unnest)</li>
@@ -471,15 +470,33 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="browsing-apis.guru" class="slide level2">
-<h2>Browsing APIs.guru</h2>
-<p>(<a href="https://apis.guru/">launch APIs.guru to explore</a>)</p>
+<section id="api-directories" class="slide level2">
+<h2>API Directories</h2>
 <ul>
-<li class="fragment">Warning: No API database is complete! Just because it isn’t here doesn’t mean it doesn’t exist!</li>
-<li class="fragment">Good if you know what you’re looking for</li>
-<li class="fragment">Less good for exploration</li>
-<li class="fragment">But we can grab the data directly!</li>
+<li class="fragment"><a href="https://apis.guru/">APIs.guru</a>)</li>
+<li class="fragment"><a href="https://publicapis.dev/">publicapis.dev</a>)
+<ul>
+<li class="fragment"><a href="https://github.com/marcelscruz/public-apis">publicapis.dev GitHub</a></li>
+</ul></li>
 </ul>
+<aside class="notes">
+<ul>
+<li>Warning: No API database is complete! Just because it isn’t here doesn’t mean it doesn’t exist!</li>
+<li>Good if you know what you’re looking for</li>
+<li>Less good for exploration</li>
+<li>But we can grab the data from APIS.guru directly!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="the-apis.guru-api-list" class="slide level2">
 <h2>The APIs.guru API List</h2>
@@ -492,7 +509,7 @@
 <li>By far most common format for API data</li>
 <li>I’m using <a href="https://chromewebstore.google.com/detail/jsonvue/chklaanhfefbnpoihckbnefhakgolnmc?pli=1">JSONVue browser extension</a></li>
 <li>JSON: Great for nested data</li>
-<li>We aren’t going to dig into the format because we won’t use it directly</li>
+<li>We aren’t going to dig into the format yet because we won’t use it directly</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -564,10 +581,10 @@
 </ul></li>
 <li>fromJSON does some automatic guessing, we’ll come back to this in a later chapter
 <ul>
-<li>Alternatives: read_json reads file, parse_json reads string; don’t guess by default</li>
+<li>Alternatives: <code>read_json()</code> reads file, <code>parse_json()</code> reads string; don’t guess by default</li>
 </ul></li>
 <li>This result is a huge, nested list</li>
-<li>purrr::pluck_depth() tells you how nested a list is</li>
+<li><code>purrr::pluck_depth()</code> tells you how nested a list is</li>
 <li>hard to see this. Let’s rectangle it!</li>
 </ul>
 <style type="text/css">
