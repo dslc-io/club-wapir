@@ -126,21 +126,17 @@ engine: knitr
 
 ## Prerequisites
 
+-   Familiarity with R
+    -   [R for Data Science](https://r4ds.hadley.nz/)
 -   Very few hard prerequisites
     -   Will point to resources when helpful
--   I assume familiarity with R
-    -   [R for Data Science](https://r4ds.hadley.nz/)
 -   Helpful:
     -   [Advanced R](https://adv-r.hadley.nz/) to do more complicated things with retrieved data
-    -   [R Packages](https://r-pkgs.org/) for deeper dive into 📦
 
 ::: notes
 -   How many have read R4DS?
 -   How many have read Advanced R?
--   How many have read R Packages?
 -   How many have written a function?
--   How many have written a package?
--   How many have published a package on CRAN?
 -   Accessed an API from R with httr?
 -   Accessed an API from R with httr2?
 -   Accessed an API from R some other way?
@@ -151,8 +147,5 @@ engine: knitr
 
 -   Learning Objectives ≈ skills
     -   "After you read this chapter, you will be able to..."
-    -   There will be a separate index of these
 -   Test-Yourself Questions to check understanding
--   Check online version for API updates
--   (TODO: Anything to note about code vs text?)
--   (TODO: Probably an over-arching case study of an election data Shiny app?)
+-   Check online version for updates
