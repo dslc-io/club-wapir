@@ -20,6 +20,8 @@ title: Get started with APIs
 ```{r}
 #| label: apis-start-packages-used
 #| eval: true
+#| warn: false
+#| message: false
 library(dplyr)
 library(jsonlite)
 library(purrr)
@@ -28,7 +30,6 @@ library(tidyr)
 ```
 
 ::: notes
--   Pretend this is our second meeting. Chapter 1 talked about what APIs are, but we haven't done httr2 yet.
 -   Has anybody used:
     -   nested lists (unnest)
     -   tibble::enframe()
@@ -46,14 +47,18 @@ library(tidyr)
 -   But principles will still hold!
 :::
 
-## Browsing APIs.guru
+## API Directories
 
-([launch APIs.guru to explore](https://apis.guru/))
+-   [APIs.guru](https://apis.guru/))
+-   [publicapis.dev](https://publicapis.dev/))
+    -   [publicapis.dev GitHub](https://github.com/marcelscruz/public-apis)
 
+::: notes
 -   Warning: No API database is complete! Just because it isn't here doesn't mean it doesn't exist!
 -   Good if you know what you're looking for
 -   Less good for exploration
--   But we can grab the data directly!
+-   But we can grab the data from APIS.guru directly!
+:::
 
 ## The APIs.guru API List
 
@@ -64,7 +69,7 @@ library(tidyr)
 -   By far most common format for API data
 -   I'm using [JSONVue browser extension](https://chromewebstore.google.com/detail/jsonvue/chklaanhfefbnpoihckbnefhakgolnmc?pli=1) 
 -   JSON: Great for nested data
--   We aren't going to dig into the format because we won't use it directly
+-   We aren't going to dig into the format yet because we won't use it directly
 :::
 
 ## Fetch all APIs.guru APIs
@@ -126,9 +131,9 @@ str(head(all_apis, 2), max.level = 2)
     -   We'll stick with it because it works & is used by higher-level packages
     -   Used in {shiny}, {httr}, {httr2}, dozens of other packages
 -   fromJSON does some automatic guessing, we'll come back to this in a later chapter
-    -   Alternatives: read_json reads file, parse_json reads string; don't guess by default 
+    -   Alternatives: `read_json()` reads file, `parse_json()` reads string; don't guess by default 
 -   This result is a huge, nested list
--   purrr::pluck_depth() tells you how nested a list is
+-   `purrr::pluck_depth()` tells you how nested a list is
 -   hard to see this. Let's rectangle it!
 :::
 
