@@ -97,6 +97,7 @@ We're going to `req_retry()` + `req_cache()` a lot, so:
 
 ```{r}
 #| label: httr2-pagination-req_helpers
+#| eval: true
 req_friendly <- function(req, cache_name, max_tries = 3) {
   req |> 
     req_retry(max_tries = max_tries) |> # Tries *per page*
