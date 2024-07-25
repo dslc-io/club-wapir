@@ -27,6 +27,7 @@ Imports:
     pdftools,
     polite,
     purrr,
+    rappdirs,
     rmarkdown,
     rsvg,
     rvest,
