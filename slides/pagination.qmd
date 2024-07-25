@@ -3,11 +3,6 @@ engine: knitr
 title: Get a lot of data from APIs
 ---
 
-# TODO
-
--   TODO: Add argument names in calls, for clarity
--   TODO: Introduce/use `httr2::req_cache()`
-
 # ️✅ Learning objectives
 
 ::: nonincremental
@@ -76,12 +71,39 @@ Unfortunately, no standard.
 -   `httr2::req_retry()`
     -   ***Must*** set `max_tries` or `max_seconds`
     -   Other options usually ok as-is
--   More in "Process other response types"
 
 ::: notes
 -   If neither `max_tries` nor `max_seconds` set, silently ignored
 -   Other things: `req_throttle()` limits calls/second, `req_timeout()` to set a time limit for single big calls
 :::
+
+## Aside: Caching responses
+
+-   `httr2::req_cache()` = save responses locally if server says its ok
+-   You deal with `path`
+-   Automatically checks standard caching headers
+-   Very helpful if data doesn't change
+
+::: notes
+-   I've under-utilized this function!
+-   We'll use a package called {rappdirs}, which deals with cross-platforms user directories
+-   "Standard caching headers" = "Cache-Control", "Expires", "max-age" + "Date", "Etag", "Last-Modified"
+-   Technically often still communicates with server, but very small response
+:::
+
+## Aside: Our helper function
+
+We're going to `req_retry()` + `req_cache()` a lot, so:
+
+```{r}
+#| label: httr2-pagination-req_helpers
+#| eval: true
+req_friendly <- function(req, cache_name, max_tries = 3) {
+  req |> 
+    req_retry(max_tries = max_tries) |> # Tries *per page*
+    req_cache(path = rappdirs::user_cache_dir(cache_name))
+}
+```
 
 ## req_perform_iterative()
 
@@ -92,7 +114,6 @@ Unfortunately, no standard.
 ```{r}
 #| label: httr2-pagination-req-perform-iterative
 normal_request |> 
-  req_retry(max_tries = 3) |> # Tries *per page*
   req_perform_iterative(
     next_req = function_to_choose_next_req,
     max_reqs = 20 # Maximum separate page calls
@@ -131,6 +152,7 @@ normal_request |>
 #| label: httr2-pagination-fec-request
 candidates_request <- 
   request("https://api.open.fec.gov/v1/candidates") |> 
+  req_friendly(cache_name = "fecapi") |> 
   req_url_query(api_key = "DEMO_KEY", election_year = 2020, office = "P") |> 
   req_url_query(has_raised_funds = TRUE)
 ```
@@ -156,7 +178,6 @@ candidates_single$pagination$count
 #| label: httr2-pagination-fec-multi
 candidates_multi <- 
   candidates_request |> 
-  req_retry(max_tries = 3) |> 
   req_perform_iterative(
     next_req = iterate_with_offset(
       "page",
@@ -206,6 +227,7 @@ saveRDS(
 #| label: httr2-pagination-crossref-request
 crossref_request <- 
   request("https://api.crossref.org/works") |> 
+  req_friendly(cache_name = "crossrefapi") |> 
   req_url_query(query = "apis")
 ```
 
@@ -336,6 +358,7 @@ length(crossref_multi)
 #| label: httr2-pagination-mtg-request
 mtg_cards_request <- 
   request("http://api.magicthegathering.io/v1") |> 
+  req_friendly(cache_name = "mtgapi") |> 
   req_url_path_append("cards") |> 
   req_url_query(name = "bee", pageSize = 20)
 ```
@@ -403,7 +426,8 @@ saveRDS(
 ```{r}
 #| label: httr2-pagination-dnd-request
 dnd_request <- 
-  request("https://api.open5e.com/monsters/?limit=100") 
+  request("https://api.open5e.com/monsters/?limit=100") |> 
+  req_friendly(cache_name = "dndapi")
 ```
 
 <br/>
@@ -469,11 +493,74 @@ saveRDS(
 -   Be sure to keep all the non-URL bits of the req!
 :::
 
+# What else can I do with lists of requests?
+
+## Other multi-request situations
+
+-   Looking up multiple, related things
+-   Enriching a dataset
+-   Manual pagination
+
+::: notes
+-   Enriching = adding more information, like converting a place name to latitude and longitude
+-   If you know how many pages you'll get, you might want to handle things more manually.
+    -   Particularly because this will open up parallel requests, which we'll see shortly.
+:::
+
+## Create a list of requests
+
+```{r}
+#| label: httr2-pagination-reqs_list
+#| eval: true
+free_dictionary_request <- 
+  request("https://api.dictionaryapi.dev/api/v2/entries/en/") |> 
+  req_friendly(cache_name = "free_dictionary")
+words <- c("hello", "world", "goodbye")
+free_dictionary_reqs <- 
+  purrr::map(words, \(word) req_url_path_append(free_dictionary_request, word))
+free_dictionary_reqs |> purrr::map_chr("url")
+```
+
+## Perform requests sequentially
+
+```{r}
+#| label: httr2-pagination-req_perform_sequential
+free_dictionary_resps <- req_perform_sequential(free_dictionary_reqs)
+length(free_dictionary_resps)
+#> [1] 3
+```
+
+::: notes
+-   We'll see how to parse this list in the next section (like everything else).
+:::
+
+## Perform requests in parallel
+
+`httr2::req_perform_parallel()` performs multiple requests simultaneously
+
+-   Pros: (much?) faster
+-   Cons:
+    -   Might over-tax server
+    -   Silently ignores `req_retry()` (and some other things)
+    -   Harder to debug
+
+```{r}
+#| label: httr2-pagination-req_perform_parallel
+free_dictionary_resps <- req_perform_parallel(free_dictionary_reqs)
+length(free_dictionary_resps)
+#> [1] 3
+```
+
+::: notes
+-   If not many responses or super fast/efficient API, not faster.
+-   We'll see how to parse this list in the next section (like everything else).
+:::
+
 # How do I parse paginated responses?
 
 ## resps_data()
 
--   `req_perform_iterative()` returns *list* of responses
+-   `req_perform_*()` returns *list* of responses
 -   `resps_data()` takes that list + `resp_data` parsing function and merges
 -   Usually you need more than just something like `resp_body_json`
     -   Grab just the actual results
