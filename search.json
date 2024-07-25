@@ -10,113 +10,311 @@
     ]
   },
   {
-    "objectID": "slides/httr2.html#what-can-we-do-so-far",
-    "href": "slides/httr2.html#what-can-we-do-so-far",
-    "title": "Easily access APIs with {httr2}",
-    "section": "What can we do so far?",
-    "text": "What can we do so far?\n\n\nWe can:\n\nAccess APIs that can be accessed in a web browser\nCopy/paste or manually build URLs\nPass an authentication key as part of a URL\nFetch JSON data with {jsonlite}\nFetch YAML data with {yaml}\n\n\nWe can’t yet:\n\nAccess APIs that can’t be accessed in a web browser\nBuild API requests systematically\nAccess APIs that require authentication\nFetch other types of data (raw text, images, videos, etc)\n\n\n\n\nBrowser: As long as it isn’t using our login information without us realizing it.\nNo browser: There are technically 9 types of requests (HTTP methods), we can do 1 of them so far.\nA lot of APIs use something called “oauth”, can be really confusing\nThe endpoints we’ve hit haven’t had arguments, but almost all do\nWe can get some specific things with download.file, but need to parse each with different packages\n…and other things we don’t yet know that we wish we could do\nWe’ll use httr2 to deal with all of these things",
+    "objectID": "slides/responses.html#json-responses",
+    "href": "slides/responses.html#json-responses",
+    "title": "Process other response types",
+    "section": "JSON responses",
+    "text": "JSON responses\n\napplication/json or */json\nhttr2::resp_body_json() uses jsonlite::fromJSON()\n\n\nthis slide & next might be entirely covered in earlier chapter",
     "crumbs": [
-      "Get started",
-      "Easily access APIs with {httr2}"
+      "Get more data",
+      "Process other response types"
     ]
   },
   {
-    "objectID": "slides/httr2.html#motivating-example-openfec",
-    "href": "slides/httr2.html#motivating-example-openfec",
-    "title": "Easily access APIs with {httr2}",
-    "section": "Motivating Example: OpenFEC",
-    "text": "Motivating Example: OpenFEC\n\nOpenFEC: Federal Election Commission API\nAPI documentation usually describes endpoints\n\nendpoint: URL for specific API function",
+    "objectID": "slides/responses.html#json-data",
+    "href": "slides/responses.html#json-data",
+    "title": "Process other response types",
+    "section": "JSON data",
+    "text": "JSON data\n\n4 scalars (length-1 vectors)\n\nnull ≈ NA\nstring ≈ character(1), always \" (not ')\nnumber ≈ numeric(1), no Inf/-Inf/NaN\nboolean ≈ logical(1), true = TRUE, false = FALSE\n\narray ≈ unnamed list()\n\n[]: [null, \"a\", 1, true] ≈ list(NULL, \"a\", 1, TRUE)\n\nobject ≈ named list()\n\n{}: {\"a\": 1, \"b\": [1, 2]} ≈ list(a = 1, b = list(1, 2))\n\n\n\n\nWe never went into details about what’s legal in the JSON format.\nArrays of the same type are roughly equivalent to vectors, parsers like jsonlite often turn such arrays into vectors.",
     "crumbs": [
-      "Get started",
-      "Easily access APIs with {httr2}"
+      "Get more data",
+      "Process other response types"
     ]
   },
   {
-    "objectID": "slides/httr2.html#presidential-candidates",
-    "href": "slides/httr2.html#presidential-candidates",
-    "title": "Easily access APIs with {httr2}",
-    "section": "2020 Presidential Candidates",
-    "text": "2020 Presidential Candidates\n\nWe’ll focus on the /candidates/ endpoint\nhttps://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_key=DEMO_KEY\n\n\n\nopenfec_response &lt;- jsonlite::read_json(\"https://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_key=DEMO_KEY\")\n\n\n\n\ntibblify(openfec_response$results) |&gt; \n  select(name, party_full, has_raised_funds) |&gt; \n  head()\n\n#&gt; # A tibble: 6 × 3\n#&gt;   name                       party_full       has_raised_funds\n#&gt;   &lt;chr&gt;                      &lt;chr&gt;            &lt;lgl&gt;           \n#&gt; 1 753, JO                    NONE             FALSE           \n#&gt; 2 ABRAMSON, MAX              VETERANS PARTY   FALSE           \n#&gt; 3 ABRAUGH, MATTHEW M. MR.    NON-PARTY        FALSE           \n#&gt; 4 ACKER, BRANDON W           DEMOCRATIC PARTY FALSE           \n#&gt; 5 ACKER, RYAN                NON-PARTY        TRUE            \n#&gt; 6 ACORD, ROBERT BRADFORD LEE DEMOCRATIC PARTY FALSE\n\n\n\n\n\nWhat if we want a different year? Or a different office? Or any of the other 20 or so available parameters?",
+    "objectID": "slides/responses.html#xml-responses",
+    "href": "slides/responses.html#xml-responses",
+    "title": "Process other response types",
+    "section": "XML responses",
+    "text": "XML responses\neXtensible Markup Language\n\napplication/xml, text/xml, or */xml\nhttr2::resp_body_xml() uses xml2::read_xml()",
     "crumbs": [
-      "Get started",
-      "Easily access APIs with {httr2}"
+      "Get more data",
+      "Process other response types"
     ]
   },
   {
-    "objectID": "slides/httr2.html#what-do-httr2-calls-look-like",
-    "href": "slides/httr2.html#what-do-httr2-calls-look-like",
-    "title": "Easily access APIs with {httr2}",
-    "section": "What do {httr2} calls look like?",
-    "text": "What do {httr2} calls look like?\n\nPipe-based API calls\n\n\n\ncandidates &lt;- \n  request(\"https://api.open.fec.gov/v1\") |&gt; \n  req_url_path_append(\"candidates\") |&gt; \n  req_url_query(api_key = \"DEMO_KEY\") |&gt; \n  req_url_query(\n    election_year = 2020,\n    office = \"P\"\n  ) |&gt; \n  req_perform() |&gt; # Chapter 5 (next)\n  resp_body_json() # Chapter 7\n\n\n\n\nwaldo::compare(candidates, openfec_response)\n\n\n\n#&gt; ✔ No differences\n\n\n\n\n\nI use |&gt; base R pipe here. Pronounce it “and then”.\nhttr2 calls usually involve a request, which you perform, and then you parse the response.\nWe’re hitting the free, open api from the Federal Elections Commission.\n(step through)\nHere we build the request piece-wise\n\nWe’ll get into details of the functions in a few slides\n\nThen we perform the request. This actually hits the server.\nThen we parse what we get back with a resp_body function.\nSame result as the thing we got using jsonlite.\n\nBecause resp_body_json uses jsonlite.",
+    "objectID": "slides/responses.html#xml-data",
+    "href": "slides/responses.html#xml-data",
+    "title": "Process other response types",
+    "section": "XML data",
+    "text": "XML data\n\nTags as &lt;tagname attribute=\"a\"&gt;contents&lt;/tagname&gt;\nEverything nestable",
     "crumbs": [
-      "Get started",
-      "Easily access APIs with {httr2}"
+      "Get more data",
+      "Process other response types"
     ]
   },
   {
-    "objectID": "slides/httr2.html#why-httr2",
-    "href": "slides/httr2.html#why-httr2",
-    "title": "Easily access APIs with {httr2}",
-    "section": "Why “httr2”?",
-    "text": "Why “httr2”?\n\nHTTP = HyperText Transfer Protocol\n\n“HyperText” = web content\n“Transfer” = exchange\n“Protocol” = rules\n“rules for exchanging web content”\nHTTP(S) = most of internet communication\n\n\n\n\nYou may have seen http or https at the start of URLs (web addresses)\n“web content” =\n\noriginally text and links (HTML = HyperText Markup Language)\nnow data, images, videos, etc.\n\n“exchange” or “move”\n“S” means “secure”\nIf anyone asks: 1.1 = most, 2.0 = 2-way\n2 = he rewrote it for piping",
+    "objectID": "slides/responses.html#xml-example-raw",
+    "href": "slides/responses.html#xml-example-raw",
+    "title": "Process other response types",
+    "section": "XML example: raw",
+    "text": "XML example: raw\n\nresp_xml &lt;- req_template(request(example_url()), \"/xml\") |&gt;\n  req_perform()\nresp_xml |&gt; resp_body_string() |&gt; cat()\n\n#&gt; &lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;\n#&gt; &lt;root&gt;\n#&gt;    &lt;address&gt;\n#&gt;       &lt;city&gt;New York&lt;/city&gt;\n#&gt;       &lt;postalCode&gt;10021-3100&lt;/postalCode&gt;\n#&gt;       &lt;state&gt;NY&lt;/state&gt;\n#&gt;       &lt;streetAddress&gt;21 2nd Street&lt;/streetAddress&gt;\n#&gt;    &lt;/address&gt;\n#&gt;    &lt;age&gt;27&lt;/age&gt;\n#&gt;    &lt;children /&gt;\n#&gt;    &lt;firstName&gt;John&lt;/firstName&gt;\n#&gt;    &lt;isAlive&gt;true&lt;/isAlive&gt;\n#&gt;    &lt;lastName&gt;Smith&lt;/lastName&gt;\n#&gt;    &lt;phoneNumbers&gt;\n#&gt;       &lt;element&gt;\n#&gt;          &lt;number&gt;212 555-1234&lt;/number&gt;\n#&gt;          &lt;type&gt;home&lt;/type&gt;\n#&gt;       &lt;/element&gt;\n#&gt;       &lt;element&gt;\n#&gt;          &lt;number&gt;646 555-4567&lt;/number&gt;\n#&gt;          &lt;type&gt;office&lt;/type&gt;\n#&gt;       &lt;/element&gt;\n#&gt;    &lt;/phoneNumbers&gt;\n#&gt;    &lt;spouse null=\"true\" /&gt;\n#&gt; &lt;/root&gt;",
     "crumbs": [
-      "Get started",
-      "Easily access APIs with {httr2}"
+      "Get more data",
+      "Process other response types"
     ]
   },
   {
-    "objectID": "slides/httr2.html#how-do-i-use-httr2",
-    "href": "slides/httr2.html#how-do-i-use-httr2",
-    "title": "Easily access APIs with {httr2}",
-    "section": "How do I use {httr2}?",
-    "text": "How do I use {httr2}?\n\nreq_*() functions return httr2_request objects\n\n\n\nreq_fec &lt;- request(\"https://api.open.fec.gov/v1\")\nreq_fec_auth &lt;- req_url_query(req_fec, api_key = \"DEMO_KEY\")\nreq_candidates &lt;- req_url_path_append(req_fec_auth, \"candidates\")\nreq_candidates_president &lt;- req_url_query(req_candidates, office = \"P\")\n\n\n\n\npres_2024 &lt;- req_url_query(req_candidates_president, election_year = 2024) |&gt; \n  req_perform() |&gt; resp_body_json()\n\n\n\n\ncandidates_2022 &lt;- req_url_query(req_candidates, election_year = 2022) |&gt; \n  req_perform() |&gt; resp_body_json()\n\n\n\n\nreq_calendar &lt;- req_url_path_append(req_fec_auth, \"calendar-dates\")\n\n\n\n\nImagine you’re working with an API, like the FEC API\n\nWhat you’ll very often do.\n\nWe’ll go through function specifics in a moment, just soak in the utility of separate objects\nThis is super important, so let’s pause to sink this in\nI’m going to drink some water while you make sure you have that.",
+    "objectID": "slides/responses.html#xml-example-parsed",
+    "href": "slides/responses.html#xml-example-parsed",
+    "title": "Process other response types",
+    "section": "XML example: parsed",
+    "text": "XML example: parsed\n\nextracted_xml &lt;- resp_body_xml(resp_xml)\nclass(extracted_xml)\n\n#&gt; [1] \"xml_document\" \"xml_node\"\n\n# We'll see other ways to parse this in {rvest} chapter.\nxml2::as_list(extracted_xml) |&gt; str(max.level = 2)\n\n#&gt; List of 1\n#&gt;  $ root:List of 8\n#&gt;   ..$ address     :List of 4\n#&gt;   ..$ age         :List of 1\n#&gt;   ..$ children    : list()\n#&gt;   ..$ firstName   :List of 1\n#&gt;   ..$ isAlive     :List of 1\n#&gt;   ..$ lastName    :List of 1\n#&gt;   ..$ phoneNumbers:List of 2\n#&gt;   ..$ spouse      : list()\n#&gt;   .. ..- attr(*, \"null\")= chr \"true\"",
     "crumbs": [
-      "Get started",
-      "Easily access APIs with {httr2}"
+      "Get more data",
+      "Process other response types"
     ]
   },
   {
-    "objectID": "slides/httr2.html#request-req_path_append",
-    "href": "slides/httr2.html#request-req_path_append",
-    "title": "Easily access APIs with {httr2}",
-    "section": "request() & req_path_append()",
-    "text": "request() & req_path_append()\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\")\n\n\nCleaner: “main” request object + specific path\n\nreq_fec &lt;- request(\"https://api.open.fec.gov/v1\")\nreq_candidates &lt;- req_fec |&gt; \n  req_url_path_append(\"candidates\")\n\n\n\n\nreq_candidates$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates\"\n\n\n\n\n\nhttr2 “thinks” in pieces\nYou don’t have to think about the /\nWe have to be careful about the “v1” in our request, though!\n\nMore on next slide.",
+    "objectID": "slides/responses.html#html-responses",
+    "href": "slides/responses.html#html-responses",
+    "title": "Process other response types",
+    "section": "HTML responses",
+    "text": "HTML responses\nHyperText Markup Language\n\ntext/html, rarely application/xhtml+xml\nhttr2::resp_body_html() uses xml2::read_html()\n\nwhich uses xml2::read_xml(..., as_html = TRUE)\n\n\n\n\nHTML came before XML, but XML now includes HTML, so\nHTML is XML with specific, defined tags\nMuch more on this in rvest chapter",
     "crumbs": [
-      "Get started",
-      "Easily access APIs with {httr2}"
+      "Get more data",
+      "Process other response types"
     ]
   },
   {
-    "objectID": "slides/httr2.html#dont-use-req_url_path",
-    "href": "slides/httr2.html#dont-use-req_url_path",
-    "title": "Easily access APIs with {httr2}",
-    "section": "Don’t use req_url_path()!",
-    "text": "Don’t use req_url_path()!\n\n\nreq_path_bad &lt;- req_fec |&gt; \n  req_url_path(\"candidates\")\nreq_path_bad$url\n\n#&gt; [1] \"https://api.open.fec.gov/candidates\"\n\n\n\n\n\nreq_candidates$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates\"\n\n\n\n\n\nYou probably never want req_url_path()\nNotably the help docs don’t show an example for this one",
+    "objectID": "slides/responses.html#images",
+    "href": "slides/responses.html#images",
+    "title": "Process other response types",
+    "section": "Images",
+    "text": "Images\n\n\nresp_body_raw(resp) |&gt; magick::image_read()\n\n\n\n\n# requires {rsvg}\nresp_body_raw(resp) |&gt; magick::image_read_svg()\n\n\n\n\n# requires {pdftools}\nresp_body_raw(resp) |&gt; magick::image_read_pdf()\n\n\n\n\nCan also save directly, but this reads the object directly into R.\nSVG and PDF work best with dedicated packages.\nParsing PDFs could be a book itself.",
     "crumbs": [
-      "Get started",
-      "Easily access APIs with {httr2}"
+      "Get more data",
+      "Process other response types"
     ]
   },
   {
-    "objectID": "slides/httr2.html#req_url_query",
-    "href": "slides/httr2.html#req_url_query",
-    "title": "Easily access APIs with {httr2}",
-    "section": "req_url_query()",
-    "text": "req_url_query()\n\nhttps://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=P\n\n\n\nreq_pres &lt;- req_candidates |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"P\"\n  )\n\n\n\nCan add query parameters piecewise, even before path!\n\n\n\nreq_fec_auth &lt;- req_fec |&gt; \n  req_url_query(api_key = \"DEMO_KEY\")\nreq_candidates_auth &lt;- req_fec_auth |&gt; \n  req_url_path_append(\"candidates\")\nreq_pres2 &lt;- req_candidates_auth |&gt; \n  req_url_query(office = \"P\")\n\n\n\n\nidentical(req_pres$url, req_pres2$url)\n\n#&gt; [1] TRUE\n\n\n\n\n\n“Query” = stuff after “?”\nArguments for the endpoint",
+    "objectID": "slides/responses.html#video",
+    "href": "slides/responses.html#video",
+    "title": "Process other response types",
+    "section": "Video",
+    "text": "Video\nI haven’t found anything yet for working with “raw” audio/video!\n\n\nresp_body_raw(resp) |&gt; writeBin(path)\n\n\n\n\nav::av_video_convert(path, output = \"output.mp4\", verbose = TRUE)\n\n\n\n\nffmpeg_cmd &lt;- glue::glue(\n  \"ffmpeg -v quiet \",\n  \"-i {input_path} \",\n  \"-ss {start_time} -to {end_time} \",\n  \"-c copy {output_path}\"\n)\nsystem(ffmpeg_cmd, ignore.stdout = TRUE)\n\n\n\n\nAs far as I can tell, you always have to save audio/video, and THEN parse it.\nHow much do people want here? Pointers in right direction? Full examples (which might not apply in their use case)?\nHas anybody worked with video? This feels hacky!",
     "crumbs": [
-      "Get started",
-      "Easily access APIs with {httr2}"
+      "Get more data",
+      "Process other response types"
     ]
   },
   {
-    "objectID": "slides/httr2.html#req_url_query.multi",
-    "href": "slides/httr2.html#req_url_query.multi",
-    "title": "Easily access APIs with {httr2}",
-    "section": "req_url_query(.multi)",
-    "text": "req_url_query(.multi)\n\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"))\n\n#&gt; Error in `req_url_query()`:\n#&gt; ! All vector elements of `...` must be length 1.\n#&gt; ℹ Use `.multi` to choose a strategy for handling vectors.\n\n\n\n\n.multi = \"pipe\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"pipe\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H|S\"\n\n\n\n\n.multi = \"comma\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"comma\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H,S\"\n\n\n\n\n.multi = \"explode\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"explode\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H&office=S\"\n\n\n\n\n\nAPIs often can’t handle multiple params with same name\ndefault = “error”\n. in .multi so it doesn’t collide with a parameter named “multi”\n“pipe” or “comma” to list them out in same parameter\n“explode” to separate them as separate copies of that parameter (what this API actually wants)",
+    "objectID": "slides/responses.html#audio",
+    "href": "slides/responses.html#audio",
+    "title": "Process other response types",
+    "section": "Audio",
+    "text": "Audio\nI haven’t found anything yet for working with “raw” audio/video!\n\n\nresp_body_raw(resp) |&gt; writeBin(filename)\n\n\n\n\nav::av_audio_convert(\n  path, output = \"output.mp3\", format = NULL,\n  channels = NULL, sample_rate = NULL,\n  start_time = NULL, total_time = NULL,\n  verbose = TRUE\n)\n\n\n\n\nHow much do people want here? Pointers in right direction? Full examples (which might not apply in their use case)?\nHas anybody worked with audio? This feels hacky!",
     "crumbs": [
-      "Get started",
-      "Easily access APIs with {httr2}"
+      "Get more data",
+      "Process other response types"
+    ]
+  },
+  {
+    "objectID": "slides/responses.html#raw-data",
+    "href": "slides/responses.html#raw-data",
+    "title": "Process other response types",
+    "section": "Raw data",
+    "text": "Raw data\nDanger zone!\n\n\nresp_body_raw(resp) |&gt; writeBin(filename)\n\n\n\n\nAnything else likely has to be saved before any tools will know what to do.\nDon’t save random binary files if you don’t have reason to trust what they are!",
+    "crumbs": [
+      "Get more data",
+      "Process other response types"
+    ]
+  },
+  {
+    "objectID": "slides/responses.html#base64-encoded-json-data",
+    "href": "slides/responses.html#base64-encoded-json-data",
+    "title": "Process other response types",
+    "section": "Base64-encoded JSON data",
+    "text": "Base64-encoded JSON data\n\nBase64 transforms binary data into text\n\n6-bit blocks ➡️ 1 of 64 characters\n\n\n\n\nraw_data &lt;- resp_body_json(resp) |&gt;\n  _$b64_json |&gt; # Or whatever the element is named\n  jsonlite::base64_dec()\n\nmagick::image_read(raw_data) # Etc\n\n\n\n\nOpenAI API can send generated images this way (that’s how I was reminded about it).\n64 = 2^6",
+    "crumbs": [
+      "Get more data",
+      "Process other response types"
+    ]
+  },
+  {
+    "objectID": "slides/responses.html#http-status-codes",
+    "href": "slides/responses.html#http-status-codes",
+    "title": "Process other response types",
+    "section": "HTTP status codes",
+    "text": "HTTP status codes\n\n\n\nRange\nDescription\nNotes\n\n\n\n\n1xx\nInformational\nHandled by {curl}\n\n\n2xx\nSuccessful\nresp_*()\n\n\n3xx\nRedirection\nAuto-followed\n\n\n4xx\nClient error\n“Your fault”\n\n\n5xx\nServer error\n“Server’s fault”\n\n\n\n\n\nAs with everything, codes can be incorrectly implemented\n“Client error” might result from mistake on server side\n“Server error” might mean you sent an expired key",
+    "crumbs": [
+      "Get more data",
+      "Process other response types"
+    ]
+  },
+  {
+    "objectID": "slides/responses.html#handling-errors",
+    "href": "slides/responses.html#handling-errors",
+    "title": "Process other response types",
+    "section": "Handling errors",
+    "text": "Handling errors\nreq_error(req, is_error = NULL, body = NULL)\n\nis_error = function to identify errors\nbody = function to turn error resp into message\n\n\n\n# Never trigger R errors\nreq |&gt; \n  req_error(is_error = \\(resp) FALSE)\n\n\n\n\n# Only trigger R errors for \"Server error\" responses\nreq |&gt; \n  req_error(is_error = \\(resp) resp_status(resp) &gt;= 500)\n\n\n\n\n# Include information from response in error message\nreq |&gt; \n  req_error(\n    body = function(resp) {\n      resp_body_json(resp)$error_msg # Often more complicated than this\n    }\n  )\n\n\n\n\nAdd req_error() before req_perform() (or req_perform_iterative())\nMost common use cases:\n\nDon’t let httr2 handle errors, so you can do something yourself.\nOverride bad status codes from server.\nProvide more details in error message from server.\n\nTODO: Find an API that returns error details!",
+    "crumbs": [
+      "Get more data",
+      "Process other response types"
+    ]
+  },
+  {
+    "objectID": "slides/responses.html#errors-and-pagination",
+    "href": "slides/responses.html#errors-and-pagination",
+    "title": "Process other response types",
+    "section": "Errors and pagination",
+    "text": "Errors and pagination\n\nreq_perform_iterative() has on_error = c(\"stop\", \"return\")\n\nOn R error\n“stop” = “throw an R error if any call throws an R error”\n“return” = “stop iterating, return everything so far”\n\nreq_error(is_error = \\(resp) FALSE) can cause that not to trigger\nMay want to combine these for your use-case",
+    "crumbs": [
+      "Get more data",
+      "Process other response types"
+    ]
+  },
+  {
+    "objectID": "slides/responses.html#more-on-retries",
+    "href": "slides/responses.html#more-on-retries",
+    "title": "Process other response types",
+    "section": "More on retries",
+    "text": "More on retries\n\nhttr2::req_retry(\n  req,\n  max_tries = NULL,\n  max_seconds = NULL,\n  is_transient = NULL,\n  backoff = NULL,\n  after = NULL\n)\n\n\nis_transient = function to decide whether to retry from resp\nbackoff = function to convert tries to wait_seconds\nafter = function to convert resp to wait_seconds\n\n\n\nIn pagination chapter, we just set max_tries here to 3\nThe LinkedIn API throws a transient 404 randomly during some calls, so I set it up to retry on 404.",
+    "crumbs": [
+      "Get more data",
+      "Process other response types"
+    ]
+  },
+  {
+    "objectID": "slides/rvest.html#do-i-need-to-scrape-this-data",
+    "href": "slides/rvest.html#do-i-need-to-scrape-this-data",
+    "title": "Scrape data from web pages",
+    "section": "Do I need to scrape this data?",
+    "text": "Do I need to scrape this data?\n\nLook for an API!\nTry {datapasta} 📦\n\nRStudio Addins\n\nIf it’s one time & over-complicated, consider other copy/paste strategies\nOnly scrape pages you need\n\n\n\nMore on looking for APIs in chapter 9 “Find APIs”\nWe’ll see one place to look for an API on the next slide.\nEven consider manual copy/paste one field at a time if it’s not a TON of data.\nPoint of that last bullet: Don’t hit the server more than you need to",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/rvest.html#can-i-legally-scrape-this-data",
+    "href": "slides/rvest.html#can-i-legally-scrape-this-data",
+    "title": "Scrape data from web pages",
+    "section": "Can I legally scrape this data?",
+    "text": "Can I legally scrape this data?\n\n⚠️ Legal disclaimers (but may be over-protective)\nUSA:\n\nCan’t copyright facts,\nCAN copyright collections of facts in some cases (creative)\nTidyTuesday 2023-08-29: Fair Use\n\nOther places:\n\nSometimes stricter (EU)\nSometimes more lax\n\n✅ Personal use or nonprofit education usually ok\n⚠️ Personally Identifiable Information (PII)\n\n\n\nIf it’s important, consult a lawyer.\nThis is why recipe blogs have stories about the recipes.\nThat TidyTuesday dataset exists because I was writing these notes.\nEU provides more protections for database creators and for user-generated data\nPII: Or even user-generated information in some cases\nUser-generated example: Stack overflow content requires attribution.",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/rvest.html#should-i-scrape-this-data",
+    "href": "slides/rvest.html#should-i-scrape-this-data",
+    "title": "Scrape data from web pages",
+    "section": "Should I scrape this data?",
+    "text": "Should I scrape this data?\nrobots.txt: github, wikipedia\n\nUser-agent: * = everybody\nSearch for name(s) of package(s)\nSearch for specific pages within site\nCheck root of site (/) and your particular subfolder\nThese aren’t (necessarily) legally binding\n{robotstxt} 📦 for parsing robots.txt\n{polite} 📦 wraps and applies {robotstxt}\n\n\n\nCheck comments at the top for general feel (comments have # at start)\nBoth examples point to the API. This is the right way to write a robots.txt!\nrobots.txt might be OVER protective, but watch for notes on how to use it\nDon’t hit a site you like a billion times in fast succession, you could “use up” their monthly bandwidth, for example\nYour actions COULD cost them money, so don’t be a jerk!\nWe’ll see the {polite} package shortly, which wraps {robotstxt}",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/rvest.html#motivating-example-cheese",
+    "href": "slides/rvest.html#motivating-example-cheese",
+    "title": "Scrape data from web pages",
+    "section": "Motivating example: Cheese",
+    "text": "Motivating example: Cheese\n\nCastelmagno cheese from cheese.com\n\nFor the book, I’ll host some data so we can be sure it won’t change, but I’m using this example because it’s roughly the shape I’m looking for.\n“Coss-tell-man-yo”\nIf you look at the “cleaning script” in this week’s TidyTuesday… it’s not perfect. I’ve improved it since then.",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/rvest.html#three-steps-of-web-scraping-with-rvest",
+    "href": "slides/rvest.html#three-steps-of-web-scraping-with-rvest",
+    "title": "Scrape data from web pages",
+    "section": "Three steps of web scraping with {rvest}",
+    "text": "Three steps of web scraping with {rvest}\nSee R4DS Chapter 24: “Web Scraping” for a full introduction\n\nLoad the page.\nFind the object(s) (observations & variables) you want.\nExtract variables (text) into R object(s).\n\n\n\nStep 1 = scraping, 2-3 also apply to API requests that return HTML or XML.\nPages = text, regardless of what they contain.\n\nText might point to URL of image, but page = text.\n\nSpecific table? Specific blocks of info?\n\nList of products\n\nEven numbers = text until parsed.",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/rvest.html#use-polite-to-scrape-respectfully",
+    "href": "slides/rvest.html#use-polite-to-scrape-respectfully",
+    "title": "Scrape data from web pages",
+    "section": "Use {polite} to scrape respectfully",
+    "text": "Use {polite} to scrape respectfully\n\n\npolite::bow(\n  url,                             # Page to scrape (or root)\n  user_agent = \"polite R package\", # If you don't change this, min delay = 5\n  delay = 5,                       # Seconds between requests\n  times = 3,                       # Retries\n  force = FALSE,                   # Clears memoised functions\n  verbose = FALSE,                 # Useful to know why it failed\n  ...\n)\n\n\n\n\npolite::scrape(\n  bow,              # Session opened with bow()\n  query = NULL,     # Named list to add after `?` in URL\n  accept = \"html\",  # Specify html, json, xml, csv, txt, etc\n  content = NULL,   # Optional MIME type\n  verbose = FALSE   # Useful to know why it failed\n)\n\n\n\n\nPolite is a great package, but docs are light.\n\nI’m resisting urge to rewrite it in httr2 with better documentation.\n\nbow():\n\nGood idea to set a user agent. If you leave default, it has to be slow. Searches for “polite” or polite package author in your user agent to set slow rule.\nI’d set delay to 0; user agent requirements will override this.\nOk to leave times as-is, probably.\nforce: “Memoise” = if inputs are the same, use the previous result.\n\nIe, don’t hit the API again if we already have the result.\n\nI’d recommend setting verbose to TRUE unless you’re doing a mostly safe, automatic scrape.\n\nscrape()\n\nquery is useful for updating target in a loop, we’ll see that later\naccept: For scraping, you likely want HTML\nLeave content NULL probably\nSet verbose to TRUE while testing.\n\nWe’ll see a third function later: nod()",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/rvest.html#load-the-page-bow-scrape",
+    "href": "slides/rvest.html#load-the-page-bow-scrape",
+    "title": "Scrape data from web pages",
+    "section": "Load the page: bow() + scrape()",
+    "text": "Load the page: bow() + scrape()\n\n\nsession &lt;- polite::bow(\n  \"https://www.cheese.com/castelmagno/\",\n  user_agent = \"rvest/1.0.4 (Jon Harmon; mailto:jonthegeek+useragent@gmail.com)\",\n  delay = 0,\n  verbose = TRUE\n)\nsession\n#&gt; &lt;polite session&gt; https://www.cheese.com/castelmagno/\n#&gt;     User-agent: rvest/1.0.4 (Jon Harmon; https://wapir.io; mailto:jonthegeek+useragent@gmail.com)\n#&gt;     robots.txt: 0 rules are defined for 1 bots\n#&gt;    Crawl delay: 0 sec\n#&gt;   The path is scrapable for this user-agent\n\n\n\n\ncastelmagno_page &lt;- polite::scrape(session)",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/rvest.html#find-the-objects",
+    "href": "slides/rvest.html#find-the-objects",
+    "title": "Scrape data from web pages",
+    "section": "Find the object(s)",
+    "text": "Find the object(s)\nhttps://www.cheese.com/castelmagno\n\nSelect a specific element from R4DS slides\n\n\n\nLoad the page and inspect element\nWhole container: class: “summary-points” so .summary-points\n\nTechnically could use “ul.summary_points”",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/rvest.html#selected-elements",
+    "href": "slides/rvest.html#selected-elements",
+    "title": "Scrape data from web pages",
+    "section": "Selected elements",
+    "text": "Selected elements\n\nhtml_element() vs html_elements() from R4DS slides\n\n\n\nsummary_points &lt;- castelmagno_page |&gt; \n  rvest::html_elements(\".summary-points li\")\nsummary_points\n#&gt; {xml_nodeset (15)}\n#&gt; [1] &lt;li class=\"summary_milk\"&gt;\\n               ...\n#&gt; [2] &lt;li class=\"summary_country\"&gt;\\n            ...\n#&gt; [3] &lt;li class=\"summary_region\"&gt;\\n             ...\n#&gt; [4] &lt;li class=\"summary_family\"&gt;\\n             ...\n#&gt; [5] &lt;li class=\"summary_moisture_and_type\"&gt;\\n  ...\n#&gt; [6] &lt;li class=\"summary_fat\"&gt;\\n                ...\n#&gt; [7] &lt;li class=\"summary_calcium\"&gt;\\n            ...\n#&gt; [8] &lt;li class=\"summary_texture\"&gt;\\n            ...\n#&gt; [9] &lt;li class=\"summary_rind\"&gt;\\n               ...\n#&gt; [10] &lt;li class=\"summary_tint\"&gt;\\n              ...\n#&gt; [11] &lt;li class=\"summary_taste\"&gt;\\n             ...\n#&gt; [12] &lt;li class=\"summary_smell\"&gt;\\n             ...\n#&gt; [13] &lt;li class=\"summary_vegetarian\"&gt;\\n        ...\n#&gt; [14] &lt;li class=\"summary_vegan\"&gt;\\n             ...\n#&gt; [15] &lt;li class=\"summary_alt_spelling\"&gt;\\n      ...\n\n\n\n\nWe really only have a single observation and separate variables here, so that rule of thumb doesn’t always hold!",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/rvest.html#extract-variables",
+    "href": "slides/rvest.html#extract-variables",
+    "title": "Scrape data from web pages",
+    "section": "Extract variables",
+    "text": "Extract variables\n\n\ncheese_variables &lt;- summary_points |&gt; \n  rvest::html_text2() |&gt; \n  stringr::str_remove(\"^[^:]*: \") # \"Remove anything up to \": \"\n\n\n\n\nnames(cheese_variables) &lt;- summary_points |&gt; \n  rvest::html_attr(\"class\") |&gt; \n  stringr::str_remove(\"^summary_\")\n\n\n\n\ncheese_data &lt;- tibble::tibble(!!!cheese_variables)\n#&gt; $ milk              &lt;chr&gt; \"Made from pasteurized or unpasteurized cow's, goat's and sheep's milk\"\n#&gt; $ country           &lt;chr&gt; \"Italy\"\n#&gt; $ region            &lt;chr&gt; \"Piedmont\"\n#&gt; $ family            &lt;chr&gt; \"Blue\"\n#&gt; $ moisture_and_type &lt;chr&gt; \"semi-hard\"\n#&gt; $ fat               &lt;chr&gt; \"34.2 g/100g\"\n#&gt; $ calcium           &lt;chr&gt; \"4768 mg/100g\"\n#&gt; $ texture           &lt;chr&gt; \"crumbly, dense and grainy\"\n#&gt; $ rind              &lt;chr&gt; \"washed\"\n#&gt; $ tint              &lt;chr&gt; \"ivory\"\n#&gt; $ taste             &lt;chr&gt; \"sharp, spicy, strong\"\n#&gt; $ smell             &lt;chr&gt; \"strong\"\n#&gt; $ vegetarian        &lt;chr&gt; \"no\"\n#&gt; $ vegan             &lt;chr&gt; \"no\"\n#&gt; $ alt_spelling      &lt;chr&gt; \"Castelmagno PDO, Castelmagno di alpeggio, Castelmagno prodotto della montagna\"\n\n\n\n\nhtml_text2() cleans up text, you probalby always want it.\nhtml_attr() gets things inside the tag (tab to view of the page)\nI like the “bang bang bang” method for named vector to tibble, there are other ways to do this, too.\nI’ll briefly show cleaning on the next page.\n\nSplit (comma/and)-separated lists into list-vars\nExtract info from “milk”\nClean up classes",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/rvest.html#aside-cleaning",
+    "href": "slides/rvest.html#aside-cleaning",
+    "title": "Scrape data from web pages",
+    "section": "Aside: Cleaning",
+    "text": "Aside: Cleaning\n\ncheese_data |&gt; \n  dplyr::mutate(\n    vegetarian = vegetarian == \"yes\",\n    vegan = vegan == \"yes\",\n    dplyr::across(\n      c(\"fat\", \"calcium\"),\n      \\(x) as.double(stringr::str_remove(x, \" m?g/100g\"))\n    ),\n    dplyr::across(\n      c(-\"milk\", -\"vegetarian\", -\"vegan\", -\"fat\", -\"calcium\"),\n      \\(x) stringr::str_split(x, \"(, )|( and )\")\n    )\n  ) |&gt; \n  dplyr::mutate(\n    pasteurized = stringr::str_detect(milk, \"\\\\bpasteurized\"),\n    unpasteurized = stringr::str_detect(milk, \"\\\\bunpasteurized\"),\n    animal = stringr::str_extract_all(milk, \"(\\\\S+)(?='s)\"),\n    .before = \"milk\",\n    .keep = \"unused\"\n  ) |&gt; \n  dplyr::glimpse()\n#&gt; Rows: 1\n#&gt; Columns: 17\n#&gt; $ pasteurized       &lt;lgl&gt; TRUE\n#&gt; $ unpasteurized     &lt;lgl&gt; TRUE\n#&gt; $ animal            &lt;list&gt; &lt;\"cow\", \"goat\", \"sheep\"&gt;\n#&gt; $ country           &lt;list&gt; \"Italy\"\n#&gt; $ region            &lt;list&gt; \"Piedmont\"\n#&gt; $ family            &lt;list&gt; \"Blue\"\n#&gt; $ moisture_and_type &lt;list&gt; \"semi-hard\"\n#&gt; $ fat               &lt;dbl&gt; 34.2\n#&gt; $ calcium           &lt;dbl&gt; 4768\n#&gt; $ texture           &lt;list&gt; &lt;\"crumbly\", \"dense\", \"grainy\"&gt;\n#&gt; $ rind              &lt;list&gt; \"washed\"\n#&gt; $ tint              &lt;list&gt; \"ivory\"\n#&gt; $ taste             &lt;list&gt; &lt;\"sharp\", \"spicy\", \"strong\"&gt;\n#&gt; $ smell             &lt;list&gt; \"strong\"\n#&gt; $ vegetarian        &lt;lgl&gt; FALSE\n#&gt; $ vegan             &lt;lgl&gt; FALSE\n#&gt; $ alt_spelling      &lt;list&gt; &lt;\"Castelmagno PDO\", \"Castelmagno di alpeggio\", \"Castelmagno prodotto della montagna\"…\n\n\n\n{readr} parse_*() functions can be handy for dates and numbers.\n\nMy {stbl} package might eventually be better for web data.",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
+    ]
+  },
+  {
+    "objectID": "slides/rvest.html#read_html_live",
+    "href": "slides/rvest.html#read_html_live",
+    "title": "Scrape data from web pages",
+    "section": "read_html_live",
+    "text": "read_html_live\n\nData: HMdb.org\n\nrobots.txt\n\nLive-coding!\n\n\n\nsession &lt;- rvest::read_html_live(\"https://www.hmdb.org/geolists.asp\")\nsession |&gt; \n  rvest::html_element(\"#StatesList\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"div.bodysansserif\") |&gt;\n  rvest::html_elements(\"td:nth-child(2)\") |&gt; \n  rvest::html_text2()\nsession$click(\"tr:nth-child(1) .countryarrow\")\nsession |&gt; \n  rvest::html_element(\"#StatesList\") |&gt; \n  rvest::html_text2()\nsession$click(\"tr:nth-child(2) .countryarrow\")\nsession |&gt; \n  rvest::html_element(\"#StatesList\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"#StateSidebar\") |&gt;\n  rvest::html_elements(\"td:nth-child(2)\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"#CountiesList\") |&gt; \n  rvest::html_text2()\nsession$click(\"#StateSidebar tr:nth-child(3) .statearrow\")\nsession |&gt; \n  rvest::html_element(\"#CountiesList\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"#CountySidebar\") |&gt; \n  rvest::html_elements(\"a\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"#CountySidebar\") |&gt; \n  rvest::html_elements(\"a\") |&gt; \n  rvest::html_attr(\"href\")\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
+    "crumbs": [
+      "Get more data",
+      "Scrape data from web pages"
     ]
   },
   {
@@ -406,270 +604,6 @@
     ]
   },
   {
-    "objectID": "slides/schemas.html#aside-why-rectangle",
-    "href": "slides/schemas.html#aside-why-rectangle",
-    "title": "Quickly parse API responses",
-    "section": "Aside: Why rectangle?",
-    "text": "Aside: Why rectangle?\n\nApps usually “think” in objects\n\nPreferred data: Objects-with-properties (example json)\n\nData scientists usually compare many objects at once\n\nPreferred data: data frames\n\nColumns of variables (of same class)\nRows of observations (~objects)\n\n\nAPIs are usually designed for the first model\nEven data APIs tend to “think” in objects\n\nBecause most programmers do\n\n\n\n\nThis really belongs in the previous chapter or maybe intro, but I’m putting it here for this cohort.\nApps and thus most programmers.\n\nEven when you get a list of things, like on Amazon, each of those product blocks in the list is an html div object. It’s rarely really columns of similar data.\n\nMaybe this is obvious to some, but this felt like an epiphany to me.\nFundamental difference between R and everything else.\n\nThings like pandas/polars are attempts to make Python think like R.\n\nReally pause to discuss.",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#typical-json-data",
-    "href": "slides/schemas.html#typical-json-data",
-    "title": "Quickly parse API responses",
-    "section": "Typical JSON data",
-    "text": "Typical JSON data\ndemo_json.json\n\n\nurl &lt;- \"https://dslc-io.github.io/club-wapir/slides/schemas/demo_json.json\"\ndemo_json &lt;- jsonlite::fromJSON(url)\n\n\n\n\nWhen you click through, point out that the object-per-api is a perfectly reasonable standard, but that this data makes way more sense in R with a row per api, but a standardized column for each variable, like we saw in the last chapter & last slide\nNote that sometimes jsonlite::fromJSON() mangles data, jsonlite::read_json() is same thing without auto-parsing.",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#rectangling-demo_json-manually",
-    "href": "slides/schemas.html#rectangling-demo_json-manually",
-    "title": "Quickly parse API responses",
-    "section": "Rectangling demo_json manually",
-    "text": "Rectangling demo_json manually\n\ndemo_json |&gt; \n  tibble::enframe(name = \"api_id\") |&gt;\n  tidyr::unnest_longer(value, indices_include = FALSE) |&gt; \n  tidyr::unnest_longer(value, indices_to = \"version\") |&gt;\n  tidyr::unnest_wider(value)\n\n#&gt; # A tibble: 3 × 8\n#&gt;   api_id        added updated swaggerUrl swaggerYamlUrl openapiVer link  version\n#&gt;   &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;          &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  \n#&gt; 1 apis.guru     2015… 2023-0… https://a… https://api.a… 3.0.0      http… 2.2.0  \n#&gt; 2 fec.gov       2018… 2023-0… https://a… https://api.a… 3.0.0      http… 1.0    \n#&gt; 3 googleapis.c… 2020… 2023-0… https://a… https://api.a… 3.0.0      http… v3\n\n\n\n\nWouldn’t it be nice if we could do all of that automatically?",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#introducing-tibblify",
-    "href": "slides/schemas.html#introducing-tibblify",
-    "title": "Quickly parse API responses",
-    "section": "Introducing tibblify",
-    "text": "Introducing tibblify\n\n{tibblify} 📦 to auto-convert hierarchical data to tibbles\nSuper-charged tidyr::unnest_auto()\nTibbles all the way down\nExperimental functionality for APIs\n\n\n\n(bullet 4): This probably belongs in a separate package, but for now it’s in a dev branch of tibblify.",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#rectangling-demo_json-with-tibblify",
-    "href": "slides/schemas.html#rectangling-demo_json-with-tibblify",
-    "title": "Quickly parse API responses",
-    "section": "Rectangling demo_json with tibblify",
-    "text": "Rectangling demo_json with tibblify\n\n\ndj_tibblified &lt;- tibblify::tibblify(demo_json)\ndj_tibblified\n\n#&gt; # A tibble: 3 × 2\n#&gt;   .names                           versions\n#&gt;   &lt;chr&gt;                  &lt;list&lt;tibble[,7]&gt;&gt;\n#&gt; 1 apis.guru                         [1 × 7]\n#&gt; 2 fec.gov                           [1 × 7]\n#&gt; 3 googleapis.com:youtube            [1 × 7]\n\n\n\n\n\ndj_tibblified |&gt; \n  dplyr::rename(api_id = \".names\") |&gt; \n  tidyr::unnest(versions)\n\n#&gt; # A tibble: 3 × 8\n#&gt;   api_id         .names added updated swaggerUrl swaggerYamlUrl openapiVer link \n#&gt;   &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;          &lt;chr&gt;      &lt;chr&gt;\n#&gt; 1 apis.guru      2.2.0  2015… 2023-0… https://a… https://api.a… 3.0.0      http…\n#&gt; 2 fec.gov        1.0    2018… 2023-0… https://a… https://api.a… 3.0.0      http…\n#&gt; 3 googleapis.co… v3     2020… 2023-0… https://a… https://api.a… 3.0.0      http…\n\n\n\n\n\nAt first tibblified looks similar to result of enframe().\nBy default anything it has to name gets .names\n\nWe’ll see how to clean that up later.\n\nBut the nested things are tibbles, so we can use tidyr::unnest()",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#rectangling-manually-vs-tibblify",
-    "href": "slides/schemas.html#rectangling-manually-vs-tibblify",
-    "title": "Quickly parse API responses",
-    "section": "Rectangling manually vs tibblify",
-    "text": "Rectangling manually vs tibblify\n\n\n\ndj_tidyr &lt;- \n  demo_json |&gt; \n  tibble::enframe(name = \"api_id\") |&gt;\n  tidyr::unnest_longer(\n    value, indices_include = FALSE\n  ) |&gt; \n  tidyr::unnest_longer(\n    value, indices_to = \"version\"\n  ) |&gt;\n  tidyr::unnest_wider(value)\n\n\n\ndj_tibblify &lt;- \n  demo_json |&gt;\n  tibblify::tibblify() |&gt; \n  dplyr::rename(api_id = \".names\") |&gt; \n  tidyr::unnest(versions) |&gt; \n  dplyr::rename(version = \".names\")\n\n\n\n\n\nwaldo::compare(\n  dj_tibblify, dj_tidyr, \n  list_as_map = TRUE # Ignore column order\n)\n\n#&gt; ✔ No differences\n\n\n\n\n\n{waldo} is a package for finding differences.\nlist_as_map = TRUE means “ignore column order” here.\nWhat did tibblify do to figure out how to rectangle the data?",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#tspec_guess",
-    "href": "slides/schemas.html#tspec_guess",
-    "title": "Quickly parse API responses",
-    "section": "tspec_guess()",
-    "text": "tspec_guess()\n\ntibblify::tibblify() spec argument\n\n“What should this look like?”\n\nGuessed by default with tibblify::guess_tspec()\n\n\n\ntibblify::guess_tspec(demo_json)\n\n#&gt; tspec_df(\n#&gt;   .names_to = \".names\",\n#&gt;   tib_df(\n#&gt;     \"versions\",\n#&gt;     .names_to = \".names\",\n#&gt;     tib_chr(\"added\"),\n#&gt;     tib_chr(\"updated\"),\n#&gt;     tib_chr(\"swaggerUrl\"),\n#&gt;     tib_chr(\"swaggerYamlUrl\"),\n#&gt;     tib_chr(\"openapiVer\"),\n#&gt;     tib_chr(\"link\"),\n#&gt;   ),\n#&gt; )\n\n\n\n\n\nPoint out .names_to.\nPoint out date columns (“added” and “updated”).\nIt would be nice if we had a way to tell it what to expect.",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#multiple-standards",
-    "href": "slides/schemas.html#multiple-standards",
-    "title": "Quickly parse API responses",
-    "section": "Multiple Standards",
-    "text": "Multiple Standards\n\nSwagger 2.0 ➡️ OpenAPI 2.0\nOpenAPI 3.x\nOpenAPI 4.0 (in development)\nPostman Collection\nAPI Blueprint\nWeb Application Description Language (WADL)\n\n\n\nSwagger was created by wordnik.com, free online dictionary that compiles a bunch of sources (and wanted a way to store API info consistently).\nSwagger specification & tools bought by SmartBear, spec donated to OpenAPI Initiative to make it officially open forever.\nSwagger now technically means the tools, OpenAPI is the spec.\n\nBut people talk about “swagger specs” all the time.\n\nWe’ll focus on OpenAPI 3\nWe might talk about tools to convert others to OpenAPI 3.",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#yaml",
-    "href": "slides/schemas.html#yaml",
-    "title": "Quickly parse API responses",
-    "section": "YAML",
-    "text": "YAML\n\n\nJSON  (jsonlite::read_json())\n\n{\n  \"info\": {\n    \"contact\": {\n      \"email\": \"mike.ralphson@gmail.com\",\n      \"name\": \"APIs.guru\",\n      \"url\": \"https://APIs.guru\"\n    },\n    \"title\": \"APIs.guru\",\n    \"version\": \"2.2.0\",\n    \"x-apisguru-categories\": [\n      \"open_data\",\n      \"developer_tools\"\n    ]\n  },\n    \"security\": []\n}\n\n\nYAML  (yaml::read_yaml())\n\ninfo:\n  contact:\n    email: mike.ralphson@gmail.com\n    name: APIs.guru\n    url: https://APIs.guru\n  title: APIs.guru\n  version: 2.2.0\n  x-apisguru-categories:\n    - open_data\n    - developer_tools\nsecurity: [] # No security needed\n\n\n\n\nOriginally “Yet Another Markup Language”\n\nMeaning of name changed because they wanted to stress it’s for data, not documents per se.\n“YAML Ain’t Markup Language”\n\nYAML adds comments, readability\n\nQuoting optional for strings\nIndentation for children, rather than brackets\n\nAll JSON strings are valid YAML, not all YAML is valid JSON.\n.yaml or .yml\nYou might have seen it:\n\nRMarkdown/Quarto headers & config\nPackage configuration files (_pkgdown.yml, codecov.yml)\nGitHub Actions",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#exploring-an-api-description",
-    "href": "slides/schemas.html#exploring-an-api-description",
-    "title": "Quickly parse API responses",
-    "section": "Exploring an API Description",
-    "text": "Exploring an API Description\n\nAPIs.guru\n\n\n\nopenapi: 3.0.0 # Specification version number\ninfo: # title, version, description, contact, license\nservers: # One or more URLs + optional descriptions\ntags: # Optional name, description, externalDocs of endpoint categories\nexternalDocs: # Optional url & description of additional documentation\nsecurity: # Optional list of named default security schemes\npaths: # Endpoints of the API\nwebhooks: # Description of endpoints YOU can specify for API to SEND to\njsonSchemaDialect: # URI to extend components/schemas\nx-whatever: # Extend with additional properties\ncomponents: # Reusable schemas, securitySchemes, reusable pieces of everything above\n\n\n\n\nTechnically the OpenAPI specification is the standard, and each API has a “description” that’s defined in a “document” (which can be a composite of multiple files).\nPeople can and will do things wrong/weird.\nopenapi = Spec version number, not API\nInfo, servers, tags, externalDocs = Info about the API.\nsecurity = default schemes to use, schemes are described in components/securitySchemes\npaths = the things the API can do, detailed in later chapter(s)\nwebhooks, jsonSchemaDialect, extensions = we won’t talk about these much if at all\nComponents is for storing reusable pieces of info about the API.",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#apis.guru-apis-schema",
-    "href": "slides/schemas.html#apis.guru-apis-schema",
-    "title": "Quickly parse API responses",
-    "section": "apis.guru APIs Schema",
-    "text": "apis.guru APIs Schema\n\n\ncomponents:\n  schemas:\n    APIs:\n      additionalProperties:\n        $ref: \"#/components/schemas/API\"\n      description: |\n        List of API details.\n        It is a JSON object with API IDs(`&lt;provider&gt;[:&lt;service&gt;]`) as keys.\n      minProperties: 1\n      type: object\n\n\n\n\ntspec_apis &lt;- tspec_df(\n  .names_to = \"api_id\",\n  tspec_api\n)\n\n\n\n\nThe thing we’re loading is described in APIs schema\nI’ve simplified this slightly from the full openapi object.\nJSON doesn’t require a name for the names, so we need to pick something (“api_id”)\nadditionalProperties –&gt; tspec_, properties –&gt; tib_",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#apis.guru-api-schema",
-    "href": "slides/schemas.html#apis.guru-api-schema",
-    "title": "Quickly parse API responses",
-    "section": "apis.guru API Schema",
-    "text": "apis.guru API Schema\n\n\ncomponents:\n  schemas:\n    API:\n      additionalProperties: false\n      description: Meta information about API\n      properties:\n        versions:\n          additionalProperties:\n            $ref: \"#/components/schemas/ApiVersion\"\n          description: List of supported versions of the API\n          minProperties: 1\n          type: object\n      required:\n        - versions\n      type: object\n\n\n\n\ntspec_api &lt;- tspec_row(\n  tib_df(\n    \"versions\", \n    .names_to = \"version\", \n    tspec_api_version\n  )\n)\n\n\n\n\nadditionalProperties: false means tspec_row()\nversions property needs a tib_ function.\nversions is an object, so tib_df (or tib_row)\nversions has additionalProperties, so defined in tspec_df().",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#apis.guru-apiversion-schema",
-    "href": "slides/schemas.html#apis.guru-apiversion-schema",
-    "title": "Quickly parse API responses",
-    "section": "apis.guru ApiVersion Schema",
-    "text": "apis.guru ApiVersion Schema\n\ncomponents:\n  schemas:\n    ApiVersion:\n      additionalProperties: false\n      properties:\n        added:\n          description: Timestamp when the version was added\n          format: date-time\n          type: string\n        link:\n          description: Link to the individual API entry for this API\n          format: url\n          type: string\n        openapiVer:\n          description: The value of the `openapi` or `swagger` property of the source definition\n          type: string\n        swaggerUrl:\n          description: URL to OpenAPI definition in JSON format\n          format: url\n          type: string\n        swaggerYamlUrl:\n          description: URL to OpenAPI definition in YAML format\n          format: url\n          type: string\n        updated:\n          description: Timestamp when the version was updated\n          format: date-time\n          type: string\n      required:\n        - added\n        - updated\n        - swaggerUrl\n        - swaggerYamlUrl\n        - openapiVer\n      type: object",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#apis.guru-apiversion-tspec",
-    "href": "slides/schemas.html#apis.guru-apiversion-tspec",
-    "title": "Quickly parse API responses",
-    "section": "apis.guru ApiVersion tspec",
-    "text": "apis.guru ApiVersion tspec\n\ntib_chr_datetime &lt;- function(key, ..., required = TRUE) {\n  tibblify::tib_scalar(\n    key = key,\n    ptype = vctrs::new_datetime(tzone = \"UTC\"),\n    required = required,\n    ptype_inner = character(),\n    transform = \\(x) as.POSIXct(x, format = \"%Y-%m-%dT%H:%M:%OSZ\", tz = \"UTC\"),\n    ...\n  )\n}\ntspec_api_version &lt;- tspec_row(\n  tib_chr_datetime(\"added\"),\n  tib_chr_datetime(\"updated\"),\n  tib_chr(\"openapiVer\"),\n  tib_chr(\"swaggerUrl\"),\n  tib_chr(\"swaggerYamlUrl\"),\n  tib_chr(\"link\", required = FALSE)\n)",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#using-tspecs-version",
-    "href": "slides/schemas.html#using-tspecs-version",
-    "title": "Quickly parse API responses",
-    "section": "Using tspecs: version",
-    "text": "Using tspecs: version\n\ntibblify(demo_json$apis.guru$versions$`2.2.0`, tspec_api_version)\n\n#&gt; # A tibble: 1 × 6\n#&gt;   added               updated             openapiVer swaggerUrl   swaggerYamlUrl\n#&gt;   &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;      &lt;chr&gt;        &lt;chr&gt;         \n#&gt; 1 2015-11-26 17:52:26 2023-04-05 13:10:14 3.0.0      https://api… https://api.a…\n#&gt; # ℹ 1 more variable: link &lt;chr&gt;",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#using-tspecs-api",
-    "href": "slides/schemas.html#using-tspecs-api",
-    "title": "Quickly parse API responses",
-    "section": "Using tspecs: api",
-    "text": "Using tspecs: api\n\ntibblify(demo_json$apis.guru, tspec_api) |&gt; tidyr::unnest(versions)\n\n#&gt; # A tibble: 1 × 7\n#&gt;   version added               updated             openapiVer swaggerUrl         \n#&gt;   &lt;chr&gt;   &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;      &lt;chr&gt;              \n#&gt; 1 2.2.0   2015-11-26 17:52:26 2023-04-05 13:10:14 3.0.0      https://api.apis.g…\n#&gt; # ℹ 2 more variables: swaggerYamlUrl &lt;chr&gt;, link &lt;chr&gt;",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/schemas.html#using-tspecs-apis",
-    "href": "slides/schemas.html#using-tspecs-apis",
-    "title": "Quickly parse API responses",
-    "section": "Using tspecs: apis",
-    "text": "Using tspecs: apis\n\ntibblify(demo_json, tspec_apis) |&gt; tidyr::unnest(versions)\n\n#&gt; # A tibble: 3 × 8\n#&gt;   api_id   version added               updated             openapiVer swaggerUrl\n#&gt;   &lt;chr&gt;    &lt;chr&gt;   &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;      &lt;chr&gt;     \n#&gt; 1 apis.gu… 2.2.0   2015-11-26 17:52:26 2023-04-05 13:10:14 3.0.0      https://a…\n#&gt; 2 fec.gov  1.0     2018-11-20 00:04:28 2023-03-06 07:12:59 3.0.0      https://a…\n#&gt; 3 googlea… v3      2020-11-02 10:32:34 2023-04-21 23:09:23 3.0.0      https://a…\n#&gt; # ℹ 2 more variables: swaggerYamlUrl &lt;chr&gt;, link &lt;chr&gt;\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
-    "crumbs": [
-      "Get started",
-      "Quickly parse API responses"
-    ]
-  },
-  {
-    "objectID": "slides/apis-find.html#general-tips-for-text-filtering",
-    "href": "slides/apis-find.html#general-tips-for-text-filtering",
-    "title": "Find APIs",
-    "section": "General tips for text filtering",
-    "text": "General tips for text filtering\n\ntolower(FIELD) to find “API”, “api”, “Api”, etc\n\\\\b in regex pattern for “word boundary”\n\n\"\\\\bapi\\\\b\" = “api surrounded by spaces, (), newline, etc”\n\n\n\n\nThese are generally useful, but we’ll use them specifically for packages",
-    "crumbs": [
-      "Do more with APIs",
-      "Find APIs"
-    ]
-  },
-  {
-    "objectID": "slides/apis-find.html#searching-cran-packages",
-    "href": "slides/apis-find.html#searching-cran-packages",
-    "title": "Find APIs",
-    "section": "Searching CRAN packages",
-    "text": "Searching CRAN packages\n\napi_pkgs &lt;- tools::CRAN_package_db() |&gt; \n  dplyr::as_tibble() |&gt; \n  dplyr::filter(\n    stringr::str_detect(tolower(Description), \"\\\\bapi\\\\b\") |\n      stringr::str_detect(tolower(Title), \"\\\\bapi\\\\b\")\n  ) |&gt; \n  dplyr::select(Package, Title)\napi_pkgs\n\n#&gt; # A tibble: 899 × 2\n#&gt;    Package           Title                                                      \n#&gt;    &lt;chr&gt;             &lt;chr&gt;                                                      \n#&gt;  1 academictwitteR   \"Access the Twitter Academic Research Product Track V2 API…\n#&gt;  2 ACEsearch         \"'ACE' Search Engine API\"                                  \n#&gt;  3 acled.api         \"Automated Retrieval of ACLED Conflict Event Data\"         \n#&gt;  4 adbcdrivermanager \"'Arrow' Database Connectivity ('ADBC') Driver Manager\"    \n#&gt;  5 adbcpostgresql    \"'Arrow' Database Connectivity ('ADBC') 'PostgreSQL' Drive…\n#&gt;  6 adbcsqlite        \"'Arrow' Database Connectivity ('ADBC') 'SQLite' Driver\"   \n#&gt;  7 adformR           \"Get Adform Ads Data via the 'Windsor.ai' API\"             \n#&gt;  8 adobeanalyticsr   \"R Client for 'Adobe Analytics' API 2.0\"                   \n#&gt;  9 adsDataHubR       \"Google Ads Data Hub API Client\"                           \n#&gt; 10 adwordsR          \"Access the 'Google Adwords' API\"                          \n#&gt; # ℹ 889 more rows\n\n\n\n\nCRAN_package_db() returns 69 columns of info (everything that can be in the DESCRIPTION file)\nTitle = short description, generally sentence case.\nDescription = paragraph or so about the package\nCould also check Author and/or Authors@R for credit to API owner.",
-    "crumbs": [
-      "Do more with APIs",
-      "Find APIs"
-    ]
-  },
-  {
-    "objectID": "slides/apis-find.html#searching-the-r-universe",
-    "href": "slides/apis-find.html#searching-the-r-universe",
-    "title": "Find APIs",
-    "section": "Searching the R Universe",
-    "text": "Searching the R Universe\n\nrOpenSci project for package discovery\nWeb interface at r-universe.dev\nAPI (under development) at r-universe.dev/api/search\n\n\n\nUsers and organizations can set up their own universes\nLikely to be different by the time I do next iteration of these slides",
-    "crumbs": [
-      "Do more with APIs",
-      "Find APIs"
-    ]
-  },
-  {
-    "objectID": "slides/apis-find.html#r-universe-api-request",
-    "href": "slides/apis-find.html#r-universe-api-request",
-    "title": "Find APIs",
-    "section": "R Universe API: Request",
-    "text": "R Universe API: Request\n\n\nr_universe_apis_req &lt;- httr2::request(\"https://r-universe.dev/api/search\") |&gt; \n  httr2::req_url_query(\n    q = \"api\",\n    all = TRUE,\n    limit = 100\n  )\n\n\n\n\nr_universe_apis_resps &lt;- r_universe_apis_req |&gt; \n  httr2::req_perform_iterative(\n    httr2::iterate_with_offset(\n      \"skip\",\n      start = 0,\n      offset = 100,\n      resp_pages = \\(resp) ceiling(httr2::resp_body_json(resp)$total/100)\n    )\n  )\n\n\n\n\nAPI isn’t done.\n\nNo documented pagination, but…\nSkip parameter will work!",
-    "crumbs": [
-      "Do more with APIs",
-      "Find APIs"
-    ]
-  },
-  {
-    "objectID": "slides/apis-find.html#r-universe-results",
-    "href": "slides/apis-find.html#r-universe-results",
-    "title": "Find APIs",
-    "section": "R Universe Results",
-    "text": "R Universe Results\n\nr_universe_apis_resps |&gt; \n  httr2::resps_data(\n    \\(resp) {\n      httr2::resp_body_json(resp)$results |&gt; \n        tibble::enframe(name = NULL) |&gt; \n        tidyr::unnest_wider(value)\n    }\n  ) |&gt; \n  dplyr::select(Package, Title)\n\n#&gt; # A tibble: 1,419 × 2\n#&gt;    Package         Title                                                        \n#&gt;    &lt;chr&gt;           &lt;chr&gt;                                                        \n#&gt;  1 hoopR           \"Access Men's Basketball Play by Play Data\"                  \n#&gt;  2 wehoop          \"Access Women's Basketball Play by Play Data\"                \n#&gt;  3 gptstudio       \"Use Large Language Models Directly in your Development\\nEnv…\n#&gt;  4 geosapi         \"GeoServer REST API R Interface\"                             \n#&gt;  5 googleLanguageR \"Call Google's 'Natural Language' API, 'Cloud Translation' A…\n#&gt;  6 RobinHood       \"Interface for the RobinHood.com No Commission Investing Pla…\n#&gt;  7 hereR           \"'sf'-Based Interface to the 'HERE' REST APIs\"               \n#&gt;  8 nhlapi          \"A Minimum-Dependency 'R' Interface to the 'NHL' API\"        \n#&gt;  9 salesforcer     \"An Implementation of 'Salesforce' APIs Using Tidy Principle…\n#&gt; 10 oaii            \"'OpenAI' API R Interface\"                                   \n#&gt; # ℹ 1,409 more rows",
-    "crumbs": [
-      "Do more with APIs",
-      "Find APIs"
-    ]
-  },
-  {
-    "objectID": "slides/apis-find.html#browser-developer-tools",
-    "href": "slides/apis-find.html#browser-developer-tools",
-    "title": "Find APIs",
-    "section": "Browser developer tools",
-    "text": "Browser developer tools\n\nDiffers browser-to-browser, showing Chrome\nctrl-shift-I (cmd-shift-I) or right click &gt; Inspect\nNetwork tab\nFilter to Fetch/XHR\nRight click &gt; Header Options &gt; Path\nDemo: Amazon suggestions\n\n\n\nMicrosoft Edge is also a Chromium-based browser, so should be same there\nFetch & XHR are two JavaScript APIs for making requests.\n\nXHR = XmlHttpRequest, but not used just for XML.\nFetch is more modern version, but both are used.\n\nImportantly: They’re how web pages often make API requests on your behalf.\nLoad Amazon, then ctrl-shift-i (make sure it’s empty)\nShow clearing with the circle/line icon\nClick the search box\nType “Web APIs with R”, pausing to see requests & results\nPoint out “Path” column\nFilter to “suggestions”\nSingle click last one\nWalk through Headers, Payload, Response\nRight click &gt; Copy &gt; Copy as cURL (bash)\n\nCan paste this and use httr2::curl_translate()",
-    "crumbs": [
-      "Do more with APIs",
-      "Find APIs"
-    ]
-  },
-  {
-    "objectID": "slides/apis-find.html#sniff-api-requests-with-apisniffer",
-    "href": "slides/apis-find.html#sniff-api-requests-with-apisniffer",
-    "title": "Find APIs",
-    "section": "Sniff API requests with {apisniffer}",
-    "text": "Sniff API requests with {apisniffer}\n\n {apisniffer}\nGoal:\n\nLoad page\n(optional) Interact\nReturns tibble of API info\n(maybe) Also returns functions to access detected APIs\n\n\n\n\nCurrently doesn’t allow interaction\nReturns raw data, not tibble\nCan use httr2::url_parse() to break url into pieces\nrequest objects have sections by {httr2} function\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
-    "crumbs": [
-      "Do more with APIs",
-      "Find APIs"
-    ]
-  },
-  {
     "objectID": "slides/authentication.html#what-is-a-user-agent",
     "href": "slides/authentication.html#what-is-a-user-agent",
     "title": "Tell APIs who you are",
@@ -956,179 +890,267 @@
     ]
   },
   {
-    "objectID": "slides/responses.html#json-responses",
-    "href": "slides/responses.html#json-responses",
-    "title": "Process other response types",
-    "section": "JSON responses",
-    "text": "JSON responses\n\napplication/json or */json\nhttr2::resp_body_json() uses jsonlite::fromJSON()\n\n\nthis slide & next might be entirely covered in earlier chapter",
+    "objectID": "slides/apis-find.html#general-tips-for-text-filtering",
+    "href": "slides/apis-find.html#general-tips-for-text-filtering",
+    "title": "Find APIs",
+    "section": "General tips for text filtering",
+    "text": "General tips for text filtering\n\ntolower(FIELD) to find “API”, “api”, “Api”, etc\n\\\\b in regex pattern for “word boundary”\n\n\"\\\\bapi\\\\b\" = “api surrounded by spaces, (), newline, etc”\n\n\n\n\nThese are generally useful, but we’ll use them specifically for packages",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Do more with APIs",
+      "Find APIs"
     ]
   },
   {
-    "objectID": "slides/responses.html#json-data",
-    "href": "slides/responses.html#json-data",
-    "title": "Process other response types",
-    "section": "JSON data",
-    "text": "JSON data\n\n4 scalars (length-1 vectors)\n\nnull ≈ NA\nstring ≈ character(1), always \" (not ')\nnumber ≈ numeric(1), no Inf/-Inf/NaN\nboolean ≈ logical(1), true = TRUE, false = FALSE\n\narray ≈ unnamed list()\n\n[]: [null, \"a\", 1, true] ≈ list(NULL, \"a\", 1, TRUE)\n\nobject ≈ named list()\n\n{}: {\"a\": 1, \"b\": [1, 2]} ≈ list(a = 1, b = list(1, 2))\n\n\n\n\nWe never went into details about what’s legal in the JSON format.\nArrays of the same type are roughly equivalent to vectors, parsers like jsonlite often turn such arrays into vectors.",
+    "objectID": "slides/apis-find.html#searching-cran-packages",
+    "href": "slides/apis-find.html#searching-cran-packages",
+    "title": "Find APIs",
+    "section": "Searching CRAN packages",
+    "text": "Searching CRAN packages\n\napi_pkgs &lt;- tools::CRAN_package_db() |&gt; \n  dplyr::as_tibble() |&gt; \n  dplyr::filter(\n    stringr::str_detect(tolower(Description), \"\\\\bapi\\\\b\") |\n      stringr::str_detect(tolower(Title), \"\\\\bapi\\\\b\")\n  ) |&gt; \n  dplyr::select(Package, Title)\napi_pkgs\n\n#&gt; # A tibble: 900 × 2\n#&gt;    Package           Title                                                      \n#&gt;    &lt;chr&gt;             &lt;chr&gt;                                                      \n#&gt;  1 academictwitteR   \"Access the Twitter Academic Research Product Track V2 API…\n#&gt;  2 ACEsearch         \"'ACE' Search Engine API\"                                  \n#&gt;  3 acled.api         \"Automated Retrieval of ACLED Conflict Event Data\"         \n#&gt;  4 adbcdrivermanager \"'Arrow' Database Connectivity ('ADBC') Driver Manager\"    \n#&gt;  5 adbcpostgresql    \"'Arrow' Database Connectivity ('ADBC') 'PostgreSQL' Drive…\n#&gt;  6 adbcsqlite        \"'Arrow' Database Connectivity ('ADBC') 'SQLite' Driver\"   \n#&gt;  7 adformR           \"Get Adform Ads Data via the 'Windsor.ai' API\"             \n#&gt;  8 adobeanalyticsr   \"R Client for 'Adobe Analytics' API 2.0\"                   \n#&gt;  9 adsDataHubR       \"Google Ads Data Hub API Client\"                           \n#&gt; 10 adwordsR          \"Access the 'Google Adwords' API\"                          \n#&gt; # ℹ 890 more rows\n\n\n\n\nCRAN_package_db() returns 69 columns of info (everything that can be in the DESCRIPTION file)\nTitle = short description, generally sentence case.\nDescription = paragraph or so about the package\nCould also check Author and/or Authors@R for credit to API owner.",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Do more with APIs",
+      "Find APIs"
     ]
   },
   {
-    "objectID": "slides/responses.html#xml-responses",
-    "href": "slides/responses.html#xml-responses",
-    "title": "Process other response types",
-    "section": "XML responses",
-    "text": "XML responses\neXtensible Markup Language\n\napplication/xml, text/xml, or */xml\nhttr2::resp_body_xml() uses xml2::read_xml()",
+    "objectID": "slides/apis-find.html#searching-the-r-universe",
+    "href": "slides/apis-find.html#searching-the-r-universe",
+    "title": "Find APIs",
+    "section": "Searching the R Universe",
+    "text": "Searching the R Universe\n\nrOpenSci project for package discovery\nWeb interface at r-universe.dev\nAPI (under development) at r-universe.dev/api/search\n\n\n\nUsers and organizations can set up their own universes\nLikely to be different by the time I do next iteration of these slides",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Do more with APIs",
+      "Find APIs"
     ]
   },
   {
-    "objectID": "slides/responses.html#xml-data",
-    "href": "slides/responses.html#xml-data",
-    "title": "Process other response types",
-    "section": "XML data",
-    "text": "XML data\n\nTags as &lt;tagname attribute=\"a\"&gt;contents&lt;/tagname&gt;\nEverything nestable",
+    "objectID": "slides/apis-find.html#r-universe-api-request",
+    "href": "slides/apis-find.html#r-universe-api-request",
+    "title": "Find APIs",
+    "section": "R Universe API: Request",
+    "text": "R Universe API: Request\n\n\nr_universe_apis_req &lt;- httr2::request(\"https://r-universe.dev/api/search\") |&gt; \n  httr2::req_url_query(\n    q = \"api\",\n    all = TRUE,\n    limit = 100\n  )\n\n\n\n\nr_universe_apis_resps &lt;- r_universe_apis_req |&gt; \n  httr2::req_perform_iterative(\n    httr2::iterate_with_offset(\n      \"skip\",\n      start = 0,\n      offset = 100,\n      resp_pages = \\(resp) ceiling(httr2::resp_body_json(resp)$total/100)\n    )\n  )\n\n\n\n\nAPI isn’t done.\n\nNo documented pagination, but…\nSkip parameter will work!",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Do more with APIs",
+      "Find APIs"
     ]
   },
   {
-    "objectID": "slides/responses.html#xml-example-raw",
-    "href": "slides/responses.html#xml-example-raw",
-    "title": "Process other response types",
-    "section": "XML example: raw",
-    "text": "XML example: raw\n\nresp_xml &lt;- req_template(request(example_url()), \"/xml\") |&gt;\n  req_perform()\nresp_xml |&gt; resp_body_string() |&gt; cat()\n\n#&gt; &lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;\n#&gt; &lt;root&gt;\n#&gt;    &lt;address&gt;\n#&gt;       &lt;city&gt;New York&lt;/city&gt;\n#&gt;       &lt;postalCode&gt;10021-3100&lt;/postalCode&gt;\n#&gt;       &lt;state&gt;NY&lt;/state&gt;\n#&gt;       &lt;streetAddress&gt;21 2nd Street&lt;/streetAddress&gt;\n#&gt;    &lt;/address&gt;\n#&gt;    &lt;age&gt;27&lt;/age&gt;\n#&gt;    &lt;children /&gt;\n#&gt;    &lt;firstName&gt;John&lt;/firstName&gt;\n#&gt;    &lt;isAlive&gt;true&lt;/isAlive&gt;\n#&gt;    &lt;lastName&gt;Smith&lt;/lastName&gt;\n#&gt;    &lt;phoneNumbers&gt;\n#&gt;       &lt;element&gt;\n#&gt;          &lt;number&gt;212 555-1234&lt;/number&gt;\n#&gt;          &lt;type&gt;home&lt;/type&gt;\n#&gt;       &lt;/element&gt;\n#&gt;       &lt;element&gt;\n#&gt;          &lt;number&gt;646 555-4567&lt;/number&gt;\n#&gt;          &lt;type&gt;office&lt;/type&gt;\n#&gt;       &lt;/element&gt;\n#&gt;    &lt;/phoneNumbers&gt;\n#&gt;    &lt;spouse null=\"true\" /&gt;\n#&gt; &lt;/root&gt;",
+    "objectID": "slides/apis-find.html#r-universe-results",
+    "href": "slides/apis-find.html#r-universe-results",
+    "title": "Find APIs",
+    "section": "R Universe Results",
+    "text": "R Universe Results\n\nr_universe_apis_resps |&gt; \n  httr2::resps_data(\n    \\(resp) {\n      httr2::resp_body_json(resp)$results |&gt; \n        tibble::enframe(name = NULL) |&gt; \n        tidyr::unnest_wider(value)\n    }\n  ) |&gt; \n  dplyr::select(Package, Title)\n\n#&gt; # A tibble: 1,418 × 2\n#&gt;    Package         Title                                                        \n#&gt;    &lt;chr&gt;           &lt;chr&gt;                                                        \n#&gt;  1 hoopR           \"Access Men's Basketball Play by Play Data\"                  \n#&gt;  2 wehoop          \"Access Women's Basketball Play by Play Data\"                \n#&gt;  3 gptstudio       \"Use Large Language Models Directly in your Development\\nEnv…\n#&gt;  4 geosapi         \"GeoServer REST API R Interface\"                             \n#&gt;  5 googleLanguageR \"Call Google's 'Natural Language' API, 'Cloud Translation' A…\n#&gt;  6 RobinHood       \"Interface for the RobinHood.com No Commission Investing Pla…\n#&gt;  7 hereR           \"'sf'-Based Interface to the 'HERE' REST APIs\"               \n#&gt;  8 nhlapi          \"A Minimum-Dependency 'R' Interface to the 'NHL' API\"        \n#&gt;  9 salesforcer     \"An Implementation of 'Salesforce' APIs Using Tidy Principle…\n#&gt; 10 oaii            \"'OpenAI' API R Interface\"                                   \n#&gt; # ℹ 1,408 more rows",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Do more with APIs",
+      "Find APIs"
     ]
   },
   {
-    "objectID": "slides/responses.html#xml-example-parsed",
-    "href": "slides/responses.html#xml-example-parsed",
-    "title": "Process other response types",
-    "section": "XML example: parsed",
-    "text": "XML example: parsed\n\nextracted_xml &lt;- resp_body_xml(resp_xml)\nclass(extracted_xml)\n\n#&gt; [1] \"xml_document\" \"xml_node\"\n\n# We'll see other ways to parse this in {rvest} chapter.\nxml2::as_list(extracted_xml) |&gt; str(max.level = 2)\n\n#&gt; List of 1\n#&gt;  $ root:List of 8\n#&gt;   ..$ address     :List of 4\n#&gt;   ..$ age         :List of 1\n#&gt;   ..$ children    : list()\n#&gt;   ..$ firstName   :List of 1\n#&gt;   ..$ isAlive     :List of 1\n#&gt;   ..$ lastName    :List of 1\n#&gt;   ..$ phoneNumbers:List of 2\n#&gt;   ..$ spouse      : list()\n#&gt;   .. ..- attr(*, \"null\")= chr \"true\"",
+    "objectID": "slides/apis-find.html#browser-developer-tools",
+    "href": "slides/apis-find.html#browser-developer-tools",
+    "title": "Find APIs",
+    "section": "Browser developer tools",
+    "text": "Browser developer tools\n\nDiffers browser-to-browser, showing Chrome\nctrl-shift-I (cmd-shift-I) or right click &gt; Inspect\nNetwork tab\nFilter to Fetch/XHR\nRight click &gt; Header Options &gt; Path\nDemo: Amazon suggestions\n\n\n\nMicrosoft Edge is also a Chromium-based browser, so should be same there\nFetch & XHR are two JavaScript APIs for making requests.\n\nXHR = XmlHttpRequest, but not used just for XML.\nFetch is more modern version, but both are used.\n\nImportantly: They’re how web pages often make API requests on your behalf.\nLoad Amazon, then ctrl-shift-i (make sure it’s empty)\nShow clearing with the circle/line icon\nClick the search box\nType “Web APIs with R”, pausing to see requests & results\nPoint out “Path” column\nFilter to “suggestions”\nSingle click last one\nWalk through Headers, Payload, Response\nRight click &gt; Copy &gt; Copy as cURL (bash)\n\nCan paste this and use httr2::curl_translate()",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Do more with APIs",
+      "Find APIs"
     ]
   },
   {
-    "objectID": "slides/responses.html#html-responses",
-    "href": "slides/responses.html#html-responses",
-    "title": "Process other response types",
-    "section": "HTML responses",
-    "text": "HTML responses\nHyperText Markup Language\n\ntext/html, rarely application/xhtml+xml\nhttr2::resp_body_html() uses xml2::read_html()\n\nwhich uses xml2::read_xml(..., as_html = TRUE)\n\n\n\n\nHTML came before XML, but XML now includes HTML, so\nHTML is XML with specific, defined tags\nMuch more on this in rvest chapter",
+    "objectID": "slides/apis-find.html#sniff-api-requests-with-apisniffer",
+    "href": "slides/apis-find.html#sniff-api-requests-with-apisniffer",
+    "title": "Find APIs",
+    "section": "Sniff API requests with {apisniffer}",
+    "text": "Sniff API requests with {apisniffer}\n\n {apisniffer}\nGoal:\n\nLoad page\n(optional) Interact\nReturns tibble of API info\n(maybe) Also returns functions to access detected APIs\n\n\n\n\nCurrently doesn’t allow interaction\nReturns raw data, not tibble\nCan use httr2::url_parse() to break url into pieces\nrequest objects have sections by {httr2} function\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Do more with APIs",
+      "Find APIs"
     ]
   },
   {
-    "objectID": "slides/responses.html#images",
-    "href": "slides/responses.html#images",
-    "title": "Process other response types",
-    "section": "Images",
-    "text": "Images\n\n\nresp_body_raw(resp) |&gt; magick::image_read()\n\n\n\n\n# requires {rsvg}\nresp_body_raw(resp) |&gt; magick::image_read_svg()\n\n\n\n\n# requires {pdftools}\nresp_body_raw(resp) |&gt; magick::image_read_pdf()\n\n\n\n\nCan also save directly, but this reads the object directly into R.\nSVG and PDF work best with dedicated packages.\nParsing PDFs could be a book itself.",
+    "objectID": "slides/schemas.html#aside-why-rectangle",
+    "href": "slides/schemas.html#aside-why-rectangle",
+    "title": "Quickly parse API responses",
+    "section": "Aside: Why rectangle?",
+    "text": "Aside: Why rectangle?\n\nApps usually “think” in objects\n\nPreferred data: Objects-with-properties (example json)\n\nData scientists usually compare many objects at once\n\nPreferred data: data frames\n\nColumns of variables (of same class)\nRows of observations (~objects)\n\n\nAPIs are usually designed for the first model\nEven data APIs tend to “think” in objects\n\nBecause most programmers do\n\n\n\n\nThis really belongs in the previous chapter or maybe intro, but I’m putting it here for this cohort.\nApps and thus most programmers.\n\nEven when you get a list of things, like on Amazon, each of those product blocks in the list is an html div object. It’s rarely really columns of similar data.\n\nMaybe this is obvious to some, but this felt like an epiphany to me.\nFundamental difference between R and everything else.\n\nThings like pandas/polars are attempts to make Python think like R.\n\nReally pause to discuss.",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Get started",
+      "Quickly parse API responses"
     ]
   },
   {
-    "objectID": "slides/responses.html#video",
-    "href": "slides/responses.html#video",
-    "title": "Process other response types",
-    "section": "Video",
-    "text": "Video\nI haven’t found anything yet for working with “raw” audio/video!\n\n\nresp_body_raw(resp) |&gt; writeBin(path)\n\n\n\n\nav::av_video_convert(path, output = \"output.mp4\", verbose = TRUE)\n\n\n\n\nffmpeg_cmd &lt;- glue::glue(\n  \"ffmpeg -v quiet \",\n  \"-i {input_path} \",\n  \"-ss {start_time} -to {end_time} \",\n  \"-c copy {output_path}\"\n)\nsystem(ffmpeg_cmd, ignore.stdout = TRUE)\n\n\n\n\nAs far as I can tell, you always have to save audio/video, and THEN parse it.\nHow much do people want here? Pointers in right direction? Full examples (which might not apply in their use case)?\nHas anybody worked with video? This feels hacky!",
+    "objectID": "slides/schemas.html#typical-json-data",
+    "href": "slides/schemas.html#typical-json-data",
+    "title": "Quickly parse API responses",
+    "section": "Typical JSON data",
+    "text": "Typical JSON data\ndemo_json.json\n\n\nurl &lt;- \"https://dslc-io.github.io/club-wapir/slides/schemas/demo_json.json\"\ndemo_json &lt;- jsonlite::fromJSON(url)\n\n\n\n\nWhen you click through, point out that the object-per-api is a perfectly reasonable standard, but that this data makes way more sense in R with a row per api, but a standardized column for each variable, like we saw in the last chapter & last slide\nNote that sometimes jsonlite::fromJSON() mangles data, jsonlite::read_json() is same thing without auto-parsing.",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Get started",
+      "Quickly parse API responses"
     ]
   },
   {
-    "objectID": "slides/responses.html#audio",
-    "href": "slides/responses.html#audio",
-    "title": "Process other response types",
-    "section": "Audio",
-    "text": "Audio\nI haven’t found anything yet for working with “raw” audio/video!\n\n\nresp_body_raw(resp) |&gt; writeBin(filename)\n\n\n\n\nav::av_audio_convert(\n  path, output = \"output.mp3\", format = NULL,\n  channels = NULL, sample_rate = NULL,\n  start_time = NULL, total_time = NULL,\n  verbose = TRUE\n)\n\n\n\n\nHow much do people want here? Pointers in right direction? Full examples (which might not apply in their use case)?\nHas anybody worked with audio? This feels hacky!",
+    "objectID": "slides/schemas.html#rectangling-demo_json-manually",
+    "href": "slides/schemas.html#rectangling-demo_json-manually",
+    "title": "Quickly parse API responses",
+    "section": "Rectangling demo_json manually",
+    "text": "Rectangling demo_json manually\n\ndemo_json |&gt; \n  tibble::enframe(name = \"api_id\") |&gt;\n  tidyr::unnest_longer(value, indices_include = FALSE) |&gt; \n  tidyr::unnest_longer(value, indices_to = \"version\") |&gt;\n  tidyr::unnest_wider(value)\n\n#&gt; # A tibble: 3 × 8\n#&gt;   api_id        added updated swaggerUrl swaggerYamlUrl openapiVer link  version\n#&gt;   &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;          &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  \n#&gt; 1 apis.guru     2015… 2023-0… https://a… https://api.a… 3.0.0      http… 2.2.0  \n#&gt; 2 fec.gov       2018… 2023-0… https://a… https://api.a… 3.0.0      http… 1.0    \n#&gt; 3 googleapis.c… 2020… 2023-0… https://a… https://api.a… 3.0.0      http… v3\n\n\n\n\nWouldn’t it be nice if we could do all of that automatically?",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Get started",
+      "Quickly parse API responses"
     ]
   },
   {
-    "objectID": "slides/responses.html#raw-data",
-    "href": "slides/responses.html#raw-data",
-    "title": "Process other response types",
-    "section": "Raw data",
-    "text": "Raw data\nDanger zone!\n\n\nresp_body_raw(resp) |&gt; writeBin(filename)\n\n\n\n\nAnything else likely has to be saved before any tools will know what to do.\nDon’t save random binary files if you don’t have reason to trust what they are!",
+    "objectID": "slides/schemas.html#introducing-tibblify",
+    "href": "slides/schemas.html#introducing-tibblify",
+    "title": "Quickly parse API responses",
+    "section": "Introducing tibblify",
+    "text": "Introducing tibblify\n\n{tibblify} 📦 to auto-convert hierarchical data to tibbles\nSuper-charged tidyr::unnest_auto()\nTibbles all the way down\nExperimental functionality for APIs\n\n\n\n(bullet 4): This probably belongs in a separate package, but for now it’s in a dev branch of tibblify.",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Get started",
+      "Quickly parse API responses"
     ]
   },
   {
-    "objectID": "slides/responses.html#base64-encoded-json-data",
-    "href": "slides/responses.html#base64-encoded-json-data",
-    "title": "Process other response types",
-    "section": "Base64-encoded JSON data",
-    "text": "Base64-encoded JSON data\n\nBase64 transforms binary data into text\n\n6-bit blocks ➡️ 1 of 64 characters\n\n\n\n\nraw_data &lt;- resp_body_json(resp) |&gt;\n  _$b64_json |&gt; # Or whatever the element is named\n  jsonlite::base64_dec()\n\nmagick::image_read(raw_data) # Etc\n\n\n\n\nOpenAI API can send generated images this way (that’s how I was reminded about it).\n64 = 2^6",
+    "objectID": "slides/schemas.html#rectangling-demo_json-with-tibblify",
+    "href": "slides/schemas.html#rectangling-demo_json-with-tibblify",
+    "title": "Quickly parse API responses",
+    "section": "Rectangling demo_json with tibblify",
+    "text": "Rectangling demo_json with tibblify\n\n\ndj_tibblified &lt;- tibblify::tibblify(demo_json)\ndj_tibblified\n\n#&gt; # A tibble: 3 × 2\n#&gt;   .names                           versions\n#&gt;   &lt;chr&gt;                  &lt;list&lt;tibble[,7]&gt;&gt;\n#&gt; 1 apis.guru                         [1 × 7]\n#&gt; 2 fec.gov                           [1 × 7]\n#&gt; 3 googleapis.com:youtube            [1 × 7]\n\n\n\n\n\ndj_tibblified |&gt; \n  dplyr::rename(api_id = \".names\") |&gt; \n  tidyr::unnest(versions)\n\n#&gt; # A tibble: 3 × 8\n#&gt;   api_id         .names added updated swaggerUrl swaggerYamlUrl openapiVer link \n#&gt;   &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;          &lt;chr&gt;      &lt;chr&gt;\n#&gt; 1 apis.guru      2.2.0  2015… 2023-0… https://a… https://api.a… 3.0.0      http…\n#&gt; 2 fec.gov        1.0    2018… 2023-0… https://a… https://api.a… 3.0.0      http…\n#&gt; 3 googleapis.co… v3     2020… 2023-0… https://a… https://api.a… 3.0.0      http…\n\n\n\n\n\nAt first tibblified looks similar to result of enframe().\nBy default anything it has to name gets .names\n\nWe’ll see how to clean that up later.\n\nBut the nested things are tibbles, so we can use tidyr::unnest()",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Get started",
+      "Quickly parse API responses"
     ]
   },
   {
-    "objectID": "slides/responses.html#http-status-codes",
-    "href": "slides/responses.html#http-status-codes",
-    "title": "Process other response types",
-    "section": "HTTP status codes",
-    "text": "HTTP status codes\n\n\n\nRange\nDescription\nNotes\n\n\n\n\n1xx\nInformational\nHandled by {curl}\n\n\n2xx\nSuccessful\nresp_*()\n\n\n3xx\nRedirection\nAuto-followed\n\n\n4xx\nClient error\n“Your fault”\n\n\n5xx\nServer error\n“Server’s fault”\n\n\n\n\n\nAs with everything, codes can be incorrectly implemented\n“Client error” might result from mistake on server side\n“Server error” might mean you sent an expired key",
+    "objectID": "slides/schemas.html#rectangling-manually-vs-tibblify",
+    "href": "slides/schemas.html#rectangling-manually-vs-tibblify",
+    "title": "Quickly parse API responses",
+    "section": "Rectangling manually vs tibblify",
+    "text": "Rectangling manually vs tibblify\n\n\n\ndj_tidyr &lt;- \n  demo_json |&gt; \n  tibble::enframe(name = \"api_id\") |&gt;\n  tidyr::unnest_longer(\n    value, indices_include = FALSE\n  ) |&gt; \n  tidyr::unnest_longer(\n    value, indices_to = \"version\"\n  ) |&gt;\n  tidyr::unnest_wider(value)\n\n\n\ndj_tibblify &lt;- \n  demo_json |&gt;\n  tibblify::tibblify() |&gt; \n  dplyr::rename(api_id = \".names\") |&gt; \n  tidyr::unnest(versions) |&gt; \n  dplyr::rename(version = \".names\")\n\n\n\n\n\nwaldo::compare(\n  dj_tibblify, dj_tidyr, \n  list_as_map = TRUE # Ignore column order\n)\n\n#&gt; ✔ No differences\n\n\n\n\n\n{waldo} is a package for finding differences.\nlist_as_map = TRUE means “ignore column order” here.\nWhat did tibblify do to figure out how to rectangle the data?",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Get started",
+      "Quickly parse API responses"
     ]
   },
   {
-    "objectID": "slides/responses.html#handling-errors",
-    "href": "slides/responses.html#handling-errors",
-    "title": "Process other response types",
-    "section": "Handling errors",
-    "text": "Handling errors\nreq_error(req, is_error = NULL, body = NULL)\n\nis_error = function to identify errors\nbody = function to turn error resp into message\n\n\n\n# Never trigger R errors\nreq |&gt; \n  req_error(is_error = \\(resp) FALSE)\n\n\n\n\n# Only trigger R errors for \"Server error\" responses\nreq |&gt; \n  req_error(is_error = \\(resp) resp_status(resp) &gt;= 500)\n\n\n\n\n# Include information from response in error message\nreq |&gt; \n  req_error(\n    body = function(resp) {\n      resp_body_json(resp)$error_msg # Often more complicated than this\n    }\n  )\n\n\n\n\nAdd req_error() before req_perform() (or req_perform_iterative())\nMost common use cases:\n\nDon’t let httr2 handle errors, so you can do something yourself.\nOverride bad status codes from server.\nProvide more details in error message from server.\n\nTODO: Find an API that returns error details!",
+    "objectID": "slides/schemas.html#tspec_guess",
+    "href": "slides/schemas.html#tspec_guess",
+    "title": "Quickly parse API responses",
+    "section": "tspec_guess()",
+    "text": "tspec_guess()\n\ntibblify::tibblify() spec argument\n\n“What should this look like?”\n\nGuessed by default with tibblify::guess_tspec()\n\n\n\ntibblify::guess_tspec(demo_json)\n\n#&gt; tspec_df(\n#&gt;   .names_to = \".names\",\n#&gt;   tib_df(\n#&gt;     \"versions\",\n#&gt;     .names_to = \".names\",\n#&gt;     tib_chr(\"added\"),\n#&gt;     tib_chr(\"updated\"),\n#&gt;     tib_chr(\"swaggerUrl\"),\n#&gt;     tib_chr(\"swaggerYamlUrl\"),\n#&gt;     tib_chr(\"openapiVer\"),\n#&gt;     tib_chr(\"link\"),\n#&gt;   ),\n#&gt; )\n\n\n\n\n\nPoint out .names_to.\nPoint out date columns (“added” and “updated”).\nIt would be nice if we had a way to tell it what to expect.",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Get started",
+      "Quickly parse API responses"
     ]
   },
   {
-    "objectID": "slides/responses.html#errors-and-pagination",
-    "href": "slides/responses.html#errors-and-pagination",
-    "title": "Process other response types",
-    "section": "Errors and pagination",
-    "text": "Errors and pagination\n\nreq_perform_iterative() has on_error = c(\"stop\", \"return\")\n\nOn R error\n“stop” = “throw an R error if any call throws an R error”\n“return” = “stop iterating, return everything so far”\n\nreq_error(is_error = \\(resp) FALSE) can cause that not to trigger\nMay want to combine these for your use-case",
+    "objectID": "slides/schemas.html#multiple-standards",
+    "href": "slides/schemas.html#multiple-standards",
+    "title": "Quickly parse API responses",
+    "section": "Multiple Standards",
+    "text": "Multiple Standards\n\nSwagger 2.0 ➡️ OpenAPI 2.0\nOpenAPI 3.x\nOpenAPI 4.0 (in development)\nPostman Collection\nAPI Blueprint\nWeb Application Description Language (WADL)\n\n\n\nSwagger was created by wordnik.com, free online dictionary that compiles a bunch of sources (and wanted a way to store API info consistently).\nSwagger specification & tools bought by SmartBear, spec donated to OpenAPI Initiative to make it officially open forever.\nSwagger now technically means the tools, OpenAPI is the spec.\n\nBut people talk about “swagger specs” all the time.\n\nWe’ll focus on OpenAPI 3\nWe might talk about tools to convert others to OpenAPI 3.",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Get started",
+      "Quickly parse API responses"
     ]
   },
   {
-    "objectID": "slides/responses.html#more-on-retries",
-    "href": "slides/responses.html#more-on-retries",
-    "title": "Process other response types",
-    "section": "More on retries",
-    "text": "More on retries\n\nhttr2::req_retry(\n  req,\n  max_tries = NULL,\n  max_seconds = NULL,\n  is_transient = NULL,\n  backoff = NULL,\n  after = NULL\n)\n\n\nis_transient = function to decide whether to retry from resp\nbackoff = function to convert tries to wait_seconds\nafter = function to convert resp to wait_seconds\n\n\n\nIn pagination chapter, we just set max_tries here to 3\nThe LinkedIn API throws a transient 404 randomly during some calls, so I set it up to retry on 404.",
+    "objectID": "slides/schemas.html#yaml",
+    "href": "slides/schemas.html#yaml",
+    "title": "Quickly parse API responses",
+    "section": "YAML",
+    "text": "YAML\n\n\nJSON  (jsonlite::read_json())\n\n{\n  \"info\": {\n    \"contact\": {\n      \"email\": \"mike.ralphson@gmail.com\",\n      \"name\": \"APIs.guru\",\n      \"url\": \"https://APIs.guru\"\n    },\n    \"title\": \"APIs.guru\",\n    \"version\": \"2.2.0\",\n    \"x-apisguru-categories\": [\n      \"open_data\",\n      \"developer_tools\"\n    ]\n  },\n    \"security\": []\n}\n\n\nYAML  (yaml::read_yaml())\n\ninfo:\n  contact:\n    email: mike.ralphson@gmail.com\n    name: APIs.guru\n    url: https://APIs.guru\n  title: APIs.guru\n  version: 2.2.0\n  x-apisguru-categories:\n    - open_data\n    - developer_tools\nsecurity: [] # No security needed\n\n\n\n\nOriginally “Yet Another Markup Language”\n\nMeaning of name changed because they wanted to stress it’s for data, not documents per se.\n“YAML Ain’t Markup Language”\n\nYAML adds comments, readability\n\nQuoting optional for strings\nIndentation for children, rather than brackets\n\nAll JSON strings are valid YAML, not all YAML is valid JSON.\n.yaml or .yml\nYou might have seen it:\n\nRMarkdown/Quarto headers & config\nPackage configuration files (_pkgdown.yml, codecov.yml)\nGitHub Actions",
     "crumbs": [
-      "Get more data",
-      "Process other response types"
+      "Get started",
+      "Quickly parse API responses"
+    ]
+  },
+  {
+    "objectID": "slides/schemas.html#exploring-an-api-description",
+    "href": "slides/schemas.html#exploring-an-api-description",
+    "title": "Quickly parse API responses",
+    "section": "Exploring an API Description",
+    "text": "Exploring an API Description\n\nAPIs.guru\n\n\n\nopenapi: 3.0.0 # Specification version number\ninfo: # title, version, description, contact, license\nservers: # One or more URLs + optional descriptions\ntags: # Optional name, description, externalDocs of endpoint categories\nexternalDocs: # Optional url & description of additional documentation\nsecurity: # Optional list of named default security schemes\npaths: # Endpoints of the API\nwebhooks: # Description of endpoints YOU can specify for API to SEND to\njsonSchemaDialect: # URI to extend components/schemas\nx-whatever: # Extend with additional properties\ncomponents: # Reusable schemas, securitySchemes, reusable pieces of everything above\n\n\n\n\nTechnically the OpenAPI specification is the standard, and each API has a “description” that’s defined in a “document” (which can be a composite of multiple files).\nPeople can and will do things wrong/weird.\nopenapi = Spec version number, not API\nInfo, servers, tags, externalDocs = Info about the API.\nsecurity = default schemes to use, schemes are described in components/securitySchemes\npaths = the things the API can do, detailed in later chapter(s)\nwebhooks, jsonSchemaDialect, extensions = we won’t talk about these much if at all\nComponents is for storing reusable pieces of info about the API.",
+    "crumbs": [
+      "Get started",
+      "Quickly parse API responses"
+    ]
+  },
+  {
+    "objectID": "slides/schemas.html#apis.guru-apis-schema",
+    "href": "slides/schemas.html#apis.guru-apis-schema",
+    "title": "Quickly parse API responses",
+    "section": "apis.guru APIs Schema",
+    "text": "apis.guru APIs Schema\n\n\ncomponents:\n  schemas:\n    APIs:\n      additionalProperties:\n        $ref: \"#/components/schemas/API\"\n      description: |\n        List of API details.\n        It is a JSON object with API IDs(`&lt;provider&gt;[:&lt;service&gt;]`) as keys.\n      minProperties: 1\n      type: object\n\n\n\n\ntspec_apis &lt;- tspec_df(\n  .names_to = \"api_id\",\n  tspec_api\n)\n\n\n\n\nThe thing we’re loading is described in APIs schema\nI’ve simplified this slightly from the full openapi object.\nJSON doesn’t require a name for the names, so we need to pick something (“api_id”)\nadditionalProperties –&gt; tspec_, properties –&gt; tib_",
+    "crumbs": [
+      "Get started",
+      "Quickly parse API responses"
+    ]
+  },
+  {
+    "objectID": "slides/schemas.html#apis.guru-api-schema",
+    "href": "slides/schemas.html#apis.guru-api-schema",
+    "title": "Quickly parse API responses",
+    "section": "apis.guru API Schema",
+    "text": "apis.guru API Schema\n\n\ncomponents:\n  schemas:\n    API:\n      additionalProperties: false\n      description: Meta information about API\n      properties:\n        versions:\n          additionalProperties:\n            $ref: \"#/components/schemas/ApiVersion\"\n          description: List of supported versions of the API\n          minProperties: 1\n          type: object\n      required:\n        - versions\n      type: object\n\n\n\n\ntspec_api &lt;- tspec_row(\n  tib_df(\n    \"versions\", \n    .names_to = \"version\", \n    tspec_api_version\n  )\n)\n\n\n\n\nadditionalProperties: false means tspec_row()\nversions property needs a tib_ function.\nversions is an object, so tib_df (or tib_row)\nversions has additionalProperties, so defined in tspec_df().",
+    "crumbs": [
+      "Get started",
+      "Quickly parse API responses"
+    ]
+  },
+  {
+    "objectID": "slides/schemas.html#apis.guru-apiversion-schema",
+    "href": "slides/schemas.html#apis.guru-apiversion-schema",
+    "title": "Quickly parse API responses",
+    "section": "apis.guru ApiVersion Schema",
+    "text": "apis.guru ApiVersion Schema\n\ncomponents:\n  schemas:\n    ApiVersion:\n      additionalProperties: false\n      properties:\n        added:\n          description: Timestamp when the version was added\n          format: date-time\n          type: string\n        link:\n          description: Link to the individual API entry for this API\n          format: url\n          type: string\n        openapiVer:\n          description: The value of the `openapi` or `swagger` property of the source definition\n          type: string\n        swaggerUrl:\n          description: URL to OpenAPI definition in JSON format\n          format: url\n          type: string\n        swaggerYamlUrl:\n          description: URL to OpenAPI definition in YAML format\n          format: url\n          type: string\n        updated:\n          description: Timestamp when the version was updated\n          format: date-time\n          type: string\n      required:\n        - added\n        - updated\n        - swaggerUrl\n        - swaggerYamlUrl\n        - openapiVer\n      type: object",
+    "crumbs": [
+      "Get started",
+      "Quickly parse API responses"
+    ]
+  },
+  {
+    "objectID": "slides/schemas.html#apis.guru-apiversion-tspec",
+    "href": "slides/schemas.html#apis.guru-apiversion-tspec",
+    "title": "Quickly parse API responses",
+    "section": "apis.guru ApiVersion tspec",
+    "text": "apis.guru ApiVersion tspec\n\ntib_chr_datetime &lt;- function(key, ..., required = TRUE) {\n  tibblify::tib_scalar(\n    key = key,\n    ptype = vctrs::new_datetime(tzone = \"UTC\"),\n    required = required,\n    ptype_inner = character(),\n    transform = \\(x) as.POSIXct(x, format = \"%Y-%m-%dT%H:%M:%OSZ\", tz = \"UTC\"),\n    ...\n  )\n}\ntspec_api_version &lt;- tspec_row(\n  tib_chr_datetime(\"added\"),\n  tib_chr_datetime(\"updated\"),\n  tib_chr(\"openapiVer\"),\n  tib_chr(\"swaggerUrl\"),\n  tib_chr(\"swaggerYamlUrl\"),\n  tib_chr(\"link\", required = FALSE)\n)",
+    "crumbs": [
+      "Get started",
+      "Quickly parse API responses"
+    ]
+  },
+  {
+    "objectID": "slides/schemas.html#using-tspecs-version",
+    "href": "slides/schemas.html#using-tspecs-version",
+    "title": "Quickly parse API responses",
+    "section": "Using tspecs: version",
+    "text": "Using tspecs: version\n\ntibblify(demo_json$apis.guru$versions$`2.2.0`, tspec_api_version)\n\n#&gt; # A tibble: 1 × 6\n#&gt;   added               updated             openapiVer swaggerUrl   swaggerYamlUrl\n#&gt;   &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;      &lt;chr&gt;        &lt;chr&gt;         \n#&gt; 1 2015-11-26 17:52:26 2023-04-05 13:10:14 3.0.0      https://api… https://api.a…\n#&gt; # ℹ 1 more variable: link &lt;chr&gt;",
+    "crumbs": [
+      "Get started",
+      "Quickly parse API responses"
+    ]
+  },
+  {
+    "objectID": "slides/schemas.html#using-tspecs-api",
+    "href": "slides/schemas.html#using-tspecs-api",
+    "title": "Quickly parse API responses",
+    "section": "Using tspecs: api",
+    "text": "Using tspecs: api\n\ntibblify(demo_json$apis.guru, tspec_api) |&gt; tidyr::unnest(versions)\n\n#&gt; # A tibble: 1 × 7\n#&gt;   version added               updated             openapiVer swaggerUrl         \n#&gt;   &lt;chr&gt;   &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;      &lt;chr&gt;              \n#&gt; 1 2.2.0   2015-11-26 17:52:26 2023-04-05 13:10:14 3.0.0      https://api.apis.g…\n#&gt; # ℹ 2 more variables: swaggerYamlUrl &lt;chr&gt;, link &lt;chr&gt;",
+    "crumbs": [
+      "Get started",
+      "Quickly parse API responses"
+    ]
+  },
+  {
+    "objectID": "slides/schemas.html#using-tspecs-apis",
+    "href": "slides/schemas.html#using-tspecs-apis",
+    "title": "Quickly parse API responses",
+    "section": "Using tspecs: apis",
+    "text": "Using tspecs: apis\n\ntibblify(demo_json, tspec_apis) |&gt; tidyr::unnest(versions)\n\n#&gt; # A tibble: 3 × 8\n#&gt;   api_id   version added               updated             openapiVer swaggerUrl\n#&gt;   &lt;chr&gt;    &lt;chr&gt;   &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;      &lt;chr&gt;     \n#&gt; 1 apis.gu… 2.2.0   2015-11-26 17:52:26 2023-04-05 13:10:14 3.0.0      https://a…\n#&gt; 2 fec.gov  1.0     2018-11-20 00:04:28 2023-03-06 07:12:59 3.0.0      https://a…\n#&gt; 3 googlea… v3      2020-11-02 10:32:34 2023-04-21 23:09:23 3.0.0      https://a…\n#&gt; # ℹ 2 more variables: swaggerYamlUrl &lt;chr&gt;, link &lt;chr&gt;\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
+    "crumbs": [
+      "Get started",
+      "Quickly parse API responses"
     ]
   },
   {
@@ -1286,405 +1308,6 @@
     ]
   },
   {
-    "objectID": "slides/intro.html#api-application-programming-interface",
-    "href": "slides/intro.html#api-application-programming-interface",
-    "title": "Introduction",
-    "section": "API = “application programming interface”",
-    "text": "API = “application programming interface”\n\n“application” = function, website… any computerized thing\n“programming” = can be used in code\n“interface” = way to interact with something\n\n\n🤖 APIs allow computers to talk to one another\n\n\n\nRight level?",
-    "crumbs": [
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "slides/intro.html#what-are-web-apis",
-    "href": "slides/intro.html#what-are-web-apis",
-    "title": "Introduction",
-    "section": "What are web APIs?",
-    "text": "What are web APIs?\n\n💻 Technically any function’s list of arguments is an API\n\n\n\n“httr2 is a ground-up rewrite of httr that provides a pipeable API with an explicit request object that solves more problems felt by packages that wrap APIs” (httr2 docs, emphasis added)\n\n\n\n🕸️ This book = web APIs\n\nWeb API = API on the internet\nFor rest of book, “API” means “web API”\n\n\n\n\nhttr2 quote helpful/interesting?",
-    "crumbs": [
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "slides/intro.html#what-are-some-api-examples",
-    "href": "slides/intro.html#what-are-some-api-examples",
-    "title": "Introduction",
-    "section": "What are some API examples?",
-    "text": "What are some API examples?\n\nCloud services ({paws})\nGovernment agencies (OpenFEC)\nRandom data (sunrisesunset.io)\nServices (OpenAI)\nAPIs.guru = API directory\n\n2,529 APIs as of 2024-01-22\n\n\n\n\nNumber of examples good?\nVariety of examples good?\nDeep enough, or more-full usage examples?\nWhat would you expect in book (vs slides)?",
-    "crumbs": [
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "slides/intro.html#what-wont-i-learn",
-    "href": "slides/intro.html#what-wont-i-learn",
-    "title": "Introduction",
-    "section": "What won’t I learn?",
-    "text": "What won’t I learn?\n\nHow can I access APIs with {httr} or {curl}?\nHow can I create an API?\nHow can I access APIs from other programming languages?\n\n\n\nAnything else people would expect?\nFor now at least, {plumber} didn’t make the cut. Separate book?",
-    "crumbs": [
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "slides/intro.html#who-should-read-this-book",
-    "href": "slides/intro.html#who-should-read-this-book",
-    "title": "Introduction",
-    "section": "Who should read this book?",
-    "text": "Who should read this book?\n\nData Analysts/Scientists\n\nAccess datasets\nEnrich datasets\n\nMachine Learning Engineers\n\nFeature engineering\n\nShiny App Designers\n\nLoad/process data\n\n\n\n\nPeople who analyze data, not necessarily that job title.\nDoes anybody fit into something other than those use cases?",
-    "crumbs": [
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "slides/intro.html#prerequisites",
-    "href": "slides/intro.html#prerequisites",
-    "title": "Introduction",
-    "section": "Prerequisites",
-    "text": "Prerequisites\n\nFamiliarity with R\n\nR for Data Science\n\nVery few hard prerequisites\n\nWill point to resources when helpful\n\nHelpful:\n\nAdvanced R to do more complicated things with retrieved data\n\n\n\n\nHow many have read R4DS?\nHow many have read Advanced R?\nHow many have written a function?\nAccessed an API from R with httr?\nAccessed an API from R with httr2?\nAccessed an API from R some other way?\nDiscuss level I can assume.",
-    "crumbs": [
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "slides/intro.html#how-are-chapters-structured",
-    "href": "slides/intro.html#how-are-chapters-structured",
-    "title": "Introduction",
-    "section": "How are chapters structured?",
-    "text": "How are chapters structured?\n\nLearning Objectives ≈ skills\n\n“After you read this chapter, you will be able to…”\n\nTest-Yourself Questions to check understanding\nCheck online version for updates\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
-    "crumbs": [
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "slides/club-intro.html#process",
-    "href": "slides/club-intro.html#process",
-    "title": "Club Meetings",
-    "section": "️✅ Process",
-    "text": "️✅ Process\nMeetings = weekly\n\n🧑‍🏫 Jon leads a discussion of a chapter\n\n🙋‍♀️ IMPORTANT: You ask questions!\n️✅ Goal:\n\nCohort 1: Revise/finalize learning objectives\nCohort 2: Do slides get you to the LOs?\nCohort 3+: Read the actual book\n\n📺 Recordings on DSLC Videos\n\n🔄️ Jon revises slides & “test yourself” questions\n(revisions, maybe future cohorts)\n📝 Jon writes chapter\n\n\n\nMeet every week… unless I need a break to catch up.\nDiscussion even more important than in a normal club\nWould formal survey of some sort help?\nHoping to write as we go, but definitely won’t keep up.\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
-    "crumbs": [
-      "Club Meetings"
-    ]
-  },
-  {
-    "objectID": "slides/rvest.html#do-i-need-to-scrape-this-data",
-    "href": "slides/rvest.html#do-i-need-to-scrape-this-data",
-    "title": "Scrape data from web pages",
-    "section": "Do I need to scrape this data?",
-    "text": "Do I need to scrape this data?\n\nLook for an API!\nTry {datapasta} 📦\n\nRStudio Addins\n\nIf it’s one time & over-complicated, consider other copy/paste strategies\nOnly scrape pages you need\n\n\n\nMore on looking for APIs in chapter 9 “Find APIs”\nWe’ll see one place to look for an API on the next slide.\nEven consider manual copy/paste one field at a time if it’s not a TON of data.\nPoint of that last bullet: Don’t hit the server more than you need to",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/rvest.html#can-i-legally-scrape-this-data",
-    "href": "slides/rvest.html#can-i-legally-scrape-this-data",
-    "title": "Scrape data from web pages",
-    "section": "Can I legally scrape this data?",
-    "text": "Can I legally scrape this data?\n\n⚠️ Legal disclaimers (but may be over-protective)\nUSA:\n\nCan’t copyright facts,\nCAN copyright collections of facts in some cases (creative)\nTidyTuesday 2023-08-29: Fair Use\n\nOther places:\n\nSometimes stricter (EU)\nSometimes more lax\n\n✅ Personal use or nonprofit education usually ok\n⚠️ Personally Identifiable Information (PII)\n\n\n\nIf it’s important, consult a lawyer.\nThis is why recipe blogs have stories about the recipes.\nThat TidyTuesday dataset exists because I was writing these notes.\nEU provides more protections for database creators and for user-generated data\nPII: Or even user-generated information in some cases\nUser-generated example: Stack overflow content requires attribution.",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/rvest.html#should-i-scrape-this-data",
-    "href": "slides/rvest.html#should-i-scrape-this-data",
-    "title": "Scrape data from web pages",
-    "section": "Should I scrape this data?",
-    "text": "Should I scrape this data?\nrobots.txt: github, wikipedia\n\nUser-agent: * = everybody\nSearch for name(s) of package(s)\nSearch for specific pages within site\nCheck root of site (/) and your particular subfolder\nThese aren’t (necessarily) legally binding\n{robotstxt} 📦 for parsing robots.txt\n{polite} 📦 wraps and applies {robotstxt}\n\n\n\nCheck comments at the top for general feel (comments have # at start)\nBoth examples point to the API. This is the right way to write a robots.txt!\nrobots.txt might be OVER protective, but watch for notes on how to use it\nDon’t hit a site you like a billion times in fast succession, you could “use up” their monthly bandwidth, for example\nYour actions COULD cost them money, so don’t be a jerk!\nWe’ll see the {polite} package shortly, which wraps {robotstxt}",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/rvest.html#motivating-example-cheese",
-    "href": "slides/rvest.html#motivating-example-cheese",
-    "title": "Scrape data from web pages",
-    "section": "Motivating example: Cheese",
-    "text": "Motivating example: Cheese\n\nCastelmagno cheese from cheese.com\n\nFor the book, I’ll host some data so we can be sure it won’t change, but I’m using this example because it’s roughly the shape I’m looking for.\n“Coss-tell-man-yo”\nIf you look at the “cleaning script” in this week’s TidyTuesday… it’s not perfect. I’ve improved it since then.",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/rvest.html#three-steps-of-web-scraping-with-rvest",
-    "href": "slides/rvest.html#three-steps-of-web-scraping-with-rvest",
-    "title": "Scrape data from web pages",
-    "section": "Three steps of web scraping with {rvest}",
-    "text": "Three steps of web scraping with {rvest}\nSee R4DS Chapter 24: “Web Scraping” for a full introduction\n\nLoad the page.\nFind the object(s) (observations & variables) you want.\nExtract variables (text) into R object(s).\n\n\n\nStep 1 = scraping, 2-3 also apply to API requests that return HTML or XML.\nPages = text, regardless of what they contain.\n\nText might point to URL of image, but page = text.\n\nSpecific table? Specific blocks of info?\n\nList of products\n\nEven numbers = text until parsed.",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/rvest.html#use-polite-to-scrape-respectfully",
-    "href": "slides/rvest.html#use-polite-to-scrape-respectfully",
-    "title": "Scrape data from web pages",
-    "section": "Use {polite} to scrape respectfully",
-    "text": "Use {polite} to scrape respectfully\n\n\npolite::bow(\n  url,                             # Page to scrape (or root)\n  user_agent = \"polite R package\", # If you don't change this, min delay = 5\n  delay = 5,                       # Seconds between requests\n  times = 3,                       # Retries\n  force = FALSE,                   # Clears memoised functions\n  verbose = FALSE,                 # Useful to know why it failed\n  ...\n)\n\n\n\n\npolite::scrape(\n  bow,              # Session opened with bow()\n  query = NULL,     # Named list to add after `?` in URL\n  accept = \"html\",  # Specify html, json, xml, csv, txt, etc\n  content = NULL,   # Optional MIME type\n  verbose = FALSE   # Useful to know why it failed\n)\n\n\n\n\nPolite is a great package, but docs are light.\n\nI’m resisting urge to rewrite it in httr2 with better documentation.\n\nbow():\n\nGood idea to set a user agent. If you leave default, it has to be slow. Searches for “polite” or polite package author in your user agent to set slow rule.\nI’d set delay to 0; user agent requirements will override this.\nOk to leave times as-is, probably.\nforce: “Memoise” = if inputs are the same, use the previous result.\n\nIe, don’t hit the API again if we already have the result.\n\nI’d recommend setting verbose to TRUE unless you’re doing a mostly safe, automatic scrape.\n\nscrape()\n\nquery is useful for updating target in a loop, we’ll see that later\naccept: For scraping, you likely want HTML\nLeave content NULL probably\nSet verbose to TRUE while testing.\n\nWe’ll see a third function later: nod()",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/rvest.html#load-the-page-bow-scrape",
-    "href": "slides/rvest.html#load-the-page-bow-scrape",
-    "title": "Scrape data from web pages",
-    "section": "Load the page: bow() + scrape()",
-    "text": "Load the page: bow() + scrape()\n\n\nsession &lt;- polite::bow(\n  \"https://www.cheese.com/castelmagno/\",\n  user_agent = \"rvest/1.0.4 (Jon Harmon; mailto:jonthegeek+useragent@gmail.com)\",\n  delay = 0,\n  verbose = TRUE\n)\nsession\n#&gt; &lt;polite session&gt; https://www.cheese.com/castelmagno/\n#&gt;     User-agent: rvest/1.0.4 (Jon Harmon; https://wapir.io; mailto:jonthegeek+useragent@gmail.com)\n#&gt;     robots.txt: 0 rules are defined for 1 bots\n#&gt;    Crawl delay: 0 sec\n#&gt;   The path is scrapable for this user-agent\n\n\n\n\ncastelmagno_page &lt;- polite::scrape(session)",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/rvest.html#find-the-objects",
-    "href": "slides/rvest.html#find-the-objects",
-    "title": "Scrape data from web pages",
-    "section": "Find the object(s)",
-    "text": "Find the object(s)\nhttps://www.cheese.com/castelmagno\n\nSelect a specific element from R4DS slides\n\n\n\nLoad the page and inspect element\nWhole container: class: “summary-points” so .summary-points\n\nTechnically could use “ul.summary_points”",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/rvest.html#selected-elements",
-    "href": "slides/rvest.html#selected-elements",
-    "title": "Scrape data from web pages",
-    "section": "Selected elements",
-    "text": "Selected elements\n\nhtml_element() vs html_elements() from R4DS slides\n\n\n\nsummary_points &lt;- castelmagno_page |&gt; \n  rvest::html_elements(\".summary-points li\")\nsummary_points\n#&gt; {xml_nodeset (15)}\n#&gt; [1] &lt;li class=\"summary_milk\"&gt;\\n               ...\n#&gt; [2] &lt;li class=\"summary_country\"&gt;\\n            ...\n#&gt; [3] &lt;li class=\"summary_region\"&gt;\\n             ...\n#&gt; [4] &lt;li class=\"summary_family\"&gt;\\n             ...\n#&gt; [5] &lt;li class=\"summary_moisture_and_type\"&gt;\\n  ...\n#&gt; [6] &lt;li class=\"summary_fat\"&gt;\\n                ...\n#&gt; [7] &lt;li class=\"summary_calcium\"&gt;\\n            ...\n#&gt; [8] &lt;li class=\"summary_texture\"&gt;\\n            ...\n#&gt; [9] &lt;li class=\"summary_rind\"&gt;\\n               ...\n#&gt; [10] &lt;li class=\"summary_tint\"&gt;\\n              ...\n#&gt; [11] &lt;li class=\"summary_taste\"&gt;\\n             ...\n#&gt; [12] &lt;li class=\"summary_smell\"&gt;\\n             ...\n#&gt; [13] &lt;li class=\"summary_vegetarian\"&gt;\\n        ...\n#&gt; [14] &lt;li class=\"summary_vegan\"&gt;\\n             ...\n#&gt; [15] &lt;li class=\"summary_alt_spelling\"&gt;\\n      ...\n\n\n\n\nWe really only have a single observation and separate variables here, so that rule of thumb doesn’t always hold!",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/rvest.html#extract-variables",
-    "href": "slides/rvest.html#extract-variables",
-    "title": "Scrape data from web pages",
-    "section": "Extract variables",
-    "text": "Extract variables\n\n\ncheese_variables &lt;- summary_points |&gt; \n  rvest::html_text2() |&gt; \n  stringr::str_remove(\"^[^:]*: \") # \"Remove anything up to \": \"\n\n\n\n\nnames(cheese_variables) &lt;- summary_points |&gt; \n  rvest::html_attr(\"class\") |&gt; \n  stringr::str_remove(\"^summary_\")\n\n\n\n\ncheese_data &lt;- tibble::tibble(!!!cheese_variables)\n#&gt; $ milk              &lt;chr&gt; \"Made from pasteurized or unpasteurized cow's, goat's and sheep's milk\"\n#&gt; $ country           &lt;chr&gt; \"Italy\"\n#&gt; $ region            &lt;chr&gt; \"Piedmont\"\n#&gt; $ family            &lt;chr&gt; \"Blue\"\n#&gt; $ moisture_and_type &lt;chr&gt; \"semi-hard\"\n#&gt; $ fat               &lt;chr&gt; \"34.2 g/100g\"\n#&gt; $ calcium           &lt;chr&gt; \"4768 mg/100g\"\n#&gt; $ texture           &lt;chr&gt; \"crumbly, dense and grainy\"\n#&gt; $ rind              &lt;chr&gt; \"washed\"\n#&gt; $ tint              &lt;chr&gt; \"ivory\"\n#&gt; $ taste             &lt;chr&gt; \"sharp, spicy, strong\"\n#&gt; $ smell             &lt;chr&gt; \"strong\"\n#&gt; $ vegetarian        &lt;chr&gt; \"no\"\n#&gt; $ vegan             &lt;chr&gt; \"no\"\n#&gt; $ alt_spelling      &lt;chr&gt; \"Castelmagno PDO, Castelmagno di alpeggio, Castelmagno prodotto della montagna\"\n\n\n\n\nhtml_text2() cleans up text, you probalby always want it.\nhtml_attr() gets things inside the tag (tab to view of the page)\nI like the “bang bang bang” method for named vector to tibble, there are other ways to do this, too.\nI’ll briefly show cleaning on the next page.\n\nSplit (comma/and)-separated lists into list-vars\nExtract info from “milk”\nClean up classes",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/rvest.html#aside-cleaning",
-    "href": "slides/rvest.html#aside-cleaning",
-    "title": "Scrape data from web pages",
-    "section": "Aside: Cleaning",
-    "text": "Aside: Cleaning\n\ncheese_data |&gt; \n  dplyr::mutate(\n    vegetarian = vegetarian == \"yes\",\n    vegan = vegan == \"yes\",\n    dplyr::across(\n      c(\"fat\", \"calcium\"),\n      \\(x) as.double(stringr::str_remove(x, \" m?g/100g\"))\n    ),\n    dplyr::across(\n      c(-\"milk\", -\"vegetarian\", -\"vegan\", -\"fat\", -\"calcium\"),\n      \\(x) stringr::str_split(x, \"(, )|( and )\")\n    )\n  ) |&gt; \n  dplyr::mutate(\n    pasteurized = stringr::str_detect(milk, \"\\\\bpasteurized\"),\n    unpasteurized = stringr::str_detect(milk, \"\\\\bunpasteurized\"),\n    animal = stringr::str_extract_all(milk, \"(\\\\S+)(?='s)\"),\n    .before = \"milk\",\n    .keep = \"unused\"\n  ) |&gt; \n  dplyr::glimpse()\n#&gt; Rows: 1\n#&gt; Columns: 17\n#&gt; $ pasteurized       &lt;lgl&gt; TRUE\n#&gt; $ unpasteurized     &lt;lgl&gt; TRUE\n#&gt; $ animal            &lt;list&gt; &lt;\"cow\", \"goat\", \"sheep\"&gt;\n#&gt; $ country           &lt;list&gt; \"Italy\"\n#&gt; $ region            &lt;list&gt; \"Piedmont\"\n#&gt; $ family            &lt;list&gt; \"Blue\"\n#&gt; $ moisture_and_type &lt;list&gt; \"semi-hard\"\n#&gt; $ fat               &lt;dbl&gt; 34.2\n#&gt; $ calcium           &lt;dbl&gt; 4768\n#&gt; $ texture           &lt;list&gt; &lt;\"crumbly\", \"dense\", \"grainy\"&gt;\n#&gt; $ rind              &lt;list&gt; \"washed\"\n#&gt; $ tint              &lt;list&gt; \"ivory\"\n#&gt; $ taste             &lt;list&gt; &lt;\"sharp\", \"spicy\", \"strong\"&gt;\n#&gt; $ smell             &lt;list&gt; \"strong\"\n#&gt; $ vegetarian        &lt;lgl&gt; FALSE\n#&gt; $ vegan             &lt;lgl&gt; FALSE\n#&gt; $ alt_spelling      &lt;list&gt; &lt;\"Castelmagno PDO\", \"Castelmagno di alpeggio\", \"Castelmagno prodotto della montagna\"…\n\n\n\n{readr} parse_*() functions can be handy for dates and numbers.\n\nMy {stbl} package might eventually be better for web data.",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/rvest.html#read_html_live",
-    "href": "slides/rvest.html#read_html_live",
-    "title": "Scrape data from web pages",
-    "section": "read_html_live",
-    "text": "read_html_live\n\nData: HMdb.org\n\nrobots.txt\n\nLive-coding!\n\n\n\nsession &lt;- rvest::read_html_live(\"https://www.hmdb.org/geolists.asp\")\nsession |&gt; \n  rvest::html_element(\"#StatesList\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"div.bodysansserif\") |&gt;\n  rvest::html_elements(\"td:nth-child(2)\") |&gt; \n  rvest::html_text2()\nsession$click(\"tr:nth-child(1) .countryarrow\")\nsession |&gt; \n  rvest::html_element(\"#StatesList\") |&gt; \n  rvest::html_text2()\nsession$click(\"tr:nth-child(2) .countryarrow\")\nsession |&gt; \n  rvest::html_element(\"#StatesList\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"#StateSidebar\") |&gt;\n  rvest::html_elements(\"td:nth-child(2)\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"#CountiesList\") |&gt; \n  rvest::html_text2()\nsession$click(\"#StateSidebar tr:nth-child(3) .statearrow\")\nsession |&gt; \n  rvest::html_element(\"#CountiesList\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"#CountySidebar\") |&gt; \n  rvest::html_elements(\"a\") |&gt; \n  rvest::html_text2()\nsession |&gt; \n  rvest::html_element(\"#CountySidebar\") |&gt; \n  rvest::html_elements(\"a\") |&gt; \n  rvest::html_attr(\"href\")\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
-    "crumbs": [
-      "Get more data",
-      "Scrape data from web pages"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#why-paginate",
-    "href": "slides/pagination.html#why-paginate",
-    "title": "Get a lot of data from APIs",
-    "section": "Why paginate?",
-    "text": "Why paginate?\n\nNetwork traffic is slow & expensive\nBigger transfers ➡️ more corruption chance ➡️ resends\nSo APIs often limit results per call\n1 set of results = 1 page",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#what-are-some-pagination-strategies",
-    "href": "slides/pagination.html#what-are-some-pagination-strategies",
-    "title": "Get a lot of data from APIs",
-    "section": "What are some pagination strategies?",
-    "text": "What are some pagination strategies?\n\n\n\nOffset: page param\n\nOpenFEC\nCrossref.org\n\nCursor: cursor or token param\n\nCrossref.org “deep paging”\n\n\n\n\nHeader link: Link: to next in response header\n\nGitHub\nMTG cars\n\nBody link: nextUrl in response body\n\nopen5e.com monsters\n\n\n\n\nshared: Most offer perPage or pageSize param",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#how-can-i-determine-how-an-api-handles-pagination",
-    "href": "slides/pagination.html#how-can-i-determine-how-an-api-handles-pagination",
-    "title": "Get a lot of data from APIs",
-    "section": "How can I determine how an API handles pagination?",
-    "text": "How can I determine how an API handles pagination?\nUnfortunately, no standard.\n\nAlmost always: Mentioned in relevant paths\nOften: Separate “pagination” section near top of docs\nFall-throughs:\n\npage, perPage, cursor parameters\nLook at a response",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#aside-retries-and-api-consumer-etiquette",
-    "href": "slides/pagination.html#aside-retries-and-api-consumer-etiquette",
-    "title": "Get a lot of data from APIs",
-    "section": "Aside: Retries and API consumer etiquette",
-    "text": "Aside: Retries and API consumer etiquette\n\nPagination ➡️ repeated API calls\nBe nice!\nhttr2::req_retry()\n\nMust set max_tries or max_seconds\nOther options usually ok as-is\n\nMore in “Process other response types”\n\n\n\nIf neither max_tries nor max_seconds set, silently ignored\nOther things: req_throttle() limits calls/second, req_timeout() to set a time limit for single big calls",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#req_perform_iterative",
-    "href": "slides/pagination.html#req_perform_iterative",
-    "title": "Get a lot of data from APIs",
-    "section": "req_perform_iterative()",
-    "text": "req_perform_iterative()\n\n Added in {httr2} 1.0.0.\nReplaces req_perform()\n\n\n\nnormal_request |&gt; \n  req_retry(max_tries = 3) |&gt; # Tries *per page*\n  req_perform_iterative(\n    next_req = function_to_choose_next_req,\n    max_reqs = 20 # Maximum separate page calls\n  )\n\n\n\n“Iteration helpers” = built-in next_req functions\n\n\n\nUsually include retry, because API might yell at you for multiple calls\nmax_reqs default is 20. Start low when experimenting, Inf when solid\nEach iteration helper gets a slide",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#iteration-helpers-iterate_with_offset",
-    "href": "slides/pagination.html#iteration-helpers-iterate_with_offset",
-    "title": "Get a lot of data from APIs",
-    "section": "Iteration helpers: iterate_with_offset()",
-    "text": "Iteration helpers: iterate_with_offset()\n\nparam_name = \"page\" or whatever API calls it\nstart, offset = almost always leave as-is\nresp_pages = function to convert resp to page count\n\nmax_reqs &lt;- min(max_reqs, total_pages)\n\nresp_complete = function to check if resp is last page\n\nEg: \\(resp) !length(resp_body_json(resp))\n\n\n\n\nAlmost always “page”.\nresp_pages called 1st response. Optional.\n\nHelp says it’s called once, but, if it fails to find total, it will be called for each response.\n\nresp_complete usually not needed\n\nExample is shorthand for “Did we get an empty body?”",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#offset-example-openfec",
-    "href": "slides/pagination.html#offset-example-openfec",
-    "title": "Get a lot of data from APIs",
-    "section": "Offset example: OpenFEC",
-    "text": "Offset example: OpenFEC\n\ncandidates_request &lt;- \n  request(\"https://api.open.fec.gov/v1/candidates\") |&gt; \n  req_url_query(api_key = \"DEMO_KEY\", election_year = 2020, office = \"P\") |&gt; \n  req_url_query(has_raised_funds = TRUE)\n\n\n\n\n\ncandidates_single &lt;- \n  candidates_request |&gt; \n  req_perform() |&gt; \n  resp_body_json()\nlength(candidates_single$results)\n#&gt; [1] 20\ncandidates_single$pagination$count\n#&gt; [1] 173\n\n\n\ncandidates_multi &lt;- \n  candidates_request |&gt; \n  req_retry(max_tries = 3) |&gt; \n  req_perform_iterative(\n    next_req = iterate_with_offset(\n      \"page\",\n      resp_pages = \\(resp) {\n        content &lt;- resp_body_json(resp)\n        content$pagination$pages\n      }\n    ),\n    max_reqs = Inf\n  )\nlength(candidates_multi)\n#&gt; [1] 9\n\n\n\n\nWarning: This might take a while with the DEMO_KEY\nWe’ll see how to extract data from the pages shortly",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#offset-example-crossref.org",
-    "href": "slides/pagination.html#offset-example-crossref.org",
-    "title": "Get a lot of data from APIs",
-    "section": "Offset example: crossref.org",
-    "text": "Offset example: crossref.org\n\ncrossref_request &lt;- \n  request(\"https://api.crossref.org/works\") |&gt; \n  req_url_query(query = \"apis\")\n\n\n\n\n\ncrossref_single &lt;- \n  crossref_request |&gt; \n  req_perform() |&gt; \n  resp_body_json()\nlength(crossref_single$message$items)\n#&gt; [1] 20\ncrossref_single$message$`total-results`\n#&gt; [1] 14114\n\n\n\ncrossref_multi &lt;- \n  crossref_request |&gt; \n  req_retry(max_tries = 3) |&gt; \n  req_perform_iterative(\n    next_req = iterate_with_offset(\n      \"offset\",\n      resp_pages = \\(resp) {\n        content &lt;- resp_body_json(resp)\n        content$pagination$message$`total-results`\n      }\n    ),\n    max_reqs = Inf\n  )\nlength(crossref_multi)\n#&gt; [1] 706\n\n\n\n\nWarning: This takes a long time, probably don’t actually run it!\nThis one has a faster (?) method that we’ll check in a sec.\nWe’ll see how to extract data from the pages shortly",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#iteration-helpers-iterate_with_cursor",
-    "href": "slides/pagination.html#iteration-helpers-iterate_with_cursor",
-    "title": "Get a lot of data from APIs",
-    "section": "Iteration helpers: iterate_with_cursor()",
-    "text": "Iteration helpers: iterate_with_cursor()\n\nparam_name = \"cursor\" or whatever API calls it\nresp_param_value = function to convert resp to next cursor\n\nNULL if no more pages\n\n\n\n\nI’ve seen “cursor”, “token” and variations, like “nextPageToken”.\nSingle function because usually this style ends with an empty nextCursor.",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#cursor-example-crossref",
-    "href": "slides/pagination.html#cursor-example-crossref",
-    "title": "Get a lot of data from APIs",
-    "section": "Cursor example: Crossref",
-    "text": "Cursor example: Crossref\n\ncrossref_request_cursor &lt;- \n  crossref_request |&gt; \n  req_url_query(cursor = \"*\")\n\n\n\n\n\ncrossref_single &lt;- \n  crossref_request_cursor |&gt; \n  req_perform() |&gt; \n  resp_body_json()\nnames(crossref_single$message)\n#&gt; [1] \"facets\"         \"next-cursor\"    \"total-results\"  \"items\"          \"items-per-page\"\n#&gt; [6] \"query\" \n\n\n\ncrossref_multi &lt;- \n  crossref_request_cursor |&gt; \n  req_retry(max_tries = 3) |&gt; \n  req_perform_iterative(\n    next_req = iterate_with_cursor(\n      \"cursor\",\n      resp_param_value = \\(resp) {\n        content &lt;- resp_body_json(resp)\n        if (!length(content$message$items)) {\n          return(NULL)\n        }\n        content$message$`next-cursor`\n      }\n    ),\n    max_reqs = Inf\n  )\nlength(crossref_multi)\n#&gt; [1] 706\n\n\n\n\nWarning: This takes a long time, probably don’t actually run it!\nNot noticeably faster, but this API limits total results from normal pagination, unlimited for cursor-based\nIn this case they keep sending next-cursors even when results are empty, so we need to tell it to stop when no results",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#iteration-helpers-iterate_with_link_url",
-    "href": "slides/pagination.html#iteration-helpers-iterate_with_link_url",
-    "title": "Get a lot of data from APIs",
-    "section": "Iteration helpers: iterate_with_link_url()",
-    "text": "Iteration helpers: iterate_with_link_url()\n\nrel = \"next\" or whatever API calls it\nresp_param_value = function to convert resp to next cursor\n\nNULL if no more pages\n\n\n\n\nThis really should always be “next”, but it isn’t required\nCanonical example is the GitHub API, but I’m showing a demo that doesn’t require any setup by you",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#link-url-example-mtg",
-    "href": "slides/pagination.html#link-url-example-mtg",
-    "title": "Get a lot of data from APIs",
-    "section": "Link-URL example: MTG",
-    "text": "Link-URL example: MTG\n\nmtg_cards_request &lt;- \n  request(\"http://api.magicthegathering.io/v1\") |&gt; \n  req_url_path_append(\"cards\") |&gt; \n  req_url_query(name = \"bee\", pageSize = 20)\n\n\n\n\n\nmtg_cards_single &lt;- \n  mtg_cards_request |&gt; \n  req_perform()\nresp_header(mtg_cards_single, \"link\")\n#&gt; &lt;https://api.magicthegathering.io/v1/cards?name=bee&page=5&pageSize=20&gt;; rel=\"last\", \n#&gt; &lt;https://api.magicthegathering.io/v1/cards?name=bee&page=2&pageSize=20&gt;; rel=\"next\"\nmtg_cards_content &lt;- mtg_cards_single |&gt; \n  resp_body_json()\n\n\n\nmtg_cards_multi &lt;- \n  mtg_cards_request |&gt; \n  req_retry(max_tries = 3) |&gt; \n  req_perform_iterative(\n    next_req = iterate_with_link_url(),\n    max_reqs = Inf\n  )\nlength(mtg_cards_multi)\n#&gt; [1] 5\n\n\n\n\nIf I were working with this one a lot, I’d probably actually use offset pagination.",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#roll-your-own-iteration",
-    "href": "slides/pagination.html#roll-your-own-iteration",
-    "title": "Get a lot of data from APIs",
-    "section": "Roll-your-own iteration",
-    "text": "Roll-your-own iteration\n\nPeople love to reinvent this wheel.\nBody link: nextUrl in response body\n\nopen5e.com monsters",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#roll-your-own-example-dnd-monsters",
-    "href": "slides/pagination.html#roll-your-own-example-dnd-monsters",
-    "title": "Get a lot of data from APIs",
-    "section": "Roll-your-own example: DnD Monsters",
-    "text": "Roll-your-own example: DnD Monsters\n\ndnd_request &lt;- \n  request(\"https://api.open5e.com/monsters/?limit=100\") \n\n\n\n\n\ndnd_single &lt;- \n  dnd_request |&gt; \n  req_perform() |&gt; \n  resp_body_json()\nlength(dnd_single$results)\n#&gt; [1] 100\ndnd_single$count\n#&gt; [1] 2439\n\n\n\ndnd_multi &lt;- \n  dnd_request |&gt; \n  req_retry(max_tries = 3) |&gt; \n  req_perform_iterative(\n    next_req = function(resp, req) {\n      url &lt;- resp_body_json(resp)$`next`\n      if (!is.null(url)) {\n        req_url(req, url)\n      }\n    },\n    max_reqs = Inf\n  )\nlength(dnd_multi)\n#&gt; [1] 25\n\n\n\n\nUsed code returned by iterate_with_link_url() as template\nBe sure to keep all the non-URL bits of the req!",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#resps_data",
-    "href": "slides/pagination.html#resps_data",
-    "title": "Get a lot of data from APIs",
-    "section": "resps_data()",
-    "text": "resps_data()\n\nreq_perform_iterative() returns list of responses\nresps_data() takes that list + resp_data parsing function and merges\nUsually you need more than just something like resp_body_json\n\nGrab just the actual results\n\n\n\n\nClarify that resp_data is the function itself, NOT a call to the function.",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#resps_data-example-openfec",
-    "href": "slides/pagination.html#resps_data-example-openfec",
-    "title": "Get a lot of data from APIs",
-    "section": "resps_data() example: OpenFEC",
-    "text": "resps_data() example: OpenFEC\n\n\nfec_resp_parser &lt;- function(resp) {\n  resp_body_json(resp)$results\n}\n\n\n\n\ncandidates_multi_results &lt;- resps_data(\n  candidates_multi, fec_resp_parser\n)\ntibblify::tibblify(candidates_multi_results)\n\n#&gt; # A tibble: 173 × 24\n#&gt;    active_through candidate_id candidate_inactive candidate_status cycles    \n#&gt;             &lt;int&gt; &lt;chr&gt;        &lt;lgl&gt;              &lt;chr&gt;            &lt;list&gt;    \n#&gt;  1           2020 P00014241    FALSE              N                &lt;list [3]&gt;\n#&gt;  2           2024 P00008193    FALSE              N                &lt;list [4]&gt;\n#&gt;  3           2020 P00006296    FALSE              P                &lt;list [4]&gt;\n#&gt;  4           2020 P00010900    FALSE              N                &lt;list [1]&gt;\n#&gt;  5           2020 P00012104    FALSE              P                &lt;list [3]&gt;\n#&gt;  6           2020 P40003170    FALSE              N                &lt;list [5]&gt;\n#&gt;  7           2020 P00008128    FALSE              N                &lt;list [4]&gt;\n#&gt;  8           2020 P80004369    FALSE              N                &lt;list [2]&gt;\n#&gt;  9           2020 P00010090    FALSE              N                &lt;list [3]&gt;\n#&gt; 10           2024 P00015297    FALSE              N                &lt;list [3]&gt;\n#&gt; # ℹ 163 more rows\n#&gt; # ℹ 19 more variables: district &lt;chr&gt;, district_number &lt;int&gt;,\n#&gt; #   election_districts &lt;list&gt;, election_years &lt;list&gt;, federal_funds_flag &lt;lgl&gt;,\n#&gt; #   first_file_date &lt;chr&gt;, has_raised_funds &lt;lgl&gt;,\n#&gt; #   inactive_election_years &lt;list&gt;, incumbent_challenge &lt;chr&gt;,\n#&gt; #   incumbent_challenge_full &lt;chr&gt;, last_f2_date &lt;chr&gt;, last_file_date &lt;chr&gt;,\n#&gt; #   load_date &lt;chr&gt;, name &lt;chr&gt;, office &lt;chr&gt;, office_full &lt;chr&gt;, …\n\n\n\n\n\nReiterate that fec_resp_parser is the function itself, not a call to the function.",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
-    "objectID": "slides/pagination.html#resps_data-friends",
-    "href": "slides/pagination.html#resps_data-friends",
-    "title": "Get a lot of data from APIs",
-    "section": "resps_data() friends",
-    "text": "resps_data() friends\n\nreq_perform_iterative on_error arg: “stop” or “return”\nresps_successes() extracts just successes from resps list\nresps_failures() same, but failures\nresps_requests() to see how they were called\n\n\n\nWe didn’t dig into it, but req_perform_iterative() has on_error arg\nCommon workflow might be to grab the successes, and then pass THAT to resps_data()\nreq_perform_iterative can only have 1 failure, but we’ll see some more multi performs in a later chapter TBD\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
-    "crumbs": [
-      "Get more data",
-      "Get a lot of data from APIs"
-    ]
-  },
-  {
     "objectID": "slides/accessing-other.html#what-is-graphql",
     "href": "slides/accessing-other.html#what-is-graphql",
     "title": "Communicate with other types of APIs",
@@ -1836,6 +1459,449 @@
     "crumbs": [
       "Do more with APIs",
       "Communicate with other types of APIs"
+    ]
+  },
+  {
+    "objectID": "slides/intro.html#api-application-programming-interface",
+    "href": "slides/intro.html#api-application-programming-interface",
+    "title": "Introduction",
+    "section": "API = “application programming interface”",
+    "text": "API = “application programming interface”\n\n“application” = function, website… any computerized thing\n“programming” = can be used in code\n“interface” = way to interact with something\n\n\n🤖 APIs allow computers to talk to one another\n\n\n\nRight level?",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "slides/intro.html#what-are-web-apis",
+    "href": "slides/intro.html#what-are-web-apis",
+    "title": "Introduction",
+    "section": "What are web APIs?",
+    "text": "What are web APIs?\n\n💻 Technically any function’s list of arguments is an API\n\n\n\n“httr2 is a ground-up rewrite of httr that provides a pipeable API with an explicit request object that solves more problems felt by packages that wrap APIs” (httr2 docs, emphasis added)\n\n\n\n🕸️ This book = web APIs\n\nWeb API = API on the internet\nFor rest of book, “API” means “web API”\n\n\n\n\nhttr2 quote helpful/interesting?",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "slides/intro.html#what-are-some-api-examples",
+    "href": "slides/intro.html#what-are-some-api-examples",
+    "title": "Introduction",
+    "section": "What are some API examples?",
+    "text": "What are some API examples?\n\nCloud services ({paws})\nGovernment agencies (OpenFEC)\nRandom data (sunrisesunset.io)\nServices (OpenAI)\nAPIs.guru = API directory\n\n2,529 APIs as of 2024-01-22\n\n\n\n\nNumber of examples good?\nVariety of examples good?\nDeep enough, or more-full usage examples?\nWhat would you expect in book (vs slides)?",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "slides/intro.html#what-wont-i-learn",
+    "href": "slides/intro.html#what-wont-i-learn",
+    "title": "Introduction",
+    "section": "What won’t I learn?",
+    "text": "What won’t I learn?\n\nHow can I access APIs with {httr} or {curl}?\nHow can I create an API?\nHow can I access APIs from other programming languages?\n\n\n\nAnything else people would expect?\nFor now at least, {plumber} didn’t make the cut. Separate book?",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "slides/intro.html#who-should-read-this-book",
+    "href": "slides/intro.html#who-should-read-this-book",
+    "title": "Introduction",
+    "section": "Who should read this book?",
+    "text": "Who should read this book?\n\nData Analysts/Scientists\n\nAccess datasets\nEnrich datasets\n\nMachine Learning Engineers\n\nFeature engineering\n\nShiny App Designers\n\nLoad/process data\n\n\n\n\nPeople who analyze data, not necessarily that job title.\nDoes anybody fit into something other than those use cases?",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "slides/intro.html#prerequisites",
+    "href": "slides/intro.html#prerequisites",
+    "title": "Introduction",
+    "section": "Prerequisites",
+    "text": "Prerequisites\n\nFamiliarity with R\n\nR for Data Science\n\nVery few hard prerequisites\n\nWill point to resources when helpful\n\nHelpful:\n\nAdvanced R to do more complicated things with retrieved data\n\n\n\n\nHow many have read R4DS?\nHow many have read Advanced R?\nHow many have written a function?\nAccessed an API from R with httr?\nAccessed an API from R with httr2?\nAccessed an API from R some other way?\nDiscuss level I can assume.",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "slides/intro.html#how-are-chapters-structured",
+    "href": "slides/intro.html#how-are-chapters-structured",
+    "title": "Introduction",
+    "section": "How are chapters structured?",
+    "text": "How are chapters structured?\n\nLearning Objectives ≈ skills\n\n“After you read this chapter, you will be able to…”\n\nTest-Yourself Questions to check understanding\nCheck online version for updates\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "slides/httr2.html#what-can-we-do-so-far",
+    "href": "slides/httr2.html#what-can-we-do-so-far",
+    "title": "Easily access APIs with {httr2}",
+    "section": "What can we do so far?",
+    "text": "What can we do so far?\n\n\nWe can:\n\nAccess APIs that can be accessed in a web browser\nCopy/paste or manually build URLs\nPass an authentication key as part of a URL\nFetch JSON data with {jsonlite}\nFetch YAML data with {yaml}\n\n\nWe can’t yet:\n\nAccess APIs that can’t be accessed in a web browser\nBuild API requests systematically\nAccess APIs that require authentication\nFetch other types of data (raw text, images, videos, etc)\n\n\n\n\nBrowser: As long as it isn’t using our login information without us realizing it.\nNo browser: There are technically 9 types of requests (HTTP methods), we can do 1 of them so far.\nA lot of APIs use something called “oauth”, can be really confusing\nThe endpoints we’ve hit haven’t had arguments, but almost all do\nWe can get some specific things with download.file, but need to parse each with different packages\n…and other things we don’t yet know that we wish we could do\nWe’ll use httr2 to deal with all of these things",
+    "crumbs": [
+      "Get started",
+      "Easily access APIs with {httr2}"
+    ]
+  },
+  {
+    "objectID": "slides/httr2.html#motivating-example-openfec",
+    "href": "slides/httr2.html#motivating-example-openfec",
+    "title": "Easily access APIs with {httr2}",
+    "section": "Motivating Example: OpenFEC",
+    "text": "Motivating Example: OpenFEC\n\nOpenFEC: Federal Election Commission API\nAPI documentation usually describes endpoints\n\nendpoint: URL for specific API function",
+    "crumbs": [
+      "Get started",
+      "Easily access APIs with {httr2}"
+    ]
+  },
+  {
+    "objectID": "slides/httr2.html#presidential-candidates",
+    "href": "slides/httr2.html#presidential-candidates",
+    "title": "Easily access APIs with {httr2}",
+    "section": "2020 Presidential Candidates",
+    "text": "2020 Presidential Candidates\n\nWe’ll focus on the /candidates/ endpoint\nhttps://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_key=DEMO_KEY\n\n\n\nopenfec_response &lt;- jsonlite::read_json(\"https://api.open.fec.gov/v1/candidates/?election_year=2020&office=P&api_key=DEMO_KEY\")\n\n\n\n\ntibblify(openfec_response$results) |&gt; \n  select(name, party_full, has_raised_funds) |&gt; \n  head()\n\n#&gt; # A tibble: 6 × 3\n#&gt;   name                       party_full       has_raised_funds\n#&gt;   &lt;chr&gt;                      &lt;chr&gt;            &lt;lgl&gt;           \n#&gt; 1 753, JO                    NONE             FALSE           \n#&gt; 2 ABRAMSON, MAX              VETERANS PARTY   FALSE           \n#&gt; 3 ABRAUGH, MATTHEW M. MR.    NON-PARTY        FALSE           \n#&gt; 4 ACKER, BRANDON W           DEMOCRATIC PARTY FALSE           \n#&gt; 5 ACKER, RYAN                NON-PARTY        TRUE            \n#&gt; 6 ACORD, ROBERT BRADFORD LEE DEMOCRATIC PARTY FALSE\n\n\n\n\n\nWhat if we want a different year? Or a different office? Or any of the other 20 or so available parameters?",
+    "crumbs": [
+      "Get started",
+      "Easily access APIs with {httr2}"
+    ]
+  },
+  {
+    "objectID": "slides/httr2.html#what-do-httr2-calls-look-like",
+    "href": "slides/httr2.html#what-do-httr2-calls-look-like",
+    "title": "Easily access APIs with {httr2}",
+    "section": "What do {httr2} calls look like?",
+    "text": "What do {httr2} calls look like?\n\nPipe-based API calls\n\n\n\ncandidates &lt;- \n  request(\"https://api.open.fec.gov/v1\") |&gt; \n  req_url_path_append(\"candidates\") |&gt; \n  req_url_query(api_key = \"DEMO_KEY\") |&gt; \n  req_url_query(\n    election_year = 2020,\n    office = \"P\"\n  ) |&gt; \n  req_perform() |&gt; # Chapter 5 (next)\n  resp_body_json() # Chapter 7\n\n\n\n\nwaldo::compare(candidates, openfec_response)\n\n\n\n#&gt; ✔ No differences\n\n\n\n\n\nI use |&gt; base R pipe here. Pronounce it “and then”.\nhttr2 calls usually involve a request, which you perform, and then you parse the response.\nWe’re hitting the free, open api from the Federal Elections Commission.\n(step through)\nHere we build the request piece-wise\n\nWe’ll get into details of the functions in a few slides\n\nThen we perform the request. This actually hits the server.\nThen we parse what we get back with a resp_body function.\nSame result as the thing we got using jsonlite.\n\nBecause resp_body_json uses jsonlite.",
+    "crumbs": [
+      "Get started",
+      "Easily access APIs with {httr2}"
+    ]
+  },
+  {
+    "objectID": "slides/httr2.html#why-httr2",
+    "href": "slides/httr2.html#why-httr2",
+    "title": "Easily access APIs with {httr2}",
+    "section": "Why “httr2”?",
+    "text": "Why “httr2”?\n\nHTTP = HyperText Transfer Protocol\n\n“HyperText” = web content\n“Transfer” = exchange\n“Protocol” = rules\n“rules for exchanging web content”\nHTTP(S) = most of internet communication\n\n\n\n\nYou may have seen http or https at the start of URLs (web addresses)\n“web content” =\n\noriginally text and links (HTML = HyperText Markup Language)\nnow data, images, videos, etc.\n\n“exchange” or “move”\n“S” means “secure”\nIf anyone asks: 1.1 = most, 2.0 = 2-way\n2 = he rewrote it for piping",
+    "crumbs": [
+      "Get started",
+      "Easily access APIs with {httr2}"
+    ]
+  },
+  {
+    "objectID": "slides/httr2.html#how-do-i-use-httr2",
+    "href": "slides/httr2.html#how-do-i-use-httr2",
+    "title": "Easily access APIs with {httr2}",
+    "section": "How do I use {httr2}?",
+    "text": "How do I use {httr2}?\n\nreq_*() functions return httr2_request objects\n\n\n\nreq_fec &lt;- request(\"https://api.open.fec.gov/v1\")\nreq_fec_auth &lt;- req_url_query(req_fec, api_key = \"DEMO_KEY\")\nreq_candidates &lt;- req_url_path_append(req_fec_auth, \"candidates\")\nreq_candidates_president &lt;- req_url_query(req_candidates, office = \"P\")\n\n\n\n\npres_2024 &lt;- req_url_query(req_candidates_president, election_year = 2024) |&gt; \n  req_perform() |&gt; resp_body_json()\n\n\n\n\ncandidates_2022 &lt;- req_url_query(req_candidates, election_year = 2022) |&gt; \n  req_perform() |&gt; resp_body_json()\n\n\n\n\nreq_calendar &lt;- req_url_path_append(req_fec_auth, \"calendar-dates\")\n\n\n\n\nImagine you’re working with an API, like the FEC API\n\nWhat you’ll very often do.\n\nWe’ll go through function specifics in a moment, just soak in the utility of separate objects\nThis is super important, so let’s pause to sink this in\nI’m going to drink some water while you make sure you have that.",
+    "crumbs": [
+      "Get started",
+      "Easily access APIs with {httr2}"
+    ]
+  },
+  {
+    "objectID": "slides/httr2.html#request-req_path_append",
+    "href": "slides/httr2.html#request-req_path_append",
+    "title": "Easily access APIs with {httr2}",
+    "section": "request() & req_path_append()",
+    "text": "request() & req_path_append()\n\nrequest(\"https://api.open.fec.gov/v1/candidates/\")\n\n\nCleaner: “main” request object + specific path\n\nreq_fec &lt;- request(\"https://api.open.fec.gov/v1\")\nreq_candidates &lt;- req_fec |&gt; \n  req_url_path_append(\"candidates\")\n\n\n\n\nreq_candidates$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates\"\n\n\n\n\n\nhttr2 “thinks” in pieces\nYou don’t have to think about the /\nWe have to be careful about the “v1” in our request, though!\n\nMore on next slide.",
+    "crumbs": [
+      "Get started",
+      "Easily access APIs with {httr2}"
+    ]
+  },
+  {
+    "objectID": "slides/httr2.html#dont-use-req_url_path",
+    "href": "slides/httr2.html#dont-use-req_url_path",
+    "title": "Easily access APIs with {httr2}",
+    "section": "Don’t use req_url_path()!",
+    "text": "Don’t use req_url_path()!\n\n\nreq_path_bad &lt;- req_fec |&gt; \n  req_url_path(\"candidates\")\nreq_path_bad$url\n\n#&gt; [1] \"https://api.open.fec.gov/candidates\"\n\n\n\n\n\nreq_candidates$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates\"\n\n\n\n\n\nYou probably never want req_url_path()\nNotably the help docs don’t show an example for this one",
+    "crumbs": [
+      "Get started",
+      "Easily access APIs with {httr2}"
+    ]
+  },
+  {
+    "objectID": "slides/httr2.html#req_url_query",
+    "href": "slides/httr2.html#req_url_query",
+    "title": "Easily access APIs with {httr2}",
+    "section": "req_url_query()",
+    "text": "req_url_query()\n\nhttps://api.open.fec.gov/v1/candidates/?api_key=DEMO_KEY&office=P\n\n\n\nreq_pres &lt;- req_candidates |&gt; \n  req_url_query(\n    api_key = \"DEMO_KEY\",\n    office = \"P\"\n  )\n\n\n\nCan add query parameters piecewise, even before path!\n\n\n\nreq_fec_auth &lt;- req_fec |&gt; \n  req_url_query(api_key = \"DEMO_KEY\")\nreq_candidates_auth &lt;- req_fec_auth |&gt; \n  req_url_path_append(\"candidates\")\nreq_pres2 &lt;- req_candidates_auth |&gt; \n  req_url_query(office = \"P\")\n\n\n\n\nidentical(req_pres$url, req_pres2$url)\n\n#&gt; [1] TRUE\n\n\n\n\n\n“Query” = stuff after “?”\nArguments for the endpoint",
+    "crumbs": [
+      "Get started",
+      "Easily access APIs with {httr2}"
+    ]
+  },
+  {
+    "objectID": "slides/httr2.html#req_url_query.multi",
+    "href": "slides/httr2.html#req_url_query.multi",
+    "title": "Easily access APIs with {httr2}",
+    "section": "req_url_query(.multi)",
+    "text": "req_url_query(.multi)\n\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"))\n\n#&gt; Error in `req_url_query()`:\n#&gt; ! All vector elements of `...` must be length 1.\n#&gt; ℹ Use `.multi` to choose a strategy for handling vectors.\n\n\n\n\n.multi = \"pipe\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"pipe\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H|S\"\n\n\n\n\n.multi = \"comma\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"comma\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H,S\"\n\n\n\n\n.multi = \"explode\"\n\nreq_url_query(req_candidates, office = c(\"H\", \"S\"), .multi = \"explode\")$url\n\n#&gt; [1] \"https://api.open.fec.gov/v1/candidates?office=H&office=S\"\n\n\n\n\n\nAPIs often can’t handle multiple params with same name\ndefault = “error”\n. in .multi so it doesn’t collide with a parameter named “multi”\n“pipe” or “comma” to list them out in same parameter\n“explode” to separate them as separate copies of that parameter (what this API actually wants)",
+    "crumbs": [
+      "Get started",
+      "Easily access APIs with {httr2}"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#why-paginate",
+    "href": "slides/pagination.html#why-paginate",
+    "title": "Get a lot of data from APIs",
+    "section": "Why paginate?",
+    "text": "Why paginate?\n\nNetwork traffic is slow & expensive\nBigger transfers ➡️ more corruption chance ➡️ resends\nSo APIs often limit results per call\n1 set of results = 1 page",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#what-are-some-pagination-strategies",
+    "href": "slides/pagination.html#what-are-some-pagination-strategies",
+    "title": "Get a lot of data from APIs",
+    "section": "What are some pagination strategies?",
+    "text": "What are some pagination strategies?\n\n\n\nOffset: page param\n\nOpenFEC\nCrossref.org\n\nCursor: cursor or token param\n\nCrossref.org “deep paging”\n\n\n\n\nHeader link: Link: to next in response header\n\nGitHub\nMTG cars\n\nBody link: nextUrl in response body\n\nopen5e.com monsters\n\n\n\n\nshared: Most offer perPage or pageSize param",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#how-can-i-determine-how-an-api-handles-pagination",
+    "href": "slides/pagination.html#how-can-i-determine-how-an-api-handles-pagination",
+    "title": "Get a lot of data from APIs",
+    "section": "How can I determine how an API handles pagination?",
+    "text": "How can I determine how an API handles pagination?\nUnfortunately, no standard.\n\nAlmost always: Mentioned in relevant paths\nOften: Separate “pagination” section near top of docs\nFall-throughs:\n\npage, perPage, cursor parameters\nLook at a response",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#aside-retries-and-api-consumer-etiquette",
+    "href": "slides/pagination.html#aside-retries-and-api-consumer-etiquette",
+    "title": "Get a lot of data from APIs",
+    "section": "Aside: Retries and API consumer etiquette",
+    "text": "Aside: Retries and API consumer etiquette\n\nPagination ➡️ repeated API calls\nBe nice!\nhttr2::req_retry()\n\nMust set max_tries or max_seconds\nOther options usually ok as-is\n\n\n\n\nIf neither max_tries nor max_seconds set, silently ignored\nOther things: req_throttle() limits calls/second, req_timeout() to set a time limit for single big calls",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#aside-caching-responses",
+    "href": "slides/pagination.html#aside-caching-responses",
+    "title": "Get a lot of data from APIs",
+    "section": "Aside: Caching responses",
+    "text": "Aside: Caching responses\n\nhttr2::req_cache() = save responses locally if server says its ok\nYou deal with path\nAutomatically checks standard caching headers\nVery helpful if data doesn’t change\n\n\n\nI’ve under-utilized this function!\nWe’ll use a package called {rappdirs}, which deals with cross-platforms user directories\n“Standard caching headers” = “Cache-Control”, “Expires”, “max-age” + “Date”, “Etag”, “Last-Modified”\nTechnically often still communicates with server, but very small response",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#aside-our-helper-function",
+    "href": "slides/pagination.html#aside-our-helper-function",
+    "title": "Get a lot of data from APIs",
+    "section": "Aside: Our helper function",
+    "text": "Aside: Our helper function\nWe’re going to req_retry() + req_cache() a lot, so:\n\nreq_friendly &lt;- function(req, cache_name, max_tries = 3) {\n  req |&gt; \n    req_retry(max_tries = max_tries) |&gt; # Tries *per page*\n    req_cache(path = rappdirs::user_cache_dir(cache_name))\n}",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#req_perform_iterative",
+    "href": "slides/pagination.html#req_perform_iterative",
+    "title": "Get a lot of data from APIs",
+    "section": "req_perform_iterative()",
+    "text": "req_perform_iterative()\n\n Added in {httr2} 1.0.0.\nReplaces req_perform()\n\n\n\nnormal_request |&gt; \n  req_perform_iterative(\n    next_req = function_to_choose_next_req,\n    max_reqs = 20 # Maximum separate page calls\n  )\n\n\n\n“Iteration helpers” = built-in next_req functions\n\n\n\nUsually include retry, because API might yell at you for multiple calls\nmax_reqs default is 20. Start low when experimenting, Inf when solid\nEach iteration helper gets a slide",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#iteration-helpers-iterate_with_offset",
+    "href": "slides/pagination.html#iteration-helpers-iterate_with_offset",
+    "title": "Get a lot of data from APIs",
+    "section": "Iteration helpers: iterate_with_offset()",
+    "text": "Iteration helpers: iterate_with_offset()\n\nparam_name = \"page\" or whatever API calls it\nstart, offset = almost always leave as-is\nresp_pages = function to convert resp to page count\n\nmax_reqs &lt;- min(max_reqs, total_pages)\n\nresp_complete = function to check if resp is last page\n\nEg: \\(resp) !length(resp_body_json(resp))\n\n\n\n\nAlmost always “page”.\nresp_pages called 1st response. Optional.\n\nHelp says it’s called once, but, if it fails to find total, it will be called for each response.\n\nresp_complete usually not needed\n\nExample is shorthand for “Did we get an empty body?”",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#offset-example-openfec",
+    "href": "slides/pagination.html#offset-example-openfec",
+    "title": "Get a lot of data from APIs",
+    "section": "Offset example: OpenFEC",
+    "text": "Offset example: OpenFEC\n\ncandidates_request &lt;- \n  request(\"https://api.open.fec.gov/v1/candidates\") |&gt; \n  req_friendly(cache_name = \"fecapi\") |&gt; \n  req_url_query(api_key = \"DEMO_KEY\", election_year = 2020, office = \"P\") |&gt; \n  req_url_query(has_raised_funds = TRUE)\n\n\n\n\n\ncandidates_single &lt;- \n  candidates_request |&gt; \n  req_perform() |&gt; \n  resp_body_json()\nlength(candidates_single$results)\n#&gt; [1] 20\ncandidates_single$pagination$count\n#&gt; [1] 173\n\n\n\ncandidates_multi &lt;- \n  candidates_request |&gt; \n  req_perform_iterative(\n    next_req = iterate_with_offset(\n      \"page\",\n      resp_pages = \\(resp) {\n        content &lt;- resp_body_json(resp)\n        content$pagination$pages\n      }\n    ),\n    max_reqs = Inf\n  )\nlength(candidates_multi)\n#&gt; [1] 9\n\n\n\n\nWarning: This might take a while with the DEMO_KEY\nWe’ll see how to extract data from the pages shortly",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#offset-example-crossref.org",
+    "href": "slides/pagination.html#offset-example-crossref.org",
+    "title": "Get a lot of data from APIs",
+    "section": "Offset example: crossref.org",
+    "text": "Offset example: crossref.org\n\ncrossref_request &lt;- \n  request(\"https://api.crossref.org/works\") |&gt; \n  req_friendly(cache_name = \"crossrefapi\") |&gt; \n  req_url_query(query = \"apis\")\n\n\n\n\n\ncrossref_single &lt;- \n  crossref_request |&gt; \n  req_perform() |&gt; \n  resp_body_json()\nlength(crossref_single$message$items)\n#&gt; [1] 20\ncrossref_single$message$`total-results`\n#&gt; [1] 14114\n\n\n\ncrossref_multi &lt;- \n  crossref_request |&gt; \n  req_retry(max_tries = 3) |&gt; \n  req_perform_iterative(\n    next_req = iterate_with_offset(\n      \"offset\",\n      resp_pages = \\(resp) {\n        content &lt;- resp_body_json(resp)\n        content$pagination$message$`total-results`\n      }\n    ),\n    max_reqs = Inf\n  )\nlength(crossref_multi)\n#&gt; [1] 706\n\n\n\n\nWarning: This takes a long time, probably don’t actually run it!\nThis one has a faster (?) method that we’ll check in a sec.\nWe’ll see how to extract data from the pages shortly",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#iteration-helpers-iterate_with_cursor",
+    "href": "slides/pagination.html#iteration-helpers-iterate_with_cursor",
+    "title": "Get a lot of data from APIs",
+    "section": "Iteration helpers: iterate_with_cursor()",
+    "text": "Iteration helpers: iterate_with_cursor()\n\nparam_name = \"cursor\" or whatever API calls it\nresp_param_value = function to convert resp to next cursor\n\nNULL if no more pages\n\n\n\n\nI’ve seen “cursor”, “token” and variations, like “nextPageToken”.\nSingle function because usually this style ends with an empty nextCursor.",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#cursor-example-crossref",
+    "href": "slides/pagination.html#cursor-example-crossref",
+    "title": "Get a lot of data from APIs",
+    "section": "Cursor example: Crossref",
+    "text": "Cursor example: Crossref\n\ncrossref_request_cursor &lt;- \n  crossref_request |&gt; \n  req_url_query(cursor = \"*\")\n\n\n\n\n\ncrossref_single &lt;- \n  crossref_request_cursor |&gt; \n  req_perform() |&gt; \n  resp_body_json()\nnames(crossref_single$message)\n#&gt; [1] \"facets\"         \"next-cursor\"    \"total-results\"  \"items\"          \"items-per-page\"\n#&gt; [6] \"query\" \n\n\n\ncrossref_multi &lt;- \n  crossref_request_cursor |&gt; \n  req_retry(max_tries = 3) |&gt; \n  req_perform_iterative(\n    next_req = iterate_with_cursor(\n      \"cursor\",\n      resp_param_value = \\(resp) {\n        content &lt;- resp_body_json(resp)\n        if (!length(content$message$items)) {\n          return(NULL)\n        }\n        content$message$`next-cursor`\n      }\n    ),\n    max_reqs = Inf\n  )\nlength(crossref_multi)\n#&gt; [1] 706\n\n\n\n\nWarning: This takes a long time, probably don’t actually run it!\nNot noticeably faster, but this API limits total results from normal pagination, unlimited for cursor-based\nIn this case they keep sending next-cursors even when results are empty, so we need to tell it to stop when no results",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#iteration-helpers-iterate_with_link_url",
+    "href": "slides/pagination.html#iteration-helpers-iterate_with_link_url",
+    "title": "Get a lot of data from APIs",
+    "section": "Iteration helpers: iterate_with_link_url()",
+    "text": "Iteration helpers: iterate_with_link_url()\n\nrel = \"next\" or whatever API calls it\nresp_param_value = function to convert resp to next cursor\n\nNULL if no more pages\n\n\n\n\nThis really should always be “next”, but it isn’t required\nCanonical example is the GitHub API, but I’m showing a demo that doesn’t require any setup by you",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#link-url-example-mtg",
+    "href": "slides/pagination.html#link-url-example-mtg",
+    "title": "Get a lot of data from APIs",
+    "section": "Link-URL example: MTG",
+    "text": "Link-URL example: MTG\n\nmtg_cards_request &lt;- \n  request(\"http://api.magicthegathering.io/v1\") |&gt; \n  req_friendly(cache_name = \"mtgapi\") |&gt; \n  req_url_path_append(\"cards\") |&gt; \n  req_url_query(name = \"bee\", pageSize = 20)\n\n\n\n\n\nmtg_cards_single &lt;- \n  mtg_cards_request |&gt; \n  req_perform()\nresp_header(mtg_cards_single, \"link\")\n#&gt; &lt;https://api.magicthegathering.io/v1/cards?name=bee&page=5&pageSize=20&gt;; rel=\"last\", \n#&gt; &lt;https://api.magicthegathering.io/v1/cards?name=bee&page=2&pageSize=20&gt;; rel=\"next\"\nmtg_cards_content &lt;- mtg_cards_single |&gt; \n  resp_body_json()\n\n\n\nmtg_cards_multi &lt;- \n  mtg_cards_request |&gt; \n  req_retry(max_tries = 3) |&gt; \n  req_perform_iterative(\n    next_req = iterate_with_link_url(),\n    max_reqs = Inf\n  )\nlength(mtg_cards_multi)\n#&gt; [1] 5\n\n\n\n\nIf I were working with this one a lot, I’d probably actually use offset pagination.",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#roll-your-own-iteration",
+    "href": "slides/pagination.html#roll-your-own-iteration",
+    "title": "Get a lot of data from APIs",
+    "section": "Roll-your-own iteration",
+    "text": "Roll-your-own iteration\n\nPeople love to reinvent this wheel.\nBody link: nextUrl in response body\n\nopen5e.com monsters",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#roll-your-own-example-dnd-monsters",
+    "href": "slides/pagination.html#roll-your-own-example-dnd-monsters",
+    "title": "Get a lot of data from APIs",
+    "section": "Roll-your-own example: DnD Monsters",
+    "text": "Roll-your-own example: DnD Monsters\n\ndnd_request &lt;- \n  request(\"https://api.open5e.com/monsters/?limit=100\") |&gt; \n  req_friendly(cache_name = \"dndapi\")\n\n\n\n\n\ndnd_single &lt;- \n  dnd_request |&gt; \n  req_perform() |&gt; \n  resp_body_json()\nlength(dnd_single$results)\n#&gt; [1] 100\ndnd_single$count\n#&gt; [1] 2439\n\n\n\ndnd_multi &lt;- \n  dnd_request |&gt; \n  req_retry(max_tries = 3) |&gt; \n  req_perform_iterative(\n    next_req = function(resp, req) {\n      url &lt;- resp_body_json(resp)$`next`\n      if (!is.null(url)) {\n        req_url(req, url)\n      }\n    },\n    max_reqs = Inf\n  )\nlength(dnd_multi)\n#&gt; [1] 25\n\n\n\n\nUsed code returned by iterate_with_link_url() as template\nBe sure to keep all the non-URL bits of the req!",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#other-multi-request-situations",
+    "href": "slides/pagination.html#other-multi-request-situations",
+    "title": "Get a lot of data from APIs",
+    "section": "Other multi-request situations",
+    "text": "Other multi-request situations\n\nLooking up multiple, related things\nEnriching a dataset\nManual pagination\n\n\n\nEnriching = adding more information, like converting a place name to latitude and longitude\nIf you know how many pages you’ll get, you might want to handle things more manually.\n\nParticularly because this will open up parallel requests, which we’ll see shortly.",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#create-a-list-of-requests",
+    "href": "slides/pagination.html#create-a-list-of-requests",
+    "title": "Get a lot of data from APIs",
+    "section": "Create a list of requests",
+    "text": "Create a list of requests\n\nfree_dictionary_request &lt;- \n  request(\"https://api.dictionaryapi.dev/api/v2/entries/en/\") |&gt; \n  req_friendly(cache_name = \"free_dictionary\")\nwords &lt;- c(\"hello\", \"world\", \"goodbye\")\nfree_dictionary_reqs &lt;- \n  purrr::map(words, \\(word) req_url_path_append(free_dictionary_request, word))\nfree_dictionary_reqs |&gt; purrr::map_chr(\"url\")\n\n#&gt; [1] \"https://api.dictionaryapi.dev/api/v2/entries/en/hello\"  \n#&gt; [2] \"https://api.dictionaryapi.dev/api/v2/entries/en/world\"  \n#&gt; [3] \"https://api.dictionaryapi.dev/api/v2/entries/en/goodbye\"",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#perform-requests-sequentially",
+    "href": "slides/pagination.html#perform-requests-sequentially",
+    "title": "Get a lot of data from APIs",
+    "section": "Perform requests sequentially",
+    "text": "Perform requests sequentially\n\nfree_dictionary_resps &lt;- req_perform_sequential(free_dictionary_reqs)\nlength(free_dictionary_resps)\n#&gt; [1] 3\n\n\n\nWe’ll see how to parse this list in the next section (like everything else).",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#perform-requests-in-parallel",
+    "href": "slides/pagination.html#perform-requests-in-parallel",
+    "title": "Get a lot of data from APIs",
+    "section": "Perform requests in parallel",
+    "text": "Perform requests in parallel\nhttr2::req_perform_parallel() performs multiple requests simultaneously\n\nPros: (much?) faster\nCons:\n\nMight over-tax server\nSilently ignores req_retry() (and some other things)\nHarder to debug\n\n\n\nfree_dictionary_resps &lt;- req_perform_parallel(free_dictionary_reqs)\nlength(free_dictionary_resps)\n#&gt; [1] 3\n\n\n\nIf not many responses or super fast/efficient API, not faster.\nWe’ll see how to parse this list in the next section (like everything else).",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#resps_data",
+    "href": "slides/pagination.html#resps_data",
+    "title": "Get a lot of data from APIs",
+    "section": "resps_data()",
+    "text": "resps_data()\n\nreq_perform_*() returns list of responses\nresps_data() takes that list + resp_data parsing function and merges\nUsually you need more than just something like resp_body_json\n\nGrab just the actual results\n\n\n\n\nClarify that resp_data is the function itself, NOT a call to the function.",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#resps_data-example-openfec",
+    "href": "slides/pagination.html#resps_data-example-openfec",
+    "title": "Get a lot of data from APIs",
+    "section": "resps_data() example: OpenFEC",
+    "text": "resps_data() example: OpenFEC\n\n\nfec_resp_parser &lt;- function(resp) {\n  resp_body_json(resp)$results\n}\n\n\n\n\ncandidates_multi_results &lt;- resps_data(\n  candidates_multi, fec_resp_parser\n)\ntibblify::tibblify(candidates_multi_results)\n\n#&gt; # A tibble: 173 × 24\n#&gt;    active_through candidate_id candidate_inactive candidate_status cycles    \n#&gt;             &lt;int&gt; &lt;chr&gt;        &lt;lgl&gt;              &lt;chr&gt;            &lt;list&gt;    \n#&gt;  1           2020 P00014241    FALSE              N                &lt;list [3]&gt;\n#&gt;  2           2024 P00008193    FALSE              N                &lt;list [4]&gt;\n#&gt;  3           2020 P00006296    FALSE              P                &lt;list [4]&gt;\n#&gt;  4           2020 P00010900    FALSE              N                &lt;list [1]&gt;\n#&gt;  5           2020 P00012104    FALSE              P                &lt;list [3]&gt;\n#&gt;  6           2020 P40003170    FALSE              N                &lt;list [5]&gt;\n#&gt;  7           2020 P00008128    FALSE              N                &lt;list [4]&gt;\n#&gt;  8           2020 P80004369    FALSE              N                &lt;list [2]&gt;\n#&gt;  9           2020 P00010090    FALSE              N                &lt;list [3]&gt;\n#&gt; 10           2024 P00015297    FALSE              N                &lt;list [3]&gt;\n#&gt; # ℹ 163 more rows\n#&gt; # ℹ 19 more variables: district &lt;chr&gt;, district_number &lt;int&gt;,\n#&gt; #   election_districts &lt;list&gt;, election_years &lt;list&gt;, federal_funds_flag &lt;lgl&gt;,\n#&gt; #   first_file_date &lt;chr&gt;, has_raised_funds &lt;lgl&gt;,\n#&gt; #   inactive_election_years &lt;list&gt;, incumbent_challenge &lt;chr&gt;,\n#&gt; #   incumbent_challenge_full &lt;chr&gt;, last_f2_date &lt;chr&gt;, last_file_date &lt;chr&gt;,\n#&gt; #   load_date &lt;chr&gt;, name &lt;chr&gt;, office &lt;chr&gt;, office_full &lt;chr&gt;, …\n\n\n\n\n\nReiterate that fec_resp_parser is the function itself, not a call to the function.",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/pagination.html#resps_data-friends",
+    "href": "slides/pagination.html#resps_data-friends",
+    "title": "Get a lot of data from APIs",
+    "section": "resps_data() friends",
+    "text": "resps_data() friends\n\nreq_perform_iterative on_error arg: “stop” or “return”\nresps_successes() extracts just successes from resps list\nresps_failures() same, but failures\nresps_requests() to see how they were called\n\n\n\nWe didn’t dig into it, but req_perform_iterative() has on_error arg\nCommon workflow might be to grab the successes, and then pass THAT to resps_data()\nreq_perform_iterative can only have 1 failure, but we’ll see some more multi performs in a later chapter TBD\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
+    "crumbs": [
+      "Get more data",
+      "Get a lot of data from APIs"
+    ]
+  },
+  {
+    "objectID": "slides/club-intro.html#process",
+    "href": "slides/club-intro.html#process",
+    "title": "Club Meetings",
+    "section": "️✅ Process",
+    "text": "️✅ Process\nMeetings = weekly\n\n🧑‍🏫 Jon leads a discussion of a chapter\n\n🙋‍♀️ IMPORTANT: You ask questions!\n️✅ Goal:\n\nCohort 1: Revise/finalize learning objectives\nCohort 2: Do slides get you to the LOs?\nCohort 3+: Read the actual book\n\n📺 Recordings on DSLC Videos\n\n🔄️ Jon revises slides & “test yourself” questions\n(revisions, maybe future cohorts)\n📝 Jon writes chapter\n\n\n\nMeet every week… unless I need a break to catch up.\nDiscussion even more important than in a normal club\nWould formal survey of some sort help?\nHoping to write as we go, but definitely won’t keep up.\n\n\n\n\n\nDSLC.io/wapir | Jon Harmon | wapir.io",
+    "crumbs": [
+      "Club Meetings"
     ]
   }
 ]

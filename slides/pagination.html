@@ -8,7 +8,7 @@
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.5.54">
+  <meta name="generator" content="quarto-1.5.55">
 
   <title>Web APIs with R Book Club – Get a lot of data from APIs</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -396,14 +396,6 @@
 </div>
 
 </section>
-<section id="todo" class="title-slide slide level1 center">
-<h1>TODO</h1>
-<ul>
-<li class="fragment">TODO: Add argument names in calls, for clarity</li>
-<li class="fragment">TODO: Introduce/use <code>httr2::req_cache()</code></li>
-</ul>
-</section>
-
 <section id="learning-objectives" class="title-slide slide level1 center">
 <h1>️✅ Learning objectives</h1>
 <div>
@@ -507,7 +499,6 @@
 <li class="fragment"><strong><em>Must</em></strong> set <code>max_tries</code> or <code>max_seconds</code></li>
 <li class="fragment">Other options usually ok as-is</li>
 </ul></li>
-<li class="fragment">More in “Process other response types”</li>
 </ul>
 <aside class="notes">
 <ul>
@@ -526,6 +517,44 @@
           display:block!important;
       }</style></aside>
 </section>
+<section id="aside-caching-responses" class="slide level2">
+<h2>Aside: Caching responses</h2>
+<ul>
+<li class="fragment"><code>httr2::req_cache()</code> = save responses locally if server says its ok</li>
+<li class="fragment">You deal with <code>path</code></li>
+<li class="fragment">Automatically checks standard caching headers</li>
+<li class="fragment">Very helpful if data doesn’t change</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>I’ve under-utilized this function!</li>
+<li>We’ll use a package called {rappdirs}, which deals with cross-platforms user directories</li>
+<li>“Standard caching headers” = “Cache-Control”, “Expires”, “max-age” + “Date”, “Etag”, “Last-Modified”</li>
+<li>Technically often still communicates with server, but very small response</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="aside-our-helper-function" class="slide level2">
+<h2>Aside: Our helper function</h2>
+<p>We’re going to <code>req_retry()</code> + <code>req_cache()</code> a lot, so:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>req_friendly <span class="ot">&lt;-</span> <span class="cf">function</span>(req, cache_name, <span class="at">max_tries =</span> <span class="dv">3</span>) {</span>
+<span id="cb2-2"><a></a>  req <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a></a>    <span class="fu">req_retry</span>(<span class="at">max_tries =</span> max_tries) <span class="sc">|&gt;</span> <span class="co"># Tries *per page*</span></span>
+<span id="cb2-4"><a></a>    <span class="fu">req_cache</span>(<span class="at">path =</span> rappdirs<span class="sc">::</span><span class="fu">user_cache_dir</span>(cache_name))</span>
+<span id="cb2-5"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
 <section id="req_perform_iterative" class="slide level2">
 <h2>req_perform_iterative()</h2>
 <ul>
@@ -534,12 +563,11 @@
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>normal_request <span class="sc">|&gt;</span> </span>
-<span id="cb2-2"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="co"># Tries *per page*</span></span>
-<span id="cb2-3"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
-<span id="cb2-4"><a></a>    <span class="at">next_req =</span> function_to_choose_next_req,</span>
-<span id="cb2-5"><a></a>    <span class="at">max_reqs =</span> <span class="dv">20</span> <span class="co"># Maximum separate page calls</span></span>
-<span id="cb2-6"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>normal_request <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb3-3"><a></a>    <span class="at">next_req =</span> function_to_choose_next_req,</span>
+<span id="cb3-4"><a></a>    <span class="at">max_reqs =</span> <span class="dv">20</span> <span class="co"># Maximum separate page calls</span></span>
+<span id="cb3-5"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <ul>
@@ -604,41 +632,41 @@
 <section id="offset-example-openfec" class="slide level2">
 <h2>Offset example: OpenFEC</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>candidates_request <span class="ot">&lt;-</span> </span>
-<span id="cb3-2"><a></a>  <span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1/candidates"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">api_key =</span> <span class="st">"DEMO_KEY"</span>, <span class="at">election_year =</span> <span class="dv">2020</span>, <span class="at">office =</span> <span class="st">"P"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a></a>  <span class="fu">req_url_query</span>(<span class="at">has_raised_funds =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>candidates_request <span class="ot">&lt;-</span> </span>
+<span id="cb4-2"><a></a>  <span class="fu">request</span>(<span class="st">"https://api.open.fec.gov/v1/candidates"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-3"><a></a>  <span class="fu">req_friendly</span>(<span class="at">cache_name =</span> <span class="st">"fecapi"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-4"><a></a>  <span class="fu">req_url_query</span>(<span class="at">api_key =</span> <span class="st">"DEMO_KEY"</span>, <span class="at">election_year =</span> <span class="dv">2020</span>, <span class="at">office =</span> <span class="st">"P"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-5"><a></a>  <span class="fu">req_url_query</span>(<span class="at">has_raised_funds =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 <div class="columns">
 <div class="column fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>candidates_single <span class="ot">&lt;-</span> </span>
-<span id="cb4-2"><a></a>  candidates_request <span class="sc">|&gt;</span> </span>
-<span id="cb4-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb4-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
-<span id="cb4-5"><a></a><span class="fu">length</span>(candidates_single<span class="sc">$</span>results)</span>
-<span id="cb4-6"><a></a><span class="co">#&gt; [1] 20</span></span>
-<span id="cb4-7"><a></a>candidates_single<span class="sc">$</span>pagination<span class="sc">$</span>count</span>
-<span id="cb4-8"><a></a><span class="co">#&gt; [1] 173</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>candidates_single <span class="ot">&lt;-</span> </span>
+<span id="cb5-2"><a></a>  candidates_request <span class="sc">|&gt;</span> </span>
+<span id="cb5-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb5-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
+<span id="cb5-5"><a></a><span class="fu">length</span>(candidates_single<span class="sc">$</span>results)</span>
+<span id="cb5-6"><a></a><span class="co">#&gt; [1] 20</span></span>
+<span id="cb5-7"><a></a>candidates_single<span class="sc">$</span>pagination<span class="sc">$</span>count</span>
+<span id="cb5-8"><a></a><span class="co">#&gt; [1] 173</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>candidates_multi <span class="ot">&lt;-</span> </span>
-<span id="cb5-2"><a></a>  candidates_request <span class="sc">|&gt;</span> </span>
-<span id="cb5-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
-<span id="cb5-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_offset</span>(</span>
-<span id="cb5-6"><a></a>      <span class="st">"page"</span>,</span>
-<span id="cb5-7"><a></a>      <span class="at">resp_pages =</span> \(resp) {</span>
-<span id="cb5-8"><a></a>        content <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)</span>
-<span id="cb5-9"><a></a>        content<span class="sc">$</span>pagination<span class="sc">$</span>pages</span>
-<span id="cb5-10"><a></a>      }</span>
-<span id="cb5-11"><a></a>    ),</span>
-<span id="cb5-12"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
-<span id="cb5-13"><a></a>  )</span>
-<span id="cb5-14"><a></a><span class="fu">length</span>(candidates_multi)</span>
-<span id="cb5-15"><a></a><span class="co">#&gt; [1] 9</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>candidates_multi <span class="ot">&lt;-</span> </span>
+<span id="cb6-2"><a></a>  candidates_request <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb6-4"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_offset</span>(</span>
+<span id="cb6-5"><a></a>      <span class="st">"page"</span>,</span>
+<span id="cb6-6"><a></a>      <span class="at">resp_pages =</span> \(resp) {</span>
+<span id="cb6-7"><a></a>        content <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)</span>
+<span id="cb6-8"><a></a>        content<span class="sc">$</span>pagination<span class="sc">$</span>pages</span>
+<span id="cb6-9"><a></a>      }</span>
+<span id="cb6-10"><a></a>    ),</span>
+<span id="cb6-11"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb6-12"><a></a>  )</span>
+<span id="cb6-13"><a></a><span class="fu">length</span>(candidates_multi)</span>
+<span id="cb6-14"><a></a><span class="co">#&gt; [1] 9</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div>
 <aside class="notes">
@@ -661,40 +689,41 @@
 <section id="offset-example-crossref.org" class="slide level2">
 <h2>Offset example: crossref.org</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>crossref_request <span class="ot">&lt;-</span> </span>
-<span id="cb6-2"><a></a>  <span class="fu">request</span>(<span class="st">"https://api.crossref.org/works"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb6-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">query =</span> <span class="st">"apis"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>crossref_request <span class="ot">&lt;-</span> </span>
+<span id="cb7-2"><a></a>  <span class="fu">request</span>(<span class="st">"https://api.crossref.org/works"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-3"><a></a>  <span class="fu">req_friendly</span>(<span class="at">cache_name =</span> <span class="st">"crossrefapi"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-4"><a></a>  <span class="fu">req_url_query</span>(<span class="at">query =</span> <span class="st">"apis"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 <div class="columns">
 <div class="column fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>crossref_single <span class="ot">&lt;-</span> </span>
-<span id="cb7-2"><a></a>  crossref_request <span class="sc">|&gt;</span> </span>
-<span id="cb7-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb7-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
-<span id="cb7-5"><a></a><span class="fu">length</span>(crossref_single<span class="sc">$</span>message<span class="sc">$</span>items)</span>
-<span id="cb7-6"><a></a><span class="co">#&gt; [1] 20</span></span>
-<span id="cb7-7"><a></a>crossref_single<span class="sc">$</span>message<span class="sc">$</span><span class="st">`</span><span class="at">total-results</span><span class="st">`</span></span>
-<span id="cb7-8"><a></a><span class="co">#&gt; [1] 14114</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>crossref_single <span class="ot">&lt;-</span> </span>
+<span id="cb8-2"><a></a>  crossref_request <span class="sc">|&gt;</span> </span>
+<span id="cb8-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb8-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
+<span id="cb8-5"><a></a><span class="fu">length</span>(crossref_single<span class="sc">$</span>message<span class="sc">$</span>items)</span>
+<span id="cb8-6"><a></a><span class="co">#&gt; [1] 20</span></span>
+<span id="cb8-7"><a></a>crossref_single<span class="sc">$</span>message<span class="sc">$</span><span class="st">`</span><span class="at">total-results</span><span class="st">`</span></span>
+<span id="cb8-8"><a></a><span class="co">#&gt; [1] 14114</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>crossref_multi <span class="ot">&lt;-</span> </span>
-<span id="cb8-2"><a></a>  crossref_request <span class="sc">|&gt;</span> </span>
-<span id="cb8-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb8-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
-<span id="cb8-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_offset</span>(</span>
-<span id="cb8-6"><a></a>      <span class="st">"offset"</span>,</span>
-<span id="cb8-7"><a></a>      <span class="at">resp_pages =</span> \(resp) {</span>
-<span id="cb8-8"><a></a>        content <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)</span>
-<span id="cb8-9"><a></a>        content<span class="sc">$</span>pagination<span class="sc">$</span>message<span class="sc">$</span><span class="st">`</span><span class="at">total-results</span><span class="st">`</span></span>
-<span id="cb8-10"><a></a>      }</span>
-<span id="cb8-11"><a></a>    ),</span>
-<span id="cb8-12"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
-<span id="cb8-13"><a></a>  )</span>
-<span id="cb8-14"><a></a><span class="fu">length</span>(crossref_multi)</span>
-<span id="cb8-15"><a></a><span class="co">#&gt; [1] 706</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>crossref_multi <span class="ot">&lt;-</span> </span>
+<span id="cb9-2"><a></a>  crossref_request <span class="sc">|&gt;</span> </span>
+<span id="cb9-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb9-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_offset</span>(</span>
+<span id="cb9-6"><a></a>      <span class="st">"offset"</span>,</span>
+<span id="cb9-7"><a></a>      <span class="at">resp_pages =</span> \(resp) {</span>
+<span id="cb9-8"><a></a>        content <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)</span>
+<span id="cb9-9"><a></a>        content<span class="sc">$</span>pagination<span class="sc">$</span>message<span class="sc">$</span><span class="st">`</span><span class="at">total-results</span><span class="st">`</span></span>
+<span id="cb9-10"><a></a>      }</span>
+<span id="cb9-11"><a></a>    ),</span>
+<span id="cb9-12"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb9-13"><a></a>  )</span>
+<span id="cb9-14"><a></a><span class="fu">length</span>(crossref_multi)</span>
+<span id="cb9-15"><a></a><span class="co">#&gt; [1] 706</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div>
 <aside class="notes">
@@ -744,42 +773,42 @@
 <section id="cursor-example-crossref" class="slide level2">
 <h2>Cursor example: Crossref</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>crossref_request_cursor <span class="ot">&lt;-</span> </span>
-<span id="cb9-2"><a></a>  crossref_request <span class="sc">|&gt;</span> </span>
-<span id="cb9-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">cursor =</span> <span class="st">"*"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>crossref_request_cursor <span class="ot">&lt;-</span> </span>
+<span id="cb10-2"><a></a>  crossref_request <span class="sc">|&gt;</span> </span>
+<span id="cb10-3"><a></a>  <span class="fu">req_url_query</span>(<span class="at">cursor =</span> <span class="st">"*"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 <div class="columns">
 <div class="column fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>crossref_single <span class="ot">&lt;-</span> </span>
-<span id="cb10-2"><a></a>  crossref_request_cursor <span class="sc">|&gt;</span> </span>
-<span id="cb10-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb10-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
-<span id="cb10-5"><a></a><span class="fu">names</span>(crossref_single<span class="sc">$</span>message)</span>
-<span id="cb10-6"><a></a><span class="co">#&gt; [1] "facets"         "next-cursor"    "total-results"  "items"          "items-per-page"</span></span>
-<span id="cb10-7"><a></a><span class="co">#&gt; [6] "query" </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>crossref_single <span class="ot">&lt;-</span> </span>
+<span id="cb11-2"><a></a>  crossref_request_cursor <span class="sc">|&gt;</span> </span>
+<span id="cb11-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb11-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
+<span id="cb11-5"><a></a><span class="fu">names</span>(crossref_single<span class="sc">$</span>message)</span>
+<span id="cb11-6"><a></a><span class="co">#&gt; [1] "facets"         "next-cursor"    "total-results"  "items"          "items-per-page"</span></span>
+<span id="cb11-7"><a></a><span class="co">#&gt; [6] "query" </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>crossref_multi <span class="ot">&lt;-</span> </span>
-<span id="cb11-2"><a></a>  crossref_request_cursor <span class="sc">|&gt;</span> </span>
-<span id="cb11-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb11-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
-<span id="cb11-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_cursor</span>(</span>
-<span id="cb11-6"><a></a>      <span class="st">"cursor"</span>,</span>
-<span id="cb11-7"><a></a>      <span class="at">resp_param_value =</span> \(resp) {</span>
-<span id="cb11-8"><a></a>        content <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)</span>
-<span id="cb11-9"><a></a>        <span class="cf">if</span> (<span class="sc">!</span><span class="fu">length</span>(content<span class="sc">$</span>message<span class="sc">$</span>items)) {</span>
-<span id="cb11-10"><a></a>          <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
-<span id="cb11-11"><a></a>        }</span>
-<span id="cb11-12"><a></a>        content<span class="sc">$</span>message<span class="sc">$</span><span class="st">`</span><span class="at">next-cursor</span><span class="st">`</span></span>
-<span id="cb11-13"><a></a>      }</span>
-<span id="cb11-14"><a></a>    ),</span>
-<span id="cb11-15"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
-<span id="cb11-16"><a></a>  )</span>
-<span id="cb11-17"><a></a><span class="fu">length</span>(crossref_multi)</span>
-<span id="cb11-18"><a></a><span class="co">#&gt; [1] 706</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>crossref_multi <span class="ot">&lt;-</span> </span>
+<span id="cb12-2"><a></a>  crossref_request_cursor <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb12-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_cursor</span>(</span>
+<span id="cb12-6"><a></a>      <span class="st">"cursor"</span>,</span>
+<span id="cb12-7"><a></a>      <span class="at">resp_param_value =</span> \(resp) {</span>
+<span id="cb12-8"><a></a>        content <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)</span>
+<span id="cb12-9"><a></a>        <span class="cf">if</span> (<span class="sc">!</span><span class="fu">length</span>(content<span class="sc">$</span>message<span class="sc">$</span>items)) {</span>
+<span id="cb12-10"><a></a>          <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb12-11"><a></a>        }</span>
+<span id="cb12-12"><a></a>        content<span class="sc">$</span>message<span class="sc">$</span><span class="st">`</span><span class="at">next-cursor</span><span class="st">`</span></span>
+<span id="cb12-13"><a></a>      }</span>
+<span id="cb12-14"><a></a>    ),</span>
+<span id="cb12-15"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb12-16"><a></a>  )</span>
+<span id="cb12-17"><a></a><span class="fu">length</span>(crossref_multi)</span>
+<span id="cb12-18"><a></a><span class="co">#&gt; [1] 706</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div>
 <aside class="notes">
@@ -829,35 +858,36 @@
 <section id="link-url-example-mtg" class="slide level2">
 <h2>Link-URL example: MTG</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>mtg_cards_request <span class="ot">&lt;-</span> </span>
-<span id="cb12-2"><a></a>  <span class="fu">request</span>(<span class="st">"http://api.magicthegathering.io/v1"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb12-3"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"cards"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb12-4"><a></a>  <span class="fu">req_url_query</span>(<span class="at">name =</span> <span class="st">"bee"</span>, <span class="at">pageSize =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>mtg_cards_request <span class="ot">&lt;-</span> </span>
+<span id="cb13-2"><a></a>  <span class="fu">request</span>(<span class="st">"http://api.magicthegathering.io/v1"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a></a>  <span class="fu">req_friendly</span>(<span class="at">cache_name =</span> <span class="st">"mtgapi"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-4"><a></a>  <span class="fu">req_url_path_append</span>(<span class="st">"cards"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-5"><a></a>  <span class="fu">req_url_query</span>(<span class="at">name =</span> <span class="st">"bee"</span>, <span class="at">pageSize =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 <div class="columns">
 <div class="column fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>mtg_cards_single <span class="ot">&lt;-</span> </span>
-<span id="cb13-2"><a></a>  mtg_cards_request <span class="sc">|&gt;</span> </span>
-<span id="cb13-3"><a></a>  <span class="fu">req_perform</span>()</span>
-<span id="cb13-4"><a></a><span class="fu">resp_header</span>(mtg_cards_single, <span class="st">"link"</span>)</span>
-<span id="cb13-5"><a></a><span class="co">#&gt; &lt;https://api.magicthegathering.io/v1/cards?name=bee&amp;page=5&amp;pageSize=20&gt;; rel="last", </span></span>
-<span id="cb13-6"><a></a><span class="co">#&gt; &lt;https://api.magicthegathering.io/v1/cards?name=bee&amp;page=2&amp;pageSize=20&gt;; rel="next"</span></span>
-<span id="cb13-7"><a></a>mtg_cards_content <span class="ot">&lt;-</span> mtg_cards_single <span class="sc">|&gt;</span> </span>
-<span id="cb13-8"><a></a>  <span class="fu">resp_body_json</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>mtg_cards_single <span class="ot">&lt;-</span> </span>
+<span id="cb14-2"><a></a>  mtg_cards_request <span class="sc">|&gt;</span> </span>
+<span id="cb14-3"><a></a>  <span class="fu">req_perform</span>()</span>
+<span id="cb14-4"><a></a><span class="fu">resp_header</span>(mtg_cards_single, <span class="st">"link"</span>)</span>
+<span id="cb14-5"><a></a><span class="co">#&gt; &lt;https://api.magicthegathering.io/v1/cards?name=bee&amp;page=5&amp;pageSize=20&gt;; rel="last", </span></span>
+<span id="cb14-6"><a></a><span class="co">#&gt; &lt;https://api.magicthegathering.io/v1/cards?name=bee&amp;page=2&amp;pageSize=20&gt;; rel="next"</span></span>
+<span id="cb14-7"><a></a>mtg_cards_content <span class="ot">&lt;-</span> mtg_cards_single <span class="sc">|&gt;</span> </span>
+<span id="cb14-8"><a></a>  <span class="fu">resp_body_json</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>mtg_cards_multi <span class="ot">&lt;-</span> </span>
-<span id="cb14-2"><a></a>  mtg_cards_request <span class="sc">|&gt;</span> </span>
-<span id="cb14-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb14-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
-<span id="cb14-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_link_url</span>(),</span>
-<span id="cb14-6"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
-<span id="cb14-7"><a></a>  )</span>
-<span id="cb14-8"><a></a><span class="fu">length</span>(mtg_cards_multi)</span>
-<span id="cb14-9"><a></a><span class="co">#&gt; [1] 5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>mtg_cards_multi <span class="ot">&lt;-</span> </span>
+<span id="cb15-2"><a></a>  mtg_cards_request <span class="sc">|&gt;</span> </span>
+<span id="cb15-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb15-5"><a></a>    <span class="at">next_req =</span> <span class="fu">iterate_with_link_url</span>(),</span>
+<span id="cb15-6"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb15-7"><a></a>  )</span>
+<span id="cb15-8"><a></a><span class="fu">length</span>(mtg_cards_multi)</span>
+<span id="cb15-9"><a></a><span class="co">#&gt; [1] 5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div>
 <aside class="notes">
@@ -889,44 +919,151 @@
 <section id="roll-your-own-example-dnd-monsters" class="slide level2">
 <h2>Roll-your-own example: DnD Monsters</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>dnd_request <span class="ot">&lt;-</span> </span>
-<span id="cb15-2"><a></a>  <span class="fu">request</span>(<span class="st">"https://api.open5e.com/monsters/?limit=100"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>dnd_request <span class="ot">&lt;-</span> </span>
+<span id="cb16-2"><a></a>  <span class="fu">request</span>(<span class="st">"https://api.open5e.com/monsters/?limit=100"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb16-3"><a></a>  <span class="fu">req_friendly</span>(<span class="at">cache_name =</span> <span class="st">"dndapi"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 <div class="columns">
 <div class="column fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>dnd_single <span class="ot">&lt;-</span> </span>
-<span id="cb16-2"><a></a>  dnd_request <span class="sc">|&gt;</span> </span>
-<span id="cb16-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb16-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
-<span id="cb16-5"><a></a><span class="fu">length</span>(dnd_single<span class="sc">$</span>results)</span>
-<span id="cb16-6"><a></a><span class="co">#&gt; [1] 100</span></span>
-<span id="cb16-7"><a></a>dnd_single<span class="sc">$</span>count</span>
-<span id="cb16-8"><a></a><span class="co">#&gt; [1] 2439</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>dnd_single <span class="ot">&lt;-</span> </span>
+<span id="cb17-2"><a></a>  dnd_request <span class="sc">|&gt;</span> </span>
+<span id="cb17-3"><a></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb17-4"><a></a>  <span class="fu">resp_body_json</span>()</span>
+<span id="cb17-5"><a></a><span class="fu">length</span>(dnd_single<span class="sc">$</span>results)</span>
+<span id="cb17-6"><a></a><span class="co">#&gt; [1] 100</span></span>
+<span id="cb17-7"><a></a>dnd_single<span class="sc">$</span>count</span>
+<span id="cb17-8"><a></a><span class="co">#&gt; [1] 2439</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>dnd_multi <span class="ot">&lt;-</span> </span>
-<span id="cb17-2"><a></a>  dnd_request <span class="sc">|&gt;</span> </span>
-<span id="cb17-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb17-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
-<span id="cb17-5"><a></a>    <span class="at">next_req =</span> <span class="cf">function</span>(resp, req) {</span>
-<span id="cb17-6"><a></a>      url <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span><span class="st">`</span><span class="at">next</span><span class="st">`</span></span>
-<span id="cb17-7"><a></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(url)) {</span>
-<span id="cb17-8"><a></a>        <span class="fu">req_url</span>(req, url)</span>
-<span id="cb17-9"><a></a>      }</span>
-<span id="cb17-10"><a></a>    },</span>
-<span id="cb17-11"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
-<span id="cb17-12"><a></a>  )</span>
-<span id="cb17-13"><a></a><span class="fu">length</span>(dnd_multi)</span>
-<span id="cb17-14"><a></a><span class="co">#&gt; [1] 25</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>dnd_multi <span class="ot">&lt;-</span> </span>
+<span id="cb18-2"><a></a>  dnd_request <span class="sc">|&gt;</span> </span>
+<span id="cb18-3"><a></a>  <span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb18-4"><a></a>  <span class="fu">req_perform_iterative</span>(</span>
+<span id="cb18-5"><a></a>    <span class="at">next_req =</span> <span class="cf">function</span>(resp, req) {</span>
+<span id="cb18-6"><a></a>      url <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span><span class="st">`</span><span class="at">next</span><span class="st">`</span></span>
+<span id="cb18-7"><a></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(url)) {</span>
+<span id="cb18-8"><a></a>        <span class="fu">req_url</span>(req, url)</span>
+<span id="cb18-9"><a></a>      }</span>
+<span id="cb18-10"><a></a>    },</span>
+<span id="cb18-11"><a></a>    <span class="at">max_reqs =</span> <span class="cn">Inf</span></span>
+<span id="cb18-12"><a></a>  )</span>
+<span id="cb18-13"><a></a><span class="fu">length</span>(dnd_multi)</span>
+<span id="cb18-14"><a></a><span class="co">#&gt; [1] 25</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div>
 <aside class="notes">
 <ul>
 <li>Used code returned by <code>iterate_with_link_url()</code> as template</li>
 <li>Be sure to keep all the non-URL bits of the req!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="what-else-can-i-do-with-lists-of-requests" class="title-slide slide level1 center">
+<h1>What else can I do with lists of requests?</h1>
+
+</section>
+<section id="other-multi-request-situations" class="slide level2">
+<h2>Other multi-request situations</h2>
+<ul>
+<li class="fragment">Looking up multiple, related things</li>
+<li class="fragment">Enriching a dataset</li>
+<li class="fragment">Manual pagination</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Enriching = adding more information, like converting a place name to latitude and longitude</li>
+<li>If you know how many pages you’ll get, you might want to handle things more manually.
+<ul>
+<li>Particularly because this will open up parallel requests, which we’ll see shortly.</li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="create-a-list-of-requests" class="slide level2">
+<h2>Create a list of requests</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>free_dictionary_request <span class="ot">&lt;-</span> </span>
+<span id="cb19-2"><a></a>  <span class="fu">request</span>(<span class="st">"https://api.dictionaryapi.dev/api/v2/entries/en/"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb19-3"><a></a>  <span class="fu">req_friendly</span>(<span class="at">cache_name =</span> <span class="st">"free_dictionary"</span>)</span>
+<span id="cb19-4"><a></a>words <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"hello"</span>, <span class="st">"world"</span>, <span class="st">"goodbye"</span>)</span>
+<span id="cb19-5"><a></a>free_dictionary_reqs <span class="ot">&lt;-</span> </span>
+<span id="cb19-6"><a></a>  purrr<span class="sc">::</span><span class="fu">map</span>(words, \(word) <span class="fu">req_url_path_append</span>(free_dictionary_request, word))</span>
+<span id="cb19-7"><a></a>free_dictionary_reqs <span class="sc">|&gt;</span> purrr<span class="sc">::</span><span class="fu">map_chr</span>(<span class="st">"url"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] "https://api.dictionaryapi.dev/api/v2/entries/en/hello"  
+#&gt; [2] "https://api.dictionaryapi.dev/api/v2/entries/en/world"  
+#&gt; [3] "https://api.dictionaryapi.dev/api/v2/entries/en/goodbye"</code></pre>
+</div>
+</div>
+</section>
+<section id="perform-requests-sequentially" class="slide level2">
+<h2>Perform requests sequentially</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>free_dictionary_resps <span class="ot">&lt;-</span> <span class="fu">req_perform_sequential</span>(free_dictionary_reqs)</span>
+<span id="cb21-2"><a></a><span class="fu">length</span>(free_dictionary_resps)</span>
+<span id="cb21-3"><a></a><span class="co">#&gt; [1] 3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<aside class="notes">
+<ul>
+<li>We’ll see how to parse this list in the next section (like everything else).</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="perform-requests-in-parallel" class="slide level2">
+<h2>Perform requests in parallel</h2>
+<p><code>httr2::req_perform_parallel()</code> performs multiple requests simultaneously</p>
+<ul>
+<li class="fragment">Pros: (much?) faster</li>
+<li class="fragment">Cons:
+<ul>
+<li class="fragment">Might over-tax server</li>
+<li class="fragment">Silently ignores <code>req_retry()</code> (and some other things)</li>
+<li class="fragment">Harder to debug</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>free_dictionary_resps <span class="ot">&lt;-</span> <span class="fu">req_perform_parallel</span>(free_dictionary_reqs)</span>
+<span id="cb22-2"><a></a><span class="fu">length</span>(free_dictionary_resps)</span>
+<span id="cb22-3"><a></a><span class="co">#&gt; [1] 3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<aside class="notes">
+<ul>
+<li>If not many responses or super fast/efficient API, not faster.</li>
+<li>We’ll see how to parse this list in the next section (like everything else).</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -948,7 +1085,7 @@
 <section id="resps_data" class="slide level2">
 <h2>resps_data()</h2>
 <ul>
-<li class="fragment"><code>req_perform_iterative()</code> returns <em>list</em> of responses</li>
+<li class="fragment"><code>req_perform_*()</code> returns <em>list</em> of responses</li>
 <li class="fragment"><code>resps_data()</code> takes that list + <code>resp_data</code> parsing function and merges</li>
 <li class="fragment">Usually you need more than just something like <code>resp_body_json</code>
 <ul>
@@ -975,17 +1112,17 @@
 <h2>resps_data() example: OpenFEC</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>fec_resp_parser <span class="ot">&lt;-</span> <span class="cf">function</span>(resp) {</span>
-<span id="cb18-2"><a></a>  <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>results</span>
-<span id="cb18-3"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>fec_resp_parser <span class="ot">&lt;-</span> <span class="cf">function</span>(resp) {</span>
+<span id="cb23-2"><a></a>  <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>results</span>
+<span id="cb23-3"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>candidates_multi_results <span class="ot">&lt;-</span> <span class="fu">resps_data</span>(</span>
-<span id="cb19-2"><a></a>  candidates_multi, fec_resp_parser</span>
-<span id="cb19-3"><a></a>)</span>
-<span id="cb19-4"><a></a>tibblify<span class="sc">::</span><span class="fu">tibblify</span>(candidates_multi_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>candidates_multi_results <span class="ot">&lt;-</span> <span class="fu">resps_data</span>(</span>
+<span id="cb24-2"><a></a>  candidates_multi, fec_resp_parser</span>
+<span id="cb24-3"><a></a>)</span>
+<span id="cb24-4"><a></a>tibblify<span class="sc">::</span><span class="fu">tibblify</span>(candidates_multi_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; # A tibble: 173 × 24
 #&gt;    active_through candidate_id candidate_inactive candidate_status cycles    
