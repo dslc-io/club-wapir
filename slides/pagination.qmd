@@ -616,3 +616,5 @@ tibblify::tibblify(candidates_multi_results)
 -   Common workflow might be to grab the successes, and then pass THAT to `resps_data()`
 -   `req_perform_iterative` can only have 1 failure, but we'll see some more multi performs in a later chapter TBD
 :::
+
+{{< include zzz.txt >}}

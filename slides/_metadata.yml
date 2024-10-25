@@ -8,6 +8,7 @@ format:
 execute:
   eval: false
   echo: true
+  cache: true
 knitr:
   opts_chunk:
     comment: "#>"

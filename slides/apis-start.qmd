@@ -7,6 +7,7 @@ title: Get started with APIs
 
 ::: nonincremental
 -   Skip tidyverse, re-integrate schemas?
+-   Other dir (not apis.guru)
 :::
 
 
@@ -49,8 +50,8 @@ library(tidyr)
 
 ## API Directories
 
--   [APIs.guru](https://apis.guru/))
--   [publicapis.dev](https://publicapis.dev/))
+-   [APIs.guru](https://apis.guru/)
+-   [publicapis.dev](https://publicapis.dev/)
     -   [publicapis.dev GitHub](https://github.com/marcelscruz/public-apis)
 
 ::: notes
@@ -134,6 +135,7 @@ str(head(all_apis, 2), max.level = 2)
     -   Alternatives: `read_json()` reads file, `parse_json()` reads string; don't guess by default 
 -   This result is a huge, nested list
 -   `purrr::pluck_depth()` tells you how nested a list is
+-   The `str()` code is also what `dplyr::glimpse()` does for a list.
 -   hard to see this. Let's rectangle it!
 :::
 
@@ -651,3 +653,5 @@ all_apis_preferred_wide |>
 ::: notes
 https://forms.gle/jiq4jsaXV6accnNS6
 :::
+
+{{< include zzz.txt >}}
