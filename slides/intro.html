@@ -8,7 +8,7 @@
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.5.55">
+  <meta name="generator" content="quarto-1.5.57">
 
   <title>Web APIs with R Book Club – Introduction</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -429,9 +429,9 @@
 <li class="fragment">Government agencies (<a href="https://api.open.fec.gov/developers/">OpenFEC</a>)</li>
 <li class="fragment">Random data (<a href="https://sunrisesunset.io/api/">sunrisesunset.io</a>)</li>
 <li class="fragment">Services (<a href="https://openai.com/product">OpenAI</a>)</li>
-<li class="fragment"><a href="https://apis.guru/">APIs.guru</a> = API directory
+<li class="fragment"><a href="https://publicapis.dev/">Public APIs</a> = API directory
 <ul>
-<li class="fragment">2,529 APIs as of 2024-01-22</li>
+<li class="fragment">1421 APIs as of 2024-10-24</li>
 </ul></li>
 </ul>
 <aside class="notes">
@@ -500,7 +500,7 @@
 <h2>What won’t I learn?</h2>
 <ul>
 <li class="fragment">How can I access APIs with {<a href="https://httr.r-lib.org/">httr</a>} or {<a href="https://jeroen.r-universe.dev/curl">curl</a>}?</li>
-<li class="fragment">How can I create an API?</li>
+<li class="fragment">How can I create an API? (see {<a href="https://www.rplumber.io/">plumber</a>})</li>
 <li class="fragment">How can I access APIs from other programming languages?</li>
 </ul>
 <aside class="notes">
@@ -540,6 +540,9 @@
 <aside class="notes">
 <ul>
 <li>People who analyze data, not necessarily that job title.</li>
+<li>Enrich: If you have city column, maybe add lat/long; with date, maybe add weather</li>
+<li>Feature engineering: Turning a city into Lat/Long</li>
+<li>Shiny: Separate concerns (UI vs data processing)</li>
 <li>Does anybody fit into something other than those use cases?</li>
 </ul>
 <style type="text/css">
@@ -602,13 +605,57 @@
 <li class="fragment">Test-Yourself Questions to check understanding</li>
 <li class="fragment">Check online version for updates</li>
 </ul>
+<aside class="notes">
+<p>This is the last slide.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section id="chapter-to-do" class="title-slide slide level1 center">
+<h1>Chapter To-Do</h1>
+<div>
+<ul class="task-list">
+<li><label><input type="checkbox">Review existing slides.</label></li>
+<li><label><input type="checkbox">Update LOs.</label></li>
+<li><label><input type="checkbox">Write exercises.</label></li>
+<li><label><input type="checkbox">Write exercise solutions.</label></li>
+<li><label><input type="checkbox">Finalize LOs.</label></li>
+<li><label><input type="checkbox">Add slide(s) per exercise.</label>
+<ul class="task-list">
+<li><label><input type="checkbox">Link to relevant content slide(s) from exercise slides.</label></li>
+</ul></li>
+<li><label><input type="checkbox">Update content slides.</label></li>
+<li><label><input type="checkbox">Write speaker-note questions to ask cohort.</label></li>
+</ul>
+</div>
+<aside class="notes">
+<p>This is transient (the checks will clear on reload), and it’s meant to be.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 <p><a href="../" target="wapir-club_index">DSLC.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
 </div>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 

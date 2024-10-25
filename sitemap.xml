@@ -1,59 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://dslc-io.github.io/club-wapir/index.html</loc>
-    <lastmod>2024-07-25T13:37:29.025Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dslc-io.github.io/club-wapir/slides/responses.html</loc>
-    <lastmod>2024-07-25T13:37:29.061Z</lastmod>
+    <loc>https://dslc-io.github.io/club-wapir/slides/schemas.html</loc>
+    <lastmod>2024-10-25T13:40:06.527Z</lastmod>
   </url>
   <url>
     <loc>https://dslc-io.github.io/club-wapir/slides/rvest.html</loc>
-    <lastmod>2024-07-25T13:37:29.061Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dslc-io.github.io/club-wapir/slides/apis-start.html</loc>
-    <lastmod>2024-07-25T13:37:29.025Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dslc-io.github.io/club-wapir/slides/authentication.html</loc>
-    <lastmod>2024-07-25T13:37:29.053Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dslc-io.github.io/club-wapir/slides/apis-find.html</loc>
-    <lastmod>2024-07-25T13:37:29.025Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dslc-io.github.io/club-wapir/slides/schemas.html</loc>
-    <lastmod>2024-07-25T13:37:29.065Z</lastmod>
+    <lastmod>2024-10-25T13:40:06.527Z</lastmod>
   </url>
   <url>
     <loc>https://dslc-io.github.io/club-wapir/slides/httr2-other.html</loc>
-    <lastmod>2024-07-25T13:37:29.053Z</lastmod>
+    <lastmod>2024-10-25T13:40:06.507Z</lastmod>
   </url>
   <url>
-    <loc>https://dslc-io.github.io/club-wapir/slides/accessing-other.html</loc>
-    <lastmod>2024-07-25T13:37:29.025Z</lastmod>
+    <loc>https://dslc-io.github.io/club-wapir/slides/responses.html</loc>
+    <lastmod>2024-10-25T13:40:06.523Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dslc-io.github.io/club-wapir/slides/apis-find.html</loc>
+    <lastmod>2024-10-25T13:40:06.459Z</lastmod>
   </url>
   <url>
     <loc>https://dslc-io.github.io/club-wapir/slides/learn-more.html</loc>
-    <lastmod>2024-07-25T13:37:29.053Z</lastmod>
+    <lastmod>2024-10-25T13:40:06.511Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dslc-io.github.io/club-wapir/slides/authentication.html</loc>
+    <lastmod>2024-10-25T13:40:06.507Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dslc-io.github.io/club-wapir/index.html</loc>
+    <lastmod>2024-10-25T13:40:06.455Z</lastmod>
   </url>
   <url>
     <loc>https://dslc-io.github.io/club-wapir/slides/intro.html</loc>
-    <lastmod>2024-07-25T13:37:29.053Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dslc-io.github.io/club-wapir/slides/httr2.html</loc>
-    <lastmod>2024-07-25T13:37:29.053Z</lastmod>
-  </url>
-  <url>
-    <loc>https://dslc-io.github.io/club-wapir/slides/pagination.html</loc>
-    <lastmod>2024-07-25T13:37:29.053Z</lastmod>
+    <lastmod>2024-10-25T13:40:06.511Z</lastmod>
   </url>
   <url>
     <loc>https://dslc-io.github.io/club-wapir/slides/club-intro.html</loc>
-    <lastmod>2024-07-25T13:37:29.053Z</lastmod>
+    <lastmod>2024-10-25T13:40:06.507Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dslc-io.github.io/club-wapir/slides/httr2.html</loc>
+    <lastmod>2024-10-25T13:40:06.511Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dslc-io.github.io/club-wapir/slides/pagination.html</loc>
+    <lastmod>2024-10-25T13:40:06.515Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dslc-io.github.io/club-wapir/slides/accessing-other.html</loc>
+    <lastmod>2024-10-25T13:40:06.455Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dslc-io.github.io/club-wapir/slides/apis-start.html</loc>
+    <lastmod>2024-10-25T13:40:06.459Z</lastmod>
   </url>
 </urlset>

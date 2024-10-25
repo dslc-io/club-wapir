@@ -8,7 +8,7 @@
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.5.55">
+  <meta name="generator" content="quarto-1.5.57">
 
   <title>Web APIs with R Book Club – Find APIs</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -500,7 +500,7 @@
 <span id="cb2-7"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Package, Title)</span>
 <span id="cb2-8"><a></a>api_pkgs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 900 × 2
+<pre><code>#&gt; # A tibble: 923 × 2
 #&gt;    Package           Title                                                      
 #&gt;    &lt;chr&gt;             &lt;chr&gt;                                                      
 #&gt;  1 academictwitteR   "Access the Twitter Academic Research Product Track V2 API…
@@ -513,7 +513,7 @@
 #&gt;  8 adobeanalyticsr   "R Client for 'Adobe Analytics' API 2.0"                   
 #&gt;  9 adsDataHubR       "Google Ads Data Hub API Client"                           
 #&gt; 10 adwordsR          "Access the 'Google Adwords' API"                          
-#&gt; # ℹ 890 more rows</code></pre>
+#&gt; # ℹ 913 more rows</code></pre>
 </div>
 </div>
 <aside class="notes">
@@ -617,20 +617,20 @@
 <span id="cb6-8"><a></a>  ) <span class="sc">|&gt;</span> </span>
 <span id="cb6-9"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Package, Title)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 1,418 × 2
+<pre><code>#&gt; # A tibble: 1,453 × 2
 #&gt;    Package         Title                                                        
 #&gt;    &lt;chr&gt;           &lt;chr&gt;                                                        
 #&gt;  1 hoopR           "Access Men's Basketball Play by Play Data"                  
 #&gt;  2 wehoop          "Access Women's Basketball Play by Play Data"                
 #&gt;  3 gptstudio       "Use Large Language Models Directly in your Development\nEnv…
-#&gt;  4 geosapi         "GeoServer REST API R Interface"                             
-#&gt;  5 googleLanguageR "Call Google's 'Natural Language' API, 'Cloud Translation' A…
-#&gt;  6 RobinHood       "Interface for the RobinHood.com No Commission Investing Pla…
-#&gt;  7 hereR           "'sf'-Based Interface to the 'HERE' REST APIs"               
-#&gt;  8 nhlapi          "A Minimum-Dependency 'R' Interface to the 'NHL' API"        
-#&gt;  9 salesforcer     "An Implementation of 'Salesforce' APIs Using Tidy Principle…
-#&gt; 10 oaii            "'OpenAI' API R Interface"                                   
-#&gt; # ℹ 1,408 more rows</code></pre>
+#&gt;  4 googleLanguageR "Call Google's 'Natural Language' API, 'Cloud Translation' A…
+#&gt;  5 googleAuthR     "Authenticate and Create Google APIs"                        
+#&gt;  6 hereR           "'sf'-Based Interface to the 'HERE' REST APIs"               
+#&gt;  7 salesforcer     "An Implementation of 'Salesforce' APIs Using Tidy Principle…
+#&gt;  8 geosapi         "GeoServer REST API R Interface"                             
+#&gt;  9 nhlapi          "A Minimum-Dependency 'R' Interface to the 'NHL' API"        
+#&gt; 10 taxize          "Taxonomic Information from Around the Web"                  
+#&gt; # ℹ 1,443 more rows</code></pre>
 </div>
 </div>
 </section></section>
@@ -713,13 +713,44 @@
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section></section>
+<section id="chapter-to-do" class="title-slide slide level1 center">
+<h1>Chapter To-Do</h1>
+<div>
+<ul class="task-list">
+<li><label><input type="checkbox">Review existing slides.</label></li>
+<li><label><input type="checkbox">Update LOs.</label></li>
+<li><label><input type="checkbox">Write exercises.</label></li>
+<li><label><input type="checkbox">Write exercise solutions.</label></li>
+<li><label><input type="checkbox">Finalize LOs.</label></li>
+<li><label><input type="checkbox">Add slide(s) per exercise.</label>
+<ul class="task-list">
+<li><label><input type="checkbox">Link to relevant content slide(s) from exercise slides.</label></li>
+</ul></li>
+<li><label><input type="checkbox">Update content slides.</label></li>
+<li><label><input type="checkbox">Write speaker-note questions to ask cohort.</label></li>
+</ul>
+</div>
+<aside class="notes">
+<p>This is transient (the checks will clear on reload), and it’s meant to be.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 <p><a href="../" target="wapir-club_index">DSLC.io/wapir</a> | Jon Harmon | <a href="https://wapir.io" target="_blank">wapir.io</a></p>
 </div>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 
