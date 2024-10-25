@@ -1,0 +1,17 @@
+# Chapter To-Do
+
+::: nonincremental
+-   [ ] Review existing slides.
+-   [ ] Update LOs.
+-   [ ] Write exercises.
+-   [ ] Write exercise solutions.
+-   [ ] Finalize LOs.
+-   [ ] Add slide(s) per exercise.
+    -   [ ] Link to relevant content slide(s) from exercise slides.
+-   [ ] Update content slides.
+-   [ ] Write speaker-note questions to ask cohort.
+:::
+
+::: notes
+This is transient (the checks will clear on reload), and it's meant to be.
+:::

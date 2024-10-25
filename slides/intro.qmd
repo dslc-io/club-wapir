@@ -57,8 +57,8 @@ engine: knitr
 -   Government agencies ([OpenFEC](https://api.open.fec.gov/developers/))
 -   Random data ([sunrisesunset.io](https://sunrisesunset.io/api/))
 -   Services ([OpenAI](https://openai.com/product))
--   [APIs.guru](https://apis.guru/) = API directory
-    -   2,529 APIs as of 2024-01-22
+-   [Public APIs](https://publicapis.dev/) = API directory
+    -   1421 APIs as of 2024-10-24
 
 ::: notes
 -   Number of examples good?
@@ -101,7 +101,7 @@ engine: knitr
 ## What won't I learn?
 
 -   How can I access APIs with {[httr](https://httr.r-lib.org/)} or {[curl](https://jeroen.r-universe.dev/curl)}?
--   How can I create an API?
+-   How can I create an API? (see {[plumber](https://www.rplumber.io/)})
 -   How can I access APIs from other programming languages?
 
 ::: notes
@@ -121,6 +121,9 @@ engine: knitr
 
 ::: notes
 -   People who analyze data, not necessarily that job title.
+-   Enrich: If you have city column, maybe add lat/long; with date, maybe add weather
+-   Feature engineering: Turning a city into Lat/Long
+-   Shiny: Separate concerns (UI vs data processing)
 -   Does anybody fit into something other than those use cases?
 :::
 
@@ -149,3 +152,9 @@ engine: knitr
     -   "After you read this chapter, you will be able to..."
 -   Test-Yourself Questions to check understanding
 -   Check online version for updates
+
+::: notes
+This is the last slide.
+:::
+
+{{< include zzz.txt >}}

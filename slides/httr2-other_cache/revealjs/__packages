@@ -1,0 +1,10 @@
+httr2
+keyring
+here
+curl
+jsonlite
+dplyr
+tibble
+tidyr
+purrr
+glue

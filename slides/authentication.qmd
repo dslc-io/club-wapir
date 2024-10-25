@@ -552,16 +552,4 @@ playlists <- request("https://youtube.googleapis.com/youtube/v3") |>
 -   Or cookie can be used in header
 :::
 
-## Meeting Videos {-}
-
-### Cohort 1 {-}
-
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
-
-<details>
-<summary> Meeting chat log </summary>
-
-```
-LOG
-```
-</details>
+{{< include zzz.txt >}}

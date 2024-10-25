@@ -327,3 +327,5 @@ card_deletion_responses <- card_creation_responses$id |>
 -   No point in me replicating all of the docs.
 -   It's 1.0.0+/"stable," but they're still improving things.
 :::
+
+{{< include zzz.txt >}}
