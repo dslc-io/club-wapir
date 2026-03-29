@@ -1,0 +1,19 @@
+{
+  "hash": "54b8128e82b319b9332618330a6bbf40",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\nengine: knitr\ntitle: How do computers communicate?\n---\n\n\n# ️✅ Learning objectives\n\n-   Describe how **accessing a web page through a browser** involves an **HTTP request.**\n-   Compare and contrast **HTTP-based API frameworks.**\n-   Recognize **other web API frameworks.**\n\n## Browsers and HTTP Requests\n\nhttps://wapir.io/apis.html is an HTTP request:\n\n-   `https://` = \"use HTTP(s) protocol\"\n-   **URL:** `wapir.io/apis.html` = URL\n-   **headers:** Cookies (plus some info about your browser)\n-   **method:** `GET`\n-   **body:** Empty\n\n::: notes\n-   Request = URL + headers + method + body\n-   You (kinda) use APIs all the time!\n:::\n\n# What are API frameworks?\n\n-   Systems for defining APIs\n-   More like philosophies than rules\n\n::: notes\n-   (don't linger here)\n:::\n\n## HTTP API Frameworks: Historic\n\n-   RPC = Remote Procedure Call\n    -   Endpoints = actions\n    -   XML-RPC & JSON-RPC popular early\n    -   Often just `GET` (`GET /deleteItem/1234`)\n-   SOAP = Simple Objects Access Protocol (briefly huge, mostly dead)\n    -   Evolved from XML-RPC\n    -   Technically not limited to HTTP\n\n::: notes\n-   RPCs are making a come back (we'll see in a couple slides)\n:::\n\n## HTTP API Frameworks: Modern\n\n-   REST = REpresentational State Transfer\n    -   Most common by far\n    -   Stateless (call defines the object)\n    -   Technically endpoints = nouns\n    -   What we'll focus on in most of book\n-   GraphQL = Graph Query Language\n    -   Body defines everything\n        -   JSON with wildcards telling server what to fill in\n    -   Basically `GET` + 1 endpoint\n    -   More details in [\"How else can I communicate with APIs from R?\"](accessing-other.html){target=\"wapir-club_accessing-other\"}\n\n::: notes\n-   REST APIs often called \"RESTful\" APIs.\n-   GraphQL should be bigger than it is for data science\n:::\n\n## Other API Frameworks\n\n-   websocket\n    -   `ws://` or `wss://` vs `http://` or `https://`\n    -   2-way communication\n    -   {websocket} package\n-   gRPC = Google RPC\n    -   Good for real-time, 2-way communication\n    -   Uses HTTP/2 (more socket-like)\n\nDeeper dive coming in [\"How else can I communicate with APIs from R?\"](accessing-other.html){target=\"wapir-club_accessing-other\"}!\n\n::: notes\n-   Shiny is websocket between server (R) and ui (JS)\n-   gRPC best for tightly coupled microservices\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {
+      "include-after-body": [
+        "\n<script>\n  // htmlwidgets need to know to resize themselves when slides are shown/hidden.\n  // Fire the \"slideenter\" event (handled by htmlwidgets.js) when the current\n  // slide changes (different for each slide format).\n  (function () {\n    // dispatch for htmlwidgets\n    function fireSlideEnter() {\n      const event = window.document.createEvent(\"Event\");\n      event.initEvent(\"slideenter\", true, true);\n      window.document.dispatchEvent(event);\n    }\n\n    function fireSlideChanged(previousSlide, currentSlide) {\n      fireSlideEnter();\n\n      // dispatch for shiny\n      if (window.jQuery) {\n        if (previousSlide) {\n          window.jQuery(previousSlide).trigger(\"hidden\");\n        }\n        if (currentSlide) {\n          window.jQuery(currentSlide).trigger(\"shown\");\n        }\n      }\n    }\n\n    // hookup for slidy\n    if (window.w3c_slidy) {\n      window.w3c_slidy.add_observer(function (slide_num) {\n        // slide_num starts at position 1\n        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);\n      });\n    }\n\n  })();\n</script>\n\n"
+      ]
+    },
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

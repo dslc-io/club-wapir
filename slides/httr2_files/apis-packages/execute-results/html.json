@@ -1,0 +1,19 @@
+{
+  "hash": "34a6831d233a88984277bca706e99329",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\nengine: knitr\n---\n\n\n# How can I find API-wrapping packages?\n\n**Learning objectives:**\n\n-   Use `tools::CRAN_package_db()` to search for packages.\n-   Search the [R-universe](https://r-universe.dev).\n-   Use {anyapi} to search for packages.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(dplyr)\nlibrary(stringr)\nlibrary(tidyr)\nlibrary(tools)\nlibrary(httr2)\n```\n:::\n\n\n## General tips for searching {-}\n\n-   `tolower(FIELD)` to find \"API\", \"api\", \"Api\", etc\n-   `\\\\b` in regex pattern for \"word ***b***oundary\"\n    -   `\"\\\\bapi\\\\b\"` = \"api surrounded by spaces, (), newline, etc\"\n\n## Searching CRAN packages {-}\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# TODO: Re-enable this when CRAN isn't down.\napi_pkgs <- tools::CRAN_package_db() |> \n  as_tibble() |> \n  filter(str_detect(tolower(Description), \"\\\\bapi\\\\b\")) |> \n  select(Package, Description)\nnrow(api_pkgs)\nhead(api_pkgs)\n```\n:::\n\n\n## Searching the R Universe {-}\n\n-   Web interface at https://r-universe.dev/\n-   API in {universe} package? (broken as of 2023-11-13)\n-   API at `https://r-universe.dev/stats/powersearch`\n\n## Searching the R Universe API {-}\n\n\n::: {.cell}\n\n```{.r .cell-code}\nresp <- request(\"https://r-universe.dev\") |> \n  req_url_path_append(\"stats/powersearch\") |>\n  req_url_query(q = \"api\") |> \n  req_perform() |> \n  resp_body_json()\n\nuni_api_pkgs <- tibble(pkg = resp$results) |> \n  unnest_wider(pkg) |> \n  filter(str_detect(tolower(Description), \"\\\\bapi\\\\b\")) |> \n  distinct(Package, Description)\n\nnrow(uni_api_pkgs)\nhead(uni_api_pkgs)\n```\n:::\n\n\n## anyapi {-}\n\n-   {anyapi} package wraps these functions\n    -   (technically not yet)\n-   If package doesn't exist\n    -   Search for API spec\n    -   Create package on-the-fly to interact with the API\n\n## Meeting Videos {-}\n\n### Cohort 1 {-}\n\n<iframe src=\"https://www.youtube.com/embed/URL\" width=\"100%\" height=\"400px\" data-external=\"1\"></iframe>\n\n<details>\n<summary> Meeting chat log </summary>\n\n```\nLOG\n```\n</details>\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {
+      "include-after-body": [
+        "\n<script>\n  // htmlwidgets need to know to resize themselves when slides are shown/hidden.\n  // Fire the \"slideenter\" event (handled by htmlwidgets.js) when the current\n  // slide changes (different for each slide format).\n  (function () {\n    // dispatch for htmlwidgets\n    function fireSlideEnter() {\n      const event = window.document.createEvent(\"Event\");\n      event.initEvent(\"slideenter\", true, true);\n      window.document.dispatchEvent(event);\n    }\n\n    function fireSlideChanged(previousSlide, currentSlide) {\n      fireSlideEnter();\n\n      // dispatch for shiny\n      if (window.jQuery) {\n        if (previousSlide) {\n          window.jQuery(previousSlide).trigger(\"hidden\");\n        }\n        if (currentSlide) {\n          window.jQuery(currentSlide).trigger(\"shown\");\n        }\n      }\n    }\n\n    // hookup for slidy\n    if (window.w3c_slidy) {\n      window.w3c_slidy.add_observer(function (slide_num) {\n        // slide_num starts at position 1\n        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);\n      });\n    }\n\n  })();\n</script>\n\n"
+      ]
+    },
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

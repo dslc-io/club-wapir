@@ -33,7 +33,7 @@ Imports:
     rvest,
     stringr,
     tibble,
-    tibblify (== 0.3.0.9000),
+    tibblify,
     tidyr,
     tools,
     waldo,
@@ -42,4 +42,4 @@ Imports:
     yaml
 Encoding: UTF-8
 Remotes:
-    mgirlich/tibblify#191
+    wranglezone/tibblify
