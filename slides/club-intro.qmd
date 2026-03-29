@@ -13,7 +13,7 @@ engine: knitr
         -   Cohort 1: Revise/finalize learning objectives
         -   Cohort 2: Do slides get you to the LOs?
         -   Cohort 3+: Read the actual book
-    -   📺 Recordings on [DSLC Videos](https://dslc.video)
+    -   📺 Recordings on [DSLC Videos](https://dslc.video/wapir)
 -   🔄️ Jon revises slides & "test yourself" questions
 -   (revisions, maybe future cohorts)
 -   📝 Jon writes chapter
